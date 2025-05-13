@@ -13,6 +13,7 @@ export const withAuth = (Component:React.ComponentType) => {
 
         useEffect(()=>{
             if (!loading && !user){
+                console.log("did not log in yet")
                 router.push("/");
             }
         }, [user, loading, router]);

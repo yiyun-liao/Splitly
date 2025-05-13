@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react';
-import Input from '../Input';
-import Button from '../Button';
+import Input from '../lib/Input';
+import Button from '../lib/Button';
 import { validateEmail,validatePassword,signUpCheck } from './auth-utils';
 
 interface SignUpFormProps {

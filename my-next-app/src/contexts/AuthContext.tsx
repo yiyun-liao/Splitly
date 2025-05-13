@@ -44,6 +44,7 @@ export async function logInUser() {
         const result = await signInWithPopup(auth, provider);
         const isNewUser = getAdditionalUserInfo(result)?.isNewUser;
         if (isNewUser){
+            console.log("new member!")
             await setDoc(doc(db, 'users', result.user.uid), {
                 name: result.user.displayName,
                 email: result.user.email,

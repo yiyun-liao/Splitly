@@ -1,7 +1,7 @@
 'use client'
 
-import Button from "@/components/Button"
-import { withAuth } from "@/utils/withAuth"
+import Button from "@/components/lib/Button";
+import { withAuth } from "@/utils/withAuth";
 import { useRouter } from 'next/navigation';
 import { logOutUser } from "@/contexts/AuthContext";
 
