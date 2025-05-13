@@ -1,13 +1,10 @@
 import Icon from "./Icon"
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    children: React.ReactNode;
+interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    icon?: string;
     size?: 'sm' | 'md';
-    width?: 'full' | 'fit';
     variant?: 'solid' | 'text-button' | 'outline';
     color: 'primary' | 'zinc';
-    leftIcon?: string;
-    rightIcon?: string;
     isLoading?: boolean;
     disabled?: boolean;
     type? : 'button' | 'submit' | 'reset';
@@ -19,7 +16,7 @@ function Loading({ isLoading, size }: { isLoading: boolean; size: 'sm' | 'md' })
     return <Icon icon="solar:refresh-bold" size={iconSize} className={`absolute rotate-360 animate-spin ${visibility}`} />;
 }
 
-function getDisabledStyles(variant: ButtonProps['variant'], color: ButtonProps['color']) {
+function getDisabledStyles(variant: IconButtonProps['variant'], color: IconButtonProps['color']) {
     if (variant === 'solid') {
         if (color === 'primary') {
             return "text-zinc-50 bg-blue-200 stroke-blue-200";
@@ -43,27 +40,22 @@ function getDisabledStyles(variant: ButtonProps['variant'], color: ButtonProps['
     }
 }
 
-export default function Button({
-        children, 
+export default function IconButton({ 
+        icon = 'solar:stop-outline',
         size = 'sm',
-        width = 'fit',    
         variant= 'solid', 
         color = 'primary',
-        leftIcon,
-        rightIcon,
         isLoading = false,
         disabled = false,
         type = 'button',
         onClick,
-    ...props}:ButtonProps){
+    ...props}:IconButtonProps){
   
-    let style = "relative px-4 py-0 font-semibold stroke-1 stroke-inherit inline-flex items-center justify-center rounded-xl whitespace-nowrap cursor-pointer"
+    let style = "relative font-semibold stroke-1 stroke-inherit inline-flex items-center justify-center rounded-xl whitespace-nowrap cursor-pointer"
     
     // size
-    style += size === 'sm' ? ' min-h-9 text-sm' : ' min-h-12 text-base'
+    style += size === 'sm' ? ' min-h-9 min-w-9 text-sm' : ' min-h-12 min-w-12 text-base'
 
-    //width
-    style += width === 'full' ? ' w-full text-center' : ' w-fit'
 
     // variant + color
     if (variant === "solid") {
@@ -80,20 +72,15 @@ export default function Button({
         : " text-zinc-700 bg-zinc-50/10 stroke-zinc-50/10 hover:text-zinc-800 hover:bg-zinc-900/10 hover:stroke-zinc-900/10 active:text-zinc-900 active:bg-zinc-900/40 active:stroke-zinc-900/40";
     }
 
-    const iconSize = size === 'sm' ? 'md' : 'lg';
-    const leftIconNode = leftIcon ? <Icon icon={leftIcon} size={iconSize} className="mr-2" /> : null;
-    const rightIconNode = rightIcon ? <Icon icon={rightIcon} size={iconSize} className="ml-2" /> : null;
-
     //isLoading = true 時，不想讓文字和 icon 顯示出來，但還是要保留原本空間避免 layout shift
-    const Content = ({ isLoading }: { isLoading: boolean }) => {
-      const visibility = isLoading ? 'invisible' : 'visible';
-      return (
-        <span className={`inline-flex justify-center items-center ${visibility}`}>
-          {leftIconNode}
-          {children}
-          {rightIconNode}
-        </span>
-      );
+    const Content = ({ isLoading, size }: { isLoading: boolean; size: 'sm' | 'md' }) => {
+        const iconSize = size === 'sm' ? 'md' : 'lg';
+        const visibility = isLoading ? 'invisible' : 'visible';
+        return (
+            <span className={`inline-flex justify-center items-center ${visibility}`}>
+            <Icon icon={icon} size={iconSize} className={`absolute ${visibility}`} />
+            </span>
+        );
     };
 
     if (disabled || isLoading) {
@@ -108,21 +95,18 @@ export default function Button({
   
     return (
       <button className={style} disabled={disabled || isLoading} onClick={handleClick} type={type} {...props}>
-        <Content isLoading={isLoading} />
+        <Content isLoading={isLoading} size={size}  />
         <Loading isLoading={isLoading} size={size} />
       </button>
     );
 }
 
-{/* <Button
+{/* <IconButton
+    icon='solar:star-angle-bold'
     size="md"
-    width="fit"
     variant="solid"
     color="primary"
-    leftIcon="solar:user-circle-outline"
-    rightIcon="solar:user-circle-outline"
     disabled={isdisabled}
     isLoading={isLoading}
     onClick={handleClick} >
-        Log in
-</Button> */}
+</IconButton> */}

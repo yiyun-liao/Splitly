@@ -2,6 +2,7 @@
 
 import Button from '@/components/lib/Button';
 import Icon from '@/components/lib/Icon';
+import IconButton from '@/components/lib/IconButton';
 import { logInUser } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -9,35 +10,41 @@ import { useState } from 'react';
 const Page = () => {
     const [isLoading, setIsLoading] = useState(false);
 
-    // const router = useRouter();
-
-    // async function handleLogin() {
-    //     const isLogin = await logInUser();
-    //     console.log('Logged In!');
-    //     if (!!isLogin){
-    //         router.push('/dashboard');    
-    //     }
-    // }
+    const router = useRouter();
+    async function handleLogin() {
+        const isLogin = await logInUser();
+        console.log('Logged In!');
+        if (!!isLogin){
+            router.push('/dashboard');    
+        }
+    }
 
     const handleClick = () => {
-        setIsLoading(true);                  // 👉 開啟 loading
-        setTimeout(() => setIsLoading(false), 1500); // 👉 1.5 秒後自動關掉 loading
-      };
+        setIsLoading(true);
+        setTimeout(() => setIsLoading(false), 1500);
+    };
 
     return (
         <main>
             <div>
                 <h1>main page</h1>
-                <Icon icon="solar:user-circle-outline" size="md" className="text-red-500" />
+                <IconButton
+                    icon='solar:star-angle-bold'
+                    size="md"
+                    variant="solid"
+                    color="primary"
+                    // disabled={isdisabled}
+                    isLoading={isLoading}
+                    onClick={handleClick} >
+                </IconButton>
                 <Button
                     size="md"
                     width="fit"
                     variant="solid"
                     color="primary"
-                    leftIcon="solar:user-circle-outline"
-                    rightIcon="solar:user-circle-outline"
-                    isLoading={isLoading}
-                    onClick={handleClick} >
+                    leftIcon="i-mdi-check"
+                    rightIcon="i-mdi-arrow-right"
+                    onClick={handleLogin} >
                         Log in
                 </Button>
             </div>

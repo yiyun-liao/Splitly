@@ -19,12 +19,16 @@ function DashboardPage(){
         <div>
             <div>Welcome to the dashboard!</div>
             <h1>私人分帳頁面</h1>
-            <Button                    
-                variant="text-button" 
-                width='full'
-                onClick={handleLogout} >
-                    Log out
-            </Button>
+                <Button
+                    size="md"
+                    width="fit"
+                    variant="solid"
+                    color="primary"
+                    leftIcon="i-mdi-check"
+                    rightIcon="i-mdi-arrow-right"
+                    onClick={handleLogout} >
+                        Log out
+                </Button>
         </div>
     )
 }
