@@ -33,4 +33,8 @@ export default function Icon({
     );
 }
 
-//<Icon icon="solar:user-circle-outline" size="sm" className="text-red-500" />
+//<Icon 
+//  icon='solar:user-circle-outline'
+//  size='sm' | 'md' | 'lg' | 'xl'
+//  className="text-red-500" //根據需求
+// />

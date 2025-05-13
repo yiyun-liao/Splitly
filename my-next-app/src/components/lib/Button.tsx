@@ -115,14 +115,14 @@ export default function Button({
 }
 
 {/* <Button
-    size="md"
-    width="fit"
-    variant="solid"
-    color="primary"
-    leftIcon="solar:user-circle-outline"
-    rightIcon="solar:user-circle-outline"
-    disabled={isdisabled}
-    isLoading={isLoading}
+    size='sm' | 'md'
+    width='full' | 'fit'
+    variant='solid' | 'text-button' | 'outline'
+    color='primary' | 'zinc'
+    leftIcon='solar:user-circle-outline'
+    rightIcon='solar:user-circle-outline'
+    disabled={isdisabled} //根據需求
+    isLoading={isLoading} //根據需求
     onClick={handleClick} >
         Log in
 </Button> */}

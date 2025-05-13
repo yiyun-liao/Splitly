@@ -78,7 +78,7 @@ export default function IconButton({
         const visibility = isLoading ? 'invisible' : 'visible';
         return (
             <span className={`inline-flex justify-center items-center ${visibility}`}>
-            <Icon icon={icon} size={iconSize} className={`absolute ${visibility}`} />
+            <Icon icon={icon} size={iconSize} className={` ${visibility}`} />
             </span>
         );
     };
@@ -103,10 +103,11 @@ export default function IconButton({
 
 {/* <IconButton
     icon='solar:star-angle-bold'
-    size="md"
-    variant="solid"
-    color="primary"
-    disabled={isdisabled}
-    isLoading={isLoading}
+    size='sm' | 'md'
+    variant='solid' | 'text-button' | 'outline'
+    color='primary' | 'zinc'
+    disabled={isdisabled} //根據需求
+    isLoading={isLoading} //根據需求
+    type= 'button' | 'submit' | 'reset'
     onClick={handleClick} >
 </IconButton> */}
