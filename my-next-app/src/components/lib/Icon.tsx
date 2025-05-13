@@ -2,11 +2,11 @@ import { Icon as IconifyIcon } from '@iconify/react';
 
 export type IconSize = 'sm' | 'md' | 'lg' | 'xl';
 
-const SIZE_MAP: Record<IconSize, number> = {
-  sm: 16,
-  md: 20,
-  lg: 24,
-  xl: 32,
+const SIZE_MAP: Record<IconSize, string> = {
+    sm: "w-4 h-4",
+    md: "w-5 h-5",
+    lg: "w-6 h-6",
+    xl: "w-8 h-8",
 };
 
 type IconProps = {
@@ -22,14 +22,11 @@ export default function Icon({
         className = '',
         label,
     }: IconProps) {
-        const fontSize = SIZE_MAP[size];
-        let style = 'inline-block vertical-middle leading-6'
+        const style = 'inline-block vertical-middle leading-6'
     return (
         <IconifyIcon
             icon={icon}
-            width={SIZE_MAP[size]}
-            height={SIZE_MAP[size]}
-            className={`${style} ${fontSize} ${icon} ${className}`}
+            className={`${style} ${SIZE_MAP[size]} ${icon} ${className}`}
             aria-label={label}
             role="img"
         />
