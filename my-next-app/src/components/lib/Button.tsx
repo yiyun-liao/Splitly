@@ -1,4 +1,6 @@
 import Icon from "./Icon"
+import clsx from 'clsx';
+
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: React.ReactNode;
@@ -57,28 +59,48 @@ export default function Button({
         onClick,
     ...props}:ButtonProps){
   
-    let style = "relative px-4 py-0 font-semibold stroke-1 stroke-inherit inline-flex items-center justify-center rounded-xl whitespace-nowrap cursor-pointer"
-    
-    // size
-    style += size === 'sm' ? ' min-h-9 text-sm' : ' min-h-12 text-base'
 
-    //width
-    style += width === 'full' ? ' w-full text-center' : ' w-fit'
+    const isDisabled = disabled || isLoading;
 
-    // variant + color
-    if (variant === "solid") {
-        style += color === "primary"
-        ? " text-zinc-50 bg-blue-500 stroke-blue-500 hover:bg-blue-600 hover:stroke-blue-600 active:bg-blue-800 active:stroke-blue-800"
-        : " text-zinc-50 bg-zinc-700 stroke-zinc-700 hover:bg-zinc-800 hover:stroke-zinc-800 active:bg-zinc-900 active:stroke-zinc-900";
-    } else if (variant === "outline") {
-        style += color === "primary"
-        ? " text-blue-500 bg-zinc-50 stroke-blue-500 hover:text-blue-600 hover:bg-blue-100 hover:stroke-blue-600 active:text-blue-800 active:bg-blue-200 active:stroke-blue-800"
-        : " text-zinc-700 bg-zinc-50 stroke-zinc-700 hover:text-zinc-800 hover:bg-zinc-900/10 hover:stroke-zinc-800 active:text-zinc-900 active:bg-zinc-900/40 active:stroke-zinc-900";
-    } else if (variant === "text-button") {
-        style += color === "primary"
-        ? " text-blue-500 bg-zinc-50/10 stroke-zinc-50/10 hover:text-blue-600 hover:bg-zinc-900/10 hover:stroke-zinc-900/10 active:text-blue-800 active:bg-zinc-900/40 active:stroke-zinc-900/40"
-        : " text-zinc-700 bg-zinc-50/10 stroke-zinc-50/10 hover:text-zinc-800 hover:bg-zinc-900/10 hover:stroke-zinc-900/10 active:text-zinc-900 active:bg-zinc-900/40 active:stroke-zinc-900/40";
-    }
+    const baseClasses = clsx(
+        "relative px-4 py-0 font-semibold stroke-1 stroke-inherit inline-flex items-center justify-center rounded-xl whitespace-nowrap align-middle",
+        // size
+        {
+            "min-h-9 min-w-9 text-sm" : size === "sm",
+            "min-h-12 min-w-12 text-base" : size === "md",
+        },
+        // width
+        {
+            "w-full text-center" : width === "full",
+            "w-fit" : width === "fit",
+        },
+        // variant & color styles
+        {
+            // solid
+            "text-zinc-50 bg-blue-500 stroke-blue-500 hover:bg-blue-600 hover:stroke-blue-600 active:bg-blue-800 active:stroke-blue-800":
+              variant === "solid" && color === "primary" && !isDisabled,
+            "text-zinc-50 bg-zinc-700 stroke-zinc-700 hover:bg-zinc-800 hover:stroke-zinc-800 active:bg-zinc-900 active:stroke-zinc-900":
+              variant === "solid" && color === "zinc" && !isDisabled,
+      
+            // outline
+            "text-blue-500 bg-zinc-50 stroke-blue-500 hover:text-blue-600 hover:bg-blue-100 hover:stroke-blue-600 active:text-blue-800 active:bg-blue-200 active:stroke-blue-800":
+              variant === "outline" && color === "primary" && !isDisabled,
+            "text-zinc-700 bg-zinc-50 stroke-zinc-700 hover:text-zinc-800 hover:bg-zinc-900/10 hover:stroke-zinc-800 active:text-zinc-900 active:bg-zinc-900/40 active:stroke-zinc-900":
+              variant === "outline" && color === "zinc" && !isDisabled,
+      
+            // text-button
+            "text-blue-500 bg-zinc-50/10 stroke-zinc-50/10 hover:text-blue-600 hover:bg-zinc-900/10 hover:stroke-zinc-900/10 active:text-blue-800 active:bg-zinc-900/40 active:stroke-zinc-900/40":
+              variant === "text-button" && color === "primary" && !isDisabled,
+            "text-zinc-700 bg-zinc-50/10 stroke-zinc-50/10 hover:text-zinc-800 hover:bg-zinc-900/10 hover:stroke-zinc-900/10 active:text-zinc-900 active:bg-zinc-900/40 active:stroke-zinc-900/40":
+              variant === "text-button" && color === "zinc" && !isDisabled,
+          },
+          // disabled
+          {
+            "cursor-pointer" : !isDisabled,
+            [getDisabledStyles(variant, color)!]: isDisabled,
+            "cursor-not-allowed": isDisabled,
+          }
+    )
 
     const iconSize = size === 'sm' ? 'md' : 'lg';
     const leftIconNode = leftIcon ? <Icon icon={leftIcon} size={iconSize} className="mr-2" /> : null;
@@ -96,18 +118,13 @@ export default function Button({
       );
     };
 
-    if (disabled || isLoading) {
-        style += getDisabledStyles(variant, color);
-        style += " cursor-not-allowed pointer-events-none";
-      }
-
     const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      if (isLoading) return;
-      onClick?.(event);
+        if (isLoading) return;
+        onClick?.(event);
     };
   
     return (
-      <button className={style} disabled={disabled || isLoading} onClick={handleClick} type={type} {...props}>
+      <button className={baseClasses} disabled={disabled || isLoading} onClick={handleClick} type={type} {...props}>
         <Content isLoading={isLoading} />
         <Loading isLoading={isLoading} size={size} />
       </button>
