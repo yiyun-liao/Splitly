@@ -12,11 +12,12 @@ const Page = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [inputValue, setInputValue] = useState("");
     const tokenCount: [number, number] = [inputValue.length, 40];
-
+    const [isDisabled, setIsDisable] = useState(true);
     const errorMessage =
       inputValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
 
     const router = useRouter();
+
     async function handleLogin() {
         const isLogin = await logInUser();
         console.log('Logged In!');
@@ -31,21 +32,33 @@ const Page = () => {
         }
     };
 
-    // useEffect(() => {
-    //     if (isLoading) {
-    //         const timer = setTimeout(() => {
-    //             setIsLoading(false);
-    //         }, 1500);
+    useEffect(() => {
+        if (isLoading) {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 3000);
             
-    //         // 清理定時器
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [isLoading]); // 當 isLoading 改變時觸發副作用
+            // 清理定時器
+            return () => clearTimeout(timer);
+        }
+    }, [isLoading]); // 當 isLoading 改變時觸發副作用
 
     return (
         <main>
             <div>
-                <h1>main page</h1>
+                <h1>main page - landing page</h1>
+                <Button
+                    size="md"
+                    width="fit"
+                    variant="solid"
+                    color="primary"
+                    leftIcon="logos:google-icon"
+                    onClick={handleLogin} >
+                        Log in
+                </Button>
+            </div>
+            <div>
+                <h1>以下都是測試用 Component</h1>
                 <IconButton
                     icon='solar:star-angle-bold'
                     size="md"
@@ -66,16 +79,28 @@ const Page = () => {
                     onClick={handleClick} >
                         test
                 </Button>
-                <Button
-                    size="md"
-                    width="fit"
-                    variant="solid"
-                    color="primary"
-                    //leftIcon="solar:star-angle-bold"
-                    rightIcon="solar:star-angle-bold"
-                    onClick={handleLogin} >
-                        Log in
-                </Button>
+
+                <div className=' flex items-start justify-start gap-2'>
+                    <Input
+                        label="備註"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        tokenMaxCount={tokenCount}
+                        errorMessage={errorMessage}
+                        disabled = {isDisabled}
+                        leftIcon="solar:pen-line-duotone"
+                    />
+                    <Button
+                        size="sm"
+                        width="fit"
+                        variant="solid"
+                        color="primary"
+                        //leftIcon="solar:star-angle-bold"
+                        rightIcon="solar:star-angle-bold"
+                        onClick={handleLogin} >
+                            test
+                    </Button>
+                </div>
                 <Input
                     label="備註"
                     value={inputValue}
