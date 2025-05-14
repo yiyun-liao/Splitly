@@ -14,7 +14,7 @@ interface InputProps  extends React.InputHTMLAttributes<HTMLInputElement> {
     placeholder?: string;
     isLoading?: boolean;
     disabled?: boolean;
-    tokenMaxCount?:[current: number, max: number];
+    tokenMaxCount?: [current: number, max: number] | undefined;
     errorMessage?: string;
 }
 
@@ -72,7 +72,7 @@ export default function Input({
     const inputItemClass = 'w-3xs wrap-anywhere'
     const inputClasses = 'w-full stroke-none outline-none';
 
-    const helperClasses = 'flex items-start justify-end gap-1 w-full text-sm my-1 min-h-5';
+    const helperClasses = 'flex items-start justify-end gap-1 w-full text-sm my-1 min-h-5 transition-all duration-200 ';
     const errorMessageClasses = 'text-red-400 break-words w-full ';
     let tokenCountClasses = 'whitespace-nowrap flex-shrink-0';
 
