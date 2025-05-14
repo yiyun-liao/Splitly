@@ -41,6 +41,20 @@
   --color-sp-grass-800: #77805c;
   --color-sp-grass-900: #596045;
   --color-sp-grass-950: #454b36;
+  --color-sp-zinc-5:#18181b0d;
+  --color-sp-zinc-20:#18181b33;
+  --color-sp-zinc-40:#18181b66;
+  --color-sp-zinc-50:#18181b80;
+  --color-sp-zinc-60:#18181b99;
+  --color-sp-zinc-80:#18181bcc;
+  --color-sp-zinc-100:#18181b;
+  --color-sp-white-5:#ffffff0d;
+  --color-sp-white-20:#ffffff33;
+  --color-sp-white-40:#ffffff66;
+  --color-sp-white-50:#ffffff80;
+  --color-sp-white-60:#ffffff99;
+  --color-sp-white-80:#ffffffcc;
+  --color-sp-white-100:#ffffff;
 }
 
 *, *::before, *::after{
