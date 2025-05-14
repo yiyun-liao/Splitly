@@ -2,6 +2,7 @@
 
 import Button from '@/components/lib/Button';
 import Icon from '@/components/lib/Icon';
+import Avatar from '@/components/lib/Avatar';
 import Input from '@/components/lib/Input';
 import Dialog from '@/components/lib/Dialog';
 import IconButton from '@/components/lib/IconButton';
@@ -25,15 +26,6 @@ const Page = () => {
     const errorMessage =
       inputValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
 
-    const router = useRouter();
-
-    async function handleLogin() {
-        const isLogin = await logInUser();
-        console.log('Logged In!');
-        if (!!isLogin){
-            router.push('/dashboard');    
-        }
-    }
 
     const handleClick = () => {
         alert('test')
@@ -52,6 +44,7 @@ const Page = () => {
 
     return (
         <main>
+
             <Dialog
                 open={isDialogOpen}
                 onClose={handleClose}
@@ -67,6 +60,12 @@ const Page = () => {
             >
                 <p className="text-zinc-700">這裡是 Dialog 的內容區塊。</p>
             </Dialog>
+
+            <Avatar
+                size="md"
+                userId="user_123"
+                onAvatarClick={() => console.log('Clicked!')}
+            />
             <div>
                 <h1>以下都是測試用 Component</h1>
                 <IconButton
