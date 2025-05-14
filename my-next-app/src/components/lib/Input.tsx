@@ -63,7 +63,7 @@ export default function Input({
         }
     );
 
-    const wrapperClassNames = clsx(
+    const wrapperClass = clsx(
         "px-3 py-2 max-h-9 text-base ring-1 stroke-inherit rounded-xl tracking-widest flex items-center justify-start",
         {
           "bg-zinc-100 text-zinc-400 ring-zinc-200 cursor-not-allowed": disabled,
@@ -106,7 +106,7 @@ export default function Input({
       <div className={inputFrameClass}>
             {label && <label className={labelClasses}>{label}</label>}
             <div className={inputItemClass}>
-                <div className={wrapperClassNames}>
+                <div className={wrapperClass}>
                     {leftIconNode}
                     <input
                         ref={inputRef} 
@@ -126,3 +126,22 @@ export default function Input({
       </div>
     )
 }
+
+
+{/* <Input
+    label: "標題名稱"
+    value: string
+    onChange:{(e) => setInputValue(e.target.value)} //看需求
+    flexDirection : 'row' | 'col'
+    labelClassName: string //看需求
+    inputClassName: string //看需求
+    width: 'full' | 'fit'
+    leftIcon: "solar:pen-line-duotone"
+    rightIcon: "solar:pen-line-duotone"
+    placeholder: "placeholder"
+    isLoading?: {isLoading}
+    tokenMaxCount=[current: number, max: number] 
+    errorMessage={errorMessage}
+    disabled = {isDisabled}
+/> */}
+
