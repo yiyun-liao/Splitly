@@ -50,7 +50,7 @@ const Page = () => {
                 <Button
                     size="md"
                     width="fit"
-                    variant="solid"
+                    variant="outline"
                     color="primary"
                     leftIcon="logos:google-icon"
                     onClick={handleLogin} >

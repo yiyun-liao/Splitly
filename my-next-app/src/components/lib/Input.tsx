@@ -90,7 +90,7 @@ export default function Input({
     const currentValue = !!value && value?.length > 0
     const rightIconNode = !currentValue  ?
         null : !disabled && !isLoading && value ? (
-            <button type="button" onClick={handleClear} className="ml-2">
+            <button type="button" onClick={handleClear} className="ml-2 hover:text-sp-blue-500 cursor-pointer">
                 <Icon icon={rightIcon} size="lg" />
             </button>
         ) : isLoading ? (

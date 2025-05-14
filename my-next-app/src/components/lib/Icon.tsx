@@ -22,7 +22,7 @@ export default function Icon({
         className = '',
         label,
     }: IconProps) {
-        const style = 'inline-flex items-center justify-center'
+        const style = 'inline-flex items-center justify-center text-current'
     return (
         <IconifyIcon
             icon={icon}
