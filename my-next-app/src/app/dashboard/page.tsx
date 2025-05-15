@@ -220,8 +220,8 @@ function DashboardPage(){
                             </div>
                         </div>
                     </div>
-                    <div id="expense-overview" className="w-full px-3 flex flex-col items-start justify-start gap-6 text-zinc-700">
-                        <div id="over-view-bubble-budget" className="w-full px-3 py-3 rounded-2xl text-center bg-sp-yellow-400  text-sp-blue-500 overflow-hidden">
+                    <div id="expense-overview" className="w-full h-full px-3 flex flex-col items-start justify-start gap-6 text-zinc-700 overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth">
+                        <div id="overview-bubble-budget" className="w-full shrink-0 px-3 py-3 rounded-2xl text-center bg-sp-yellow-400  text-sp-blue-500 overflow-hidden">
                             <Icon 
                                 icon='solar:confounded-square-bold'
                                 size='xl'
@@ -229,9 +229,9 @@ function DashboardPage(){
                             />
                             <p className="text-xl font-semibold ">專案預算...爆掉了！</p>
                         </div>
-                        <div className="w-full flex justify-start gap-3 items-stretch">
+                        <div className="shrink-0 w-full flex justify-start gap-3 items-stretch">
                             <div className="w-1/2 flex flex-col items-start justify-start gap-3">
-                                <div id="over-view-bubble-quick-view" className="w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
+                                <div id="overview-bubble-quick-view" className="w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
                                     <div className="px-3 py-3">
                                         <p className="text-base">專案期間</p>
                                         <p className="text-base font-semibold">05.11.2025 - 06.24.2025</p>
@@ -241,13 +241,13 @@ function DashboardPage(){
                                         <p className="text-xl font-bold">$10000.00</p>
                                     </div>
                                 </div>
-                                <div id="over-view-bubble-expense" className="w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
+                                <div id="overview-bubble-expense" className="w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
                                     <div className="px-3 py-3">
                                         <p className="text-base">整體支出</p>
                                         <p className="text-2xl font-bold">$8000.00</p>
                                     </div>
                                 </div>
-                                <div id="over-view-bubble-expense-self" className="w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
+                                <div id="overview-bubble-expense-self" className="w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
                                     <div className="px-3 py-3">
                                         <p className="text-base">你的支出</p>
                                         <p className="text-2xl font-bold">$4231.00</p>
@@ -255,7 +255,7 @@ function DashboardPage(){
                                 </div>                        
                             </div>
                             <div className="w-1/2 flex flex-col items-start justify-start gap-3">
-                                <div id="over-view-bubble-spilt-self" className="w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
+                                <div id="overview-bubble-spilt-self" className="w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
                                     <div className="px-3 pb-3 flex items-center justify-start gap-2">
                                         <p className="text-base w-full">你在專案中借出</p>
                                         <div className="shrink-0 ">
@@ -285,7 +285,7 @@ function DashboardPage(){
                                         <p className="shrink-0 text-xl font-semibold">$359.00</p>
                                     </div>
                                 </div>
-                                <div id="over-view-bubble-spilt" className="w-full flex-1 px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
+                                <div id="overview-bubble-spilt" className="w-full flex-1 px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden">
                                     <div className="px-3 pb-3 flex items-center justify-start gap-2">
                                         <p className="text-base w-full">分帳</p>
                                         <div className="shrink-0 ">
@@ -303,7 +303,7 @@ function DashboardPage(){
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col items-center justify-start gap-2">
-                                        <div id="over-view-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-2">
+                                        <div id="overview-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-2">
                                             <div className="w-20 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                                 <Avatar
                                                     size="md"
@@ -335,7 +335,7 @@ function DashboardPage(){
                                                 <p className="text-base w-fll  whitespace-nowrap truncate">Yun</p>
                                             </div>                                       
                                         </div>
-                                        <div id="over-view-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-2">
+                                        <div id="overview-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-2">
                                             <div className="w-20 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                                 <Avatar
                                                     size="md"
@@ -367,7 +367,7 @@ function DashboardPage(){
                                                 <p className="text-base w-fll  whitespace-nowrap truncate">Yun</p>
                                             </div>                                       
                                         </div>
-                                        <div id="over-view-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-2">
+                                        <div id="overview-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-2">
                                             <div className="w-20 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                                 <Avatar
                                                     size="md"
@@ -402,6 +402,9 @@ function DashboardPage(){
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div id="overview-bubble-expense-chart" className="shrink-0 w-full h-100 px-3 py-3 rounded-2xl text-center bg-sp-blue-200 overflow-hidden">
+                            chart
                         </div>
                     </div>
                 </div>
