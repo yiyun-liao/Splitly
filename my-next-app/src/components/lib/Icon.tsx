@@ -26,7 +26,7 @@ export default function Icon({
     return (
         <IconifyIcon
             icon={icon}
-            className={`${style} ${SIZE_MAP[size]} ${icon} ${className}`}
+            className={`${style} ${SIZE_MAP[size]} ${className}`}
             aria-label={label}
             role="img"
         />
