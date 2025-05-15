@@ -4,9 +4,12 @@ import Button from "@/components/lib/Button";
 import { withAuth } from "@/utils/withAuth";
 import { useRouter } from 'next/navigation';
 import { logOutUser } from "@/contexts/AuthContext";
-
+import Avatar from "@/components/lib/Avatar";
+import { useUser } from "@/contexts/useUser";
 
 function DashboardPage(){
+    const {userData, isLoading} = useUser();
+
     const router = useRouter();
 
     async function handleLogout() {
@@ -14,15 +17,19 @@ function DashboardPage(){
         console.log('Logged out!');
         router.push('/');    
     }
+    if (isLoading) return <div>Loading...</div>;
 
+    console.log(userData, isLoading)
     return(
-        <div className="flex">
-            <div>
-
-            </div>
-            <div>
-                <div>Welcome to the dashboard!</div>
-                <h1>私人分帳頁面</h1>
+        <div>
+            <div>Welcome to the dashboard!</div>
+            <Avatar
+                size="md"
+                img={userData?.avatar}
+                userName = {userData?.name || ''}
+                onAvatarClick={() => console.log('Clicked!')}
+            />
+            <h1>私人分帳頁面</h1>
                 <Button
                     size="md"
                     width="fit"
