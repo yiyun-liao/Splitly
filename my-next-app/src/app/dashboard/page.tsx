@@ -8,6 +8,7 @@ import Avatar from "@/components/lib/Avatar";
 import { useUser } from "@/contexts/useUser";
 import Image from 'next/image';
 import IconButton from "@/components/lib/IconButton";
+import ImageButton from "@/components/lib/ImageButton";
 
 function DashboardPage(){
     const {userData, isLoading} = useUser();
@@ -27,16 +28,12 @@ function DashboardPage(){
         <div className="flex items-start justify-start">
             <nav className="min-w-18 h-screen py-6 flex flex-col items-center justify-start bg-amber-200">
                 <div id="nav-loge" className={navDivClass}>
-                    <button className="w-12 h-12 p-1 inline-block rounded-xl overflow-hidden cursor-pointer bg-zinc-50/10 border-zinc-50/10 hover:bg-zinc-900/10 hover:border-zinc-900/10 active:bg-zinc-900/40 active:border-zinc-900/40">
-                        <Image 
-                            src="/logo/file.svg"
-                            alt="Splitly"
-                            title="Splitly"
-                            width= "24"
-                            height = "24"
-                            className="object-cover inline-flex items-center justify-center text-current"
-                        />
-                    </button>
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.jpg"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
                 </div>
                 <div id="nav-function" className={`${navDivClass} flex-1`}>
                     <IconButton
