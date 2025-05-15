@@ -28,7 +28,6 @@ export const AuthProvider = ({children}:{children:React.ReactNode}) => {
 
         return () => unsubscribe();
     }, [])
-
     return(
         <AuthContext.Provider value= {{ user, loading }}>
             {children}
@@ -38,6 +37,18 @@ export const AuthProvider = ({children}:{children:React.ReactNode}) => {
 
 export const useAuth = () => useContext(AuthContext);
 
+// 建立頭貼
+const CLOUDINARY_BASE = "https://res.cloudinary.com/ddkkhfzuk/image/upload";
+const AVATAR_FOLDER = "avatar";
+
+const RANDOM_AVATARS = Array.from({ length: 8 }, (_, i) =>
+  `${CLOUDINARY_BASE}/${AVATAR_FOLDER}/${i + 1}.jpg`
+);
+
+function getRandomAvatarUrl(): string {
+    const index = Math.floor(Math.random() * RANDOM_AVATARS.length);
+    return RANDOM_AVATARS[index];
+}
 
 export async function logInUser() {
     try {
@@ -45,9 +56,11 @@ export async function logInUser() {
         const isNewUser = getAdditionalUserInfo(result)?.isNewUser;
         if (isNewUser){
             console.log("new member!")
+            const randomAvatar = getRandomAvatarUrl();
             await setDoc(doc(db, 'users', result.user.uid), {
                 name: result.user.displayName,
                 email: result.user.email,
+                avatar: randomAvatar,
                 createdAt: serverTimestamp(),
             });
         }
