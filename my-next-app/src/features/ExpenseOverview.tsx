@@ -3,6 +3,7 @@ import Button from "@/components/lib/Button";
 import Avatar from "@/components/lib/Avatar";
 import ExpenseCard from "@/components/template/ExpenseCard";
 import clsx from "clsx";
+import { useParams, useRouter } from 'next/navigation';
 
 interface ExpenseOverviewProps {
     userData: {
@@ -12,7 +13,10 @@ interface ExpenseOverviewProps {
   }
 
 export default function ExpenseOverview({userData}:ExpenseOverviewProps){
-    const overviewBubbleClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden hover:bg-sp-blue-300 hover:shadow")
+    const router = useRouter();
+    const params = useParams();
+    const projectId = params.projectId;
+    const overviewBubbleClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-white-40 overflow-hidden hover:bg-sp-blue-200 hover:shadow")
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     
     return(
@@ -199,38 +203,42 @@ export default function ExpenseOverview({userData}:ExpenseOverviewProps){
                     </div>
                 </div>
             </div>
-            <div id="overview-bubble-expense-chart" className={`${overviewBubbleClass} h-100 shrink-0 text-center`}>
-                chart
-            </div>
-            <div id="overview-bubble-expense-quick-view" className={`${overviewBubbleClass} shrink-0`}>
-                <div className="pl-3 pb-3 flex items-center justify-start gap-2">
-                    <p className="text-base w-full">近五筆收支紀錄</p>
-                    <div className="shrink-0 ">
-                        <Button
-                            size='sm'
-                            width='fit'
-                            variant='text-button'
-                            color='primary'
-                            //disabled={isdisabled} 
-                            //isLoading={isLoading}
-                            //onClick={handleClick} 
-                            >
-                                查看全部
-                        </Button>
+            {location.pathname === `/${projectId}/expense` &&(
+                <div id="overview-bubble-expense-chart" className={`${overviewBubbleClass} h-100 shrink-0 text-center`}>
+                    chart
+                </div>
+            )}
+            {location.pathname === `/${projectId}/dashboard` && (
+                <div id="overview-bubble-expense-quick-view" className={`${overviewBubbleClass} shrink-0`}>
+                    <div className="pl-3 pb-3 flex items-center justify-start gap-2">
+                        <p className="text-base w-full">近五筆收支紀錄</p>
+                        <div className="shrink-0 ">
+                            <Button
+                                size='sm'
+                                width='fit'
+                                variant='text-button'
+                                color='primary'
+                                //disabled={isdisabled} 
+                                //isLoading={isLoading}
+                                onClick={()=> router.push(`/${projectId}/expense`)} 
+                                >
+                                    查看全部
+                            </Button>
+                        </div>
+                    </div>
+                    <div id="expense-list-frame" className="w-full pb-4 px-3">
+                        <ExpenseCard/>
+                        <div className="w-full h-0.25 bg-sp-green-200"></div>
+                        <ExpenseCard/>
+                        <div className="w-full h-0.25 bg-sp-green-200"></div>
+                        <ExpenseCard/>
+                        <div className="w-full h-0.25 bg-sp-green-200"></div>
+                        <ExpenseCard/>
+                        <div className="w-full h-0.25 bg-sp-green-200"></div>
+                        <ExpenseCard/>
                     </div>
                 </div>
-                <div id="expense-list-frame" className="w-full pb-4 px-3">
-                    <ExpenseCard/>
-                    <div className="w-full h-0.25 bg-sp-green-200"></div>
-                    <ExpenseCard/>
-                    <div className="w-full h-0.25 bg-sp-green-200"></div>
-                    <ExpenseCard/>
-                    <div className="w-full h-0.25 bg-sp-green-200"></div>
-                    <ExpenseCard/>
-                    <div className="w-full h-0.25 bg-sp-green-200"></div>
-                    <ExpenseCard/>
-                </div>
-            </div>
+            )}
         </div>
     )
 }

@@ -1,12 +1,23 @@
 import ImageButton from "@/components/lib/ImageButton"
 import IconButton from "@/components/lib/IconButton"
 import { logOutUser } from "@/contexts/AuthContext";
-import { useRouter } from 'next/navigation';
-
+import { useRouter, useParams } from 'next/navigation';
+import { useState, useEffect } from "react";
 
 export default function DashboardNav(){
-    const navDivClass = "flex flex-col items-start justify-start py-2 gap-2 px-2"
     const router = useRouter();
+    const params = useParams();
+    const projectId = params.projectId;
+
+    const [activePath, setActivePath] = useState(location.pathname);
+
+    useEffect(()=>{
+        setActivePath(location.pathname);
+    },[location.pathname])
+
+    console.log('當前位置', activePath)
+
+    const navDivClass = "flex flex-col items-start justify-start py-2 gap-2 px-2"
 
     async function handleLogout() {
         await logOutUser();
@@ -28,19 +39,19 @@ export default function DashboardNav(){
                     <IconButton
                         icon='solar:widget-2-bold'
                         size='md'
-                        variant='text-button'
+                        variant={activePath === `/${projectId}/dashboard` ? 'solid' : 'outline'}
                         color='primary'
                         type= 'button'
-                        //onClick={handleClick} 
+                        onClick={() => router.push(`/${projectId}/dashboard`)} 
                         >
                     </IconButton> 
                     <IconButton
                         icon='solar:reorder-bold'
                         size='md'
-                        variant='text-button'
+                        variant={activePath === `/${projectId}/expense` ? 'solid' : 'outline'}
                         color='primary'
                         type= 'button'
-                        //onClick={handleClick} 
+                        onClick={() => router.push(`/${projectId}/expense`)} 
                         >
                     </IconButton> 
                 </div>
