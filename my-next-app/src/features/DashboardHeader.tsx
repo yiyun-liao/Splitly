@@ -11,7 +11,7 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({userData}:DashboardHeaderProps){
     return(
-        <div id="dashboard-header"  className="flex items-center gap-2 w-full justify-between px-6">
+        <div id="dashboard-header"  className="flex items-center gap-2 w-full justify-between px-6 py-2">
             <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
                 <ImageButton
                     image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/2.JPG"
