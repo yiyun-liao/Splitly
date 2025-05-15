@@ -1,16 +1,17 @@
 import Icon from "@/components/lib/Icon";
 import Button from "@/components/lib/Button";
 import Avatar from "@/components/lib/Avatar";
+import ExpenseCard from "@/components/template/ExpenseCard";
 import clsx from "clsx";
 
-interface DashboardExpenseOverviewProps {
+interface ExpenseOverviewProps {
     userData: {
       avatar?: string;
       name?: string;
     } | null;
   }
 
-export default function DashboardExpenseOverview({userData}:DashboardExpenseOverviewProps){
+export default function ExpenseOverview({userData}:ExpenseOverviewProps){
     const overviewBubbleClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-blue-200 overflow-hidden hover:bg-sp-blue-300 hover:shadow")
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     
@@ -198,8 +199,37 @@ export default function DashboardExpenseOverview({userData}:DashboardExpenseOver
                     </div>
                 </div>
             </div>
-            <div id="overview-bubble-expense-chart" className="shrink-0 w-full h-100 px-3 py-3 rounded-2xl text-center bg-sp-blue-200 overflow-hidden">
+            <div id="overview-bubble-expense-chart" className={`${overviewBubbleClass} h-100 shrink-0 text-center`}>
                 chart
+            </div>
+            <div id="overview-bubble-expense-quick-view" className={`${overviewBubbleClass} shrink-0`}>
+                <div className="pl-3 pb-3 flex items-center justify-start gap-2">
+                    <p className="text-base w-full">近五筆收支紀錄</p>
+                    <div className="shrink-0 ">
+                        <Button
+                            size='sm'
+                            width='fit'
+                            variant='text-button'
+                            color='primary'
+                            //disabled={isdisabled} 
+                            //isLoading={isLoading}
+                            //onClick={handleClick} 
+                            >
+                                查看全部
+                        </Button>
+                    </div>
+                </div>
+                <div id="expense-list-frame" className="w-full pb-4 px-3">
+                    <ExpenseCard/>
+                    <div className="w-full h-0.25 bg-sp-green-200"></div>
+                    <ExpenseCard/>
+                    <div className="w-full h-0.25 bg-sp-green-200"></div>
+                    <ExpenseCard/>
+                    <div className="w-full h-0.25 bg-sp-green-200"></div>
+                    <ExpenseCard/>
+                    <div className="w-full h-0.25 bg-sp-green-200"></div>
+                    <ExpenseCard/>
+                </div>
             </div>
         </div>
     )

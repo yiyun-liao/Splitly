@@ -12,8 +12,8 @@ import IconButton from "@/components/lib/IconButton";
 import ImageButton from "@/components/lib/ImageButton";
 import DashboardNav from "@/features/DashboardNav";
 import DashboardHeader from "@/features/DashboardHeader";
+import ExpenseList from "@/features/ExpenseList";
 import ExpenseOverview from "@/features/ExpenseOverview";
-import ProjectAnalysis from "@/features/ProjectAnalysis";
 
 function DashboardPage(){
     const {userData, isLoading} = useUser();
@@ -26,7 +26,7 @@ function DashboardPage(){
             <div className="py-4 w-full max-w-520 h-screen flex flex-col items-center justify-start gap-2 ">
                 <DashboardHeader userData={userData} />
                 <div className="flex items-start justify-start px-6 gap-6 w-full h-full overflow-hidden text-zinc-700 ">
-                    <ProjectAnalysis userData={userData}/>
+                    <ExpenseList userData={userData}  />
                     <ExpenseOverview userData={userData}  />
                 </div>
             </div>
