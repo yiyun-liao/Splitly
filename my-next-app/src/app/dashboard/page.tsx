@@ -16,9 +16,13 @@ function DashboardPage(){
     }
 
     return(
-        <div>
-            <div>Welcome to the dashboard!</div>
-            <h1>私人分帳頁面</h1>
+        <div className="flex">
+            <div>
+
+            </div>
+            <div>
+                <div>Welcome to the dashboard!</div>
+                <h1>私人分帳頁面</h1>
                 <Button
                     size="md"
                     width="fit"
@@ -29,6 +33,7 @@ function DashboardPage(){
                     onClick={handleLogout} >
                         Log out
                 </Button>
+            </div>
         </div>
     )
 }
