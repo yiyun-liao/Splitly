@@ -78,6 +78,40 @@ button {
 }
 
 
+/* For Chrome, Edge, Safari */
+.scroll-container {
+  scrollbar-gutter: stable;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  margin-right: -8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-sp-zinc-20); 
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color:  var(--color-sp-zinc-40); 
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color:  var(--color-sp-zinc-20) transparent;
+}
+
+
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;

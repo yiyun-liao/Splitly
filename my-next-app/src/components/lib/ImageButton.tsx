@@ -23,10 +23,10 @@ export default function ImageButton({
     const [hasError, setHasError] = useState(false);
 
     const baseClasses = clsx(
-        "inline-block rounded-xl overflow-hidden cursor-pointer bg-zinc-50/10 border-zinc-50/10 hover:bg-zinc-900/10 hover:border-zinc-900/10 active:bg-zinc-900/40 active:border-zinc-900/40 cursor-pointer",
+        "relative inline-block rounded-xl overflow-hidden cursor-pointer bg-zinc-50/10 border-zinc-50/10 hover:bg-zinc-900/10 hover:border-zinc-900/10 active:bg-zinc-900/40 active:border-zinc-900/40 cursor-pointer flex-shrink-0",
         {
-            "min-h-9 min-w-9 text-sm": size === "sm",
-            "min-h-12 min-w-12 text-base": size === "md",
+            "h-9 w-9 text-sm": size === "sm",
+            "h-12 w-12 text-base": size === "md",
         },
         className
     );
@@ -44,17 +44,15 @@ export default function ImageButton({
                     src={image}
                     alt={imageName ?? 'image-button'}
                     title={imageName}
-                    width= {imgSize}
-                    height = {imgSize}
-                    className="object-cover inline-flex items-center justify-center text-current"
+                    className="absolute inset-0 w-full h-full object-cover text-current transition-transform duration-200 ease-in-out hover:scale-120"
                     onError={() => setHasError(true)}
                 />
             ):(
                 <div
                     style={{ width: imgSize, height: imgSize }}
-                    className="bg-sp-blue-400 flex items-center justify-center text-white font-bold text-xs hover:bg-sp-blue-500 hover:text-sm active:bg-sp-blue-600"
+                    className="bg-sp-blue-400 flex items-center justify-center text-white font-bold text-xs hover:bg-sp-blue-500 hover:text-base active:bg-sp-blue-600 transition-transform duration-200 ease-in-out"
                 >
-                    {imageName.charAt(0)}{imageName.charAt(1)}
+                    {imageName ? imageName.charAt(0).toUpperCase() + imageName.charAt(1).toUpperCase() : '??'}
               </div>
             )}
         </button>

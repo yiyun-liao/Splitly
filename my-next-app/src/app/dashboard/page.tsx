@@ -23,13 +23,13 @@ function DashboardPage(){
     if (isLoading) return <div>Loading...</div>;
 
     console.log(userData, isLoading)
-    const navDivClass = "flex flex-col items-start justify-start pb-2"
+    const navDivClass = "flex flex-col items-start justify-start pb-2 gap-2 mx-2"
     return(
         <div className="flex items-start justify-start">
-            <nav className="min-w-18 h-screen py-6 flex flex-col items-center justify-start bg-amber-200">
+            <nav className="min-w-18 h-screen py-6 flex flex-col items-center justify-start bg-sp-blue-100">
                 <div id="nav-loge" className={navDivClass}>
                     <ImageButton
-                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.jpg"
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
                         size='md'
                         imageName= "Splitly"
                         >
@@ -55,10 +55,81 @@ function DashboardPage(){
                         >
                     </IconButton> 
                 </div>
-                <div id="nav-project-list">
-
+                <div id="nav-project-list" className={`${navDivClass} overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth`}>
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/1.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/2.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/4.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/12.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/1.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/2.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/4.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/12.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/1.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/2.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/4.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
+                    <ImageButton
+                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/12.JPG"
+                        size='md'
+                        imageName= "Splitly"
+                        >
+                    </ImageButton> 
                 </div>
-                <div id="nav-setting" className={`${navDivClass} border-t-1 border-zinc-100`}>
+                <div id="nav-setting" className={`${navDivClass} border-t-1 border-zinc-100 pt-2`}>
                     <IconButton
                         icon='solar:user-bold'
                         size='md'
