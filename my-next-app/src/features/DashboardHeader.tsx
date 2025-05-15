@@ -1,7 +1,15 @@
 import ImageButton from "@/components/lib/ImageButton"
 import Avatar from "@/components/lib/Avatar"
 
-export default function Header(){
+
+interface DashboardHeaderProps {
+    userData: {
+      avatar?: string;
+      name?: string;
+    } | null;
+  }
+
+export default function DashboardHeader({userData}:DashboardHeaderProps){
     return(
         <div id="dashboard-header"  className="flex items-center gap-2 w-full justify-between px-6">
             <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">

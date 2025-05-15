@@ -4,8 +4,8 @@ import { logOutUser } from "@/contexts/AuthContext";
 import { useRouter } from 'next/navigation';
 
 
-export default function Nav(){
-    const navDivClass = "flex flex-col items-start justify-start py-2 gap-2 mx-2"
+export default function DashboardNav(){
+    const navDivClass = "flex flex-col items-start justify-start py-2 gap-2 px-2"
     const router = useRouter();
 
     async function handleLogout() {
@@ -15,14 +15,16 @@ export default function Nav(){
     }
     return(
         <nav className="min-w-18 h-screen py-4 flex flex-col items-center justify-start gap-2 bg-sp-white-40">
+            <div id="nav-brand-logo">
+                <ImageButton
+                    image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
+                    size='md'
+                    imageName= "Splitly"
+                    >
+                </ImageButton> 
+            </div>
             <div id="nav-loge" className={`${navDivClass} flex-1 `}>
-                <div className="flex flex-col items-start justify-start gap-2 rounded-xl bg-sp-white-80 p-1">
-                    <ImageButton
-                        image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
-                        size='md'
-                        imageName= "Splitly"
-                        >
-                    </ImageButton> 
+                <div className="flex flex-col items-start justify-start p-1 gap-2 rounded-xl bg-sp-white-80 shadow">
                     <IconButton
                         icon='solar:widget-2-bold'
                         size='md'
@@ -43,7 +45,7 @@ export default function Nav(){
                     </IconButton> 
                 </div>
             </div>
-            <div id="nav-project-list" className={`${navDivClass} overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth`}>
+            <div id="nav-project-list" className={`${navDivClass} overflow-y-auto overflow-x-hidden mb-2 scrollbar-gutter-stable scrollbar-thin scroll-smooth`}>
                 <ImageButton
                     image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/1.JPG"
                     size='md'
