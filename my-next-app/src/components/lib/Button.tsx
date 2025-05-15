@@ -24,23 +24,23 @@ function Loading({ isLoading, size }: { isLoading: boolean; size: 'sm' | 'md' })
 function getDisabledStyles(variant: ButtonProps['variant'], color: ButtonProps['color']) {
     if (variant === 'solid') {
         if (color === 'primary') {
-            return "text-zinc-50 bg-blue-200 stroke-blue-200";
+            return "text-zinc-50 bg-sp-blue-200 border-sp-blue-200";
         } else {
-            return "text-zinc-50 bg-zinc-200 stroke-zinc-200";
+            return "text-zinc-50 bg-zinc-200 border-zinc-200";
         }
     }
     if (variant === 'outline') {
         if (color === 'primary') {
-            return " text-blue-200 bg-zinc-50 stroke-blue-200";
+            return " text-sp-blue-200 bg-zinc-50 border-sp-blue-200";
         } else {
-            return " text-zinc-200 bg-zinc-50 stroke-zinc-200";
+            return " text-zinc-200 bg-zinc-50 border-zinc-200";
         }
     }
     if (variant === 'text-button') {
         if (color === 'primary') {
-            return " text-blue-200 bg-zinc-50/10 stroke-zinc-50/10";
+            return " text-sp-blue-200 bg-zinc-50/10 border-zinc-50/10";
         } else {
-            return " text-zinc-200 bg-zinc-50/10 stroke-zinc-50/10";
+            return " text-zinc-200 bg-zinc-50/10 border-zinc-50/10";
         }
     }
 }
@@ -63,7 +63,7 @@ export default function Button({
     const isDisabled = disabled || isLoading;
 
     const baseClasses = clsx(
-        "relative px-4 py-0 font-semibold stroke-1 stroke-inherit inline-flex items-center justify-center rounded-xl whitespace-nowrap align-middle",
+        "relative px-4 py-0 font-semibold border-1 inline-flex items-center justify-center rounded-xl whitespace-nowrap align-middle",
         // size
         {
             "min-h-9 min-w-9 text-sm" : size === "sm",
@@ -77,21 +77,21 @@ export default function Button({
         // variant & color styles
         {
             // solid
-            "text-zinc-50 bg-blue-500 stroke-blue-500 hover:bg-blue-600 hover:stroke-blue-600 active:bg-blue-800 active:stroke-blue-800":
+            "text-zinc-50 bg-sp-blue-500 border-sp-blue-500 hover:bg-sp-blue-600 hover:border-sp-blue-600 active:bg-sp-blue-800 active:border-sp-blue-800":
               variant === "solid" && color === "primary" && !isDisabled,
-            "text-zinc-50 bg-zinc-700 stroke-zinc-700 hover:bg-zinc-800 hover:stroke-zinc-800 active:bg-zinc-900 active:stroke-zinc-900":
+            "text-zinc-50 bg-zinc-700 border-zinc-700 hover:bg-zinc-800 hover:border-zinc-800 active:bg-zinc-900 active:border-zinc-900":
               variant === "solid" && color === "zinc" && !isDisabled,
       
             // outline
-            "text-blue-500 bg-zinc-50 stroke-blue-500 hover:text-blue-600 hover:bg-blue-100 hover:stroke-blue-600 active:text-blue-800 active:bg-blue-200 active:stroke-blue-800":
+            "text-sp-blue-500 bg-zinc-50 border-sp-blue-500 hover:text-sp-blue-600 hover:bg-sp-blue-100 hover:border-sp-blue-600 active:text-sp-blue-800 active:bg-sp-blue-200 active:border-sp-blue-800":
               variant === "outline" && color === "primary" && !isDisabled,
-            "text-zinc-700 bg-zinc-50 stroke-zinc-700 hover:text-zinc-800 hover:bg-zinc-900/10 hover:stroke-zinc-800 active:text-zinc-900 active:bg-zinc-900/40 active:stroke-zinc-900":
+            "text-zinc-700 bg-zinc-50 border-zinc-700 hover:text-zinc-800 hover:bg-zinc-900/10 hover:border-zinc-800 active:text-zinc-900 active:bg-zinc-900/40 active:border-zinc-900":
               variant === "outline" && color === "zinc" && !isDisabled,
       
             // text-button
-            "text-blue-500 bg-zinc-50/10 stroke-zinc-50/10 hover:text-blue-600 hover:bg-zinc-900/10 hover:stroke-zinc-900/10 active:text-blue-800 active:bg-zinc-900/40 active:stroke-zinc-900/40":
+            "text-sp-blue-500 bg-zinc-50/10 border-zinc-50/10 hover:text-sp-blue-600 hover:bg-zinc-900/10 hover:border-zinc-900/10 active:text-sp-blue-800 active:bg-zinc-900/40 active:border-zinc-900/40":
               variant === "text-button" && color === "primary" && !isDisabled,
-            "text-zinc-700 bg-zinc-50/10 stroke-zinc-50/10 hover:text-zinc-800 hover:bg-zinc-900/10 hover:stroke-zinc-900/10 active:text-zinc-900 active:bg-zinc-900/40 active:stroke-zinc-900/40":
+            "text-zinc-700 bg-zinc-50/10 border-zinc-50/10 hover:text-zinc-800 hover:bg-zinc-900/10 hover:border-zinc-900/10 active:text-zinc-900 active:bg-zinc-900/40 active:border-zinc-900/40":
               variant === "text-button" && color === "zinc" && !isDisabled,
           },
           // disabled

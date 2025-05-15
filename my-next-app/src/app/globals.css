@@ -1,5 +1,62 @@
 @import "tailwindcss";
 
+@theme {
+  --color-sp-blue-100: #ebf1f8;
+  --color-sp-blue-200: #e0eaf5;
+  --color-sp-blue-300: #c0d3e9;
+  --color-sp-blue-400: #3372b9;
+  --color-sp-blue-500: #2e67a7;
+  --color-sp-blue-600: #295b94;
+  --color-sp-blue-700: #26568b;
+  --color-sp-blue-800: #1f446f;
+  --color-sp-blue-900: #173353;
+  --color-sp-blue-950: #122841;
+  --color-sp-yellow-100: #fefdf6;
+  --color-sp-yellow-200: #fefcf1;
+  --color-sp-yellow-300: #fcf8e3;
+  --color-sp-yellow-400: #f5e8a4;
+  --color-sp-yellow-500: #ddd194;
+  --color-sp-yellow-600: #c4ba83;
+  --color-sp-yellow-700: #b8ae7b;
+  --color-sp-yellow-800: #938b62;
+  --color-sp-yellow-900: #6e684a;
+  --color-sp-yellow-950: #565139;
+  --color-sp-green-100: #ebeeec;
+  --color-sp-green-200: #e1e6e2;
+  --color-sp-green-300: #c2cac3;
+  --color-sp-green-400: #39553f;
+  --color-sp-green-500: #334d39;
+  --color-sp-green-600: #2e4432;
+  --color-sp-green-700: #2b402f;
+  --color-sp-green-800: #223326;
+  --color-sp-green-900: #1a261c;
+  --color-sp-green-950: #141e16;
+  --color-sp-grass-100: #f9fbf5;
+  --color-sp-grass-200: #f6f9f0;
+  --color-sp-grass-300: #edf2e0;
+  --color-sp-grass-400: #c6d59a;
+  --color-sp-grass-500: #b2c08b;
+  --color-sp-grass-600: #9eaa7b;
+  --color-sp-grass-700: #95a074;
+  --color-sp-grass-800: #77805c;
+  --color-sp-grass-900: #596045;
+  --color-sp-grass-950: #454b36;
+  --color-sp-zinc-5:#18181b0d;
+  --color-sp-zinc-20:#18181b33;
+  --color-sp-zinc-40:#18181b66;
+  --color-sp-zinc-50:#18181b80;
+  --color-sp-zinc-60:#18181b99;
+  --color-sp-zinc-80:#18181bcc;
+  --color-sp-zinc-100:#18181b;
+  --color-sp-white-5:#ffffff0d;
+  --color-sp-white-20:#ffffff33;
+  --color-sp-white-40:#ffffff66;
+  --color-sp-white-50:#ffffff80;
+  --color-sp-white-60:#ffffff99;
+  --color-sp-white-80:#ffffffcc;
+  --color-sp-white-100:#ffffff;
+}
+
 *, *::before, *::after{
   box-sizing: border-box;
 }
@@ -17,7 +74,7 @@ ul, ol{
 }
 
 button {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.1s ease-in-out;
 }
 
 
