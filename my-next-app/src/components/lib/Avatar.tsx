@@ -33,14 +33,14 @@ export default function Avatar({
             style={{ width: dimension, height: dimension }}
             {...props}
         >
-        <Image
-            src={img || ''}
-            alt={userName || 'user'} 
-            title={userName|| 'user'} 
-            width={dimension}
-            height={dimension}
-            className="rounded-full object-cover"
-        />
+            <Image
+                src={img || ''}
+                alt={userName || 'user'} 
+                title={userName|| 'user'} 
+                width={dimension}
+                height={dimension}
+                className="rounded-full object-cover"
+            />
         </div>
     );
 }
