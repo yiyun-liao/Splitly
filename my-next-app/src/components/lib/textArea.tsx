@@ -1,16 +1,18 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Icon from "./Icon"
 import clsx from 'clsx';
 
 
-interface InputProps  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface TextareaProps  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
     label?: string;
     value?: string;
-    type?:string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    rows?:number;
+    maxRows?: number;
+    required?:boolean;
+    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     flexDirection? : 'row' | 'col';
     labelClassName?: string;
-    inputClassName?: string;
+    textAreaClassName?: string;
     width?: 'full' | 'fit';
     leftIcon?: string;
     placeholder?: string;
@@ -20,14 +22,16 @@ interface InputProps  extends React.InputHTMLAttributes<HTMLInputElement> {
     errorMessage?: string;
 }
 
-export default function Input({
+export default function TextArea({
         label,
         value,
-        type = 'text',
+        rows = 2,
+        maxRows = 4,
+        required = false,
         onChange,
         flexDirection = 'row',
         labelClassName,
-        inputClassName,
+        textAreaClassName,
         width = 'fit',
         leftIcon,
         placeholder,
@@ -35,25 +39,37 @@ export default function Input({
         disabled = false, 
         tokenMaxCount,
         errorMessage, 
-    ...props}:InputProps){
+    ...props}:TextareaProps){
 
-    const inputRef = useRef<HTMLInputElement>(null);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    const lineHeight = 24; // 行高（依據 Tailwind 的 text-base 通常約為 1.5rem = 24px）
+  
+    // 自動調整高度
+    useEffect(() => {
+      const textarea = textAreaRef.current;
+      if (textarea) {
+        textarea.style.height = "auto"; // 先重置高度
+        const maxHeight = maxRows * lineHeight;
+  
+        textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
+      }
+    }, [value, maxRows]);
 
     // 清空 input 內容
     const handleClear = () => {
-        onChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
-        inputRef.current?.focus();
+        onChange({ target: { value: '' } } as React.ChangeEvent<HTMLTextAreaElement>);
+        textAreaRef.current?.focus();
     };
 
-    const isInputError = () => {
+    const isTextAreaError = () => {
         if (errorMessage) return true;
         if (tokenMaxCount && typeof tokenMaxCount[1] === 'number' && tokenMaxCount[0] > tokenMaxCount[1] ) return true;
         return false;
     };
       
-    const hasError = isInputError();
+    const hasError = isTextAreaError();
 
-    const inputFrameClass = clsx(
+    const textAreaFrameClass = clsx(
         "flex cursor-pointer items-start justify-start",
         {
           "flex-row gap-2": flexDirection === "row",
@@ -64,7 +80,7 @@ export default function Input({
     );
 
     const wrapperClass = clsx(
-        "px-3 py-2 max-h-9 text-base ring-1 stroke-inherit rounded-xl tracking-widest flex items-center justify-start",
+        "px-3 py-2 h-fit min-h-9 text-base ring-1 stroke-inherit rounded-xl tracking-widest flex items-start justify-start",
         {
           "bg-zinc-100 text-zinc-400 ring-zinc-200 cursor-not-allowed": disabled,
           "cursor-pointer text-zinc-700 bg-zinc-50 hover:text-zinc-700 active:text-zinc-900 " : !disabled,
@@ -74,8 +90,8 @@ export default function Input({
     );
     
     const labelClasses = clsx( "w-fit min-w-20 min-h-9 whitespace-nowrap flex items-center justify-start",labelClassName);
-    const inputItemClass = clsx("w-full min-w-3xs wrap-anywhere", inputClassName);
-    const inputClasses = 'w-full stroke-none outline-none';
+    const textAreaItemClass = clsx("w-full min-w-3xs wrap-anywhere", textAreaClassName);
+    const textAreaClasses = 'w-full stroke-none outline-none';
     const helperClasses = 'flex items-start justify-end gap-1 w-full text-sm my-1 min-h-5 transition-all duration-200 ';
     const errorMessageClasses = 'text-red-400 break-words w-full ';
 
@@ -101,16 +117,18 @@ export default function Input({
     
 
     return (
-      <div className={inputFrameClass}>
+      <div className={textAreaFrameClass}>
             {label && <label className={labelClasses}>{label}</label>}
-            <div className={inputItemClass}>
+            <div className={textAreaItemClass}>
                 <div className={wrapperClass}>
                     {leftIconNode}
-                    <input
-                        ref={inputRef} 
-                        type={type}
+                    <textarea
+                        ref={textAreaRef} 
                         value={value ?? ""}
-                        className={inputClasses} 
+                        rows={rows}
+                        style={{ overflowY: "auto", resize: "none" }} // 禁止手動拉伸
+                        required={required}
+                        className={textAreaClasses} 
                         placeholder={placeholder} 
                         disabled={disabled || isLoading} 
                         onChange={onChange}
@@ -127,14 +145,16 @@ export default function Input({
 }
 
 
-{/* <Input
+{/* <TextArea
     label= "標題名稱"
     value= string
-    type = 'text'
+    rows = {2}
+    maxRows = {4}
+    required = {true}
     onChange={(e) => setInputValue(e.target.value)} //看需求
     flexDirection = 'row' | 'col'
     labelClassName= string //看需求
-    inputClassName= string //看需求
+    textAreaClassName= string //看需求
     width= 'full' | 'fit'
     leftIcon= "solar:pen-line-duotone"
     placeholder= "placeholder"
