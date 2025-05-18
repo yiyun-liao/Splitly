@@ -1,9 +1,11 @@
+import clsx from "clsx";
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from "react";
 import Icon from "@/components/lib/Icon";
 import Button from "@/components/lib/Button";
 import Avatar from "@/components/lib/Avatar";
 import ExpenseCard from "@/components/template/ExpenseCard";
-import clsx from "clsx";
-import { useParams, useRouter } from 'next/navigation';
+import ProjectSelfDetail from "@/components/template/ProjectSelfDetail";
 
 interface ExpenseOverviewProps {
     userData: {
@@ -13,15 +15,23 @@ interface ExpenseOverviewProps {
   }
 
 export default function ExpenseOverview({userData}:ExpenseOverviewProps){
-    
+    const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
+    const handleSelfExpenseDialogOpen = () => setIsSelfExpenseDialogOpen(true)
+
     const router = useRouter();
     const params = useParams();
     const projectId = params.projectId;
+
     const overviewBubbleClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-white-40 overflow-hidden hover:bg-sp-blue-200 hover:shadow")
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     
     return(
         <div id="expense-overview" className={`${scrollClass} w-full h-full px-3 hidden md:flex flex-col items-start justify-start gap-6 text-zinc-700`}>
+            <ProjectSelfDetail
+                isSelfExpenseOpen={isSelfExpenseDialogOpen}
+                onClose = {() => setIsSelfExpenseDialogOpen(false)}   
+                userData={userData} 
+            />
             <div id="overview-bubble-budget" className="w-full shrink-0 px-3 py-3 rounded-2xl text-center bg-sp-yellow-400  text-sp-blue-500 overflow-hidden">
                 <Icon 
                     icon='solar:confounded-square-bold'
@@ -67,7 +77,7 @@ export default function ExpenseOverview({userData}:ExpenseOverviewProps){
                                     color='primary'
                                     //disabled={isdisabled} 
                                     //isLoading={isLoading}
-                                    //onClick={handleClick} 
+                                    onClick={handleSelfExpenseDialogOpen}
                                     >
                                         查看全部
                                 </Button>

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 interface DialogProps {
     header: React.ReactNode;
     children: React.ReactNode;
-    footer: React.ReactNode;
+    footer?: React.ReactNode;
     open: boolean;
     onClose: () => void;
     headerClassName?: string;

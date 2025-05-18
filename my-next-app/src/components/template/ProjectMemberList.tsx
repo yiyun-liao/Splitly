@@ -3,8 +3,8 @@ import Button from "@/components/lib/Button";
 import Avatar from "@/components/lib/Avatar";
 import { useState } from "react";
 
-interface ProjectNumberListProps {
-    isNumberListOpen: boolean;
+interface ProjectMemberListProps {
+    isMemberListOpen: boolean;
     onClose: () => void;
     userData: {
         avatar?: string;
@@ -12,11 +12,11 @@ interface ProjectNumberListProps {
     } | null;
 }
 
-export default function ProjectNumberList({
-    isNumberListOpen = false,
+export default function ProjectMemberList({
+    isMemberListOpen = false,
     onClose,
     userData
-}:ProjectNumberListProps){
+}:ProjectMemberListProps){
     const [step, setStep] = useState('list')
     const handleBack = () => {
         setStep('list')
@@ -63,11 +63,11 @@ export default function ProjectNumberList({
             )
         }
     }
-    console.log('dialog state', isNumberListOpen)
+    console.log('dialog state', isMemberListOpen)
     return(
         <Dialog
                 header="成員"
-                open={isNumberListOpen} // 從某處打開
+                open={isMemberListOpen} // 從某處打開
                 onClose={ () => {
                     setStep("list");
                     onClose();
