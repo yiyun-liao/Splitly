@@ -1,9 +1,9 @@
 import ImageButton from "../lib/ImageButton"
 
 
-export default function ExpenseCard(){
+export default function ReceiptCard(){
     return(
-        <div className="flex items-center justify-start p-2 gap-2 h-16 rounded-lg hover:bg-sp-white-20 active:bg-sp-white-40">
+        <div className="flex items-center justify-start p-2 gap-2 h-16 rounded-lg hover:bg-sp-white-20 active:bg-sp-white-40 cursor-pointer">
             <div className="h-full">
                 <ImageButton
                     image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"

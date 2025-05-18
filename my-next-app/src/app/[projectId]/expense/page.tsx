@@ -12,10 +12,12 @@ import IconButton from "@/components/lib/IconButton";
 import ImageButton from "@/components/lib/ImageButton";
 import DashboardNav from "@/features/DashboardNav";
 import DashboardHeader from "@/features/DashboardHeader";
-import ExpenseList from "@/features/ExpenseList";
+import ReceiptList from "@/features/ReceiptList";
 import ExpenseOverview from "@/features/ExpenseOverview";
+import CreateReceipt from '@/features/CreateReceipt';
+import { useState } from 'react';
 
-function DashboardPage(){
+function ExpensePage(){
     const params = useParams();
     const projectId = params.projectId;
     const {userData, isLoading} = useUser();
@@ -29,12 +31,12 @@ function DashboardPage(){
             <div className="py-4 w-full max-w-520 h-screen flex flex-col items-center justify-start gap-2 ">
                 <DashboardHeader userData={userData} />
                 <div className="flex items-start justify-start px-6 gap-6 w-full h-full overflow-hidden text-zinc-700 ">
-                    <ExpenseList userData={userData}  />
-                    <ExpenseOverview userData={userData}  />
+                    <ReceiptList userData={userData} />
+                    <ExpenseOverview userData={userData}  />                  
                 </div>
             </div>
         </main>
     )
 }
 
-export default withAuth(DashboardPage);
+export default withAuth(ExpensePage);

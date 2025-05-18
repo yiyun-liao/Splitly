@@ -34,7 +34,7 @@ export default function DashboardNav(){
                     >
                 </ImageButton> 
             </div>
-            <div id="nav-loge" className={`${navDivClass} flex-1 `}>
+            <div id="nav-function" className={`${navDivClass} flex-1 `}>
                 <div className="flex flex-col items-start justify-start p-1 gap-2 rounded-xl bg-sp-white-80 shadow">
                     <IconButton
                         icon='solar:widget-2-bold'

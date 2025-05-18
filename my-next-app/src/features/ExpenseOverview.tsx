@@ -4,7 +4,7 @@ import { useState } from "react";
 import Icon from "@/components/lib/Icon";
 import Button from "@/components/lib/Button";
 import Avatar from "@/components/lib/Avatar";
-import ExpenseCard from "@/components/template/ExpenseCard";
+import ReceiptCard from "@/components/template/ReceiptCard";
 import ProjectSelfDetail from "@/components/template/ProjectSelfDetail";
 import ProjectWiseSpilt from "@/components/template/ProjectWiseSpilt";
 
@@ -246,15 +246,15 @@ export default function ExpenseOverview({userData}:ExpenseOverviewProps){
                         </div>
                     </div>
                     <div id="expense-list-frame" className="w-full pb-4 px-3">
-                        <ExpenseCard/>
+                        <ReceiptCard/>
                         <div className="w-full h-0.25 bg-sp-green-200"></div>
-                        <ExpenseCard/>
+                        <ReceiptCard/>
                         <div className="w-full h-0.25 bg-sp-green-200"></div>
-                        <ExpenseCard/>
+                        <ReceiptCard/>
                         <div className="w-full h-0.25 bg-sp-green-200"></div>
-                        <ExpenseCard/>
+                        <ReceiptCard/>
                         <div className="w-full h-0.25 bg-sp-green-200"></div>
-                        <ExpenseCard/>
+                        <ReceiptCard/>
                     </div>
                 </div>
             )}
