@@ -13,7 +13,7 @@ export default function ExpenseList({}:ExpenseListProps){
     return(
         <div id="expense-list" className="shrink-0 w-xl px-3 py-3 rounded-2xl h-full overflow-hidden bg-sp-green-300">
             <div id="expense-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
-                <p className="text-2xl font-medium whitespace-nowrap truncate min-w-0 max-w-100"> 收支紀錄</p>
+                <p className="text-xl font-medium whitespace-nowrap truncate min-w-0 max-w-100"> 收支紀錄</p>
                 <Button
                     size='sm'
                     width='fit'

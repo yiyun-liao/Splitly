@@ -13,6 +13,7 @@ interface ExpenseOverviewProps {
   }
 
 export default function ExpenseOverview({userData}:ExpenseOverviewProps){
+    
     const router = useRouter();
     const params = useParams();
     const projectId = params.projectId;
@@ -80,7 +81,7 @@ export default function ExpenseOverview({userData}:ExpenseOverviewProps){
                                     userName = {userData?.name}
                                     //onAvatarClick={() => console.log('Clicked!')}
                                 />
-                                <p className="text-basexs w-fll  truncate">Yun</p>
+                                <p className="text-base w-fll  truncate">Yun</p>
                             </div>
                             <p className="shrink-0 text-xl font-semibold">$359.00</p>
                         </div>
@@ -206,6 +207,7 @@ export default function ExpenseOverview({userData}:ExpenseOverviewProps){
             {location.pathname === `/${projectId}/expense` &&(
                 <div id="overview-bubble-expense-chart" className={`${overviewBubbleClass} h-100 shrink-0 text-center`}>
                     chart
+                    <img src="https://res.cloudinary.com/ddkkhfzuk/image/upload/test.JPG" width={480} height={200} alt="圖" />
                 </div>
             )}
             {location.pathname === `/${projectId}/dashboard` && (

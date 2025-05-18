@@ -12,7 +12,7 @@ const Page = () => {
         const isLogin = await logInUser();
         console.log('Logged In!');
         if (!!isLogin){
-            router.push('/dashboard');    
+            router.push('/1/dashboard');    
         }
     }
 
