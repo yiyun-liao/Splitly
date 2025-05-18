@@ -49,8 +49,8 @@ export default function CreateReceipt({
         
         return(
             <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/50">
-                <div className="w-full h-fit pl-17">
-                    <div className="w-full h-screen bg-sp-blue-100 rounded-2xl overflow-hidden shadow-md flex flex-col items-start justify-start">
+                <div className="w-full h-fit pl-17 max-w-520 flex flex-col items-center justify-bottom">
+                    <div className="w-full h-screen bg-sp-blue-100 rounded-2xl overflow-hidden shadow-md flex flex-col items-center justify-bottom">
                         <div id="receipt-form" className="shrink-0 w-full px-3 py-3 h-full overflow-hidden bg-sp-green-300 text-zinc-700">
                             <div id="receipt-form-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
                                 <p className="text-xl font-medium whitespace-nowrap truncate min-w-0 max-w-100"> 新增支出</p>

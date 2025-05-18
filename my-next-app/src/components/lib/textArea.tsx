@@ -89,13 +89,13 @@ export default function TextArea({
         }
     );
     
-    const labelClasses = clsx( "w-fit min-w-20 min-h-9 whitespace-nowrap flex items-center justify-start",labelClassName);
+    const labelClasses = clsx( "min-w-20 max-w-40 min-h-9 text-wrap flex items-center justify-start",labelClassName);
     const textAreaItemClass = clsx("w-full min-w-3xs wrap-anywhere", textAreaClassName);
     const textAreaClasses = 'w-full stroke-none outline-none';
     const helperClasses = 'flex items-start justify-end gap-1 w-full text-sm my-1 min-h-5 transition-all duration-200 ';
     const errorMessageClasses = 'text-red-400 break-words w-full ';
 
-    const tokenCountClasses = clsx("whitespace-nowrap flex-shrink-0", {
+    const tokenCountClasses = clsx("text-wrap flex-shrink-0", {
         "text-zinc-400": disabled,
         "text-red-400 font-semibold": tokenMaxCount && tokenMaxCount[0] > tokenMaxCount[1],
     });
