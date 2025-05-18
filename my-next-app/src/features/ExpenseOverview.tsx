@@ -6,6 +6,7 @@ import Button from "@/components/lib/Button";
 import Avatar from "@/components/lib/Avatar";
 import ExpenseCard from "@/components/template/ExpenseCard";
 import ProjectSelfDetail from "@/components/template/ProjectSelfDetail";
+import ProjectWiseSpilt from "@/components/template/ProjectWiseSpilt";
 
 interface ExpenseOverviewProps {
     userData: {
@@ -16,7 +17,8 @@ interface ExpenseOverviewProps {
 
 export default function ExpenseOverview({userData}:ExpenseOverviewProps){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
-    const handleSelfExpenseDialogOpen = () => setIsSelfExpenseDialogOpen(true)
+    const [isWiseSpiltDialogOpen, setIsWiseSpiltDialogOpen] = useState(false)
+
 
     const router = useRouter();
     const params = useParams();
@@ -30,6 +32,11 @@ export default function ExpenseOverview({userData}:ExpenseOverviewProps){
             <ProjectSelfDetail
                 isSelfExpenseOpen={isSelfExpenseDialogOpen}
                 onClose = {() => setIsSelfExpenseDialogOpen(false)}   
+                userData={userData} 
+            />
+            <ProjectWiseSpilt
+                isProjectWiseSpiltOpen={isWiseSpiltDialogOpen}
+                onClose = {() => setIsWiseSpiltDialogOpen(false)}   
                 userData={userData} 
             />
             <div id="overview-bubble-budget" className="w-full shrink-0 px-3 py-3 rounded-2xl text-center bg-sp-yellow-400  text-sp-blue-500 overflow-hidden">
@@ -77,7 +84,7 @@ export default function ExpenseOverview({userData}:ExpenseOverviewProps){
                                     color='primary'
                                     //disabled={isdisabled} 
                                     //isLoading={isLoading}
-                                    onClick={handleSelfExpenseDialogOpen}
+                                    onClick={()=> setIsSelfExpenseDialogOpen(true)}
                                     >
                                         查看全部
                                 </Button>
@@ -107,7 +114,7 @@ export default function ExpenseOverview({userData}:ExpenseOverviewProps){
                                     color='primary'
                                     //disabled={isdisabled} 
                                     //isLoading={isLoading}
-                                    //onClick={handleClick} 
+                                    onClick={() => setIsWiseSpiltDialogOpen(true)} 
                                     >
                                         查看全部
                                 </Button>

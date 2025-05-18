@@ -13,7 +13,6 @@ interface DashboardHeaderProps {
 export default function DashboardHeader({userData}:DashboardHeaderProps){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
 
-    const handleMemberDialogOpen = () => setIsMemberDialogOpen(true)
 
     return(
         <div id="dashboard-header"  className="flex items-center gap-2 w-full justify-between px-6 py-2">
@@ -31,7 +30,7 @@ export default function DashboardHeader({userData}:DashboardHeaderProps){
                 </ImageButton>
                 <p className="text-2xl font-medium text-zinc-700 whitespace-nowrap truncate min-w-0 max-w-100"> Project name </p>
             </div>
-            <button onClick={handleMemberDialogOpen} className="shrink-0 flex items-center justify-start gap-2 px-2 py-1 rounded-xl cursor-pointer bg-sp-yellow-200 text-sp-blue-500 hover:bg-sp-yellow-400 hover:text-sp-blue-600 active:bg-sp-yellow-600 active:text-sp-blue-700">
+            <button onClick={() => setIsMemberDialogOpen(true)}  className="shrink-0 flex items-center justify-start gap-2 px-2 py-1 rounded-xl cursor-pointer bg-sp-yellow-200 text-sp-blue-500 hover:bg-sp-yellow-400 hover:text-sp-blue-600 active:bg-sp-yellow-600 active:text-sp-blue-700">
                 <div className="flex items-center justify-start -space-x-2">
                     <Avatar
                         size="md"
