@@ -1,37 +1,131 @@
-import { useRef, useState } from "react";
-import Icon from "./Icon"
-import clsx from 'clsx';
+import { useRef } from "react";
+import Icon from "./Icon";
+import clsx from "clsx";
 
-interface SelectProps  extends React.SelectHTMLAttributes<HTMLSelectElement> {
-    id: string;
-    label: string;
-    invalid? : boolean;
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+    label?: string;
+    value?: string;
+    required?: boolean;
+    placeholder?:string;
+    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    flexDirection?: "row" | "col";
+    labelClassName?: string;
+    selectClassName?: string;
+    width?: "full" | "fit";
+    leftIcon?: string;
+    isLoading?: boolean;
+    disabled?: boolean;
     errorMessage?: string;
-    optionData: { [key: string]: string };
-    value: string;
+    options: { label: string; value: string }[];
 }
 
-export default function Select({id, label, invalid, value, optionData, errorMessage, ...props}:SelectProps){
-    let labelClasses = "block mb-2 text-base font-bold tracking-widest uppercase";
-    let selectClasses = "w-full px-3 py-2 leading-tight border rounded shadow";
-    if (invalid){
-      labelClasses += " text-red-400";
-      selectClasses += " test-red-500 bg-red-100 border-red-300"
-    } else {
-      labelClasses += " text-stone-700";
-      selectClasses += " text-stone-700 bg-stone-50";
-    }
+export default function Select({
+    label,
+    value,
+    required = false,
+    placeholder= '請選擇',
+    onChange,
+    flexDirection = "row",
+    labelClassName,
+    selectClassName,
+    width = "fit",
+    leftIcon,
+    isLoading = false,
+    disabled = false,
+    errorMessage,
+    options,
+    ...props
+}: SelectProps) {
+    const selectRef = useRef<HTMLSelectElement>(null);
+
+    const hasError = !!errorMessage;
+
+    const selectFrameClass = clsx(
+        "flex cursor-pointer items-start justify-start",
+        {
+            "flex-row gap-2": flexDirection === "row",
+            "flex-col gap-1": flexDirection === "col",
+            "w-full": width === "full",
+            "w-fit": width === "fit",
+        }
+    );
+
+    const wrapperClass = clsx(
+        "px-3 py-2 max-h-9 text-base ring-1 stroke-inherit rounded-xl tracking-widest flex items-center justify-start",
+        {
+          "bg-zinc-200 text-zinc-400 ring-zinc-200 cursor-not-allowed": disabled || isLoading,
+          "cursor-pointer text-zinc-700 bg-zinc-50 hover:text-zinc-700 active:text-zinc-900": !disabled && !isLoading,
+          "ring-red-400 hover:ring-red-400 active:ring-red-400 focus-within:ring-red-500 focus-within:border-red-500": hasError,
+          "ring-zinc-400 hover:ring-zinc-700 active:ring-zinc-900 focus-within:ring-1 focus-within:ring-zinc-900 focus-within:border-zinc-900": !hasError && !disabled && !isLoading,
+        }
+    );
+
+    const labelClasses = clsx( "min-w-20 max-w-40 min-h-9 text-wrap flex items-center justify-start",labelClassName);
+    const selectItemClass = clsx("w-full min-w-3xs", selectClassName);
+    const selectClasses = "w-full stroke-none outline-none bg-transparent";
+    const helperClasses = 'flex items-start justify-end gap-1 w-full text-sm my-1 min-h-5 transition-all duration-200 ';
+    const errorMessageClasses = 'text-red-400 break-words w-full ';
+
+    const leftIconNode = leftIcon ? <Icon icon={leftIcon} size="md" className="mr-2" /> : null;
+
     return (
-      <div>
-        <label className={labelClasses}>{label}</label>
-        <select name={id} id={id} className={selectClasses} value={value} {...props}>
-            {Object.entries(optionData).map(([key, val]) => (
-                <option  key={key} value={key}>{val}</option>
-            ))}
-        </select>
-        <div>
-            <p className="text-red-400 mt-1 text-sm min-h-5">{errorMessage}</p>
+        <div className={selectFrameClass}>
+        {label && <label className={labelClasses}>{label}</label>}
+        <div className={selectItemClass}>
+            <div className={wrapperClass}>
+            {leftIconNode}
+            <select
+                ref={selectRef}
+                value={value}
+                required={required}
+                disabled={disabled || isLoading}
+                onChange={onChange}
+                className={selectClasses}
+                {...props}
+            >
+                { !!placeholder && 
+                    <option value="placeholder" disabled >
+                    {placeholder}
+                    </option>
+                }
+                {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                </option>
+                ))}
+            </select>
+            {isLoading && (
+                <div className="ml-2">
+                    <Icon icon="solar:spinner" size="lg" className="animate-spin" />
+                </div>
+            )}
+            </div>
+            <div className={helperClasses}>
+                {errorMessage && <p className={errorMessageClasses}>{errorMessage}</p>}
+            </div>  
         </div>
-      </div>
-    )
-  }
+        </div>
+    );
+}
+
+
+{/* <Select
+    label="選擇分類"
+    value={selectedCategory}
+    required = {true}
+    placeholder = "placeholder";
+    onChange={(e) => setSelectedCategory(e.target.value)}
+    flexDirection= "row" | "col"
+    labelClassName= "string"; //看需求
+    selectClassName= "string"; //看需求
+    width= "full" | "fit"
+    leftIcon="solar:document-bold-duotone"
+    isLoading={false}
+    disabled={false}
+    errorMessage={formError}
+    options={[
+        { label: "工作", value: "work" },
+        { label: "生活", value: "life" },
+        { label: "娛樂", value: "entertainment" },
+    ]}
+/> */}

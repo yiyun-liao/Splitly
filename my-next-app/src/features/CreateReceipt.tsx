@@ -3,11 +3,12 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from "react";
 import Icon from "@/components/lib/Icon";
 import Button from "@/components/lib/Button";
+import IconButton from "@/components/lib/IconButton";
 import Avatar from "@/components/lib/Avatar";
 import ReceiptCard from "@/components/template/ReceiptCard";
 import Input from "@/components/lib/Input";
-import IconButton from "@/components/lib/IconButton";
 import TextArea from "@/components/lib/textArea";
+import Select from "@/components/lib/Select";
 
 interface CreateReceiptProps {
     userData: {
@@ -70,25 +71,29 @@ export default function CreateReceipt({
                                     placeholder= "支出金額"
                                     //isLoading= {isLoading}
                                     //tokenMaxCount={tokenCount}
-                                    errorMessage={errorMessage}
+                                    //errorMessage={errorMessage}
                                     //disabled = {isDisabled}
                                 /> 
-                                <Input // dropdown
-                                    label= "類別"
-                                    value= {inputCategoryValue}
-                                    type="text"
-                                    onChange={(e) => setInputCategoryValue(e.target.value)} //看需求
-                                    flexDirection = 'row'
-                                    //labelClassName= string //看需求
-                                    //inputClassName= string //看需求
-                                    width= 'full'
-                                    //leftIcon= "solar:pen-line-duotone"
-                                    placeholder= "支出類別"
-                                    //isLoading= {isLoading}
-                                    //tokenMaxCount={tokenCount}
-                                    errorMessage={errorMessage}
-                                    //disabled = {isDisabled}
-                                /> 
+                                <Select
+                                    label="類別"
+                                    value={inputCategoryValue}
+                                    required = {true}
+                                    placeholder = "請選擇"
+                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                    flexDirection= "row"
+                                    //labelClassName= "string";
+                                    //selectClassName= "string";
+                                    width= "full"
+                                    //leftIcon="solar:document-bold-duotone"
+                                    //isLoading= {true}
+                                    //disabled={false}
+                                    //errorMessage={errorMessage}
+                                    options={[
+                                        { label: "工作", value: "work" },
+                                        { label: "生活", value: "life" },
+                                        { label: "娛樂", value: "entertainment" },
+                                    ]}
+                                />
                                 <Input // dropdown
                                     label= "名稱"
                                     value= {inputCategoryValue}
@@ -100,9 +105,9 @@ export default function CreateReceipt({
                                     width= 'full'
                                     //leftIcon= "solar:pen-line-duotone"
                                     placeholder= "支出內容"
-                                    //isLoading= {isLoading}
+                                    //isLoading= {true}
                                     //tokenMaxCount={tokenCount}
-                                    errorMessage={errorMessage}
+                                    //errorMessage={errorMessage}
                                     //disabled = {isDisabled}
                                 />     
                                 <Input
@@ -118,7 +123,7 @@ export default function CreateReceipt({
                                     placeholder= "支出時間"
                                     //isLoading= {isLoading}
                                     //tokenMaxCount={tokenCount}
-                                    errorMessage={errorMessage}
+                                    //errorMessage={errorMessage}
                                     //disabled = {isDisabled}
                                 />  
                                  <TextArea
@@ -134,9 +139,9 @@ export default function CreateReceipt({
                                     width= 'full'
                                     //leftIcon= "solar:pen-line-duotone"
                                     placeholder= "細節說明"
-                                    //isLoading= {isLoading}
+                                    //isLoading= {true}
                                     //tokenMaxCount={tokenCount}
-                                    errorMessage={errorMessage}
+                                    //errorMessage={errorMessage}
                                     //disabled = {isDisabled}
                                 />                         
                             </div>

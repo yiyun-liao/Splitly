@@ -82,10 +82,10 @@ export default function TextArea({
     const wrapperClass = clsx(
         "px-3 py-2 h-fit min-h-9 text-base ring-1 stroke-inherit rounded-xl tracking-widest flex items-start justify-start",
         {
-          "bg-zinc-100 text-zinc-400 ring-zinc-200 cursor-not-allowed": disabled,
-          "cursor-pointer text-zinc-700 bg-zinc-50 hover:text-zinc-700 active:text-zinc-900 " : !disabled,
+          "bg-zinc-200 text-zinc-400 ring-zinc-200 cursor-not-allowed": disabled || isLoading,
+          "cursor-pointer text-zinc-700 bg-zinc-50 hover:text-zinc-700 active:text-zinc-900 " : !disabled && !isLoading,
           "ring-red-400 hover:ring-red-400 active:ring-red-400 focus-within:ring-red-500 focus-within:border-red-500": hasError,
-          "ring-zinc-400 hover:ring-zinc-700 active:ring-zinc-900 focus-within:ring-1 focus-within:ring-zinc-900 focus-within:border-zinc-900": !hasError && !disabled,
+          "ring-zinc-400 hover:ring-zinc-700 active:ring-zinc-900 focus-within:ring-1 focus-within:ring-zinc-900 focus-within:border-zinc-900":  !hasError && !disabled && !isLoading,
         }
     );
     
@@ -147,7 +147,7 @@ export default function TextArea({
 
 {/* <TextArea
     label= "標題名稱"
-    value= string
+    value={string}
     rows = {2}
     maxRows = {4}
     required = {true}
