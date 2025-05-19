@@ -1,14 +1,14 @@
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
 
-interface ProjectAnalysisProps {
+interface DashboardMainProps {
     userData: {
       avatar?: string;
       name?: string;
     } | null;
   }
 
-export default function ProjectAnalysis({}:ProjectAnalysisProps){
+export default function DashboardMain({}:DashboardMainProps){
     return(
         <div id="project-analysis" className="shrink-0 w-xl py-3 h-full overflow-hidden">
             <div className="shrink-0 flex gap-2 mb-4">

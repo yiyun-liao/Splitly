@@ -3,7 +3,7 @@ import { useRouter, useParams } from 'next/navigation';
 import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
-import ProjectMemberList from "./ExpenseOverviewSections/ProjectMemberListDialog";
+import ProjectMemberList from "../features/ExpenseOverviewSections/ProjectMemberListDialog";
 import CreateReceipt from "./CreateReceipt";
 
 interface DashboardHeaderProps {

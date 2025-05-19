@@ -4,9 +4,9 @@ import { useState } from "react";
 import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
-import ReceiptCard from "@/components/template/ReceiptCard";
-import ProjectSelfDetail from "@/components/template/ProjectSelfDetail";
-import ProjectWiseSpilt from "@/components/template/ProjectWiseSpilt";
+import ReceiptCard from "./ExpenseOverviewSections/ReceiptCard";
+import ProjectSelfDetail from "@/features/ExpenseOverviewSections/ProjectSelfDetailDialog";
+import ProjectWiseSpilt from "./ExpenseOverviewSections/ProjectWiseSpiltDialog";
 
 interface ExpenseOverviewProps {
     userData: {

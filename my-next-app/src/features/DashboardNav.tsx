@@ -3,17 +3,21 @@ import IconButton from "@/components/ui/IconButton"
 import { logOutUser } from "@/contexts/AuthContext";
 import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
+import { usePathname } from 'next/navigation';
+
+
 
 export default function DashboardNav(){
     const router = useRouter();
     const params = useParams();
+    const pathname = usePathname();
     const projectId = params.projectId;
 
-    const [activePath, setActivePath] = useState(location.pathname);
-
-    useEffect(()=>{
-        setActivePath(location.pathname);
-    },[location.pathname])
+    const [activePath, setActivePath] = useState(pathname);
+  
+    useEffect(() => {
+      setActivePath(pathname);
+    }, [pathname]);
 
     console.log('當前位置', activePath)
 

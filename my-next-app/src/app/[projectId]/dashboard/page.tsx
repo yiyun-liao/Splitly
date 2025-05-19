@@ -3,7 +3,7 @@ import { useParams } from 'next/navigation';
 import { withAuth } from "@/utils/withAuth";
 import { useUser } from "@/contexts/useUser";
 import ExpenseOverview from "@/features/ExpenseOverview";
-import ProjectAnalysis from "@/features/ProjectAnalysis";
+import DashboardMain from "@/features/DashboardMain";
 
 
 function DashboardPage(){
@@ -16,7 +16,7 @@ function DashboardPage(){
 
     return(
         <>
-            <ProjectAnalysis userData={userData} />
+            <DashboardMain userData={userData} />
             <ExpenseOverview userData={userData} />
         </>
     )
