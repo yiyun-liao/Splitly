@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from "react";
-import Icon from "@/components/lib/Icon";
-import Button from "@/components/lib/Button";
-import Avatar from "@/components/lib/Avatar";
+import Icon from "@/components/ui/Icon";
+import Button from "@/components/ui/Button";
+import Avatar from "@/components/ui/Avatar";
 import ReceiptCard from "@/components/template/ReceiptCard";
 import ProjectSelfDetail from "@/components/template/ProjectSelfDetail";
 import ProjectWiseSpilt from "@/components/template/ProjectWiseSpilt";

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useRouter, useParams } from 'next/navigation';
-import ImageButton from "@/components/lib/ImageButton"
-import Avatar from "@/components/lib/Avatar"
-import Button from "@/components/lib/Button";
+import ImageButton from "@/components/ui/ImageButton"
+import Avatar from "@/components/ui/Avatar"
+import Button from "@/components/ui/Button";
 import ProjectMemberList from "../components/template/ProjectMemberList";
 import CreateReceipt from "./CreateReceipt";
 

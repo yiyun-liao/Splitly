@@ -1,5 +1,5 @@
-import Button from "@/components/lib/Button"
-import ImageButton from "@/components/lib/ImageButton"
+import Button from "@/components/ui/Button"
+import ImageButton from "@/components/ui/ImageButton"
 
 interface ProjectAnalysisProps {
     userData: {

@@ -1,11 +1,11 @@
 'use client'
 
-import Button from '@/components/lib/Button';
-import Icon from '@/components/lib/Icon';
-import Avatar from '@/components/lib/Avatar';
-import Input from '@/components/lib/Input';
-import Dialog from '@/components/lib/Dialog';
-import IconButton from '@/components/lib/IconButton';
+import Button from '@/components/ui/Button';
+import Icon from '@/components/ui/Icon';
+import Avatar from '@/components/ui/Avatar';
+import Input from '@/components/ui/Input';
+import Dialog from '@/components/ui/Dialog';
+import IconButton from '@/components/ui/IconButton';
 import { logInUser } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useState, useMemo, useEffect } from 'react';

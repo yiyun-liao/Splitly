@@ -1,4 +1,4 @@
-import ImageButton from "../lib/ImageButton"
+import ImageButton from "../ui/ImageButton"
 
 
 export default function ReceiptCard(){

@@ -1,14 +1,14 @@
 import clsx from "clsx";
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from "react";
-import Icon from "@/components/lib/Icon";
-import Button from "@/components/lib/Button";
-import IconButton from "@/components/lib/IconButton";
-import Avatar from "@/components/lib/Avatar";
+import Icon from "@/components/ui/Icon";
+import Button from "@/components/ui/Button";
+import IconButton from "@/components/ui/IconButton";
+import Avatar from "@/components/ui/Avatar";
 import ReceiptCard from "@/components/template/ReceiptCard";
-import Input from "@/components/lib/Input";
-import TextArea from "@/components/lib/textArea";
-import Select from "@/components/lib/Select";
+import Input from "@/components/ui/Input";
+import TextArea from "@/components/ui/textArea";
+import Select from "@/components/ui/Select";
 
 interface CreateReceiptProps {
     userData: {

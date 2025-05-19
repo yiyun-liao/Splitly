@@ -1,5 +1,5 @@
-import ImageButton from "@/components/lib/ImageButton"
-import IconButton from "@/components/lib/IconButton"
+import ImageButton from "@/components/ui/ImageButton"
+import IconButton from "@/components/ui/IconButton"
 import { logOutUser } from "@/contexts/AuthContext";
 import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
