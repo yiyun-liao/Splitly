@@ -5,18 +5,29 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, User, signInWithPopup, signOut, getAdditionalUserInfo } from "firebase/auth";
 import { auth, provider, db } from "../firebase.js";
 import { setDoc, doc, serverTimestamp } from "firebase/firestore";
+import { getRandomAvatarIndex } from "@/utils/avatar";
+import { syncUserToBackend } from "@/lib/userApi.jsx";
+import { logInUser, logOutUser } from "@/lib/auth";
 
 type AuthContextType = {
     user: User | null ;
     loading: boolean;
+    logInUser: () => Promise<boolean>;
+    logOutUser: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType>({
     user: null,
     loading:true,
+    logInUser: async () => false,
+    logOutUser: async () => {},
 });
 
-export const AuthProvider = ({children}:{children:React.ReactNode}) => {
+type AuthProviderProps = {
+    children: React.ReactNode;
+};
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -29,7 +40,7 @@ export const AuthProvider = ({children}:{children:React.ReactNode}) => {
         return () => unsubscribe();
     }, [])
     return(
-        <AuthContext.Provider value= {{ user, loading }}>
+        <AuthContext.Provider value={{ user, loading, logInUser, logOutUser }}>
             {children}
         </AuthContext.Provider>
     )
@@ -37,45 +48,4 @@ export const AuthProvider = ({children}:{children:React.ReactNode}) => {
 
 export const useAuth = () => useContext(AuthContext);
 
-// 建立頭貼
-const CLOUDINARY_BASE = "https://res.cloudinary.com/ddkkhfzuk/image/upload";
-const AVATAR_FOLDER = "avatar";
 
-const RANDOM_AVATARS = Array.from({ length: 8 }, (_, i) =>
-  `${CLOUDINARY_BASE}/${AVATAR_FOLDER}/${i + 1}.jpg`
-);
-
-function getRandomAvatarUrl(): string {
-    const index = Math.floor(Math.random() * RANDOM_AVATARS.length);
-    return RANDOM_AVATARS[index];
-}
-
-export async function logInUser() {
-    try {
-        const result = await signInWithPopup(auth, provider);
-        const isNewUser = getAdditionalUserInfo(result)?.isNewUser;
-        if (isNewUser){
-            console.log("new member!")
-            const randomAvatar = getRandomAvatarUrl();
-            await setDoc(doc(db, 'users', result.user.uid), {
-                name: result.user.displayName,
-                email: result.user.email,
-                avatar: randomAvatar,
-                createdAt: serverTimestamp(),
-            });
-        }
-        console.log(result.user)
-        return true;
-    } catch (error) {
-        console.error("Log in error:", error);
-        return false;
-    }
-}
-
-export async function logOutUser() {
-    try {
-        await signOut(auth);
-    } catch (error) {
-        console.error("Logout error:", error);
-    }
-}

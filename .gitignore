@@ -1,3 +1,5 @@
-old
 *.db
 *__pycache__
+.env
+
+server/splitly-tw-firebase-adminsdk-fbsvc-37d36dba03.json

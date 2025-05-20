@@ -4,7 +4,7 @@ import { useState } from "react";
 import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
-import ReceiptCard from "./ExpenseOverviewSections/ReceiptCard";
+import ReceiptCard from "./ReceiptListSections/ReceiptCard";
 import ProjectSelfDetail from "@/features/ExpenseOverviewSections/ProjectSelfDetailDialog";
 import ProjectWiseSpilt from "./ExpenseOverviewSections/ProjectWiseSpiltDialog";
 

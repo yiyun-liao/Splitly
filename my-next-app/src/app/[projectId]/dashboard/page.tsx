@@ -11,8 +11,8 @@ function DashboardPage(){
     const projectId = params.projectId;
     const {userData, isLoading} = useUser();
 
-    console.log(userData, isLoading)
-    console.log('projectId:', projectId);
+    console.log(`userData: ${userData}, isLoading: ${isLoading}`)
+    //console.log('projectId:', projectId);
 
     return(
         <>

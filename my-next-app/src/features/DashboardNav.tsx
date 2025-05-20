@@ -1,6 +1,6 @@
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton"
-import { logOutUser } from "@/contexts/AuthContext";
+import { logOutUser } from "@/lib/auth";
 import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
@@ -19,7 +19,7 @@ export default function DashboardNav(){
       setActivePath(pathname);
     }, [pathname]);
 
-    console.log('當前位置', activePath)
+    //console.log('當前位置', activePath)
 
     const navDivClass = "flex flex-col items-start justify-start py-2 gap-2 px-2"
 

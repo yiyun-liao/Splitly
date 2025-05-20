@@ -7,9 +7,13 @@ class UserSchema(BaseModel):
     Args:
     name: str
     email: str
+    avatar: int
+
     """
     name: str
     email: str
+    uidInAuth: str 
+    avatar: int
 
 
     model_config = {

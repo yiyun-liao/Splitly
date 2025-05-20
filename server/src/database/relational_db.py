@@ -6,7 +6,7 @@ from datetime import datetime
 from src.database.models.base import Base
 
 
-# database.py
+# relational_db.py
 
 class Database:
 
@@ -36,24 +36,17 @@ class Database:
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
     
-    # def __init__(self, db_url: str = "sqlite:///./test.db"):
-    #     self.engine = create_engine(
-    #         db_url,
-    #         connect_args={"check_same_thread": False} if "sqlite" in db_url else {}
-    #     )
-    #     self.SessionLocal = sessionmaker(bind=self.engine)
-    #     self._create_tables()
 
     def _create_tables(self):
         Base.metadata.create_all(bind=self.engine)
 
     def add(self, instance):
         try:
-
             self.session.add(instance)
             self.session.commit()
-        except:
+        except Exception as e:
             self.session.rollback()
+            raise e
 
     def get_all(self, model, include_deleted=False):
         query = self.session.query(model)
@@ -76,8 +69,9 @@ class Database:
                 setattr(obj, key, value)
             self.session.commit()
             return obj
-        except:
+        except Exception as e:
             self.session.rollback()
+            raise e
 
     def soft_delete(self, model, id_):
         try:
@@ -87,15 +81,17 @@ class Database:
             obj.deleted_at = datetime.utcnow()
             self.session.commit()
             return obj
-        except:
+        except Exception as e:
             self.session.rollback()
+            raise e
 
     def delete(self, instance):
         try:
             self.session.delete(instance)
             self.session.commit()
-        except:
+        except Exception as e:
             self.session.rollback()
+            raise e
 
     def get_session(self):
         return self.session

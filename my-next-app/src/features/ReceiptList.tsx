@@ -1,6 +1,6 @@
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
-import ReceiptCard from "./ExpenseOverviewSections/ReceiptCard";
+import ReceiptCard from "./ReceiptListSections/ReceiptCard";
 
 interface ReceiptListProps {
     userData: {

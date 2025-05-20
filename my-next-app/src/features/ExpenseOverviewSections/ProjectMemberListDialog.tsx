@@ -63,7 +63,7 @@ export default function ProjectMemberList({
             )
         }
     }
-    console.log('dialog state', isMemberListOpen)
+    //console.log('dialog state', isMemberListOpen)
     return(
         <Dialog
                 header="成員"

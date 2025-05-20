@@ -7,7 +7,7 @@ from src.routes.router import Router
 
 app = FastAPI()  # Create FastAPI app instance
 
-db = Database(db_url="sqlite:///test.db")
+db = Database(db_url="sqlite:///./db.sqlite3")
 router = Router(db=db)
 app.include_router(router.router)  # Include router in the FastAPI app
 

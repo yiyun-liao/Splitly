@@ -5,7 +5,7 @@ import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Avatar from "@/components/ui/Avatar";
-import ReceiptCard from "./ExpenseOverviewSections/ReceiptCard";
+import ReceiptCard from "./ReceiptListSections/ReceiptCard";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import Select from "@/components/ui/Select";

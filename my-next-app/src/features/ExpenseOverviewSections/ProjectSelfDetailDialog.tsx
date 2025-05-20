@@ -54,7 +54,7 @@ export default function ProjectSelfDetail({
             </div>
         )
 }
-    console.log('self expense dialog state', isSelfExpenseOpen)
+    //console.log('self expense dialog state', isSelfExpenseOpen)
     return(
         <Dialog
                 header="您在專案中"

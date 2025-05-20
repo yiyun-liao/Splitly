@@ -2,7 +2,7 @@
 
 import Button from '@/components/ui/Button';
 
-import { logInUser } from '@/contexts/AuthContext';
+import { logInUser } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 
 const Page = () => {

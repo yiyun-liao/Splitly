@@ -6,7 +6,7 @@ import Avatar from '@/components/ui/Avatar';
 import Input from '@/components/ui/Input';
 import Dialog from '@/components/ui/Dialog';
 import IconButton from '@/components/ui/IconButton';
-import { logInUser } from '@/contexts/AuthContext';
+import { logInUser } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { useState, useMemo, useEffect } from 'react';
 

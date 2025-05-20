@@ -166,7 +166,7 @@ export default function ProjectWiseSpilt({
             </div>
         )
 }
-    console.log('wise spilt dialog state', isProjectWiseSpiltOpen)
+    //console.log('wise spilt dialog state', isProjectWiseSpiltOpen)
     return(
         <Dialog
                 header="快速分帳"
