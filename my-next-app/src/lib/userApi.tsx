@@ -24,7 +24,7 @@ export async function syncUserToBackend(
       }
   
       const data = await response.json();
-      console.log('login', data)
+      console.log('login success', data)
       return data;
     } catch (err) {
       console.error("Error syncing user to backend:", err);

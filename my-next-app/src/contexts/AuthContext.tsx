@@ -3,8 +3,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, User, signInWithPopup, signOut, getAdditionalUserInfo } from "firebase/auth";
-import { auth, provider, db } from "../firebase.js";
-import { setDoc, doc, serverTimestamp } from "firebase/firestore";
+import { auth } from "../firebase.js";
 import { getRandomAvatarIndex } from "@/utils/avatar";
 import { syncUserToBackend } from "@/lib/userApi.jsx";
 import { logInUser, logOutUser } from "@/lib/auth";

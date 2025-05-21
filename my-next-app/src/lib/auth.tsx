@@ -21,11 +21,6 @@ export async function logInUser() {
                 uidInAuth: result.user.uid,
                 avatar: getRandomAvatarIndex(),
             }
-            // to firebase firestore
-            // await setDoc(doc(db, 'users', result.user.uid), {
-            //     ...newUserData,
-            //     createdAt: serverTimestamp(),
-            // });
 
             // to backend
             console.log("new member! try to ", token, newUserData)

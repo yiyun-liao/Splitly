@@ -1,9 +1,11 @@
 # user_router.py
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 
 from src.routes.schema.user import UserSchema
 from src.database.relational_db import Database
 from src.database.models.user import UserModel
+from src.dependencies.firebase import verify_firebase_token
+
 
 from src.firebase import firebase_admin
 firebase_auth = firebase_admin.auth
@@ -19,13 +21,27 @@ class Router:
 
     def _add_routes(self):
 
-        @self.router.get("/users/{user_id}")
-        def get_user(user_id: int) -> UserSchema:
-            """Get user"""
-            user = self.db.get_by_id(user_id)
-            if not user:
-                raise HTTPException(status_code=404, detail="User not found")
-            return user
+        @self.router.get("/api/auth/getUser")
+        def get_user(userId: str, token_data: dict = Depends(verify_firebase_token)) -> UserSchema:
+            """Get user by uid with token verification"""
+            try:
+                # 確保只查詢登入者自己的資料
+                if userId != token_data["uid"]:
+                    raise HTTPException(status_code=403, detail="Unauthorized access")
+
+                user = self.db.session.query(UserModel).filter_by(uid=userId).first()
+                if not user:
+                    raise HTTPException(status_code=404, detail="User not found")
+
+                return UserSchema(
+                    userId=user.uid,
+                    email=user.email,
+                    name=user.name,
+                    uidInAuth=user.uid_in_auth,
+                    avatar=user.avatar
+                )
+            except Exception as e:
+                raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")
 
         @self.router.post("/api/auth/login")
         async def login_user(request: Request, user: UserSchema)  -> dict:
@@ -63,9 +79,12 @@ class Router:
             except Exception as e:
                 raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")
         
-        @self.router.post("/get-users")
-        def get_users() -> list[UserSchema]:
+        @self.router.post("/api/auth/get-users")
+        def get_users(request: Request) -> list[UserSchema]:
             """Get users"""
+            auth_header = request.headers.get("Authorization")
+            if not auth_header or not auth_header.startswith("Bearer "):
+                raise HTTPException(status_code=401, detail="No token provided")
             users = self.db.get_all(UserModel)
             users_schema = [UserSchema.model_validate(user, from_attributes=True) for user in users]
             return users_schema
