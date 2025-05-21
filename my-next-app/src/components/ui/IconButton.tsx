@@ -10,6 +10,7 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
     isLoading?: boolean;
     disabled?: boolean;
     type? : 'button' | 'submit' | 'reset';
+    onclick?:(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   }
 
 function Loading({ isLoading, size }: { isLoading: boolean; size: 'sm' | 'md' }) {

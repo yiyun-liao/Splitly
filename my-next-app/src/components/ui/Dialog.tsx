@@ -1,12 +1,11 @@
 import IconButton from "./IconButton";
-import Button from "./Button";
 import clsx from 'clsx';
 import { useEffect } from "react";
 
 interface DialogProps {
     header: React.ReactNode;
     children: React.ReactNode;
-    footer: React.ReactNode;
+    footer?: React.ReactNode;
     open: boolean;
     onClose: () => void;
     headerClassName?: string;
@@ -42,7 +41,7 @@ export default function Dialog({
         if (open) document.body.style.overflow = 'hidden';
         else document.body.style.overflow = 'auto';
         return () => {
-        document.body.style.overflow = 'auto';
+            document.body.style.overflow = 'auto';
         };
     }, [open]);
     
@@ -56,13 +55,13 @@ export default function Dialog({
         <div className="fixed inset-0 z-101 flex items-center justify-center bg-black/50" onClick={handleBackdropClick}>
             <div className="w-fit h-fit p-4">
                 <div className="w-lg h-105 max-h-[90vh] bg-zinc-50 rounded-xl overflow-hidden shadow-md flex flex-col items-start justify-start">
-                <div className={headerClass}>
-                    {leftIcon && <IconButton icon={leftIcon} size="sm" variant="text-button" color="zinc" type="button" onClick={onLeftIconClick} />}
-                    {header && <div className="w-full whitespace-nowrap truncate align-middle text-2xl font-medium text-zinc-700" >{header}</div>}
-                    {!hideCloseIcon && <IconButton icon='solar:close-circle-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />}
-                </div>
-                <div className={bodyClass} {...props}>{children}</div>
-                {footer && <div className={footerClass}>{footer}</div>}
+                    <div className={headerClass}>
+                        {leftIcon && <IconButton icon={leftIcon} size="sm" variant="text-button" color="zinc" type="button" onClick={onLeftIconClick} />}
+                        {header && <div className="w-full whitespace-nowrap truncate align-middle text-xl font-medium text-zinc-700" >{header}</div>}
+                        {!hideCloseIcon && <IconButton icon='solar:close-circle-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />}
+                    </div>
+                    <div className={bodyClass} {...props}>{children}</div>
+                    {footer && <div className={footerClass}>{footer}</div>}
                 </div>
             </div>
         </div>
@@ -74,12 +73,12 @@ export default function Dialog({
         header="這是 Dialog 標題"
         open={isDialogOpen} // 從某處打開
         onClose={handleClose} // 點擊哪裡關閉
-        headerClassName: string // 看需求
-        bodyClassName: string // 看需求
+        headerClassName= "string" // 看需求
+        bodyClassName= "string" // 看需求
         footerClassName: "items-center justify-end"
         leftIcon="solar:arrow-left-line-duotone"
-        hideCloseIcon: false
-        closeOnBackdropClick: false
+        hideCloseIcon= {false}
+        closeOnBackdropClick= {false}
         onLeftIconClick={handleBack}
         footer={
         <>

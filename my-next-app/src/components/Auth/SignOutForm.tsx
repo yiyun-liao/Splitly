@@ -1,5 +1,5 @@
 'use client';
-import Button from "../lib/Button"
+import Button from "../ui/Button"
 import { useRouter } from 'next/navigation';
 import { logOutUser } from "./auth-utils";
 

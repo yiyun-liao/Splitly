@@ -1,8 +1,8 @@
 'use client'
 
-import Button from '@/components/lib/Button';
+import Button from '@/components/ui/Button';
 
-import { logInUser } from '@/contexts/AuthContext';
+import { logInUser } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 
 const Page = () => {
@@ -12,7 +12,7 @@ const Page = () => {
         const isLogin = await logInUser();
         console.log('Logged In!');
         if (!!isLogin){
-            router.push('/dashboard');    
+            router.push('/1/dashboard');    
         }
     }
 
