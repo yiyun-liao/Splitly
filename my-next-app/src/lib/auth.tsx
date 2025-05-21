@@ -2,7 +2,7 @@
 import { signInWithPopup, signOut, getAdditionalUserInfo } from "firebase/auth";
 import { auth, provider } from "../firebase.js";
 import { getRandomAvatarIndex } from "@/utils/avatar";
-import { syncUserToBackend } from "@/lib/userApi";
+import { createNewUser } from "@/lib/userApi";
 
 export async function logInUser() {
     try {
@@ -24,7 +24,7 @@ export async function logInUser() {
 
             // to backend
             console.log("new member! try to ", token, newUserData)
-            await syncUserToBackend(token, newUserData);
+            await createNewUser(token, newUserData);
         }
         console.log(result.user)
         return true;

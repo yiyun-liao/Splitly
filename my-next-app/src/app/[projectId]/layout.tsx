@@ -1,12 +1,12 @@
 'use client';
 
-import { useUser } from "@/contexts/useUser";
+import { useAuth } from "@/contexts/AuthContext";
 import MemberHeader from "@/features/MemberHeader";
 import MemberNav from "@/features/MemberNav";
 import { ReactNode } from "react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const { userData } = useUser();
+  const { firebaseUser, userData, loading } = useAuth();
 
   return (
     <main className="flex items-start justify-center bg-sp-blue-100">

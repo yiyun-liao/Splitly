@@ -1,7 +1,7 @@
 'use client'
 import { useParams } from 'next/navigation';
 import { withAuth } from "@/utils/withAuth";
-import { useUser } from "@/contexts/useUser";
+import { useAuth } from '@/contexts/AuthContext';
 import ExpenseOverview from "@/features/ExpenseOverview";
 import DashboardMain from "@/features/DashboardMain";
 
@@ -9,9 +9,10 @@ import DashboardMain from "@/features/DashboardMain";
 function DashboardPage(){
     const params = useParams();
     const projectId = params.projectId;
-    const {userData, isLoading} = useUser();
+    const { firebaseUser, userData, loading } = useAuth();
+    
 
-    console.log(`userData: ${userData}, isLoading: ${isLoading}`)
+    console.log(`userData: ${userData}, isLoading: ${loading}`)
     //console.log('projectId:', projectId);
 
     return(

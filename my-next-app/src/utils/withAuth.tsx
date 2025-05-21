@@ -8,18 +8,18 @@ import { useEffect } from "react";
 // Component 是要「被保護」的 React 元件/頁面，如 withAuth(DashboardPage)
 export const withAuth = (Component:React.ComponentType) => {
     return function ProtectedComponent(props:React.ComponentProps<typeof Component>){
-        const {user, loading} = useAuth();
+        const { firebaseUser,  userData, loading } = useAuth();
         const router = useRouter();
 
         useEffect(()=>{
-            if (!loading && !user){
+            if (!loading && !firebaseUser && !userData){
                 console.log("did not log in yet")
                 router.push("/");
             }
-        }, [user, loading, router]);
+        }, [firebaseUser,userData, loading, router]);
 
         if(loading) return <p>Loading...</p>
 
-        return user ? <Component {...props}/> : null;
+        return  firebaseUser && userData ? <Component {...props}/> : null;
     }
 }

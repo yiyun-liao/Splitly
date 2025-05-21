@@ -2,48 +2,88 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, User, signInWithPopup, signOut, getAdditionalUserInfo } from "firebase/auth";
 import { auth } from "../firebase.js";
-import { getRandomAvatarIndex } from "@/utils/avatar";
-import { syncUserToBackend } from "@/lib/userApi.jsx";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { logInUser, logOutUser } from "@/lib/auth";
+import { buildAvatarUrl } from "@/utils/avatar";
+import { fetchCurrentUser } from "@/lib/userApi";
+
+export interface UserData {
+    userId: string;
+    email: string;
+    name: string;
+    uidInAuth?:string;
+    avatar?: string; // 最後是 Cloudinary URL
+    avatarIndex?: number; // 後端回傳的 avatar index
+}
 
 type AuthContextType = {
-    user: User | null ;
+    firebaseUser: User | null;     // Firebase 原始 user
+    userData: UserData | null;      // 後端取得的完整使用者資料
     loading: boolean;
     logInUser: () => Promise<boolean>;
-    logOutUser: () => Promise<void>;
+    logOutUser: () => Promise<boolean>;
 };
 
 export const AuthContext = createContext<AuthContextType>({
-    user: null,
-    loading:true,
+    firebaseUser: null,
+    userData: null,
+    loading: true,
     logInUser: async () => false,
-    logOutUser: async () => {},
+    logOutUser: async () => true,
 });
+
 
 type AuthProviderProps = {
     children: React.ReactNode;
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
+    const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(()=>{
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-            setUser(firebaseUser);
-            setLoading(false);
-        })
-
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
+        setFirebaseUser(userAuth);
+    
+        if (userAuth) {
+            try {
+                const token = await userAuth.getIdToken();
+                const data = await fetchCurrentUser(token, userAuth.uid);
+        
+                const fullUserData: UserData = {
+                    userId: data.userId,
+                    email: data.email,
+                    name: data.name,
+                    uidInAuth: data.uidInAuth,
+                    avatarIndex: data.avatar,
+                    avatar: buildAvatarUrl(data.avatar),
+                };
+        
+                setUserData(fullUserData);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                setUserData(null);
+            }
+        } else {
+            setUserData(null);
+        }
+    
+        setLoading(false);
+        });
+    
         return () => unsubscribe();
-    }, [])
-    return(
-        <AuthContext.Provider value={{ user, loading, logInUser, logOutUser }}>
-            {children}
+    }, []);
+    
+    return (
+        <AuthContext.Provider
+            value={{ firebaseUser, userData, loading, logInUser, logOutUser }}
+        >
+        {children}
         </AuthContext.Provider>
-    )
-}
+    );
+};
 
 export const useAuth = () => useContext(AuthContext);
 

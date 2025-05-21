@@ -1,16 +1,17 @@
 'use client'
 import { useParams } from 'next/navigation';
 import { withAuth } from "@/utils/withAuth";
-import { useUser } from "@/contexts/useUser";
+import { useAuth } from '@/contexts/AuthContext';
 import ReceiptList from "@/features/ReceiptList";
 import ExpenseOverview from "@/features/ExpenseOverview";
 
 function ExpensePage(){
     const params = useParams();
     const projectId = params.projectId;
-    const {userData, isLoading} = useUser();
+    const { firebaseUser, userData, loading } = useAuth();
+    
 
-    console.log(userData, isLoading)
+    console.log(userData, loading)
     console.log('projectId:', projectId);
 
     return(
