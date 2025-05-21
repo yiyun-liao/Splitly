@@ -1,3 +1,5 @@
+# 初始化 Firebase Admin SDK，提供 auth 功能
+
 import firebase_admin
 from firebase_admin import credentials, auth  # ← 這裡引入 auth
 

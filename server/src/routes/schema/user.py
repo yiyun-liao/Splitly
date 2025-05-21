@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 
 class UserSchema(BaseModel):
@@ -19,3 +20,7 @@ class UserSchema(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class UsersListSchema(BaseModel):
+    """Schema for a single user."""
+    users: List[UserSchema]
