@@ -8,6 +8,8 @@ from src.database.models.user import UserModel
 from src.firebase import firebase_admin
 firebase_auth = firebase_admin.auth
 
+
+
 class Router:
     def __init__(self, db: Database):
         self.router = APIRouter()
@@ -28,13 +30,16 @@ class Router:
         @self.router.post("/api/auth/login")
         async def login_user(request: Request, user: UserSchema)  -> dict:
             """Create user"""
+            print("✅ 收到使用者資料：", user)
             auth_header = request.headers.get("Authorization")
+            print("🔎 Authorization Header:", auth_header)
             if not auth_header or not auth_header.startswith("Bearer "):
                 raise HTTPException(status_code=401, detail="No token provided")
             token = auth_header.split(" ")[1]
 
             try:
                 decoded_token = firebase_auth.verify_id_token(token)
+                print("🧾 解碼結果：", decoded_token)
                 uid = decoded_token["uid"]
                 body = await request.json()
                 name = body["name"]

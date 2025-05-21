@@ -6,14 +6,14 @@ import Button from "@/components/ui/Button";
 import ProjectMemberList from "./ExpenseOverviewSections/ProjectMemberListDialog";
 import CreateReceipt from "./CreateReceipt";
 
-interface DashboardHeaderProps {
+interface MemberHeaderProps {
     userData: {
       avatar?: string;
       name?: string;
     } | null;
   }
 
-export default function DashboardHeader({userData}:DashboardHeaderProps){
+export default function MemberHeader({userData}:MemberHeaderProps){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreateReceipt, setIsCreateReceipt] = useState(false)
     const router = useRouter();

@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 
 
 
-export default function DashboardNav(){
+export default function MemberNav(){
     const router = useRouter();
     const params = useParams();
     const pathname = usePathname();

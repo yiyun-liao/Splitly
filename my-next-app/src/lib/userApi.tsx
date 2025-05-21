@@ -1,5 +1,4 @@
 
-
 export async function syncUserToBackend(
     token: string | null,
     user: {
@@ -10,7 +9,7 @@ export async function syncUserToBackend(
     }
 ) {
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("http://localhost:8000/api/auth/login", {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`,

@@ -34,7 +34,7 @@ export default function Avatar({
 
     const dimension = SIZE_MAP[size];
     const divClass = clsx('relative inline-block rounded-full overflow-hidden cursor-pointer', className)
-
+    
     return (
         <div
             onClick={avatarClick}
