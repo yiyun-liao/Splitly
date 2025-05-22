@@ -29,7 +29,7 @@ export default function Select({
     label,
     value,
     required = false,
-    placeholder= '請選擇',
+    placeholder,
     onChange,
     flexDirection = "row",
     labelClassName,
@@ -47,7 +47,7 @@ export default function Select({
     const hasError = !!errorMessage;
 
     const selectFrameClass = clsx(
-        "flex cursor-pointer items-start justify-start",
+        "flex cursor-pointer items-start justify-start min-w-20",
         {
             "flex-row gap-2": flexDirection === "row",
             "flex-col gap-1": flexDirection === "col",
@@ -66,8 +66,8 @@ export default function Select({
         }
     );
 
-    const labelClasses = clsx( "min-w-20 max-w-40 min-h-9 text-wrap flex items-center justify-start",labelClassName);
-    const selectItemClass = clsx("w-full min-w-3xs", selectClassName);
+    const labelClasses = clsx( "w-full min-h-9 text-wrap flex items-center justify-start",labelClassName);
+    const selectItemClass = clsx("w-full", selectClassName);
     const selectClasses = "w-full stroke-none outline-none bg-transparent";
     const helperClasses = 'flex items-start justify-end gap-1 w-full text-sm my-1 min-h-5 transition-all duration-200 ';
     const errorMessageClasses = 'text-red-400 break-words w-full ';

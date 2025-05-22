@@ -28,25 +28,29 @@ export default function ProjectMemberList({
                 <div>
                     <div className="px-3 py-3 flex items-center justify-start gap-2">
                         <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                            <Avatar
-                                size="md"
-                                img={userData?.avatar}
-                                userName = {userData?.name}
-                                //onAvatarClick={() => console.log('Clicked!')}
-                            />
-                            <p className="text-base w-fll  truncate">Yun</p>
+                            <div  className="shrink-0  flex items-center justify-center ">
+                                <Avatar
+                                    size="md"
+                                    img={userData?.avatar}
+                                    userName = {userData?.name}
+                                    //onAvatarClick={() => console.log('Clicked!')}
+                                />
+                            </div>
+                            <p className="text-base w-fll  truncate">{userData?.name}</p>
                         </div>
                         <p className="shrink-0 text-base font-semibold">---</p>
                     </div>
                     <div className="px-3 py-3 flex items-center justify-start gap-2">
                         <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                            <Avatar
-                                size="md"
-                                img={userData?.avatar}
-                                userName = {userData?.name}
-                                //onAvatarClick={() => console.log('Clicked!')}
-                            />
-                            <p className="text-base w-fll  truncate">Yun</p>
+                            <div  className="shrink-0  flex items-center justify-center ">
+                                <Avatar
+                                    size="md"
+                                    img={userData?.avatar}
+                                    userName = {userData?.name}
+                                    //onAvatarClick={() => console.log('Clicked!')}
+                                />
+                            </div>
+                            <p className="text-base w-fll  truncate">{userData?.name}</p>
                         </div>
                         <p className="shrink-0 text-base font-semibold">---</p>
                     </div>

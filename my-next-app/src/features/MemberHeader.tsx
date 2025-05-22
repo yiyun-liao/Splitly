@@ -53,7 +53,7 @@ export default function MemberHeader({userData}:MemberHeaderProps){
                     //isLoading={isLoading}
                     onClick={() => setIsCreateReceipt(true)}
                     >
-                        新增支出
+                        新增紀錄
                 </Button> 
                 <button onClick={() => setIsMemberDialogOpen(true)}  className="shrink-0 flex items-center justify-start gap-2 px-2 py-0.5 rounded-xl cursor-pointer bg-sp-yellow-200 text-sp-blue-500 hover:bg-sp-yellow-400 hover:text-sp-blue-600 active:bg-sp-yellow-600 active:text-sp-blue-700">
                     <div className="flex items-center justify-start -space-x-2">
