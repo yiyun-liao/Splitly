@@ -5,15 +5,14 @@ import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Avatar from "@/components/ui/Avatar";
-import ReceiptCard from "./ReceiptListSections/ReceiptCard";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import Select from "@/components/ui/Select";
 import { fetchCategoriesForSelect } from "@/lib/categoryApi";
-import { solid } from "@cloudinary/url-gen/actions/border";
+import PayerFunction from "./CreatePaymentSections/PayerFunctionDialog";
+import SplitFunction from "./CreatePaymentSections/SplitFunctionDialog";
 
-
-interface CreateReceiptProps {
+interface CreatePaymentProps {
     userData: {
       avatar?: string;
       name?: string;
@@ -22,11 +21,11 @@ interface CreateReceiptProps {
     open?: boolean;
   }
 
-export default function CreateReceipt({
+export default function CreatePayment({
     userData,
     onClose,
     open = true,
-    }:CreateReceiptProps){
+    }:CreatePaymentProps){
         // receipt-way
         const [receiptWay, setReceiptWay] = useState<"pay" | "debt">("pay");
         // receipt-pay
@@ -36,6 +35,9 @@ export default function CreateReceipt({
         const [selectCategoryValue, setSelectedCategoryValue] = useState("");
         const [inputItemValue, setInputItemValue] = useState("");
         const [inputDescValue, setInputDescValue] = useState("");
+        const [isPayerFunctionOpen, setIsPayerFunctionOpen] = useState(false);
+        const [isSplitFunctionOpen, setIsSplitFunctionOpen] = useState(false);
+
         // receipt-debt
         
         useEffect(() => {
@@ -79,6 +81,20 @@ export default function CreateReceipt({
         
         return(
             <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/50">
+                {isPayerFunctionOpen &&
+                    <PayerFunction
+                        isPayerFunctionOpen = {isPayerFunctionOpen}
+                        userData={userData} 
+                        onClose={() => setIsPayerFunctionOpen(false)}
+                    />
+                }
+                {isSplitFunctionOpen &&
+                    <SplitFunction
+                        isSplitFunctionOpen = {isSplitFunctionOpen}
+                        userData={userData} 
+                        onClose={() => setIsSplitFunctionOpen(false)}
+                    />
+                }
                 <div className="w-full h-fit pl-17 max-w-520 flex flex-col items-center justify-bottom">
                     <div id="receipt-form" className="w-full h-screen px-6 py-6 rounded-2xl overflow-hidden shadow-md flex flex-col items-start justify-bottom  bg-sp-green-300 text-zinc-700 text-base">
                         <div id="receipt-form-header"  className="w-full max-w-xl flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden">
@@ -121,7 +137,7 @@ export default function CreateReceipt({
                             </Button>
                         </div>
                         {receiptWay === "pay" && (
-                            <section id="receipt-pay"  className={`w-full h-full pb-20 ${scrollClass}`}>
+                            <section id="receipt-pay"  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
                                 <div id="receipt-form-frame" className="max-w-xl w-full grid grid-cols-3 gap-2">
                                     <div className={formSpan1CLass}>
                                         <span className={labelClass}>費用</span>
@@ -180,7 +196,7 @@ export default function CreateReceipt({
                                                 color='zinc'
                                                 //disabled={isdisabled} 
                                                 //isLoading={isLoading}
-                                                // onClick={()=> setIsSelfExpenseDialogOpen(true)}
+                                                onClick={() => setIsPayerFunctionOpen(true)}
                                                 >
                                                     多位付款人
                                             </Button>
@@ -224,7 +240,7 @@ export default function CreateReceipt({
                                                 color='primary'
                                                 //disabled={isdisabled} 
                                                 //isLoading={isLoading}
-                                                // onClick={()=> setIsSelfExpenseDialogOpen(true)}
+                                                onClick={() => setIsSplitFunctionOpen(true)}
                                                 >
                                                     成員分帳
                                             </Button>
@@ -308,7 +324,7 @@ export default function CreateReceipt({
                             </section>
                         )}
                         {receiptWay === "debt" && (
-                            <section id="receipt-debt"  className={`w-full h-full pb-20 ${scrollClass}`}>
+                            <section id="receipt-debt"  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
                                 <div id="receipt-form-frame" className="max-w-xl w-full grid grid-cols-3 gap-2">
                                     <div className={`pb-5 ${formSpan3CLass}`}>
                                         <div className="w-full flex items-center justify-start gap-2">

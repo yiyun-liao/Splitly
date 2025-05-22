@@ -67,8 +67,8 @@ export default function Select({
     );
 
     const labelClasses = clsx( "w-full min-h-9 text-wrap flex items-center justify-start",labelClassName);
-    const selectItemClass = clsx("w-full", selectClassName);
-    const selectClasses = "w-full stroke-none outline-none bg-transparent";
+    const selectItemClass = clsx("w-full wrap-anywhere", selectClassName);
+    const selectClasses = "w-full stroke-none outline-none";
     const helperClasses = 'flex items-start justify-end gap-1 w-full text-sm my-1 min-h-5 transition-all duration-200 ';
     const errorMessageClasses = 'text-red-400 break-words w-full ';
 

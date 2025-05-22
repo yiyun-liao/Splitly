@@ -4,18 +4,18 @@ import { useState } from "react";
 import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
-import ReceiptCard from "./ReceiptListSections/ReceiptCard";
-import ProjectSelfDetail from "@/features/ExpenseOverviewSections/ProjectSelfDetailDialog";
-import ProjectWiseSpilt from "./ExpenseOverviewSections/ProjectWiseSpiltDialog";
+import ReceiptCard from "./PaymentListSections/ReceiptCard";
+import ProjectSelfDetail from "@/features/ProjectOverviewSections/ProjectSelfDetailDialog";
+import ProjectWiseSpilt from "./ProjectOverviewSections/ProjectWiseSpiltDialog";
 
-interface ExpenseOverviewProps {
+interface ProjectOverviewProps {
     userData: {
       avatar?: string;
       name?: string;
     } | null;
   }
 
-export default function ExpenseOverview({userData}:ExpenseOverviewProps){
+export default function ProjectOverview({userData}:ProjectOverviewProps){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
     const [isWiseSpiltDialogOpen, setIsWiseSpiltDialogOpen] = useState(false)
 

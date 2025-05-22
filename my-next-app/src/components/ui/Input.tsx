@@ -56,7 +56,7 @@ export default function Input({
     const hasError = isInputError();
 
     const inputFrameClass = clsx(
-        "flex cursor-pointer items-start justify-start",
+        "flex cursor-pointer items-start justify-start min-w-20",
         {
           "flex-row gap-2": flexDirection === "row",
           "flex-col gap-1": flexDirection === "col",
@@ -75,8 +75,8 @@ export default function Input({
         }
     );
     
-    const labelClasses = clsx( "min-w-20 max-w-40 min-h-9 text-wrap flex items-center justify-start",labelClassName);
-    const inputItemClass = clsx("w-full min-w-3xs wrap-anywhere", inputClassName);
+    const labelClasses = clsx( "w-full min-h-9 text-wrap flex items-center justify-start",labelClassName);
+    const inputItemClass = clsx("w-full wrap-anywhere", inputClassName);
     const inputClasses = 'w-full stroke-none outline-none';
     const helperClasses = 'flex items-start justify-end gap-1 w-full text-sm my-1 min-h-5 transition-all duration-200 ';
     const errorMessageClasses = 'text-red-400 break-words w-full ';

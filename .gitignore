@@ -2,6 +2,7 @@
 *__pycache__
 .env
 *.sqlite3
+db.sqlite3
 
 server/splitly-tw-firebase-adminsdk-fbsvc-37d36dba03.json
 
