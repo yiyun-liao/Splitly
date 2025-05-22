@@ -10,8 +10,7 @@ from src.firebase import firebase_admin
 firebase_auth = firebase_admin.auth
 
 
-
-class Router:
+class AuthRouter:
     def __init__(self, db: Database):
         self.router = APIRouter()
         self.db = db

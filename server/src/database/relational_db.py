@@ -9,8 +9,6 @@ from src.database.models.base import Base
 # relational_db.py
 
 class Database:
-
-
     def __init__(
         self,
         db_url: str = "sqlite:///:memory:",
@@ -97,26 +95,3 @@ class Database:
         return self.session
 
 
-
-# from db.database import Database
-# from db.models import User
-
-# db = Database()
-
-# # Add user
-# db.add(User(name="Alice", email="alice@example.com"))
-
-# # Get all users
-# users = db.get_all(User)
-# for user in users:
-#     print(user.id, user.name, user.email)
-
-# # Update user
-# db.update(User, id_=1, name="Alice Updated")
-
-# # Get by ID
-# user = db.get_by_id(User, 1)
-# print(user.name)
-
-# # Delete
-# db.delete(user)
