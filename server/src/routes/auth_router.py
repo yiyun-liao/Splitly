@@ -1,8 +1,8 @@
 # user_router.py
 from fastapi import APIRouter, HTTPException, Request, Depends
 
-from src.routes.schema.user import UserSchema
 from src.database.relational_db import Database
+from src.routes.schema.user import UserSchema
 from src.database.models.user import UserModel
 from src.dependencies.firebase import verify_firebase_token
 
@@ -10,8 +10,7 @@ from src.firebase import firebase_admin
 firebase_auth = firebase_admin.auth
 
 
-
-class Router:
+class AuthRouter:
     def __init__(self, db: Database):
         self.router = APIRouter()
         self.db = db
@@ -27,10 +26,11 @@ class Router:
                 raise HTTPException(status_code=403, detail="Unauthorized access")
             
             try:
-                user = self.db.session.query(UserModel).filter_by(uid=userId).first()
+                user = self.db.get_by_uid(UserModel, userId)
                 if not user:
                     raise HTTPException(status_code=404, detail="User not found")
 
+                print("get user data", vars(user))
                 return UserSchema(
                     userId=user.uid,
                     email=user.email,
@@ -45,13 +45,13 @@ class Router:
         async def login_user(user: UserSchema, uid_verified: str = Depends(verify_firebase_token)) -> dict:
             """Create user"""
             try:
-                uid = uid_verified
+                userId = uid_verified
 
                 # 若資料庫中尚無該用戶則新增
-                existing_user = self.db.session.query(UserModel).filter_by(uid=uid).first()
+                existing_user = self.db.get_by_uid(UserModel, userId)
                 if not existing_user:
                     new_user = UserModel(
-                        uid=uid,  # Firebase uid 當作主鍵
+                        uid=userId,  # Firebase uid 當作主鍵
                         name=user.name,
                         email=user.email,
                         uid_in_auth=user.uidInAuth,
@@ -59,7 +59,7 @@ class Router:
                     )
                     self.db.add(new_user)
 
-                return {"status": "success", "uid": uid}
+                return {"status": "success", "uid": userId}
             except Exception as e:
                 raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")
         
@@ -71,17 +71,16 @@ class Router:
             return users_schema
         
         @self.router.delete("/api/auth/deleteUser")
-        def delete_user(uid: str, uid_verified: str = Depends(verify_firebase_token)):
-            """Delete user by uid, only allow self-delete"""
-            if uid != uid_verified:
+        def delete_user(userId: str, uid_verified: str = Depends(verify_firebase_token)):
+            """Delete user by userId, only allow self-delete"""
+            if userId != uid_verified:
                 raise HTTPException(status_code=403, detail="Unauthorized")
 
-            user = self.db.session.query(UserModel).filter_by(uid=uid).first()
+            user = self.db.get_by_uid(UserModel, userId)
             if not user:
                 raise HTTPException(status_code=404, detail="User not found")
 
-            self.db.session.delete(user)
-            self.db.session.commit()
-            return {"status": "success", "message": f"User {uid} deleted"}
+            self.db.delete(user)
+            return {"status": "success", "message": f"User {userId} deleted"}
 
 
