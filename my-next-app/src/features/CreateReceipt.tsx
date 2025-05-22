@@ -9,6 +9,8 @@ import ReceiptCard from "./ReceiptListSections/ReceiptCard";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import Select from "@/components/ui/Select";
+import { getCategoryNest } from "@/lib/categoryApi";
+
 
 interface CreateReceiptProps {
     userData: {
@@ -26,10 +28,11 @@ export default function CreateReceipt({
     }:CreateReceiptProps){
         const [inputAmountValue, setInputAmountValue] = useState("");
         const [inputTimeValue, setInputTimeValue] = useState("");
-        const [inputCategoryValue, setInputCategoryValue] = useState("");
+        const [selectCategoryValue, setSelectedCategoryValue] = useState("");
+        const [inputItemValue, setInputItemValue] = useState("");
         const [inputDescValue, setInputDescValue] = useState("");
-
-    
+        
+        
         useEffect(() => {
             if (open) document.body.style.overflow = 'hidden';
             else document.body.style.overflow = 'auto';
@@ -38,7 +41,20 @@ export default function CreateReceipt({
             };
         }, [open]);
         
-        if (!open) return null;
+        const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string }[]>([]);
+        
+        useEffect(() => {
+            async function fetchCategories() {
+                const categories = await getCategoryNest();
+                const formatted = categories.map((cat: any) => ({
+                    label: cat.name,
+                    value: String(cat.id),
+                }));
+                setCategoryOptions(formatted);
+            }
+        
+            fetchCategories();
+          }, []);
 
         const tokenCount: [number, number] = [inputAmountValue.length, 40];
         const errorMessage = inputAmountValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
@@ -76,10 +92,10 @@ export default function CreateReceipt({
                                 /> 
                                 <Select
                                     label="類別"
-                                    value={inputCategoryValue}
+                                    value={selectCategoryValue}
                                     required = {true}
                                     placeholder = "請選擇"
-                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                    onChange={(e) => setSelectedCategoryValue(e.target.value)}
                                     flexDirection= "row"
                                     //labelClassName= "string";
                                     //selectClassName= "string";
@@ -88,17 +104,13 @@ export default function CreateReceipt({
                                     //isLoading= {true}
                                     //disabled={false}
                                     //errorMessage={errorMessage}
-                                    options={[
-                                        { label: "工作", value: "work" },
-                                        { label: "生活", value: "life" },
-                                        { label: "娛樂", value: "entertainment" },
-                                    ]}
+                                    options={categoryOptions}
                                 />
-                                <Input // dropdown
+                                <Input 
                                     label= "名稱"
-                                    value= {inputCategoryValue}
+                                    value= {inputItemValue}
                                     type="text"
-                                    onChange={(e) => setInputCategoryValue(e.target.value)} //看需求
+                                    onChange={(e) => setInputItemValue(e.target.value)} //看需求
                                     flexDirection = 'row'
                                     //labelClassName= string //看需求
                                     //inputClassName= string //看需求

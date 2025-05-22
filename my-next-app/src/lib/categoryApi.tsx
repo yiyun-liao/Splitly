@@ -31,8 +31,9 @@ export async function getCategoryNest() {
 
     const data = await response.json();
     console.log('get category', data)
-    //return data;
+    return data;
     } catch (err) {
     console.error("Error syncing user to backend:", err);
+    return []; // 加上 fallback
     }
 }
