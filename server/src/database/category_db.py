@@ -28,3 +28,4 @@ class CategoryDB:
     def get_all_categories_nest(self):
         all_categories = self.db.query(CategoryModel).filter(CategoryModel.parent_id.is_(None)).all()
         return all_categories
+    

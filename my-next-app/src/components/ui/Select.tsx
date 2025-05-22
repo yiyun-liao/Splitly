@@ -2,6 +2,12 @@ import { useRef } from "react";
 import Icon from "./Icon";
 import clsx from "clsx";
 
+interface SelectOption {
+    label: string;
+    value: string;
+    disabled?: boolean;
+  }
+
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     label?: string;
     value?: string;
@@ -16,7 +22,7 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     isLoading?: boolean;
     disabled?: boolean;
     errorMessage?: string;
-    options: { label: string; value: string }[];
+    options: SelectOption[];
 }
 
 export default function Select({
@@ -88,10 +94,10 @@ export default function Select({
                     {placeholder}
                     </option>
                 }
-                {options.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                {options.map((opt: SelectOption) => (
+                    <option key={opt.value} value={opt.value} disabled={opt.disabled}>
                     {opt.label}
-                </option>
+                    </option>
                 ))}
             </select>
             {isLoading && (
@@ -122,10 +128,10 @@ export default function Select({
     leftIcon="solar:document-bold-duotone"
     isLoading={false}
     disabled={false}
-    errorMessage={formError}
+    errorMessage={formErrorａ}
     options={[
-        { label: "工作", value: "work" },
-        { label: "生活", value: "life" },
-        { label: "娛樂", value: "entertainment" },
+        { label: "工作", value: "work" , disabled: true},
+        { label: "生活", value: "life" , disabled: true },
+        { label: "娛樂", value: "entertainment"  , disabled: true},
     ]}
 /> */}

@@ -9,7 +9,7 @@ import ReceiptCard from "./ReceiptListSections/ReceiptCard";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import Select from "@/components/ui/Select";
-import { getCategoryNest } from "@/lib/categoryApi";
+import { fetchCategoriesForSelect } from "@/lib/categoryApi";
 
 
 interface CreateReceiptProps {
@@ -41,20 +41,11 @@ export default function CreateReceipt({
             };
         }, [open]);
         
-        const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string }[]>([]);
+        const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string; disabled: boolean }[]>([]);
         
         useEffect(() => {
-            async function fetchCategories() {
-                const categories = await getCategoryNest();
-                const formatted = categories.map((cat: any) => ({
-                    label: cat.name,
-                    value: String(cat.id),
-                }));
-                setCategoryOptions(formatted);
-            }
-        
-            fetchCategories();
-          }, []);
+            fetchCategoriesForSelect().then(setCategoryOptions);
+        }, []);
 
         const tokenCount: [number, number] = [inputAmountValue.length, 40];
         const errorMessage = inputAmountValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
