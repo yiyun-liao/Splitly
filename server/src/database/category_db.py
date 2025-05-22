@@ -1,4 +1,4 @@
-# server/src/services/category_service.py
+#server/src/database/category_db.py
 from sqlalchemy.orm import Session
 from src.database.models.category import CategoryModel 
 from src.routes.schema.category import CategorySchema

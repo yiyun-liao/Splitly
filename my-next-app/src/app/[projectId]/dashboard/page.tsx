@@ -4,12 +4,14 @@ import { withAuth } from "@/utils/withAuth";
 import { useAuth } from '@/contexts/AuthContext';
 import ExpenseOverview from "@/features/ExpenseOverview";
 import DashboardMain from "@/features/DashboardMain";
+import { getCategories, getCategoryNest } from '@/lib/categoryApi';
 
 
 function DashboardPage(){
     const params = useParams();
     const projectId = params.projectId;
     const { firebaseUser, userData, loading } = useAuth();
+    getCategoryNest()
     
 
     console.log(`userData: ${userData}, isLoading: ${loading}`)

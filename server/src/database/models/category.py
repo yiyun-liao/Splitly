@@ -1,3 +1,4 @@
+# server/src/database/models/category.py
 from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from src.database.models.base import Base

@@ -16,14 +16,14 @@ class CategorySchema(BaseModel):
     name: str
     parent_id: Optional[int] = None
 
-class CategoryCreateSchema(CategorySchema):
-    """Request schema for creating a new category."""
-    pass
+    model_config = {
+        "from_attributes": True
+    }
 
 class CategoryOutSchema(CategorySchema):
     """Response schema for returning a category with ID."""
     id: int
-    children: Optional[List["CategoryOutSchema"]] = []  # 巢狀 children
+    children: Optional[List["CategoryOutSchema"]] = None
 
     model_config = {
         "from_attributes": True
