@@ -54,7 +54,7 @@ export default function Dialog({
     return(
         <div className="fixed inset-0 z-101 flex items-center justify-center bg-black/50" onClick={handleBackdropClick}>
             <div className="w-fit h-fit p-4">
-                <div className="w-lg h-105 max-h-[90vh] bg-zinc-50 rounded-xl overflow-hidden shadow-md flex flex-col items-start justify-start">
+                <div className="w-lg h-140 max-h-[90vh] bg-zinc-50 rounded-xl overflow-hidden shadow-md flex flex-col items-start justify-start">
                     <div className={headerClass}>
                         {leftIcon && <IconButton icon={leftIcon} size="sm" variant="text-button" color="zinc" type="button" onClick={onLeftIconClick} />}
                         {header && <div className="w-full whitespace-nowrap truncate align-middle text-xl font-medium text-zinc-700" >{header}</div>}

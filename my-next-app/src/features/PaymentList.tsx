@@ -1,8 +1,8 @@
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
-import ReceiptCard from "./ReceiptListSections/ReceiptCard";
+import ReceiptCard from "./PaymentListSections/ReceiptCard";
 
-interface ReceiptListProps {
+interface PaymentListProps {
     userData: {
       avatar?: string;
       name?: string;
@@ -10,9 +10,9 @@ interface ReceiptListProps {
     onCreateClick?: () => void;
   }
 
-export default function ReceiptList({
+export default function PaymentList({
     userData
-    }:ReceiptListProps){
+    }:PaymentListProps){
 
         console.log("start to create receipt")
     

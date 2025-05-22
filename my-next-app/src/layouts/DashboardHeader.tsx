@@ -3,8 +3,8 @@ import { useRouter, useParams } from 'next/navigation';
 import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
-import ProjectMemberList from "../features/ExpenseOverviewSections/ProjectMemberListDialog";
-import CreateReceipt from "./CreateReceipt";
+import ProjectMemberList from "../features/ProjectOverviewSections/ProjectMemberListDialog";
+import CreatePayment from "./CreatePayment";
 
 interface DashboardHeaderProps {
     userData: {
@@ -15,17 +15,17 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({userData}:DashboardHeaderProps){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
-    const [isCreateReceipt, setIsCreateReceipt] = useState(false)
+    const [isCreatePayment, setIsCreatePayment] = useState(false)
     const router = useRouter();
     const params = useParams();
     const projectId = params.projectId;
 
     return(
         <div id="dashboard-header"  className="flex items-center gap-2 w-full justify-between px-6 py-2">
-            {isCreateReceipt && 
-                <CreateReceipt 
+            {isCreatePayment && 
+                <CreatePayment 
                     userData={userData} 
-                    onClose={() => setIsCreateReceipt(false)}
+                    onClose={() => setIsCreatePayment(false)}
                 />
             }
             <ProjectMemberList 
@@ -51,7 +51,7 @@ export default function DashboardHeader({userData}:DashboardHeaderProps){
                     leftIcon='solar:clipboard-add-linear'
                     //disabled={isdisabled} 
                     //isLoading={isLoading}
-                    onClick={() => setIsCreateReceipt(true)}
+                    onClick={() => setIsCreatePayment(true)}
                     >
                         新增支出
                 </Button> 

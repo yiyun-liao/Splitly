@@ -23,13 +23,15 @@ export default function ProjectSelfDetail({
             <div>
                 <div className="px-3 py-3 flex items-center justify-start gap-2">
                     <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                        <Avatar
-                            size="md"
-                            img={userData?.avatar}
-                            userName = {userData?.name}
-                            //onAvatarClick={() => console.log('Clicked!')}
-                        />
-                        <p className="text-base w-fll  truncate">Yun</p>
+                        <div  className="shrink-0  flex items-center justify-center ">
+                            <Avatar
+                                size="md"
+                                img={userData?.avatar}
+                                userName = {userData?.name}
+                                //onAvatarClick={() => console.log('Clicked!')}
+                            />
+                        </div>
+                        <p className="text-base w-fll  truncate">{userData?.name}</p>
                     </div>
                     <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                         <p className="shrink-0 text-base">欠你</p>
@@ -38,17 +40,19 @@ export default function ProjectSelfDetail({
                 </div>
                 <div className="px-3 py-3 flex items-center justify-start gap-2">
                     <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                        <Avatar
-                            size="md"
-                            img={userData?.avatar}
-                            userName = {userData?.name}
-                            //onAvatarClick={() => console.log('Clicked!')}
-                        />
-                        <p className="text-base w-fll  truncate">Yun</p>
+                        <div  className="shrink-0  flex items-center justify-center ">
+                            <Avatar
+                                size="md"
+                                img={userData?.avatar}
+                                userName = {userData?.name}
+                                //onAvatarClick={() => console.log('Clicked!')}
+                            />
+                        </div>
+                        <p className="text-base w-fll  truncate">{userData?.name}</p>
                     </div>
                     <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
-                        <p className="shrink-0 text-base">借你</p>
-                        <p className="shrink-0 text-xl font-semibold">$4803.43</p>
+                        <p className="shrink-0 text-base">欠你</p>
+                        <p className="shrink-0 text-xl font-semibold">$489.54805</p>
                     </div>
                 </div>
             </div>
