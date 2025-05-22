@@ -5,9 +5,6 @@ from datetime import datetime
 
 from src.database.models.base import Base
 
-
-# relational_db.py
-
 class Database:
     def __init__(
         self,
@@ -57,6 +54,9 @@ class Database:
         if not include_deleted and hasattr(model, "deleted_at"):
             query = query.filter(model.deleted_at.is_(None))
         return query.first()
+    
+    def get_by_uid(self, model, uid):
+        return self.session.query(model).filter_by(uid=uid).first()
 
     def update(self, model, id_, **kwargs):
         try:

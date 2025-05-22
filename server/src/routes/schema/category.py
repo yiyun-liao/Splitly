@@ -1,5 +1,10 @@
+# server/src/routes/schema/category.py
+
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, ForwardRef
+
+# 為了支援自己引用自己
+CategoryOutSchema = ForwardRef("CategoryOutSchema")
 
 class CategorySchema(BaseModel):
     """Schema for category routes
@@ -12,14 +17,17 @@ class CategorySchema(BaseModel):
     parent_id: Optional[int] = None
 
 class CategoryCreateSchema(CategorySchema):
+    """Request schema for creating a new category."""
     pass
 
 class CategoryOutSchema(CategorySchema):
+    """Response schema for returning a category with ID."""
     id: int
+    children: Optional[List["CategoryOutSchema"]] = []  # 巢狀 children
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
-# class CategoriesListSchema(BaseModel):
-#     """Schema for a single user."""
-#     categories: List[CategorySchema]
+CategoryOutSchema.model_rebuild()
+

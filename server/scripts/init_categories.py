@@ -1,7 +1,8 @@
-# server/scripts/init_categories.py
+# terminal: PYTHONPATH=. python3 scripts/init_categories.py
 
 from src.database.relational_db import Database
 from src.database.models.category import CategoryModel
+from src.database.models.base import Base
 
 db = Database(db_url="sqlite:///./db.sqlite3")
 
@@ -13,6 +14,20 @@ nested_categories = {
     "娛樂": ["遊戲", "美容", "遊樂園", "展覽", "電影", "音樂", "運動", "派對", "按摩", "其他"]
 }
 
+# reset categories
+# if __name__ == "__main__":
+#     db = Database(db_url="sqlite:///./db.sqlite3", verbose=True)  # 請換成實際 DB 路徑
+
+#     # 只刪除 categories table
+#     CategoryModel.__table__.drop(bind=db.engine, checkfirst=True)
+
+#     # 重新建立 categories table
+#     CategoryModel.__table__.create(bind=db.engine, checkfirst=True)
+
+#     print("✅ categories table 已重新建立")
+
+
+# create and update categories
 def seed_categories():
     for parent_name, children in nested_categories.items():
         # 建立父分類
@@ -27,5 +42,15 @@ def seed_categories():
     db.session.commit()
     print("✅ 成功建立分類！")
 
+def create_category_if_not_exists(name, parent_id=None):
+    existing = db.session.query(CategoryModel).filter_by(name=name, parent_id=parent_id).first()
+    if existing:
+        return existing
+    new_category = CategoryModel(name=name, parent_id=parent_id)
+    db.add(new_category)
+    db.session.flush()
+    return new_category
+
 if __name__ == "__main__":
-    seed_categories()
+    # seed_categories()
+    # create_category_if_not_exists()
