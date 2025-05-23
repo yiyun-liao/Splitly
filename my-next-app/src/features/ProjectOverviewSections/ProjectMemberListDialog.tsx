@@ -17,7 +17,7 @@ export default function ProjectMemberList({
     onClose,
     userData
 }:ProjectMemberListProps){
-    const [step, setStep] = useState('list')
+    const [step, setStep] = useState<"list" | "add">("list")
     const handleBack = () => {
         setStep('list')
     }

@@ -22,7 +22,11 @@ export default function PayerFunction({
 
     const renderFooter = () => {
         return(
-            <>
+            <div className="w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
+                <div className="w-full flex items-start justify-between gap-2 text-base">
+                    <p className="wrap-break-word">支出總金額 {} 元</p>
+                    <p className="shrink-0">剩餘 {} 元</p>
+                </div>
                 <Button
                     size='sm'
                     width='full'
@@ -34,7 +38,7 @@ export default function PayerFunction({
                     >
                         完成
                 </Button>
-            </>
+            </div>
         )
     }
 

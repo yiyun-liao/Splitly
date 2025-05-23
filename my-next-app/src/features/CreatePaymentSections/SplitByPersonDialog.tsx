@@ -4,8 +4,8 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState } from "react";
 
-interface SplitFunctionProps {
-    isSplitFunctionOpen: boolean;
+interface SplitByPersonProps {
+    isSplitByPersonOpen: boolean;
     onClose: () => void;
     userData: {
         avatar?: string;
@@ -13,18 +13,22 @@ interface SplitFunctionProps {
     } | null;
 }
 
-export default function SplitFunction({
-        isSplitFunctionOpen = false,
+export default function SplitByPerson({
+        isSplitByPersonOpen = false,
         onClose,
         userData
-    }:SplitFunctionProps){
+    }:SplitByPersonProps){
 
-    const [chooseSplitFunction, setChooseSplitFunction] = useState<"percentage" | "actual" | "adjusted">("percentage");
+    const [chooseSplitByPerson, setChooseSplitByPerson] = useState<"percentage" | "actual" | "adjusted">("percentage");
     const [isPayByUID1, setIsPayByUID1]=useState('')
 
     const renderFooter = () => {
         return(
-            <>
+            <div className="w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
+                <div className="w-full flex items-start justify-between gap-2 text-base">
+                    <p className="wrap-break-word">{splitByPersonDesc}</p>
+                    <p className="shrink-0">{splitByPersonAmount}</p>
+                </div>
                 <Button
                     size='sm'
                     width='full'
@@ -36,72 +40,68 @@ export default function SplitFunction({
                     >
                         完成
                 </Button>
-            </>
+            </div>
         )
     }
 
-    const splitFunctionDescMap: Record<string, string> = {
+    const splitByPersonDescMap: Record<string, string> = {
         percentage: '每個人依比例分攤',
         actual: '每個人實際支出',
-        adjusted: '扣除實際支出後剩餘評分',
+        adjusted: '扣除實際支出後剩餘均分',
       };
       
-    const splitFunctionDesc = splitFunctionDescMap[chooseSplitFunction] || '';
+    const splitByPersonDesc = splitByPersonDescMap[chooseSplitByPerson] || '';
 
-    const splitFunctionAmountMap: Record<string, string> = {
+    const splitByPersonAmountMap: Record<string, string> = {
         percentage: '目前共計 {}%',
         actual: '目前共計 {}元',
         adjusted: '剩餘 {}元將均分',
       };
       
-    const splitFunctionAmount = splitFunctionAmountMap[chooseSplitFunction] || '';
+    const splitByPersonAmount = splitByPersonAmountMap[chooseSplitByPerson] || '';
       
 
     const renderBody = () => {
         return(
             <div className="relative text-zinc-700">
-                <div className="w-full pb-2 bg-zinc-50 sticky -top-4 z-20">
+                <div className="w-full pb-4 bg-zinc-50 sticky -top-4 z-20">
                     <div id="receipt-way" className=" w-full flex max-w-xl bg-sp-blue-200 rounded-xl">
                         <Button
                             size='sm'
                             width='full'
-                            variant= {chooseSplitFunction == 'percentage' ? 'solid' : 'text-button'}
+                            variant= {chooseSplitByPerson == 'percentage' ? 'solid' : 'text-button'}
                             color= 'primary'
                             //disabled={isdisabled} 
                             //isLoading={isLoading}
-                            onClick={() => setChooseSplitFunction("percentage")}
+                            onClick={() => setChooseSplitByPerson("percentage")}
                             >
                                 均分
                         </Button>
                         <Button
                             size='sm'
                             width='full'
-                            variant={chooseSplitFunction == 'actual' ? 'solid' : 'text-button'}
+                            variant={chooseSplitByPerson == 'actual' ? 'solid' : 'text-button'}
                             color='primary'
                             //disabled={isdisabled} 
                             //isLoading={isLoading}
-                            onClick={() => setChooseSplitFunction("actual")}
+                            onClick={() => setChooseSplitByPerson("actual")}
                             >
                                 金額
                         </Button>
                         <Button
                             size='sm'
                             width='full'
-                            variant={chooseSplitFunction == 'adjusted' ? 'solid' : 'text-button'}
+                            variant={chooseSplitByPerson == 'adjusted' ? 'solid' : 'text-button'}
                             color='primary'
                             //disabled={isdisabled} 
                             //isLoading={isLoading}
-                            onClick={() => setChooseSplitFunction("adjusted")}
+                            onClick={() => setChooseSplitByPerson("adjusted")}
                             >
                                 特別額
                         </Button>
                     </div>
-                    <div className="px-3 py-4 flex items-start justify-between gap-2 text-base">
-                        <p className="wrap-break-word">{splitFunctionDesc}</p>
-                        <p className="shrink-0">{splitFunctionAmount}</p>
-                    </div>
                 </div>
-                {chooseSplitFunction === 'percentage' && (
+                {chooseSplitByPerson === 'percentage' && (
                     <div className="pt-2">
                         <div className="px-3 pb-2 flex items-start justify-start gap-2">
                             <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
@@ -130,7 +130,7 @@ export default function SplitFunction({
                         </div>
                     </div>
                 )}
-                {chooseSplitFunction === 'actual' && (
+                {chooseSplitByPerson === 'actual' && (
                     <div className="pt-2">
                         <div className="px-3 pb-2 flex items-start justify-start gap-2">
                             <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
@@ -159,7 +159,7 @@ export default function SplitFunction({
                         </div>
                     </div>
                 )}
-                {chooseSplitFunction === 'adjusted' && (
+                {chooseSplitByPerson === 'adjusted' && (
                     <div className="pt-2">
                         <div className="px-3 pb-2 flex items-start justify-start gap-2">
                             <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
@@ -195,7 +195,7 @@ export default function SplitFunction({
     return(
         <Dialog
                 header="還款方式"
-                open={isSplitFunctionOpen} // 從某處打開
+                open={isSplitByPersonOpen} // 從某處打開
                 onClose={ () => {
                     onClose();
                 }} // 點擊哪裡關閉

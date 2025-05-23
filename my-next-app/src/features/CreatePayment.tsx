@@ -10,7 +10,8 @@ import TextArea from "@/components/ui/textArea";
 import Select from "@/components/ui/Select";
 import { fetchCategoriesForSelect } from "@/lib/categoryApi";
 import PayerFunction from "./CreatePaymentSections/PayerFunctionDialog";
-import SplitFunction from "./CreatePaymentSections/SplitFunctionDialog";
+import SplitByPerson from "./CreatePaymentSections/SplitByPersonDialog";
+import SplitByItem from "./CreatePaymentSections/SplitByItemDialog";
 
 interface CreatePaymentProps {
     userData: {
@@ -35,9 +36,10 @@ export default function CreatePayment({
         const [selectCategoryValue, setSelectedCategoryValue] = useState("");
         const [inputItemValue, setInputItemValue] = useState("");
         const [inputDescValue, setInputDescValue] = useState("");
+        
         const [isPayerFunctionOpen, setIsPayerFunctionOpen] = useState(false);
-        const [isSplitFunctionOpen, setIsSplitFunctionOpen] = useState(false);
-
+        const [isSplitByPersonOpen, setIsSplitByPersonOpen] = useState(false);
+        const [isSplitByItemOpen, setIsSplitByItemOpen] = useState(false);
         // receipt-debt
         
         useEffect(() => {
@@ -88,11 +90,18 @@ export default function CreatePayment({
                         onClose={() => setIsPayerFunctionOpen(false)}
                     />
                 }
-                {isSplitFunctionOpen &&
-                    <SplitFunction
-                        isSplitFunctionOpen = {isSplitFunctionOpen}
+                {isSplitByPersonOpen &&
+                    <SplitByPerson
+                        isSplitByPersonOpen = {isSplitByPersonOpen}
                         userData={userData} 
-                        onClose={() => setIsSplitFunctionOpen(false)}
+                        onClose={() => setIsSplitByPersonOpen(false)}
+                    />
+                }
+                {isSplitByItemOpen &&
+                    <SplitByItem
+                        isSplitByItemOpen = {isSplitByItemOpen}
+                        userData={userData} 
+                        onClose={() => setIsSplitByItemOpen(false)}
                     />
                 }
                 <div className="w-full h-fit pl-17 max-w-520 flex flex-col items-center justify-bottom">
@@ -229,7 +238,7 @@ export default function CreatePayment({
                                                 color='zinc'
                                                 //disabled={isdisabled} 
                                                 //isLoading={isLoading}
-                                                // onClick={()=> setIsSelfExpenseDialogOpen(true)}
+                                                onClick={() => setIsSplitByItemOpen(true)}
                                                 >
                                                     項目分帳
                                             </Button>
@@ -240,7 +249,7 @@ export default function CreatePayment({
                                                 color='primary'
                                                 //disabled={isdisabled} 
                                                 //isLoading={isLoading}
-                                                onClick={() => setIsSplitFunctionOpen(true)}
+                                                onClick={() => setIsSplitByPersonOpen(true)}
                                                 >
                                                     成員分帳
                                             </Button>
