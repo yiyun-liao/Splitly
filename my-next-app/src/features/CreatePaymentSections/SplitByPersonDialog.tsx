@@ -22,6 +22,21 @@ export default function SplitByPerson({
     const [chooseSplitByPerson, setChooseSplitByPerson] = useState<"percentage" | "actual" | "adjusted">("percentage");
     const [isPayByUID1, setIsPayByUID1]=useState('')
 
+    // render footer
+    const splitByPersonDescMap: Record<string, string> = {
+        percentage: '每個人依比例分攤',
+        actual: '每個人實際支出',
+        adjusted: '扣除實際支出後剩餘均分',
+      };
+    const splitByPersonDesc = splitByPersonDescMap[chooseSplitByPerson] || '';
+
+    const splitByPersonAmountMap: Record<string, string> = {
+        percentage: '目前剩餘 {}% / 共計 100%',
+        actual: '目前剩餘 {}元/ 共計 {} 元',
+        adjusted: '剩餘 {}元將均分/ 共計 {} 元',
+      };
+    const splitByPersonAmount = splitByPersonAmountMap[chooseSplitByPerson] || '';
+    
     const renderFooter = () => {
         return(
             <div className="w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
@@ -44,23 +59,8 @@ export default function SplitByPerson({
         )
     }
 
-    const splitByPersonDescMap: Record<string, string> = {
-        percentage: '每個人依比例分攤',
-        actual: '每個人實際支出',
-        adjusted: '扣除實際支出後剩餘均分',
-      };
-      
-    const splitByPersonDesc = splitByPersonDescMap[chooseSplitByPerson] || '';
 
-    const splitByPersonAmountMap: Record<string, string> = {
-        percentage: '目前共計 {}%',
-        actual: '目前共計 {}元',
-        adjusted: '剩餘 {}元將均分',
-      };
-      
-    const splitByPersonAmount = splitByPersonAmountMap[chooseSplitByPerson] || '';
-      
-
+    // render body
     const renderBody = () => {
         return(
             <div className="relative text-zinc-700">
@@ -194,7 +194,7 @@ export default function SplitByPerson({
 
     return(
         <Dialog
-                header="還款方式"
+                header="成員分帳"
                 open={isSplitByPersonOpen} // 從某處打開
                 onClose={ () => {
                     onClose();

@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from "react";
-import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Avatar from "@/components/ui/Avatar";
@@ -12,6 +11,8 @@ import { fetchCategoriesForSelect } from "@/lib/categoryApi";
 import PayerFunction from "./CreatePaymentSections/PayerFunctionDialog";
 import SplitByPerson from "./CreatePaymentSections/SplitByPersonDialog";
 import SplitByItem from "./CreatePaymentSections/SplitByItemDialog";
+import DebtPayer from "./CreatePaymentSections/DebtPayerDialog";
+import DebtReceiver from "./CreatePaymentSections/DebtReceiverDialog";
 
 interface CreatePaymentProps {
     userData: {
@@ -41,6 +42,10 @@ export default function CreatePayment({
         const [isSplitByPersonOpen, setIsSplitByPersonOpen] = useState(false);
         const [isSplitByItemOpen, setIsSplitByItemOpen] = useState(false);
         // receipt-debt
+        const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
+        const [selectedDebtPayerUid, setSelectedDebtPayerUid] = useState("4kjf39480fjlk")
+        const [isDebtReceiverOpen, setIsDebtReceiverOpen] = useState(false);
+        const [selectedDebtReceiverUid, setSelectedDebtReceiverUid] = useState("4kjf39480fjlk")
         
         useEffect(() => {
             if (open) document.body.style.overflow = 'hidden';
@@ -51,12 +56,6 @@ export default function CreatePayment({
         }, [open]);
 
 
-        useEffect(()=>{
-            if (receiptWay){
-
-            }
-        })
-
         // render category
         const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string; disabled: boolean }[]>([]);
         
@@ -64,7 +63,16 @@ export default function CreatePayment({
             fetchCategoriesForSelect().then(setCategoryOptions);
         }, []);
 
-
+        // 假資料
+        const userList = [
+            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
+            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/2.jpg", name: "Bob", uid: "92jf20fkk29jf" },
+            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/3.jpg", name: "Charlie", uid: "fj30fj39d9s0d" },
+            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/4.jpg", name: "Diana", uid: "kfj02jfd203kd" },
+            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/5.jpg", name: "Eve", uid: "dkf02kdf932kd" },
+        ];
+        const selectedPlayer = userList.find(user => user.uid === selectedDebtPayerUid);
+        const selectedReceiver = userList.find(user => user.uid === selectedDebtReceiverUid);
 
 
 
@@ -72,9 +80,6 @@ export default function CreatePayment({
         const errorMessage = inputAmountValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
   
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-        const headerClass = clsx("min-h-13 py-2 px-4 w-full inline-flex items-center justify-start gap-2")
-        const bodyClass = clsx("py-4 px-4 w-full flex-1 overflow-y-auto overflow-x-none", )
-        const footerClass = clsx("min-h-13 py-2 px-4 w-full flex gap-1", ) //items-center justify-end
         const labelClass = clsx("w-full font-medium truncate")
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
         const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
@@ -83,28 +88,46 @@ export default function CreatePayment({
         
         return(
             <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/50">
-                {isPayerFunctionOpen &&
-                    <PayerFunction
-                        isPayerFunctionOpen = {isPayerFunctionOpen}
-                        userData={userData} 
-                        onClose={() => setIsPayerFunctionOpen(false)}
-                    />
-                }
-                {isSplitByPersonOpen &&
-                    <SplitByPerson
-                        isSplitByPersonOpen = {isSplitByPersonOpen}
-                        userData={userData} 
-                        onClose={() => setIsSplitByPersonOpen(false)}
-                    />
-                }
-                {isSplitByItemOpen &&
-                    <SplitByItem
-                        isSplitByItemOpen = {isSplitByItemOpen}
-                        userData={userData} 
-                        onClose={() => setIsSplitByItemOpen(false)}
-                    />
-                }
                 <div className="w-full h-fit pl-17 max-w-520 flex flex-col items-center justify-bottom">
+                    {isPayerFunctionOpen &&
+                        <PayerFunction
+                            isPayerFunctionOpen = {isPayerFunctionOpen}
+                            userData={userData} 
+                            onClose={() => setIsPayerFunctionOpen(false)}
+                        />
+                    }
+                    {isSplitByPersonOpen &&
+                        <SplitByPerson
+                            isSplitByPersonOpen = {isSplitByPersonOpen}
+                            userData={userData} 
+                            onClose={() => setIsSplitByPersonOpen(false)}
+                        />
+                    }
+                    {isSplitByItemOpen &&
+                        <SplitByItem
+                            isSplitByItemOpen = {isSplitByItemOpen}
+                            userData={userData} 
+                            onClose={() => setIsSplitByItemOpen(false)}
+                        />
+                    }
+                    {isDebtPayerOpen &&
+                        <DebtPayer
+                            isDebtPayerOpen = {isDebtPayerOpen}
+                            onClose={() => setIsDebtPayerOpen(false)}
+                            selectedDebtPayerUid={selectedDebtPayerUid}
+                            setSelectedDebtPayerUid={setSelectedDebtPayerUid}
+                            userList={userList}
+                        />
+                    }
+                    {isDebtReceiverOpen &&
+                        <DebtReceiver
+                            isDebtReceiverOpen = {isDebtReceiverOpen}
+                            onClose={() => setIsDebtReceiverOpen(false)}
+                            selectedDebtReceiverUid={selectedDebtReceiverUid}
+                            setSelectedDebtReceiverUid={setSelectedDebtReceiverUid}
+                            userList={userList}
+                        />
+                    }
                     <div id="receipt-form" className="w-full h-screen px-6 py-6 rounded-2xl overflow-hidden shadow-md flex flex-col items-start justify-bottom  bg-sp-green-300 text-zinc-700 text-base">
                         <div id="receipt-form-header"  className="w-full max-w-xl flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden">
                             <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
@@ -345,11 +368,11 @@ export default function CreatePayment({
                                                     <div className="shrink-0  flex items-center justify-center ">
                                                         <Avatar
                                                             size="md"
-                                                            img={userData?.avatar}
-                                                            userName = {userData?.name}
+                                                            img={selectedPlayer?.avatar}
+                                                            userName = {selectedPlayer?.name}
                                                         />
                                                     </div>
-                                                    <p className="text-base truncate">{userData?.name}</p>
+                                                    <p className="text-base truncate">{selectedPlayer?.name}</p>
                                                 </div>
                                                 <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                                                     <Button
@@ -359,7 +382,7 @@ export default function CreatePayment({
                                                         color='zinc'
                                                         //disabled={isdisabled} 
                                                         //isLoading={isLoading}
-                                                        // onClick={()=> setIsSelfExpenseDialogOpen(true)}
+                                                        onClick={()=> setIsDebtPayerOpen(true)}
                                                         >
                                                             其他人
                                                     </Button>
@@ -394,7 +417,7 @@ export default function CreatePayment({
                                     </div>
                                     <div className={`pb-5 ${formSpan3CLass}`}>
                                         <div className="w-full flex items-center justify-start gap-2">
-                                            <span className={labelClass}>匯款人</span>
+                                            <span className={labelClass}>收款人</span>
                                         </div>
                                         <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
                                             <div className="px-3 py-3 flex items-center justify-start gap-2">
@@ -402,11 +425,11 @@ export default function CreatePayment({
                                                     <div className="shrink-0  flex items-center justify-center ">
                                                         <Avatar
                                                             size="md"
-                                                            img={userData?.avatar}
-                                                            userName = {userData?.name}
+                                                            img={selectedReceiver?.avatar}
+                                                            userName = {selectedReceiver?.name}
                                                         />
                                                     </div>
-                                                    <p className="text-base truncate">{userData?.name}</p>
+                                                    <p className="text-base truncate">{selectedReceiver?.name}</p>
                                                 </div>
                                                 <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                                                     <Button
@@ -416,7 +439,7 @@ export default function CreatePayment({
                                                         color='zinc'
                                                         //disabled={isdisabled} 
                                                         //isLoading={isLoading}
-                                                        // onClick={()=> setIsSelfExpenseDialogOpen(true)}
+                                                        onClick={()=> setIsDebtReceiverOpen(true)}
                                                         >
                                                             其他人
                                                     </Button>
