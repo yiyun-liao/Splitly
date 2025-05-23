@@ -81,6 +81,7 @@ export default function SplitPayer({
                         );
                         onClose()
                         setSplitPayerMap(filteredMap);
+                        console.log("完成分帳後的 map：", filteredMap);
                     }}
                     >
                         完成

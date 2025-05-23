@@ -60,15 +60,27 @@ export default function CreatePayment({
         });
 
         useEffect(() => {
-            const amount = parseFloat(inputAmountValue || "0");
-            setSplitPayerMap({ ["4kjf39480fjlk"]: amount });
-          }, [inputAmountValue]);
+            if(receiptWay === 'split' && userList.length > 0 && Number(inputAmountValue) > 0){
+                const amount = parseFloat(inputAmountValue || "0");
+                setSplitPayerMap({ ["4kjf39480fjlk"]: amount });
+            }
+        }, [inputAmountValue, receiptWay]);
+
 
         // 還款 by person
         const [splitByPersonMap, setSplitByPersonMap] = useState<Record<string, number>>(() => {
             const average = Number(inputAmountValue) / userList.length;
             return Object.fromEntries(userList.map(user => [user.uid, average]));
         });
+
+        useEffect(() => {
+            if (receiptWay === "split" && splitWay === "person" && userList.length > 0 && Number(inputAmountValue) > 0) {
+                const total = parseFloat(inputAmountValue || "0");
+                const average = Math.floor((total / userList.length) * 100) / 100; // 小數點兩位
+                const map = Object.fromEntries(userList.map(user => [user.uid, average]));
+                setSplitByPersonMap(map);
+            }
+        }, [inputAmountValue,receiptWay, splitWay]);
 
         // receipt-debt
         const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
@@ -95,15 +107,7 @@ export default function CreatePayment({
         const selectedDebtReceiver = userList.find(user => user.uid === selectedDebtReceiverUid);
 
 
-        // 還款 by person
-        useEffect(() => {
-            if (receiptWay === "split" && splitWay === "person" && userList.length > 0 && Number(inputAmountValue) > 0) {
-                const total = parseFloat(inputAmountValue || "0");
-                const average = Math.floor((total / userList.length) * 100) / 100; // 小數點兩位
-                const map = Object.fromEntries(userList.map(user => [user.uid, average]));
-                setSplitByPersonMap(map);
-            }
-        }, [inputAmountValue,receiptWay, splitWay]);
+
 
 
 
@@ -137,8 +141,11 @@ export default function CreatePayment({
                     {isSplitByPersonOpen &&
                         <SplitByPerson
                             isSplitByPersonOpen = {isSplitByPersonOpen}
-                            userData={userData} 
                             onClose={() => setIsSplitByPersonOpen(false)}
+                            userList={userList}
+                            inputAmountValue={inputAmountValue}
+                            splitByPersonMap={splitByPersonMap}
+                            setSplitByPersonMap={setSplitByPersonMap}
                         />
                     }
                     {isSplitByItemOpen &&
@@ -265,7 +272,7 @@ export default function CreatePayment({
                                                 size='sm'
                                                 width='fit'
                                                 variant='text-button'
-                                                color='zinc'
+                                                color='primary'
                                                 onClick={() => setIsSplitPayerOpen(true)}
                                                 >
                                                     多位付款人
