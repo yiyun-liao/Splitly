@@ -43,21 +43,21 @@ export default function DebtPayer({
                         onClose(); 
                     }}
                     >
-                    <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
-                        <div className="shrink-0 flex items-center justify-center">
-                        <Avatar size="md" img={user.avatar} userName={user.name} />
+                        <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
+                            <div className="shrink-0 flex items-center justify-center">
+                            <Avatar size="md" img={user.avatar} userName={user.name} />
+                            </div>
+                            <p className="text-base w-full truncate">{user.name}</p>
                         </div>
-                        <p className="text-base w-full truncate">{user.name}</p>
-                    </div>
-                    <div className="shrink-0 flex items-start justify-start gap-2">
-                        <IconButton
-                        icon={isSelected ? "solar:unread-bold" : "solar:stop-line-duotone"}
-                        size="sm"
-                        variant="text-button"
-                        color="zinc"
-                        type="button"
-                        />
-                    </div>
+                        <div className="shrink-0 flex items-start justify-start gap-2">
+                            <IconButton
+                            icon={isSelected ? "solar:unread-bold" : "solar:stop-line-duotone"}
+                            size="sm"
+                            variant="text-button"
+                            color="zinc"
+                            type="button"
+                            />
+                        </div>
                     </div>
                 );
                 })}

@@ -8,7 +8,7 @@ import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import Select from "@/components/ui/Select";
 import { fetchCategoriesForSelect } from "@/lib/categoryApi";
-import PayerFunction from "./CreatePaymentSections/PayerFunctionDialog";
+import SplitPayer from "./CreatePaymentSections/SplitPayerDialog";
 import SplitByPerson from "./CreatePaymentSections/SplitByPersonDialog";
 import SplitByItem from "./CreatePaymentSections/SplitByItemDialog";
 import DebtPayer from "./CreatePaymentSections/DebtPayerDialog";
@@ -23,24 +23,53 @@ interface CreatePaymentProps {
     open?: boolean;
   }
 
+const userList = [
+    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
+    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/2.jpg", name: "Bob", uid: "92jf20fkk29jf" },
+    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/3.jpg", name: "Charlie", uid: "fj30fj39d9s0d" },
+    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/4.jpg", name: "Diana", uid: "kfj02jfd203kd" },
+    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/5.jpg", name: "Eve", uid: "dkf02kdf932kd" },
+];
+
 export default function CreatePayment({
     userData,
     onClose,
     open = true,
     }:CreatePaymentProps){
+
         // receipt-way
-        const [receiptWay, setReceiptWay] = useState<"pay" | "debt">("pay");
-        // receipt-pay
+        const [receiptWay, setReceiptWay] = useState<"split" | "debt">("split");
+
+        // receipt-split
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
         const [inputAmountValue, setInputAmountValue] = useState("");
-        const [inputTimeValue, setInputTimeValue] = useState("");
+        const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string; disabled: boolean }[]>([]);
         const [selectCategoryValue, setSelectedCategoryValue] = useState("");
         const [inputItemValue, setInputItemValue] = useState("");
+        const [inputTimeValue, setInputTimeValue] = useState("");
         const [inputDescValue, setInputDescValue] = useState("");
-        
-        const [isPayerFunctionOpen, setIsPayerFunctionOpen] = useState(false);
+
+        const [splitWay, setSplitWay] = useState<"item" | "person">("person");
+        const [isSplitPayerOpen, setIsSplitPayerOpen] = useState(false);
         const [isSplitByPersonOpen, setIsSplitByPersonOpen] = useState(false);
         const [isSplitByItemOpen, setIsSplitByItemOpen] = useState(false);
+
+        //  付款人
+        const [splitPayerMap, setSplitPayerMap] = useState<Record<string, number>>({
+            ["4kjf39480fjlk"]: parseFloat(inputAmountValue || "0") || 0
+        });
+
+        useEffect(() => {
+            const amount = parseFloat(inputAmountValue || "0");
+            setSplitPayerMap({ ["4kjf39480fjlk"]: amount });
+          }, [inputAmountValue]);
+
+        // 還款 by person
+        const [splitByPersonMap, setSplitByPersonMap] = useState<Record<string, number>>(() => {
+            const average = Number(inputAmountValue) / userList.length;
+            return Object.fromEntries(userList.map(user => [user.uid, average]));
+        });
+
         // receipt-debt
         const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
         const [selectedDebtPayerUid, setSelectedDebtPayerUid] = useState("4kjf39480fjlk")
@@ -57,27 +86,33 @@ export default function CreatePayment({
 
 
         // render category
-        const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string; disabled: boolean }[]>([]);
-        
         useEffect(() => {
             fetchCategoriesForSelect().then(setCategoryOptions);
         }, []);
 
         // 假資料
-        const userList = [
-            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
-            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/2.jpg", name: "Bob", uid: "92jf20fkk29jf" },
-            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/3.jpg", name: "Charlie", uid: "fj30fj39d9s0d" },
-            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/4.jpg", name: "Diana", uid: "kfj02jfd203kd" },
-            { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/5.jpg", name: "Eve", uid: "dkf02kdf932kd" },
-        ];
-        const selectedPlayer = userList.find(user => user.uid === selectedDebtPayerUid);
-        const selectedReceiver = userList.find(user => user.uid === selectedDebtReceiverUid);
+        const selectedDebtPayer = userList.find(user => user.uid === selectedDebtPayerUid);
+        const selectedDebtReceiver = userList.find(user => user.uid === selectedDebtReceiverUid);
+
+
+        // 還款 by person
+        useEffect(() => {
+            if (receiptWay === "split" && splitWay === "person" && userList.length > 0 && Number(inputAmountValue) > 0) {
+                const total = parseFloat(inputAmountValue || "0");
+                const average = Math.floor((total / userList.length) * 100) / 100; // 小數點兩位
+                const map = Object.fromEntries(userList.map(user => [user.uid, average]));
+                setSplitByPersonMap(map);
+            }
+        }, [inputAmountValue,receiptWay, splitWay]);
 
 
 
-        const tokenCount: [number, number] = [inputAmountValue.length, 40];
-        const errorMessage = inputAmountValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
+        // receipt-debt
+
+
+        // css
+        //const tokenCount: [number, number] = [inputAmountValue.length, 40];
+        //const errorMessage = inputAmountValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
   
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
@@ -88,12 +123,15 @@ export default function CreatePayment({
         
         return(
             <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/50">
-                <div className="w-full h-fit pl-17 max-w-520 flex flex-col items-center justify-bottom">
-                    {isPayerFunctionOpen &&
-                        <PayerFunction
-                            isPayerFunctionOpen = {isPayerFunctionOpen}
-                            userData={userData} 
-                            onClose={() => setIsPayerFunctionOpen(false)}
+                <div>
+                    {isSplitPayerOpen &&
+                        <SplitPayer
+                            isSplitPayerOpen = {isSplitPayerOpen}
+                            onClose={() => setIsSplitPayerOpen(false)}
+                            userList={userList}
+                            inputAmountValue={inputAmountValue}
+                            splitPayerMap={splitPayerMap}
+                            setSplitPayerMap={setSplitPayerMap}
                         />
                     }
                     {isSplitByPersonOpen &&
@@ -128,10 +166,12 @@ export default function CreatePayment({
                             userList={userList}
                         />
                     }
+                </div>
+                <div className="w-full h-fit pl-17 max-w-520 flex flex-col items-center justify-bottom">
                     <div id="receipt-form" className="w-full h-screen px-6 py-6 rounded-2xl overflow-hidden shadow-md flex flex-col items-start justify-bottom  bg-sp-green-300 text-zinc-700 text-base">
                         <div id="receipt-form-header"  className="w-full max-w-xl flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden">
                             <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
-                            <p className="w-full text-xl font-medium truncate min-w-0"> 新增{receiptWay == 'pay' ? '支出' : '轉帳'}</p>
+                            <p className="w-full text-xl font-medium truncate min-w-0"> 新增{receiptWay == 'split' ? '支出' : '轉帳'}</p>
                             <Button
                                 size='sm'
                                 width='fit'
@@ -148,11 +188,11 @@ export default function CreatePayment({
                             <Button
                                 size='sm'
                                 width='full'
-                                variant= {receiptWay == 'pay' ? 'solid' : 'text-button'}
+                                variant= {receiptWay == 'split' ? 'solid' : 'text-button'}
                                 color= 'primary'
                                 //disabled={isdisabled} 
                                 //isLoading={isLoading}
-                                onClick={() => setReceiptWay("pay")}
+                                onClick={() => setReceiptWay("split")}
                                 >
                                     支出
                             </Button>
@@ -168,8 +208,8 @@ export default function CreatePayment({
                                     轉帳
                             </Button>
                         </div>
-                        {receiptWay === "pay" && (
-                            <section id="receipt-pay"  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
+                        {receiptWay === "split" && (
+                            <section id="receipt-split"  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
                                 <div id="receipt-form-frame" className="max-w-xl w-full grid grid-cols-3 gap-2">
                                     <div className={formSpan1CLass}>
                                         <span className={labelClass}>費用</span>
@@ -226,106 +266,90 @@ export default function CreatePayment({
                                                 width='fit'
                                                 variant='text-button'
                                                 color='zinc'
-                                                //disabled={isdisabled} 
-                                                //isLoading={isLoading}
-                                                onClick={() => setIsPayerFunctionOpen(true)}
+                                                onClick={() => setIsSplitPayerOpen(true)}
                                                 >
                                                     多位付款人
                                             </Button>
                                         </div>
                                         <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
-                                            <div className="px-3 py-3 flex items-center justify-start gap-2">
-                                                <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                                                    <div className="shrink-0  flex items-center justify-center ">
+                                            {Object.entries(splitPayerMap).map(([uid, amount]) => {
+                                                const user = userList.find(user => user.uid === uid);
+                                                if (!user) return null;
+                                                return (
+                                                <div key={uid} className="px-3 py-3 flex items-center justify-start gap-2">
+                                                    <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
+                                                    <div className="shrink-0 flex items-center justify-center">
                                                         <Avatar
-                                                            size="md"
-                                                            img={userData?.avatar}
-                                                            userName = {userData?.name}
+                                                        size="md"
+                                                        img={user.avatar}
+                                                        userName={user.name}
                                                         />
                                                     </div>
-                                                    <p className="text-base truncate">{userData?.name}</p>
+                                                    <p className="text-base truncate">{user.name}</p>
+                                                    </div>
+                                                    <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
+                                                    <p className="shrink-0 text-xl font-lg">${amount.toFixed(2)}</p>
+                                                    </div>
                                                 </div>
-                                                <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
-                                                    <p className="shrink-0 text-xl font-lg">$489.54805</p>
-                                                </div>
-                                            </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                     <div className={`pb-5 ${formSpan3CLass}`}>
                                         <div className="w-full flex items-center justify-start gap-2">
                                             <span className={labelClass}>分帳方式</span>
-                                            <Button
-                                                size='sm'
-                                                width='fit'
-                                                variant='text-button'
-                                                color='zinc'
-                                                //disabled={isdisabled} 
-                                                //isLoading={isLoading}
-                                                onClick={() => setIsSplitByItemOpen(true)}
-                                                >
-                                                    項目分帳
-                                            </Button>
-                                            <Button
-                                                size='sm'
-                                                width='fit'
-                                                variant='solid'
-                                                color='primary'
-                                                //disabled={isdisabled} 
-                                                //isLoading={isLoading}
-                                                onClick={() => setIsSplitByPersonOpen(true)}
-                                                >
-                                                    成員分帳
-                                            </Button>
+                                            <div id="receipt-way" className="w-full my-4 flex max-w-xl bg-sp-white-20 rounded-xl">
+                                                <Button
+                                                    size='sm'
+                                                    width='full'
+                                                    variant= {splitWay == 'item' ? 'solid' : 'text-button'}
+                                                    color= 'primary'
+                                                    //disabled={isdisabled} 
+                                                    //isLoading={isLoading}
+                                                    onClick={() => {
+                                                        setIsSplitByItemOpen(true)
+                                                        setSplitWay('item')
+                                                    }}
+                                                    >
+                                                        項目分帳
+                                                </Button>
+                                                <Button
+                                                    size='sm'
+                                                    width='full'
+                                                    variant={splitWay == 'person' ? 'solid' : 'text-button'}
+                                                    color='primary'
+                                                    //disabled={isdisabled} 
+                                                    //isLoading={isLoading}
+                                                    onClick={() => {
+                                                        setIsSplitByPersonOpen(true)
+                                                        setSplitWay('person')
+                                                    }}
+                                                    >
+                                                        成員分帳
+                                                </Button>
+                                            </div>
                                         </div>
                                         <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
-                                            <div className="px-3 py-3 flex items-center justify-start gap-2">
-                                                <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                                                    <div className="shrink-0  flex items-center justify-center ">
-                                                        <Avatar
+                                            {userList.map(user => (
+                                                <div key={user.uid} className="px-3 py-3 flex items-center justify-start gap-2">
+                                                    <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
+                                                        <div className="shrink-0  flex items-center justify-center ">
+                                                            <Avatar
                                                             size="md"
-                                                            img={userData?.avatar}
-                                                            userName = {userData?.name}
-                                                        />
+                                                            img={user.avatar}
+                                                            userName={user.name}
+                                                            />
+                                                        </div>
+                                                        <p className="text-base truncate">{user.name}</p>
                                                     </div>
-                                                    <p className="text-base truncate">{userData?.name}</p>
-                                                </div>
-                                                <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
-                                                    <p className="shrink-0 text-xl font-lg">$489.54805</p>
-                                                    <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">均分</div>
-                                                </div>
-                                            </div>
-                                            <div className="px-3 py-3 flex items-center justify-start gap-2">
-                                                <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                                                    <div className="shrink-0  flex items-center justify-center ">
-                                                        <Avatar
-                                                            size="md"
-                                                            img={userData?.avatar}
-                                                            userName = {userData?.name}
-                                                        />
+                                                    <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
+                                                        <p className="shrink-0 text-xl font-lg">
+                                                            ${splitByPersonMap[user.uid]?.toFixed(2) || '0.00'}
+                                                        </p>
+                                                        <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">均分</div>
                                                     </div>
-                                                    <p className="text-base truncate">{userData?.name}</p>
                                                 </div>
-                                                <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
-                                                    <p className="shrink-0 text-xl font-lg">$489.54805</p>
-                                                    <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">均分</div>
-                                                </div>
-                                            </div>
-                                            <div className="px-3 py-3 flex items-center justify-start gap-2">
-                                                <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                                                    <div className="shrink-0  flex items-center justify-center ">
-                                                        <Avatar
-                                                            size="md"
-                                                            img={userData?.avatar}
-                                                            userName = {userData?.name}
-                                                        />
-                                                    </div>
-                                                    <p className="text-base truncate">{userData?.name}</p>
-                                                </div>
-                                                <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
-                                                    <p className="shrink-0 text-xl font-lg">$489.54805</p>
-                                                    <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">均分</div>
-                                                </div>
-                                            </div>                                                                                
+                                            ))}                                                                                                                            
                                         </div>
                                     </div>
                                     <div className={formSpan3CLass}>
@@ -368,11 +392,11 @@ export default function CreatePayment({
                                                     <div className="shrink-0  flex items-center justify-center ">
                                                         <Avatar
                                                             size="md"
-                                                            img={selectedPlayer?.avatar}
-                                                            userName = {selectedPlayer?.name}
+                                                            img={selectedDebtPayer?.avatar}
+                                                            userName = {selectedDebtPayer?.name}
                                                         />
                                                     </div>
-                                                    <p className="text-base truncate">{selectedPlayer?.name}</p>
+                                                    <p className="text-base truncate">{selectedDebtPayer?.name}</p>
                                                 </div>
                                                 <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                                                     <Button
@@ -425,11 +449,11 @@ export default function CreatePayment({
                                                     <div className="shrink-0  flex items-center justify-center ">
                                                         <Avatar
                                                             size="md"
-                                                            img={selectedReceiver?.avatar}
-                                                            userName = {selectedReceiver?.name}
+                                                            img={selectedDebtReceiver?.avatar}
+                                                            userName = {selectedDebtReceiver?.name}
                                                         />
                                                     </div>
-                                                    <p className="text-base truncate">{selectedReceiver?.name}</p>
+                                                    <p className="text-base truncate">{selectedDebtReceiver?.name}</p>
                                                 </div>
                                                 <div  className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                                                     <Button

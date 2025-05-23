@@ -97,14 +97,28 @@ export default function SplitByItem({
     const labelClass = clsx("w-full font-medium truncate")
     const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
     const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
+    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
+    
 
     const renderBody = () => {
         return(
             <>
                 {step === 'list' && (
                     <div className="relative text-zinc-700">
-                        <div className="w-full pb-4 bg-zinc-50 sticky -top-4 z-20">
-                        </div>
+                        <div className="text-end">
+                            <Button
+                                size='sm'
+                                width='fit'
+                                variant= 'outline'
+                                color= 'primary'
+                                leftIcon="solar:add-circle-bold"
+                                //disabled={isdisabled} 
+                                //isLoading={isLoading}
+                                onClick={()=> setStep('singleItem')}
+                                >
+                                    增加項目
+                            </Button>
+                        </div>  
                         <div className="pt-2">
                             <div className="p-2 rounded-xl hover:bg-sp-green-100">
                                 <div className="flex items-start justify-start gap-2">
@@ -151,11 +165,7 @@ export default function SplitByItem({
                                     </div>
                                 </div>
                                 {isListDetailOpen && (
-                                    <div className="py-4 px-6 flex flex-col items-start justify-start gap-2 bg-sp-green-200 rounded-xl">
-                                        <div className="w-full text-base flex items-bottom justify-end gap-4">
-                                            <p className="w-full truncate">用戶名稱</p>
-                                            <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
-                                        </div>
+                                    <div className={`w-full h-fit py-4 px-6 flex flex-col items-start justify-start gap-2 max-h-40 rounded-xl  bg-sp-green-200 overflow-hidden ${scrollClass}`}>
                                         <div className="w-full text-base flex items-bottom justify-end gap-4">
                                             <p className="w-full truncate">用戶名稱</p>
                                             <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
@@ -171,7 +181,7 @@ export default function SplitByItem({
                                     </div>
                                 )}
                             </div>
-                        </div>         
+                        </div>
                     </div>
                 )}
                 {step === 'singleItem' && (
