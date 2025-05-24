@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Avatar from "@/components/ui/Avatar";
@@ -13,7 +13,7 @@ import SplitByPerson from "./CreatePaymentSections/SplitByPersonDialog";
 import SplitByItem from "./CreatePaymentSections/SplitByItemDialog";
 import DebtPayer from "./CreatePaymentSections/DebtPayerDialog";
 import DebtReceiver from "./CreatePaymentSections/DebtReceiverDialog";
-import { SplitMap, PayerMap } from "./CreatePaymentSections/types";
+import { SplitDetail, SplitMap, PayerMap } from "./CreatePaymentSections/types";
 import { formatPercent, formatNumber } from "./CreatePaymentSections/utils";
 
 
@@ -141,7 +141,21 @@ export default function CreatePayment({
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
         const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
         const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-end")
-
+        const tagDescMap: Record<string, (entry: SplitDetail, allEntries: SplitMap) => string> = {
+            percentage: (entry, allEntries) => {
+              const uniquePercents = new Set(
+                Object.values(allEntries).map(e => e.percent.toFixed(4))
+              );
+              const isEvenSplit = uniquePercents.size === 1;
+              return isEvenSplit ? '均分' : formatPercent(entry.percent);
+            },
+            actual: () => '實際支出',
+            adjusted: () => '',
+        };
+          
+          
+        const getTagDesc = tagDescMap[chooseSplitByPerson] || (() => '');
+          
         
         return(
             <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/50">
@@ -377,7 +391,7 @@ export default function CreatePayment({
                                                         <p className="shrink-0 text-xl font-lg">
                                                             ${formatNumber(entry.total) || '0.00'}
                                                         </p>
-                                                        <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">{formatPercent(entry.percent)}</div>
+                                                        <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">{getTagDesc(entry, splitByPersonMap)}</div>
                                                     </div>
                                                 </div>
                                             )})}                                                                                                                            

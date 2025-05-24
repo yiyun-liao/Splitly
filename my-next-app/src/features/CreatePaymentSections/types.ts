@@ -1,6 +1,6 @@
 // 型別定義
 
-interface SplitDetail {
+export interface SplitDetail {
     fixed: number;
     percent: number;
     total: number;

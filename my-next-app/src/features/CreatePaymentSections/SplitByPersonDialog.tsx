@@ -4,8 +4,7 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import { SplitMap } from "./types";
-import { formatPercent,formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
-import clsx from "clsx";
+import { formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
 
 interface User {
     avatar?: string;
