@@ -37,16 +37,6 @@ export default function SplitByPerson({
 
     const [localChooseSplitByPerson, setLocalChooseSplitByPerson] = useState<"percentage" | "actual" | "adjusted">("percentage");
 
-    // const [rawPercentInputMap, setRawPercentInputMap] = useState<Record<string, string>>(() => {
-    //     return Object.fromEntries(
-    //         userList.map(user => {
-    //             const entry = splitByPersonMap[user.uid];
-    //             const percent = entry?.percent || 0;
-    //             return [user.uid, parsePercentToInt(percent)];
-    //         })
-    //     );
-    // });
-
     const [rawPercentInputMap, setRawPercentInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
             userList.map(user => {
@@ -56,29 +46,18 @@ export default function SplitByPerson({
         );
     });
     
-
     const [localSplitPercentageMap, setLocalSplitPercentageMap] =useState<SplitMap>(() => {
         return Object.fromEntries(
             userList.map(user => {
+                const totalAmount = parseFloat(inputAmountValue || "0");
                 const entry = splitByPersonMap[user.uid];
                 const fixed = 0;
                 const percent = entry?.percent || 0;
-                const total = entry?.total || 0;
+                const total = parseFloat(formatNumber(percent * totalAmount)) || 0;
                 return [user.uid, { fixed, percent, total }];
             })
         );
     });
-
-
-    // const [rawActualInputMap, setRawActualInputMap] = useState<Record<string, string>>(() => {
-    //     return Object.fromEntries(
-    //         userList.map(user => {
-    //             const entry = splitByPersonMap[user.uid];
-    //             const fixed = formatNumber(entry?.total) || 0;
-    //             return [user.uid, fixed.toString()];
-    //         })
-    //     );
-    // });
 
     const [rawActualInputMap, setRawActualInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
@@ -102,16 +81,6 @@ export default function SplitByPerson({
         );
     });
 
-    // const [rawAdjustInputMap, setRawAdjustInputMap] = useState<Record<string, string>>(() => {
-    //     return Object.fromEntries(
-    //         userList.map(user => {
-    //             const entry = splitByPersonMap[user.uid];
-    //             const fixed = entry?.fixed || 0;
-    //             return [user.uid, fixed.toString()];
-    //         })
-    //     );
-    // });
-
     const [rawAdjustInputMap, setRawAdjustInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
             userList.map(user => {
@@ -121,14 +90,17 @@ export default function SplitByPerson({
         );
     });
     
-
     const [localSplitAdjustedMap, setLocalSplitAdjustedMap] =useState<SplitMap>(() => {
         return Object.fromEntries(
             userList.map(user => {
+                const totalAmount = parseFloat(inputAmountValue || "0");
+                const totalFixed = Object.values(splitByPersonMap).reduce((sum, entry) => sum + (entry.fixed || 0), 0);
+                const remaining = totalAmount - totalFixed;
+
                 const entry = splitByPersonMap[user.uid];
                 const fixed = entry?.fixed || 0;
-                const percent = entry?.percent || 0;
-                const total = entry?.total || 0;
+                const percent = parseFloat((1 / userList.length).toFixed(4));
+                const total = fixed + parseFloat((remaining * percent).toFixed(4));
                 return [user.uid, { fixed, percent, total }];
             })
         );
@@ -137,9 +109,15 @@ export default function SplitByPerson({
     useEffect(() => {
         if (isSplitByPersonOpen) {
             setLocalChooseSplitByPerson(chooseSplitByPerson);
-            setLocalSplitPercentageMap(splitByPersonMap);
-            setLocalSplitActualMap(splitByPersonMap);
-            setLocalSplitAdjustedMap(splitByPersonMap);
+            if (chooseSplitByPerson == 'percentage'){
+                setLocalSplitPercentageMap(splitByPersonMap);
+            }
+            if (chooseSplitByPerson == 'actual'){
+                setLocalSplitActualMap(splitByPersonMap);
+            }
+            if (chooseSplitByPerson == 'adjusted'){
+                setLocalSplitAdjustedMap(splitByPersonMap);
+            }
         }
     }, [isSplitByPersonOpen, splitByPersonMap, chooseSplitByPerson, inputAmountValue]);
     
