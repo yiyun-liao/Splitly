@@ -4,6 +4,8 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
+import { PayerMap } from "./types";
+
 
 interface User {
     avatar?: string;
@@ -16,8 +18,8 @@ interface SplitPayerProps {
     onClose: () => void;
     userList: User[];
     inputAmountValue:string;
-    splitPayerMap: Record<string, number>;
-    setSplitPayerMap:  (map: Record<string, number>) => void;
+    splitPayerMap: PayerMap;
+    setSplitPayerMap:  (map: PayerMap) => void;
 }
 
 export default function SplitPayer({
@@ -29,7 +31,7 @@ export default function SplitPayer({
         setSplitPayerMap,
     }:SplitPayerProps){
     
-    const [localPayerMap, setLocalPayerMap] = useState<Record<string, number>>({});
+    const [localPayerMap, setLocalPayerMap] = useState<PayerMap>({});
 
     useEffect(() => {
         if (isSplitPayerOpen) {

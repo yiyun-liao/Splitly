@@ -13,6 +13,7 @@ import SplitByPerson from "./CreatePaymentSections/SplitByPersonDialog";
 import SplitByItem from "./CreatePaymentSections/SplitByItemDialog";
 import DebtPayer from "./CreatePaymentSections/DebtPayerDialog";
 import DebtReceiver from "./CreatePaymentSections/DebtReceiverDialog";
+import { SplitMap, PayerMap } from "./CreatePaymentSections/types";
 
 interface CreatePaymentProps {
     userData: {
@@ -21,14 +22,14 @@ interface CreatePaymentProps {
     } | null;
     onClose: () => void;
     open?: boolean;
-  }
+}
 
 const userList = [
     { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
     { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/2.jpg", name: "Bob", uid: "92jf20fkk29jf" },
     { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/3.jpg", name: "Charlie", uid: "fj30fj39d9s0d" },
-    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/4.jpg", name: "Diana", uid: "kfj02jfd203kd" },
-    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/5.jpg", name: "Eve", uid: "dkf02kdf932kd" },
+    // { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/4.jpg", name: "Diana", uid: "kfj02jfd203kd" },
+    // { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/5.jpg", name: "Eve", uid: "dkf02kdf932kd" },
 ];
 
 export default function CreatePayment({
@@ -50,12 +51,13 @@ export default function CreatePayment({
         const [inputDescValue, setInputDescValue] = useState("");
 
         const [splitWay, setSplitWay] = useState<"item" | "person">("person");
+        const [chooseSplitByPerson, setChooseSplitByPerson] = useState<"percentage" | "actual" | "adjusted">("percentage");
         const [isSplitPayerOpen, setIsSplitPayerOpen] = useState(false);
         const [isSplitByPersonOpen, setIsSplitByPersonOpen] = useState(false);
         const [isSplitByItemOpen, setIsSplitByItemOpen] = useState(false);
 
         //  付款人
-        const [splitPayerMap, setSplitPayerMap] = useState<Record<string, number>>({
+        const [splitPayerMap, setSplitPayerMap] = useState<PayerMap>({
             ["4kjf39480fjlk"]: parseFloat(inputAmountValue || "0") || 0
         });
 
@@ -68,20 +70,35 @@ export default function CreatePayment({
 
 
         // 還款 by person
-        const [splitByPersonMap, setSplitByPersonMap] = useState<Record<string, number>>(() => {
-            const average = Number(inputAmountValue) / userList.length;
-            return Object.fromEntries(userList.map(user => [user.uid, average]));
+        const [splitByPersonMap, setSplitByPersonMap] = useState<SplitMap>(() => {
+            const total = Number(inputAmountValue) || 0;
+            const average = Math.floor((total / userList.length) * 100) / 100;
+            return Object.fromEntries(userList.map(user => [user.uid, {
+                fixed: 0,
+                percent: `${(100 / userList.length).toFixed(2)}%`,
+                total: average
+            }]));
         });
 
         useEffect(() => {
-            if (receiptWay === "split" && splitWay === "person" && userList.length > 0 && Number(inputAmountValue) > 0) {
+            if ( receiptWay === "split" && splitWay === "person" && chooseSplitByPerson === "percentage" && userList.length > 0 && Number(inputAmountValue) > 0) {
                 const total = parseFloat(inputAmountValue || "0");
-                const average = Math.floor((total / userList.length) * 100) / 100; // 小數點兩位
-                const map = Object.fromEntries(userList.map(user => [user.uid, average]));
+                const percent = 100 / userList.length;
+                const amount = Math.floor((total * percent / 100) * 10000) / 10000;
+                const map: SplitMap = Object.fromEntries(
+                    userList.map(user => [user.uid, {
+                        fixed: 0,
+                        percent: `${percent.toFixed(4)}%`,
+                        total: amount
+                    }])
+                );
                 setSplitByPersonMap(map);
             }
-        }, [inputAmountValue,receiptWay, splitWay]);
+        }, [inputAmountValue, receiptWay, splitWay, chooseSplitByPerson]);
 
+        console.log("付款預設", splitPayerMap)
+        console.log("分帳預設", splitByPersonMap)
+        
         // receipt-debt
         const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
         const [selectedDebtPayerUid, setSelectedDebtPayerUid] = useState("4kjf39480fjlk")
@@ -144,6 +161,8 @@ export default function CreatePayment({
                             onClose={() => setIsSplitByPersonOpen(false)}
                             userList={userList}
                             inputAmountValue={inputAmountValue}
+                            chooseSplitByPerson = {chooseSplitByPerson}
+                            setChooseSplitByPerson = {setChooseSplitByPerson}
                             splitByPersonMap={splitByPersonMap}
                             setSplitByPersonMap={setSplitByPersonMap}
                         />
@@ -337,8 +356,10 @@ export default function CreatePayment({
                                             </div>
                                         </div>
                                         <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
-                                            {userList.map(user => (
-                                                <div key={user.uid} className="px-3 py-3 flex items-center justify-start gap-2">
+                                            {userList.map(user => {
+                                                const entry = splitByPersonMap[user.uid];
+
+                                                return(<div key={user.uid} className="px-3 py-3 flex items-center justify-start gap-2">
                                                     <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
                                                         <div className="shrink-0  flex items-center justify-center ">
                                                             <Avatar
@@ -351,12 +372,12 @@ export default function CreatePayment({
                                                     </div>
                                                     <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                                                         <p className="shrink-0 text-xl font-lg">
-                                                            ${splitByPersonMap[user.uid]?.toFixed(2) || '0.00'}
+                                                            ${entry.total.toFixed(2) || '0.00'}
                                                         </p>
-                                                        <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">均分</div>
+                                                        {/* <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">均分</div> */}
                                                     </div>
                                                 </div>
-                                            ))}                                                                                                                            
+                                            )})}                                                                                                                            
                                         </div>
                                     </div>
                                     <div className={formSpan3CLass}>
