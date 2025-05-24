@@ -14,6 +14,8 @@ import SplitByItem from "./CreatePaymentSections/SplitByItemDialog";
 import DebtPayer from "./CreatePaymentSections/DebtPayerDialog";
 import DebtReceiver from "./CreatePaymentSections/DebtReceiverDialog";
 import { SplitMap, PayerMap } from "./CreatePaymentSections/types";
+import { formatPercent, formatNumber } from "./CreatePaymentSections/utils";
+
 
 interface CreatePaymentProps {
     userData: {
@@ -28,8 +30,6 @@ const userList = [
     { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
     { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/2.jpg", name: "Bob", uid: "92jf20fkk29jf" },
     { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/3.jpg", name: "Charlie", uid: "fj30fj39d9s0d" },
-    // { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/4.jpg", name: "Diana", uid: "kfj02jfd203kd" },
-    // { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/5.jpg", name: "Eve", uid: "dkf02kdf932kd" },
 ];
 
 export default function CreatePayment({
@@ -72,24 +72,25 @@ export default function CreatePayment({
         // 還款 by person
         const [splitByPersonMap, setSplitByPersonMap] = useState<SplitMap>(() => {
             const total = Number(inputAmountValue) || 0;
-            const average = Math.floor((total / userList.length) * 100) / 100;
+            const percentValue = parseFloat((1 / userList.length).toFixed(4));;
+            const average = Math.floor((total * percentValue) * 10000) / 10000;
             return Object.fromEntries(userList.map(user => [user.uid, {
                 fixed: 0,
-                percent: `${(100 / userList.length).toFixed(2)}%`,
+                percent: percentValue,
                 total: average
             }]));
         });
 
         useEffect(() => {
             if ( receiptWay === "split" && splitWay === "person" && chooseSplitByPerson === "percentage" && userList.length > 0 && Number(inputAmountValue) > 0) {
-                const total = parseFloat(inputAmountValue || "0");
-                const percent = 100 / userList.length;
-                const amount = Math.floor((total * percent / 100) * 10000) / 10000;
+                const amount = parseFloat(inputAmountValue || "0");
+                const percent = parseFloat((1 / userList.length).toFixed(4));;
+                const total = Math.floor((amount * percent) * 10000) / 10000;
                 const map: SplitMap = Object.fromEntries(
                     userList.map(user => [user.uid, {
                         fixed: 0,
-                        percent: `${percent.toFixed(4)}%`,
-                        total: amount
+                        percent: percent,
+                        total: total
                     }])
                 );
                 setSplitByPersonMap(map);
@@ -372,9 +373,9 @@ export default function CreatePayment({
                                                     </div>
                                                     <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                                                         <p className="shrink-0 text-xl font-lg">
-                                                            ${entry.total.toFixed(2) || '0.00'}
+                                                            ${formatNumber(entry.total) || '0.00'}
                                                         </p>
-                                                        {/* <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">均分</div> */}
+                                                        <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">{formatPercent(entry.percent)}</div>
                                                     </div>
                                                 </div>
                                             )})}                                                                                                                            

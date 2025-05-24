@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 interface InputProps  extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
-    value?: string;
+    value?: string | number;
     type?:string;
     required?:boolean;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;

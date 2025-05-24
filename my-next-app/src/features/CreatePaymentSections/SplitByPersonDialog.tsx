@@ -4,6 +4,7 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import { SplitMap } from "./types";
+import { formatPercent,formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
 import clsx from "clsx";
 
 interface User {
@@ -35,36 +36,73 @@ export default function SplitByPerson({
     }:SplitByPersonProps){
 
     const [localChooseSplitByPerson, setLocalChooseSplitByPerson] = useState<"percentage" | "actual" | "adjusted">();
-    const [localSplitByPersonMap, setLocalSplitByPersonMap] =useState<Record<string, [string, number]>>();
-    const [localSplitPercentageMap, setLocalSplitPercentageMap] =useState<Record<string, [string, number]>>(() => {
+    const [localSplitByPersonMap, setLocalSplitByPersonMap] =useState<SplitMap>();
+
+    const [rawPercentInputMap, setRawPercentInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
             userList.map(user => {
                 const entry = splitByPersonMap[user.uid];
-                const detail = entry?.[0] || "0%";
-                const amount = entry?.[1] || 0;
-                return [user.uid, [detail, amount]];
-            })
-        );
-    });
-    const [localSplitActualMap, setLocalSplitActualMap] =useState<Record<string, [string, number]>>(() => {
-        return Object.fromEntries(
-            userList.map(user => {
-                const entry = splitByPersonMap[user.uid];
-                const amount = entry?.[1] || 0;
-                return [user.uid, [amount.toFixed(4), amount]];
-            })
-        );
-    });
-    const [localSplitAdjustedMap, setLocalSplitAdjustedMap] =useState<Record<string, [string, number]>>(() => {
-        return Object.fromEntries(
-            userList.map(user => {
-                const entry = splitByPersonMap[user.uid];
-                const amount = entry?.[1] || 0;
-                return [user.uid, [amount.toFixed(4), amount]];
+                const percent = entry?.percent || 0;
+                return [user.uid, parsePercentToInt(percent)];
             })
         );
     });
 
+    const [localSplitPercentageMap, setLocalSplitPercentageMap] =useState<SplitMap>(() => {
+        return Object.fromEntries(
+            userList.map(user => {
+                const entry = splitByPersonMap[user.uid];
+                const fixed = entry?.fixed || 0;
+                const percent = entry?.percent || 0;
+                const total = entry?.total || 0;
+                return [user.uid, { fixed, percent, total }];
+            })
+        );
+    });
+
+    const [rawActualInputMap, setRawActualInputMap] = useState<Record<string, string>>(() => {
+        return Object.fromEntries(
+            userList.map(user => {
+                const entry = splitByPersonMap[user.uid];
+                const fixed = entry?.total || 0;
+                return [user.uid, fixed];
+            })
+        );
+    });
+
+    const [localSplitActualMap, setLocalSplitActualMap] =useState<SplitMap>(() => {
+        return Object.fromEntries(
+            userList.map(user => {
+                const entry = splitByPersonMap[user.uid];
+                const fixed = entry?.total || 0;
+                const percent = 0;
+                const total = entry?.total || 0;
+                return [user.uid, { fixed, percent, total }];
+            })
+        );
+    });
+
+    const [rawAdjustInputMap, setRawAdjustInputMap] = useState<Record<string, string>>(() => {
+        return Object.fromEntries(
+            userList.map(user => {
+                const entry = splitByPersonMap[user.uid];
+                const fixed = entry?.fixed || 0;
+                return [user.uid, fixed];
+            })
+        );
+    });
+
+    const [localSplitAdjustedMap, setLocalSplitAdjustedMap] =useState<SplitMap>(() => {
+        return Object.fromEntries(
+            userList.map(user => {
+                const entry = splitByPersonMap[user.uid];
+                const fixed = entry?.fixed || 0;
+                const percent = entry?.percent || 0;
+                const total = entry?.total || 0;
+                return [user.uid, { fixed, percent, total }];
+            })
+        );
+    });
     
     useEffect(() => {
         if (isSplitByPersonOpen) {
@@ -76,77 +114,88 @@ export default function SplitByPerson({
             setLocalSplitAdjustedMap(splitByPersonMap);
         }
         }
-    }, [isSplitByPersonOpen, splitByPersonMap, chooseSplitByPerson, localSplitPercentageMap]);
-
-    const computedSplitMap = useMemo(() => {
-        const total = parseFloat(inputAmountValue || "0");
-      
-        if (total <= 0 || userList.length === 0) return {};
-      
-        if (chooseSplitByPerson === "percentage") {
-          // 比例模式
-          const totalPercentage = Object.values(localSplitByPersonMap).reduce((acc, cur) => acc + cur, 0);
-          if (totalPercentage === 0) return {};
-      
-          return Object.fromEntries(
-            userList.map((user) => {
-              const percent = localSplitByPersonMap[user.uid] || 0;
-              const amount = (percent / 100) * total;
-              return [user.uid, Math.round(amount * 100) / 100]; // 四捨五入到小數點 2 位
-            })
-          );
-        }
-      
-        if (chooseSplitByPerson === "actual") {
-          // 金額模式，直接使用輸入值
-          return Object.fromEntries(
-            userList.map((user) => {
-              const amount = localSplitByPersonMap[user.uid] || 0;
-              return [user.uid, Math.round(amount * 100) / 100];
-            })
-          );
-        }
-      
-        if (chooseSplitByPerson === "adjusted") {
-          // 特別額 + 平均分攤剩餘
-          const specifiedUsers = userList.filter((user) => (localSplitByPersonMap[user.uid] || 0) > 0);
-          const unspecifiedUsers = userList.filter((user) => !(localSplitByPersonMap[user.uid] > 0));
-          const specifiedTotal = specifiedUsers.reduce(
-            (sum, user) => sum + (localSplitByPersonMap[user.uid] || 0),
-            0
-          );
-          const remaining = total - specifiedTotal;
-          const avg = unspecifiedUsers.length > 0 ? remaining / unspecifiedUsers.length : 0;
-      
-          return Object.fromEntries(
-            userList.map((user) => {
-              const fixedAmount = localSplitByPersonMap[user.uid] || 0;
-              const amount = fixedAmount > 0 ? fixedAmount : avg;
-              return [user.uid, Math.round(amount * 100) / 100];
-            })
-          );
-        }
-      
-        return {};
-      }, [chooseSplitByPerson, localSplitByPersonMap, inputAmountValue, userList]);
-      
+    }, [isSplitByPersonOpen, splitByPersonMap, chooseSplitByPerson, localSplitPercentageMap, inputAmountValue]);
 
 
-    const isComplete = useMemo(() => {
-        const total = parseFloat(inputAmountValue || "0");
-        const sum = Object.values(computedSplitMap).reduce((acc, cur) => acc + cur, 0);
-        return Math.abs(total - sum) < 0.01;
-    }, [computedSplitMap, inputAmountValue]);
 
-    const handleAmountChange = (uid: string, detail: string, amount: string) => {
-        const numeric = parseFloat(amount || "0");
-        setLocalSplitByPersonMap((prev) => {
-            return {
-              ...prev,
-              [uid]: [detail, numeric],
-            };
-        });
+    const handlePercentageChange = (uid: string, percentInput: string) => {
+        setRawPercentInputMap((prev) => ({
+            ...prev,
+            [uid]: percentInput,
+        }));
+
+        const rawPercent = parseFloat(percentInput);
+        if (isNaN(rawPercent) || rawPercent < 0) return; 
+        const amount = parseFloat(inputAmountValue || "0");    
+        const percent = parsePercentToDecimal(rawPercent);
+        const fixed = 0;
+        const total = Math.floor((amount * percent) * 10000) / 10000;
+        setLocalSplitPercentageMap((prev) => ({
+            ...prev,
+            [uid]: { fixed, percent, total },
+        }));
     };
+
+    const handleActualChange = (uid: string, actualInput: string) => {
+        setRawActualInputMap((prev) => ({
+            ...prev,
+            [uid]: actualInput,
+        }));
+
+        const rawActual = parseFloat(actualInput);
+        if (isNaN(rawActual) || rawActual < 0) return; 
+    
+        const percent = 0;
+        const fixed = parseFloat(rawActual.toFixed(4));
+        const total = fixed;
+    
+        setLocalSplitActualMap((prev) => ({
+            ...prev,
+            [uid]: { fixed, percent, total },
+        }));
+    };
+
+    const handleAdjustChange = (uid: string, adjustInput: string) => {
+        setRawAdjustInputMap((prev) => ({
+            ...prev,
+            [uid]: adjustInput,
+        }));
+
+        const rawAdjust = parseFloat(adjustInput);
+        if (isNaN(rawAdjust) || rawAdjust < 0) return; 
+        updateAdjustedSplitMap(uid, rawAdjust)
+    };
+
+    const updateAdjustedSplitMap = (updatedUid: string, updatedFixed: number) => {
+        const newMap: SplitMap = {
+            ...localSplitAdjustedMap,
+            [updatedUid]: {
+                ...localSplitAdjustedMap[updatedUid],
+                fixed: updatedFixed,
+            },
+        };
+    
+        const totalAmount = parseFloat(inputAmountValue || "0");
+    
+        // 所有 fixed 的總和並均分
+        const totalFixed = Object.values(newMap).reduce((sum, entry) => sum + (entry.fixed || 0), 0);
+        const remaining = totalAmount - totalFixed;
+    
+        // 更新每個人的 total 與 percent
+        const updatedMap: SplitMap = {};
+        userList.forEach(user => {
+            const entry = newMap[user.uid] || { fixed: 0, percent: 0, total: 0 };
+            const fixed = entry.fixed || 0;
+            const percent = entry.percent || 0;
+            const total = entry.fixed + parseFloat((remaining * percent).toFixed(4));
+    
+            updatedMap[user.uid] = { fixed, total, percent };
+        });
+    
+        setLocalSplitAdjustedMap(updatedMap);
+    };
+    
+
 
     // render footer
     const splitByPersonDescMap: Record<string, string> = {
@@ -176,7 +225,7 @@ export default function SplitByPerson({
                     variant= 'solid'
                     color= 'primary'
                     //disabled={isdisabled} 
-                    isLoading={!isComplete}
+                    //isLoading={!isComplete}
                     onClick={() => {
                         // setSplitByPersonMap(computedSplitMap);
                         onClose()
@@ -233,9 +282,7 @@ export default function SplitByPerson({
                 {chooseSplitByPerson === 'percentage' && (
                     <div className="pt-2">
                         {userList.map((user) => {
-                            const entry = splitByPersonMap[user.uid];
-                            const detail = parseFloat(entry?.[0] || "0")
-                            const amount = entry?.[1] || 0;
+                            const entry = localSplitPercentageMap[user.uid];
 
                             return(
                                 <div key={user.uid} className="px-3 pb-2 flex items-start justify-start gap-2">
@@ -249,17 +296,22 @@ export default function SplitByPerson({
                                         </div>
                                         <p className="text-base w-full truncate">{user?.name}</p>
                                     </div>
-                                    <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
-                                        <p className="shrink-0 h-9 text-base flex items-center">支出</p>
-                                        <Input
-                                            value={detail.toFixed(2) || ""}
-                                            type="number"
-                                            onChange={(e) => handleAmountChange(user.uid, e.target.value)}
-                                            flexDirection="row"
-                                            width="full"
-                                            placeholder="支出比例"
-                                        />
-                                        {/* <p className="shrink-0 h-9 text-base flex items-center">%</p> */}
+                                    <div className="shrink-0 w-60 flex flex-col items-end justify-start pb-3">
+                                        <div className="w-full flex items-start justify-start gap-2 ">
+                                            <p className="shrink-0 h-9 text-base flex items-center">支出</p>
+                                            <Input
+                                                value={ rawPercentInputMap[user.uid] || "" }
+                                                type="number"
+                                                onChange={(e) => handlePercentageChange(user.uid, e.target.value)}
+                                                flexDirection="row"
+                                                width="full"
+                                                placeholder="支出金額"
+                                            />
+                                            <p className="shrink-0 w-fit h-9 text-base flex items-center justify-end"> %</p>
+                                        </div>
+                                        <p className="shrink-0 w-full mt-[-24px] text-base flex items-center justify-end text-zinc-500"> 
+                                            = {formatNumber(entry.total)} 元
+                                        </p>
                                     </div>
                                 </div>
                             )
@@ -284,9 +336,9 @@ export default function SplitByPerson({
                                     <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
                                         <p className="shrink-0 h-9 text-base flex items-center">支出</p>
                                         <Input
-                                            value={localSplitByPersonMap[user.uid]?.toString() || ""}
+                                            value={rawActualInputMap[user.uid]|| ""}
                                             type="number"
-                                            onChange={(e) => handleAmountChange(user.uid, e.target.value)}
+                                            onChange={(e) => handleActualChange(user.uid, e.target.value)}
                                             flexDirection="row"
                                             width="full"
                                             placeholder="支出金額"
@@ -301,6 +353,8 @@ export default function SplitByPerson({
                 {chooseSplitByPerson === 'adjusted' && (
                     <div className="pt-2">
                         {userList.map((user) => {
+                            const entry = localSplitAdjustedMap[user.uid];
+
                             return(
                                 <div key={user.uid} className="px-3 pb-2 flex items-start justify-start gap-2">
                                     <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
@@ -313,17 +367,22 @@ export default function SplitByPerson({
                                         </div>
                                         <p className="text-base w-full truncate">{user?.name}</p>
                                     </div>
-                                    <div  className="shrink-0 w-72 flex items-start justify-start gap-2">
-                                        <Input
-                                            value={localSplitByPersonMap[user.uid]?.toString() || ""}
-                                            type="number"
-                                            onChange={(e) => handleAmountChange(user.uid, e.target.value)}
-                                            flexDirection="row"
-                                            width="full"
-                                            placeholder="支出金額"
-                                        />
-                                        <p className="shrink-0 h-9 text-base flex items-center"> + 均分</p>
-                                        <p className="shrink-0 w-20 h-9 text-base flex items-center justify-end"> {} 元</p>
+                                    <div className="shrink-0 w-60 flex flex-col items-end justify-start pb-3">
+                                        <div className="w-full flex items-start justify-start gap-2 ">
+                                            <p className="shrink-0 h-9 text-base flex items-center">支出</p>
+                                            <Input
+                                                value={rawAdjustInputMap[user.uid] || ""}
+                                                type="number"
+                                                onChange={(e) => handleAdjustChange(user.uid, e.target.value)}
+                                                flexDirection="row"
+                                                width="full"
+                                                placeholder="支出金額"
+                                            />
+                                            <p className="shrink-0 h-9 text-base flex items-center">元</p>
+                                        </div>
+                                        <p className="shrink-0 w-full mt-[-24px] text-base flex items-center justify-end text-zinc-500"> 
+                                            + {formatPercent(entry.percent)} = {formatNumber(entry.total)} 元
+                                        </p>
                                     </div>
                                 </div>
                             )
