@@ -99,12 +99,38 @@ export default function CreatePayment({
 
         console.log("付款預設", splitPayerMap)
         console.log("分帳方式", chooseSplitByPerson, "分帳預設", splitByPersonMap)
+
+        // 金額輸入限制
+        const handleSplitAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const rawValue = e.target.value;
+          
+            // 允許：空字串、整數、小數最多兩位
+            const isValid = /^(\d+)?(\.\d{0,2})?$/.test(rawValue);
+          
+            if (isValid) {
+              setInputAmountValue(rawValue);
+            }
+        };
+          
         
         // receipt-debt
+        const [inputDebtAmountValue, setInputDebtAmountValue] = useState("");
         const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
         const [selectedDebtPayerUid, setSelectedDebtPayerUid] = useState("4kjf39480fjlk")
         const [isDebtReceiverOpen, setIsDebtReceiverOpen] = useState(false);
         const [selectedDebtReceiverUid, setSelectedDebtReceiverUid] = useState("4kjf39480fjlk")
+
+
+        const handleDebtAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const rawValue = e.target.value;
+          
+            // 允許：空字串、整數、小數最多兩位
+            const isValid = /^(\d+)?(\.\d{0,2})?$/.test(rawValue);
+          
+            if (isValid) {
+                setInputDebtAmountValue(rawValue);
+            }
+        };
         
         useEffect(() => {
             if (open) document.body.style.overflow = 'hidden';
@@ -271,10 +297,12 @@ export default function CreatePayment({
                                         <Input
                                         value={inputAmountValue}
                                         type="number"
-                                        onChange={(e) => setInputAmountValue(e.target.value)}
+                                        onChange={handleSplitAmountChange}
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        step="0.01"
+                                        inputMode="decimal"                                          
                                         />
                                     </div>
                                     <div className={formSpan1CLass}>
@@ -476,12 +504,14 @@ export default function CreatePayment({
                                     </div>
                                     <div className={formSpan2CLass}>
                                         <Input
-                                        value={inputAmountValue}
+                                        value={inputDebtAmountValue}
                                         type="number"
-                                        onChange={(e) => setInputAmountValue(e.target.value)}
+                                        onChange={handleDebtAmountChange}
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        step="0.01"
+                                        inputMode="decimal"                                         
                                         />
                                     </div>
                                     <div className={`pb-5 ${formSpan3CLass}`}>
