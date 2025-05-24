@@ -84,7 +84,7 @@ export default function CreatePayment({
         useEffect(() => {
             if ( receiptWay === "split" && splitWay === "person" && chooseSplitByPerson === "percentage" && userList.length > 0 && Number(inputAmountValue) > 0) {
                 const amount = parseFloat(inputAmountValue || "0");
-                const percent = parseFloat((1 / userList.length).toFixed(4));;
+                const percent = parseFloat((1 / userList.length).toFixed(4));
                 const total = Math.floor((amount * percent) * 10000) / 10000;
                 const map: SplitMap = Object.fromEntries(
                     userList.map(user => [user.uid, {
@@ -98,7 +98,7 @@ export default function CreatePayment({
         }, [inputAmountValue, receiptWay, splitWay, chooseSplitByPerson]);
 
         console.log("付款預設", splitPayerMap)
-        console.log("分帳預設", splitByPersonMap)
+        console.log("分帳方式", chooseSplitByPerson, "分帳預設", splitByPersonMap)
         
         // receipt-debt
         const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
@@ -357,7 +357,9 @@ export default function CreatePayment({
                                             </div>
                                         </div>
                                         <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
-                                            {userList.map(user => {
+                                            {userList
+                                                .filter(user => !!splitByPersonMap[user.uid])
+                                                .map(user => {
                                                 const entry = splitByPersonMap[user.uid];
 
                                                 return(<div key={user.uid} className="px-3 py-3 flex items-center justify-start gap-2">
