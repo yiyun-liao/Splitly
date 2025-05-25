@@ -14,7 +14,7 @@ export default function PaymentOverview({}:PaymentOverviewProps){
     const [viewExpenseWay, setViewExpenseWay] = useState<"shared" | "personal">("shared");
 
     return(
-        <div id="project-analysis" className="shrink-0 w-xl pb-3 h-full overflow-hidden">
+        <div id="project-analysis" className="shrink-0 w-xl pb-3 h-full box-border overflow-hidden">
             <div id="Expense-splitting" className="w-full mb-4 flex max-w-xl shrink-0 bg-sp-blue-300 rounded-xl">
                 <Button
                     size='sm'

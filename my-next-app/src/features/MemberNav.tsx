@@ -29,7 +29,7 @@ export default function MemberNav(){
         router.push('/');    
     }
     return(
-        <nav className="min-w-18 h-screen py-4 flex flex-col items-center justify-start gap-2 bg-sp-white-40">
+        <nav className="min-w-18 h-screen box-border py-4 flex flex-col items-center justify-start gap-2 bg-sp-white-40">
             <div id="nav-brand-logo" className={navDivClass}>
                 <ImageButton
                     image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"

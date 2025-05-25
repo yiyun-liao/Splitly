@@ -227,7 +227,7 @@ export default function SplitByPerson({
         if (localChooseSplitByPerson === "adjusted") {
             const fixedSum = Object.values(localSplitAdjustedMap).reduce((sum, entry) => sum + (entry.fixed || 0),0);
             const remaining = totalAmount - fixedSum;
-            isComplete = true;
+            isComplete = remaining > -0.015;
             computedFooterInfo = `剩餘 ${formatNumber(remaining)} 元將均分`;
         }
     

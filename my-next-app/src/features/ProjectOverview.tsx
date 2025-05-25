@@ -28,7 +28,7 @@ export default function ProjectOverview({userData}:ProjectOverviewProps){
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     
     return(
-        <div id="expense-overview" className={`${scrollClass} w-full h-full px-3 hidden md:flex flex-col items-start justify-start gap-6 text-zinc-700`}>
+        <div id="expense-overview" className={`${scrollClass} w-full box-border h-full px-3 hidden md:flex flex-col items-start justify-start gap-6 text-zinc-700`}>
             <ProjectSelfDetail
                 isSelfExpenseOpen={isSelfExpenseDialogOpen}
                 onClose = {() => setIsSelfExpenseDialogOpen(false)}   

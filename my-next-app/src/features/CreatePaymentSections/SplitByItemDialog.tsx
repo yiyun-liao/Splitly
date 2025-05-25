@@ -8,20 +8,23 @@ import IconButton from "@/components/ui/IconButton";
 import { useState } from "react";
 import clsx from "clsx";
 
+interface User {
+    avatar?: string;
+    name?: string;
+    uid:string;
+}
 
 interface SplitByItemProps {
     isSplitByItemOpen: boolean;
     onClose: () => void;
-    userData: {
-        avatar?: string;
-        name?: string;
-    } | null;
+    userList: User[];
+
 }
 
 export default function SplitByItem({
         isSplitByItemOpen = false,
         onClose,
-        userData
+        userList
     }:SplitByItemProps){
     // item
     const [step, setStep] = useState<"list" | "singleItem">("list")

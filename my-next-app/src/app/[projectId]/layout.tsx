@@ -11,9 +11,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <main className="flex items-start justify-center bg-sp-blue-100">
       <MemberNav />
-      <div className="py-4 w-full max-w-520 h-screen flex flex-col items-center justify-start gap-2">
+      <div className="py-4 w-full max-w-520 h-screen box-border flex flex-col items-center justify-start gap-2">
         <MemberHeader userData={userData} />
-        <div className="flex items-start justify-start px-6 gap-6 w-full h-full overflow-hidden text-zinc-700">
+        <div className="flex items-start justify-start box-border px-6 gap-6 w-full h-full overflow-hidden text-zinc-700">
           {children}
         </div>
       </div>
