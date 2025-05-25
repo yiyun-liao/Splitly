@@ -42,3 +42,16 @@ export type SplitMap = Record<string, SplitDetail>;
 //     "total": 40
 //   }
 // }
+
+// 送出資料
+export interface CreatePaymentPayload {
+    currency: string;
+    amount: number;
+    categoryId: string;
+    paymentName: string;
+    time: string;
+    desc?: string;
+    splitMethod: SplitMethod;
+    payerMap: PayerMap;
+    splitMap: SplitMap;
+}

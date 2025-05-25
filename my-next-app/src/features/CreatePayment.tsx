@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSections/CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentSections/CreatePaymentDebt";
-import { ReceiptWay } from "./CreatePaymentSections/types";
+import { ReceiptWay, CreatePaymentPayload } from "./CreatePaymentSections/types";
 
 interface CreatePaymentProps {
     onClose: () => void;
@@ -25,6 +25,7 @@ export default function CreatePayment({
 
         // receipt-way
         const [receiptWay, setReceiptWay] = useState<ReceiptWay>("split");
+        const [payload, setPayload] = useState<CreatePaymentPayload>();
         
         useEffect(() => {
             if (open) document.body.style.overflow = 'hidden';
@@ -34,6 +35,10 @@ export default function CreatePayment({
             };
         }, [open]);
 
+        const handleSubmitData = () => {
+            console.log("final db",payload)
+            // onSubmit(payload); // 把資料丟到外層
+        };
 
         return(
             <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/50">
@@ -49,7 +54,7 @@ export default function CreatePayment({
                                 color='primary'
                                 //disabled={isdisabled} 
                                 //isLoading={isLoading}
-                                // onClick={()=> setIsSelfExpenseDialogOpen(true)}
+                                onClick={handleSubmitData}
                                 >
                                     儲存
                             </Button>
@@ -78,6 +83,7 @@ export default function CreatePayment({
                             <CreatePaymentSplit
                                 userList={userList}
                                 receiptWay={receiptWay}
+                                setPayload = {setPayload}
                             />
                         )}
                         {receiptWay === "debt" && (

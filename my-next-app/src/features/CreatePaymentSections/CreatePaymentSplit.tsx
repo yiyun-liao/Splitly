@@ -11,27 +11,31 @@ import { fetchCategoriesForSelect } from "@/lib/categoryApi";
 import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
-import { SplitDetail, SplitMap, PayerMap, User, SplitMethod, SplitWay } from "./types";
+import { SplitDetail, SplitMap, PayerMap, User, SplitMethod, SplitWay, CreatePaymentPayload } from "./types";
 import { formatPercent, formatNumber } from "./utils";
 import { getNowDatetimeLocal } from "@/utils/time";
 
 interface CreatePaymentSplitProps {
     userList: User[];
     receiptWay: "split";
+    payload?: (data: CreatePaymentPayload) => void; 
+    setPayload : (map: CreatePaymentPayload) => void
 }
 
 
 export default function CreatePaymentSplit({
     userList,
-    receiptWay
+    receiptWay,
+    setPayload
     }:CreatePaymentSplitProps){
+        const [localPayload, setLocalPayload] = useState<CreatePaymentPayload>()
 
         // receipt-split
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
         const [inputAmountValue, setInputAmountValue] = useState("");
         const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string; disabled: boolean }[]>([]);
         const [selectCategoryValue, setSelectedCategoryValue] = useState("");
-        const [inputItemValue, setInputItemValue] = useState("");
+        const [inputPaymentValue, setInputPaymentValue] = useState("");
         const [inputTimeValue, setInputTimeValue] = useState(getNowDatetimeLocal());
         const [inputDescValue, setInputDescValue] = useState("");
 
@@ -67,7 +71,7 @@ export default function CreatePaymentSplit({
         });
 
         useEffect(() => {
-            if ( receiptWay === "split" && splitWay === "person" && chooseSplitByPerson === "percentage" && userList.length > 0 && Number(inputAmountValue) > 0) {
+            if ( receiptWay === "split" && userList.length > 0 && Number(inputAmountValue) > 0) {
                 const amount = parseFloat(inputAmountValue || "0");
                 const percent = parseFloat((1 / userList.length).toFixed(4));
                 const total = Math.floor((amount * percent) * 10000) / 10000;
@@ -78,12 +82,12 @@ export default function CreatePaymentSplit({
                         total: total
                     }])
                 );
+                setChooseSplitByPerson("percentage")
                 setSplitByPersonMap(map);
             }
-        }, [inputAmountValue, receiptWay, splitWay, chooseSplitByPerson, userList]);
+        }, [inputAmountValue, receiptWay, splitWay, userList]);
 
-        console.log("付款預設", splitPayerMap)
-        console.log("分帳方式", chooseSplitByPerson, "分帳預設", splitByPersonMap)
+        console.log("付款人", splitPayerMap, "分帳方式", chooseSplitByPerson, "分帳人", splitByPersonMap)
 
         // 金額輸入限制
         const handleSplitAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,19 +104,18 @@ export default function CreatePaymentSplit({
     
         // render category
         useEffect(() => {
-            fetchCategoriesForSelect().then(setCategoryOptions);
-        }, []);
+            fetchCategoriesForSelect().then((options) => {
+              setCategoryOptions(options);
+          
+              const firstEnabled = options.find(opt => !opt.disabled);
+              if (firstEnabled) {
+                setSelectedCategoryValue(firstEnabled.value);
+              }
+            });
+        }, [])
 
 
-        // css
-        //const tokenCount: [number, number] = [inputAmountValue.length, 40];
-        //const errorMessage = inputAmountValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
-  
-        const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-        const labelClass = clsx("w-full font-medium truncate")
-        const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
-        const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
-        const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-end")
+        // tag hint
         const tagDescMap: Record<string, (entry: SplitDetail, allEntries: SplitMap) => string> = {
             percentage: (entry, allEntries) => {
               const uniquePercents = new Set(
@@ -123,10 +126,35 @@ export default function CreatePaymentSplit({
             },
             actual: () => '實際支出',
             adjusted: () => '',
-        };
-          
-          
+        };          
         const getTagDesc = tagDescMap[chooseSplitByPerson] || (() => '');
+
+        // get data
+        useEffect(() => {
+            const payload: CreatePaymentPayload = {    
+                currency: selectCurrencyValue,
+                amount: parseFloat(inputAmountValue || "0"),
+                categoryId: selectCategoryValue,
+                paymentName: inputPaymentValue,
+                time: inputTimeValue,
+                desc: inputDescValue || "",
+                splitMethod: chooseSplitByPerson,
+                payerMap: splitPayerMap,
+                splitMap: splitByPersonMap,
+            };
+            setLocalPayload(payload);
+            setPayload(payload);
+        }, [selectCurrencyValue, inputAmountValue,selectCategoryValue,inputPaymentValue,inputTimeValue,inputDescValue,chooseSplitByPerson,splitPayerMap,splitByPersonMap,setPayload]);
+
+        // css
+        //const tokenCount: [number, number] = [inputAmountValue.length, 40];
+        //const errorMessage = inputAmountValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
+  
+        const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
+        const labelClass = clsx("w-full font-medium truncate")
+        const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
+        const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
+        const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-end")
           
         
         return(
@@ -205,9 +233,9 @@ export default function CreatePaymentSplit({
                         <div className={formSpan2CLass}>
                             <span className={labelClass}>名稱</span>
                             <Input
-                                value={inputItemValue}
+                                value={inputPaymentValue}
                                 type="text"
-                                onChange={(e) => setInputItemValue(e.target.value)}
+                                onChange={(e) => setInputPaymentValue(e.target.value)}
                                 flexDirection="row"
                                 width="full"
                                 placeholder="點擊編輯"
