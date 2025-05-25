@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSections/CreatePaymentSplit";
-import CreatePaymentDebt from "./CreatePaymentDebt";
+import CreatePaymentDebt from "./CreatePaymentSections/CreatePaymentDebt";
+import { ReceiptWay } from "./CreatePaymentSections/types";
 
 interface CreatePaymentProps {
     onClose: () => void;
@@ -23,7 +24,7 @@ export default function CreatePayment({
     }:CreatePaymentProps){
 
         // receipt-way
-        const [receiptWay, setReceiptWay] = useState<"split" | "debt">("split");
+        const [receiptWay, setReceiptWay] = useState<ReceiptWay>("split");
         
         useEffect(() => {
             if (open) document.body.style.overflow = 'hidden';

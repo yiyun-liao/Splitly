@@ -4,14 +4,8 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
-import { PayerMap } from "./types";
+import { PayerMap, User } from "./types";
 
-
-interface User {
-    avatar?: string;
-    name?: string;
-    uid:string;
-}
 
 interface SplitPayerProps {
     isSplitPayerOpen: boolean;

@@ -7,15 +7,10 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import Select from "@/components/ui/Select";
-import DebtPayer from "./CreatePaymentSections/DebtPayerDialog";
-import DebtReceiver from "./CreatePaymentSections/DebtReceiverDialog";
+import DebtPayer from "./DebtPayerDialog";
+import DebtReceiver from "./DebtReceiverDialog";
 import { getNowDatetimeLocal } from "@/utils/time";
-
-interface User {
-    avatar?: string;
-    name?: string;
-    uid:string;
-}
+import { PayerMap, User, SplitMap } from "./types"
 
 
 interface CreatePaymentDebtProps {
@@ -35,11 +30,46 @@ export default function CreatePaymentDebt({
 
         const [inputDebtAmountValue, setInputDebtAmountValue] = useState("");
         const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
-        const [selectedDebtPayerUid, setSelectedDebtPayerUid] = useState("4kjf39480fjlk")
         const [isDebtReceiverOpen, setIsDebtReceiverOpen] = useState(false);
-        const [selectedDebtReceiverUid, setSelectedDebtReceiverUid] = useState("4kjf39480fjlk")
 
 
+        //  付款人預設
+        const [debtPayerMap, setDebtPayerMap] = useState<PayerMap>({
+            ["4kjf39480fjlk"]: parseFloat(inputDebtAmountValue || "0") || 0
+        });
+
+        useEffect(() => {
+            if(receiptWay === 'debt' && userList.length > 0 && Number(inputDebtAmountValue) > 0){
+                const amount = parseFloat(inputDebtAmountValue || "0");
+                setDebtPayerMap({ ["4kjf39480fjlk"]: amount });
+            }
+        }, [inputDebtAmountValue, receiptWay, userList]);
+
+        // 還款人預設
+        const [debtByPersonMap, setDebtByPersonMap] = useState<SplitMap>(() => {
+            const total = Number(inputDebtAmountValue) || 0;
+            return {"4kjf39480fjlk" : {
+                fixed: total,
+                percent: 0,
+                total: total
+            }};
+        });
+
+        useEffect(() => {
+            if ( receiptWay === "debt"  && userList.length > 0 && Number(inputDebtAmountValue) > 0) {
+                const total = parseFloat(inputDebtAmountValue || "0");
+                const map: SplitMap = {"4kjf39480fjlk" : {
+                    fixed: total,
+                    percent: 0,
+                    total: total
+                }};
+                setDebtByPersonMap(map);
+            }
+        }, [inputDebtAmountValue, receiptWay, userList]);
+
+        console.log("還款人", debtPayerMap, "收款人", debtByPersonMap)
+
+        // 金額輸入限制
         const handleDebtAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const rawValue = e.target.value;
           
@@ -51,10 +81,11 @@ export default function CreatePaymentDebt({
             }
         };
 
-
         // 假資料
-        const selectedDebtPayer = userList.find(user => user.uid === selectedDebtPayerUid);
-        const selectedDebtReceiver = userList.find(user => user.uid === selectedDebtReceiverUid);
+        const selectedPayerUid = Object.keys(debtPayerMap)[0];
+        const selectedReceiverUid = Object.keys(debtByPersonMap)[0];
+        const selectedDebtPayer = userList.find(user => user.uid === selectedPayerUid);
+        const selectedDebtReceiver = userList.find(user => user.uid === selectedReceiverUid);
 
         // css
         //const tokenCount: [number, number] = [inputAmountValue.length, 40];
@@ -74,8 +105,8 @@ export default function CreatePaymentDebt({
                         <DebtPayer
                             isDebtPayerOpen = {isDebtPayerOpen}
                             onClose={() => setIsDebtPayerOpen(false)}
-                            selectedDebtPayerUid={selectedDebtPayerUid}
-                            setSelectedDebtPayerUid={setSelectedDebtPayerUid}
+                            debtPayerMap={debtPayerMap}
+                            setDebtPayerMap={setDebtPayerMap}
                             userList={userList}
                         />
                     }
@@ -83,8 +114,8 @@ export default function CreatePaymentDebt({
                         <DebtReceiver
                             isDebtReceiverOpen = {isDebtReceiverOpen}
                             onClose={() => setIsDebtReceiverOpen(false)}
-                            selectedDebtReceiverUid={selectedDebtReceiverUid}
-                            setSelectedDebtReceiverUid={setSelectedDebtReceiverUid}
+                            debtByPersonMap={debtByPersonMap}
+                            setDebtByPersonMap={setDebtByPersonMap}
                             userList={userList}
                         />
                     }

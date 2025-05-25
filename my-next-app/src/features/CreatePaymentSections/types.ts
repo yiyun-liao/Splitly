@@ -1,5 +1,12 @@
 // 型別定義
 
+export interface User {
+    avatar?: string;
+    name?: string;
+    uid:string;
+}
+//{ avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
+
 export interface SplitDetail {
     fixed: number;
     percent: number;
@@ -7,11 +14,22 @@ export interface SplitDetail {
     inputValue?: string; // 只用於輸入中
 }
 
+
+// 功能區分
+export type ReceiptWay = "split" | "debt";
+
+// 分帳方式
+export type SplitWay = "item" | "person";
+
+// person 下再分三種
+export type SplitMethod = "percentage" | "actual" | "adjusted";
+
+// 付款人 db
 export type PayerMap = Record<string, number>;
 // {4kjf39480fjlk: 500, 92jf20fkk29jf: 500}
 
+// 還款人 db
 export type SplitMap = Record<string, SplitDetail>;
-
 // {
 //   "4kjf39480fjlk": {
 //     "fixed": 20,

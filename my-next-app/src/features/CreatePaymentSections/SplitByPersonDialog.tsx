@@ -3,22 +3,17 @@ import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
-import { SplitMap } from "./types";
+import { SplitMap, User, SplitMethod } from "./types";
 import { formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
 
-interface User {
-    avatar?: string;
-    name?: string;
-    uid:string;
-}
 
 interface SplitByPersonProps {
     isSplitByPersonOpen: boolean;
     onClose: () => void;
     userList: User[];
     inputAmountValue:string;
-    chooseSplitByPerson: "percentage" | "actual" | "adjusted";
-    setChooseSplitByPerson: (value: "percentage" | "actual" | "adjusted") => void;
+    chooseSplitByPerson: SplitMethod;
+    setChooseSplitByPerson: (value: SplitMethod) => void;
     splitByPersonMap: SplitMap;
     setSplitByPersonMap: (map: SplitMap) => void;
 }
@@ -34,7 +29,7 @@ export default function SplitByPerson({
         setSplitByPersonMap
     }:SplitByPersonProps){
 
-    const [localChooseSplitByPerson, setLocalChooseSplitByPerson] = useState<"percentage" | "actual" | "adjusted">("percentage");
+    const [localChooseSplitByPerson, setLocalChooseSplitByPerson] = useState<SplitMethod>("percentage");
 
     const [rawPercentInputMap, setRawPercentInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(

@@ -11,16 +11,9 @@ import { fetchCategoriesForSelect } from "@/lib/categoryApi";
 import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
-import { SplitDetail, SplitMap, PayerMap } from "./types";
+import { SplitDetail, SplitMap, PayerMap, User, SplitMethod, SplitWay } from "./types";
 import { formatPercent, formatNumber } from "./utils";
 import { getNowDatetimeLocal } from "@/utils/time";
-
-interface User {
-    avatar?: string;
-    name?: string;
-    uid:string;
-}
-
 
 interface CreatePaymentSplitProps {
     userList: User[];
@@ -42,13 +35,13 @@ export default function CreatePaymentSplit({
         const [inputTimeValue, setInputTimeValue] = useState(getNowDatetimeLocal());
         const [inputDescValue, setInputDescValue] = useState("");
 
-        const [splitWay, setSplitWay] = useState<"item" | "person">("person");
-        const [chooseSplitByPerson, setChooseSplitByPerson] = useState<"percentage" | "actual" | "adjusted">("percentage");
+        const [splitWay, setSplitWay] = useState<SplitWay>("person");
+        const [chooseSplitByPerson, setChooseSplitByPerson] = useState<SplitMethod>("percentage");
         const [isSplitPayerOpen, setIsSplitPayerOpen] = useState(false);
         const [isSplitByPersonOpen, setIsSplitByPersonOpen] = useState(false);
         const [isSplitByItemOpen, setIsSplitByItemOpen] = useState(false);
 
-        //  付款人
+        //  付款人預設
         const [splitPayerMap, setSplitPayerMap] = useState<PayerMap>({
             ["4kjf39480fjlk"]: parseFloat(inputAmountValue || "0") || 0
         });
@@ -61,7 +54,7 @@ export default function CreatePaymentSplit({
         }, [inputAmountValue, receiptWay, userList]);
 
 
-        // 還款 by person
+        // 還款人預設
         const [splitByPersonMap, setSplitByPersonMap] = useState<SplitMap>(() => {
             const total = Number(inputAmountValue) || 0;
             const percentValue = parseFloat((1 / userList.length).toFixed(4));;

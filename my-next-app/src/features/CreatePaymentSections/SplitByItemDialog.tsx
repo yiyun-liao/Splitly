@@ -7,12 +7,8 @@ import Select from "@/components/ui/Select";
 import IconButton from "@/components/ui/IconButton";
 import { useState } from "react";
 import clsx from "clsx";
+import { User, SplitMethod } from "./types";
 
-interface User {
-    avatar?: string;
-    name?: string;
-    uid:string;
-}
 
 interface SplitByItemProps {
     isSplitByItemOpen: boolean;
@@ -31,7 +27,7 @@ export default function SplitByItem({
     const [isListDetailOpen, setIsListDetailOpen] = useState(false)
 
     // each item split way 
-    const [chooseSplitByItem, setChooseSplitByItem] = useState<"percentage" | "actual" | "adjusted">("percentage");
+    const [chooseSplitByItem, setChooseSplitByItem] = useState<SplitMethod>("percentage");
     const [isPayByUID1, setIsPayByUID1]=useState('')
     const [inputAmountValue, setInputAmountValue] = useState("");
     const [inputItemValue, setInputItemValue] = useState("");

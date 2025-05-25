@@ -3,27 +3,22 @@ import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import IconButton from "@/components/ui/IconButton";
-import { useState } from "react";
+import { User, PayerMap } from "./types";
 
-interface User {
-    avatar?: string;
-    name?: string;
-    uid:string;
-}
 
 interface DebtPayerProps {
     isDebtPayerOpen: boolean;
     onClose: () => void;
-    selectedDebtPayerUid: string;
-    setSelectedDebtPayerUid: (Uid: string) => void;
+    debtPayerMap: PayerMap;
+    setDebtPayerMap: (map: PayerMap) => void;
     userList: User[];
 }
 
 export default function DebtPayer({
         isDebtPayerOpen = false,
         onClose,
-        selectedDebtPayerUid,
-        setSelectedDebtPayerUid,
+        debtPayerMap,
+        setDebtPayerMap,
         userList
     }:DebtPayerProps){
 
@@ -32,14 +27,15 @@ export default function DebtPayer({
         return(
             <div>
                 {userList.map((user) => {
-                const isSelected = user.uid === selectedDebtPayerUid;
-        
+                const selectedUid = Object.keys(debtPayerMap)[0]
+                const oldAmount = Object.values(debtPayerMap)[0] ?? 0;
+                const isSelected = user.uid === selectedUid;
                 return (
                     <div
                     key={user.uid}
                     className={`px-3 py-2 flex items-start justify-start gap-2 rounded-xl hover:bg-sp-green-100 active:bg-sp-green-200 ${isSelected ? "bg-sp-green-100" : ""}`}
                     onClick={() => {
-                        setSelectedDebtPayerUid(user.uid);
+                        setDebtPayerMap({ [user.uid]: oldAmount });
                         onClose(); 
                     }}
                     >
