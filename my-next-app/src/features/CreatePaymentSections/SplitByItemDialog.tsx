@@ -17,11 +17,9 @@ interface SplitByItemProps {
     onClose: () => void;
     userList: User[];
     inputAmountValue:string;
-    splitWay : SplitWay;
-    setSplitWay: (value: SplitWay) => void;
     splitByItemMap:SplitMap;
     setSplitByItemMap:(map: SplitMap) => void;
-
+    setItemPayload:(map:CreateItemPayload) => void;
 }
 
 export default function SplitByItem({
@@ -29,9 +27,9 @@ export default function SplitByItem({
         onClose,
         userList,
         inputAmountValue,
+        setSplitByItemMap,
+        setItemPayload
     }:SplitByItemProps){
-
-    const [itempayload, setItemPayload] = useState<CreateItemPayload>();
     
     // item
     const [step, setStep] = useState<"list" | "singleItem">("list")

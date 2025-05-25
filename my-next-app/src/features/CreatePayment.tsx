@@ -95,14 +95,13 @@ export default function CreatePayment({
                                     轉帳
                             </Button>
                         </div>
-                        {/* {receiptWay === "split" && (
+                        {receiptWay === "split" && (
                             <CreatePaymentSplit
                                 userList={userList}
-                                receiptWay={receiptWay}
                                 setPayload = {setPayload}
                                 setItemPayload = {setItemPayload}
                             />
-                        )} */}
+                        )}
                         {receiptWay === "debt" && (
                             <CreatePaymentDebt
                                 userList={userList}

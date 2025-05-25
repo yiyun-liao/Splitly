@@ -15,10 +15,6 @@ import { getNowDatetimeLocal } from "@/utils/time";
 
 interface CreatePaymentSplitProps {
     userList: User[];
-    receiptWay: ReceiptWay;
-    setReceiptWay: (value:ReceiptWay) => void;
-    setSplitWay: (value:SplitWay) => void;
-    setSplitMethod: (value:SplitMethod) => void;
     setPayload : (map: CreatePaymentPayload) => void;
     setItemPayload : (map: CreateItemPayload) => void;
 }
@@ -26,9 +22,6 @@ interface CreatePaymentSplitProps {
 
 export default function CreatePaymentSplit({
     userList,
-    receiptWay,
-    setReceiptWay,
-    setSplitMethod,
     setPayload,
     setItemPayload
     }:CreatePaymentSplitProps){
@@ -44,21 +37,23 @@ export default function CreatePaymentSplit({
 
         const [splitWay, setSplitWay] = useState<SplitWay>("person");
         const [chooseSplitByPerson, setChooseSplitByPerson] = useState<SplitMethod>("percentage");
+
         const [isSplitPayerOpen, setIsSplitPayerOpen] = useState(false);
         const [isSplitByPersonOpen, setIsSplitByPersonOpen] = useState(false);
         const [isSplitByItemOpen, setIsSplitByItemOpen] = useState(false);
 
         //  付款人預設
-        const [splitPayerMap, setSplitPayerMap] = useState<PayerMap>({
-            ["4kjf39480fjlk"]: parseFloat(inputAmountValue || "0") || 0
+        const [splitPayerMap, setSplitPayerMap] = useState<PayerMap>(()=>{
+            const firstUid = userList[0]?.uid;
+            return firstUid ? { [firstUid]: 0 } : {};
         });
 
         useEffect(() => {
-            if(receiptWay === 'split' && userList.length > 0 && Number(inputAmountValue) > 0){
+            if(userList.length > 0 && Number(inputAmountValue) > 0){
                 const amount = parseFloat(inputAmountValue || "0");
                 setSplitPayerMap({ ["4kjf39480fjlk"]: amount });
             }
-        }, [inputAmountValue, receiptWay, userList]);
+        }, [inputAmountValue, userList]);
 
 
         // 還款人預設
@@ -74,7 +69,7 @@ export default function CreatePaymentSplit({
         });
 
         useEffect(() => {
-            if ( receiptWay === "split" && userList.length > 0 && Number(inputAmountValue) > 0) {
+            if ( userList.length > 0 && Number(inputAmountValue) > 0) {
                 const amount = parseFloat(inputAmountValue || "0");
                 const percent = parseFloat((1 / userList.length).toFixed(4));
                 const total = Math.floor((amount * percent) * 10000) / 10000;
@@ -88,13 +83,12 @@ export default function CreatePaymentSplit({
                 setChooseSplitByPerson("percentage")
                 setSplitByPersonMap(map);
             }
-        }, [inputAmountValue, receiptWay, splitWay, userList]);
+        }, [inputAmountValue, splitWay, userList]);
 
-        console.log("付款人", splitPayerMap, "分帳方式", chooseSplitByPerson, "分帳人", splitByPersonMap)
+        // 項目的還款人設定
+        const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>({})
 
-
-        // 付款項目
-        const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>()
+        console.log("付款人", splitPayerMap, "分帳方式", chooseSplitByPerson, "分帳人", splitByPersonMap,"或是", splitByItemMap)
 
         // 金額輸入限制
         const handleSplitAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,6 +132,7 @@ export default function CreatePaymentSplit({
 
         // get data
         useEffect(() => {
+            const splitFinalMap = splitWay === 'person' ? splitByPersonMap ?? {} : splitByItemMap ?? {};;
             const payload: CreatePaymentPayload = {    
                 paymentName: inputPaymentValue,
                 receiptWay: 'split',    // "split" | "debt"
@@ -149,11 +144,10 @@ export default function CreatePaymentSplit({
                 time: inputTimeValue,
                 desc: inputDescValue || "",
                 payerMap: splitPayerMap,
-                splitMap: splitByPersonMap,
+                splitMap: splitFinalMap,
             };
             setPayload(payload);
-            setReceiptWay('split')
-        }, [selectCurrencyValue, inputAmountValue,selectCategoryValue,inputPaymentValue,inputTimeValue,inputDescValue,chooseSplitByPerson,splitPayerMap,splitByPersonMap,setPayload, setSplitWay, setReceiptWay, splitWay]);
+        }, [selectCurrencyValue, inputAmountValue,selectCategoryValue,inputPaymentValue,inputTimeValue,inputDescValue,chooseSplitByPerson,splitPayerMap,splitByPersonMap,setPayload, setSplitWay, splitWay,splitByItemMap]);
 
         // css
         //const tokenCount: [number, number] = [inputAmountValue.length, 40];
@@ -164,7 +158,6 @@ export default function CreatePaymentSplit({
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
         const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
         const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-end")
-          
         
         return(
             <div className="w-full h-full pb-20 mb-20">
@@ -197,10 +190,8 @@ export default function CreatePaymentSplit({
                             onClose={() => setIsSplitByItemOpen(false)}
                             userList={userList} 
                             inputAmountValue={inputAmountValue}
-                            splitWay= "item"
-                            setSplitWay={setSplitWay}
-                            splitByItemMap={splitByItemMap}
                             setSplitByItemMap={setSplitByItemMap}
+                            setItemPayload={setItemPayload}
                         />
                     }
                 </div>
@@ -301,8 +292,6 @@ export default function CreatePaymentSplit({
                                         width='full'
                                         variant= {splitWay == 'item' ? 'solid' : 'text-button'}
                                         color= 'primary'
-                                        //disabled={isdisabled} 
-                                        //isLoading={isLoading}
                                         onClick={() => {
                                             setIsSplitByItemOpen(true)
                                             setSplitWay('item')
@@ -315,8 +304,6 @@ export default function CreatePaymentSplit({
                                         width='full'
                                         variant={splitWay == 'person' ? 'solid' : 'text-button'}
                                         color='primary'
-                                        //disabled={isdisabled} 
-                                        //isLoading={isLoading}
                                         onClick={() => {
                                             setIsSplitByPersonOpen(true)
                                             setSplitWay('person')

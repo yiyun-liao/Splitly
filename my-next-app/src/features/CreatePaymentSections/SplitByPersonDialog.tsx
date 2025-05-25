@@ -5,6 +5,7 @@ import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import { SplitMap, User, SplitMethod } from "./types";
 import { formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
+import clsx from "clsx";
 
 
 interface SplitByPersonProps {
@@ -268,12 +269,17 @@ export default function SplitByPerson({
         return {};
     };
     
-    
+    const remainingClass = clsx('shrink-0  w-fit text-end',
+        {
+        'text-red-500' : !isComplete,
+        }
+    )
+
     const renderFooter = () => {
         return(
             <div className="w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
                 <div className="w-full flex items-center justify-end gap-4 text-base">
-                    <p className="shrink-0 w-fit text-end">{computedFooterInfo}</p>
+                    <p className={remainingClass}>{computedFooterInfo}</p>
                     <p className="shrink-0 w-fit text-end text-sm">{splitByPersonTotal}</p>
                 </div>
                 <Button
