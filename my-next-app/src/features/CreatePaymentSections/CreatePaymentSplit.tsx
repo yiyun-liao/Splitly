@@ -1,8 +1,6 @@
 import clsx from "clsx";
-import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect} from "react";
 import Button from "@/components/ui/Button";
-import IconButton from "@/components/ui/IconButton";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
@@ -11,24 +9,29 @@ import { fetchCategoriesForSelect } from "@/lib/categoryApi";
 import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
-import { SplitDetail, SplitMap, PayerMap, User, SplitMethod, SplitWay, CreatePaymentPayload } from "./types";
+import { SplitDetail, SplitMap, PayerMap, User, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, ReceiptWay } from "./types";
 import { formatPercent, formatNumber } from "./utils";
 import { getNowDatetimeLocal } from "@/utils/time";
 
 interface CreatePaymentSplitProps {
     userList: User[];
-    receiptWay: "split";
-    payload?: (data: CreatePaymentPayload) => void; 
-    setPayload : (map: CreatePaymentPayload) => void
+    receiptWay: ReceiptWay;
+    setReceiptWay: (value:ReceiptWay) => void;
+    setSplitWay: (value:SplitWay) => void;
+    setSplitMethod: (value:SplitMethod) => void;
+    setPayload : (map: CreatePaymentPayload) => void;
+    setItemPayload : (map: CreateItemPayload) => void;
 }
 
 
 export default function CreatePaymentSplit({
     userList,
     receiptWay,
-    setPayload
+    setReceiptWay,
+    setSplitMethod,
+    setPayload,
+    setItemPayload
     }:CreatePaymentSplitProps){
-        const [localPayload, setLocalPayload] = useState<CreatePaymentPayload>()
 
         // receipt-split
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
@@ -89,6 +92,10 @@ export default function CreatePaymentSplit({
 
         console.log("付款人", splitPayerMap, "分帳方式", chooseSplitByPerson, "分帳人", splitByPersonMap)
 
+
+        // 付款項目
+        const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>()
+
         // 金額輸入限制
         const handleSplitAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const rawValue = e.target.value;
@@ -132,19 +139,21 @@ export default function CreatePaymentSplit({
         // get data
         useEffect(() => {
             const payload: CreatePaymentPayload = {    
-                currency: selectCurrencyValue,
-                amount: parseFloat(inputAmountValue || "0"),
-                categoryId: selectCategoryValue,
                 paymentName: inputPaymentValue,
+                receiptWay: 'split',    // "split" | "debt"
+                splitWay: splitWay,      // "item" | "person"
+                splitMethod: chooseSplitByPerson, // "percentage" | "actual" | "adjusted"
+                currency: selectCurrencyValue,
+                amount:  parseFloat(inputAmountValue || "0"),
+                categoryId: selectCategoryValue,
                 time: inputTimeValue,
                 desc: inputDescValue || "",
-                splitMethod: chooseSplitByPerson,
                 payerMap: splitPayerMap,
                 splitMap: splitByPersonMap,
             };
-            setLocalPayload(payload);
             setPayload(payload);
-        }, [selectCurrencyValue, inputAmountValue,selectCategoryValue,inputPaymentValue,inputTimeValue,inputDescValue,chooseSplitByPerson,splitPayerMap,splitByPersonMap,setPayload]);
+            setReceiptWay('split')
+        }, [selectCurrencyValue, inputAmountValue,selectCategoryValue,inputPaymentValue,inputTimeValue,inputDescValue,chooseSplitByPerson,splitPayerMap,splitByPersonMap,setPayload, setSplitWay, setReceiptWay, splitWay]);
 
         // css
         //const tokenCount: [number, number] = [inputAmountValue.length, 40];
@@ -185,8 +194,13 @@ export default function CreatePaymentSplit({
                     {isSplitByItemOpen &&
                         <SplitByItem
                             isSplitByItemOpen = {isSplitByItemOpen}
-                            userList={userList} 
                             onClose={() => setIsSplitByItemOpen(false)}
+                            userList={userList} 
+                            inputAmountValue={inputAmountValue}
+                            splitWay= "item"
+                            setSplitWay={setSplitWay}
+                            splitByItemMap={splitByItemMap}
+                            setSplitByItemMap={setSplitByItemMap}
                         />
                     }
                 </div>

@@ -11,16 +11,16 @@ import { User,SplitMap } from "./types";
 interface DebtReceiverProps {
     isDebtReceiverOpen: boolean;
     onClose: () => void;
-    debtByPersonMap: SplitMap;
-    setDebtByPersonMap: (map: SplitMap) => void;
+    selectedUid: string;
+    setSelectedUid: (uid: string) => void;
     userList: User[];
 }
 
 export default function DebtReceiver({
         isDebtReceiverOpen = false,
         onClose,
-        debtByPersonMap,
-        setDebtByPersonMap,
+        selectedUid,
+        setSelectedUid,
         userList
     }:DebtReceiverProps){
 
@@ -29,20 +29,14 @@ export default function DebtReceiver({
         return(
             <div>
                 {userList.map((user) => {
-                const selectedUid = Object.keys(debtByPersonMap)[0];
                 const isSelected = user.uid === selectedUid;
-              
-                const userDetail = debtByPersonMap[selectedUid] ?? {
-                  fixed: 0,
-                  percent: 0,
-                  total: 0
-                };
+
                 return (
                     <div
                     key={user.uid}
                     className={`px-3 py-2 flex items-start justify-start gap-2 rounded-xl hover:bg-sp-green-100 active:bg-sp-green-200 ${isSelected ? "bg-sp-green-100" : ""}`}
                     onClick={() => {
-                        setDebtByPersonMap({[user.uid] : userDetail});
+                        setSelectedUid(user.uid);
                         onClose(); 
                     }}
                     >

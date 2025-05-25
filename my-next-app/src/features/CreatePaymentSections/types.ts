@@ -43,15 +43,27 @@ export type SplitMap = Record<string, SplitDetail>;
 //   }
 // }
 
-// 送出資料
+// SplitWay =  "person" 送出資料
 export interface CreatePaymentPayload {
+    paymentName: string;
+    receiptWay: ReceiptWay;    // "split" | "debt"
+    splitWay: SplitWay | null;       // "item" | "person"
+    splitMethod: SplitMethod | null; // "percentage" | "actual" | "adjusted"
     currency: string;
     amount: number;
-    categoryId: string;
-    paymentName: string;
+    categoryId: string | null;
     time: string;
-    desc?: string;
-    splitMethod: SplitMethod;
+    desc: string | null;
     payerMap: PayerMap;
     splitMap: SplitMap;
 }
+
+
+// SplitWay = "item"送出子資料資料
+export interface CreateItemPayload {
+    amount: number;
+    paymentName: string;
+    splitMethod: SplitMethod;
+    splitMap: SplitMap;
+}
+

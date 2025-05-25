@@ -1,8 +1,6 @@
 import clsx from "clsx";
-import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo} from "react";
 import Button from "@/components/ui/Button";
-import IconButton from "@/components/ui/IconButton";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
@@ -10,64 +8,54 @@ import Select from "@/components/ui/Select";
 import DebtPayer from "./DebtPayerDialog";
 import DebtReceiver from "./DebtReceiverDialog";
 import { getNowDatetimeLocal } from "@/utils/time";
-import { PayerMap, User, SplitMap } from "./types"
+import { User, CreatePaymentPayload} from "./types"
 
 
 interface CreatePaymentDebtProps {
     userList: User[];
-    receiptWay: "debt";
+    setPayload : (map: CreatePaymentPayload) => void
 }
 
 export default function CreatePaymentDebt({
     userList,
-    receiptWay
+    setPayload
     }:CreatePaymentDebtProps){
 
         // receipt-debt
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
         const [inputTimeValue, setInputTimeValue] = useState(getNowDatetimeLocal);
         const [inputDescValue, setInputDescValue] = useState("");
-
         const [inputDebtAmountValue, setInputDebtAmountValue] = useState("");
+
         const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
         const [isDebtReceiverOpen, setIsDebtReceiverOpen] = useState(false);
 
 
-        //  付款人預設
-        const [debtPayerMap, setDebtPayerMap] = useState<PayerMap>({
-            ["4kjf39480fjlk"]: parseFloat(inputDebtAmountValue || "0") || 0
-        });
+        // 付款人預設
+        const [selectedPayerUid, setSelectedPayerUid] = useState(userList[0]?.uid || "");
 
-        useEffect(() => {
-            if(receiptWay === 'debt' && userList.length > 0 && Number(inputDebtAmountValue) > 0){
-                const amount = parseFloat(inputDebtAmountValue || "0");
-                setDebtPayerMap({ ["4kjf39480fjlk"]: amount });
-            }
-        }, [inputDebtAmountValue, receiptWay, userList]);
+        const payerMap = useMemo(() => ({
+            [selectedPayerUid]: parseFloat(inputDebtAmountValue || "0")
+        }), [selectedPayerUid, inputDebtAmountValue]);
 
-        // 還款人預設
-        const [debtByPersonMap, setDebtByPersonMap] = useState<SplitMap>(() => {
-            const total = Number(inputDebtAmountValue) || 0;
-            return {"4kjf39480fjlk" : {
-                fixed: total,
+            
+        // 收款人預設
+        const [selectedReceiverUid, setSelectedReceiverUid] = useState(userList[1]?.uid || "");
+
+
+        const splitMap = useMemo(() => ({
+            [selectedReceiverUid]: {
+                fixed: parseFloat(inputDebtAmountValue || "0"),
                 percent: 0,
-                total: total
-            }};
-        });
-
-        useEffect(() => {
-            if ( receiptWay === "debt"  && userList.length > 0 && Number(inputDebtAmountValue) > 0) {
-                const total = parseFloat(inputDebtAmountValue || "0");
-                const map: SplitMap = {"4kjf39480fjlk" : {
-                    fixed: total,
-                    percent: 0,
-                    total: total
-                }};
-                setDebtByPersonMap(map);
+                total: parseFloat(inputDebtAmountValue || "0")
             }
-        }, [inputDebtAmountValue, receiptWay, userList]);
+        }), [selectedReceiverUid, inputDebtAmountValue]);
 
-        console.log("還款人", debtPayerMap, "收款人", debtByPersonMap)
+        // 假資料
+        const selectedDebtPayer = userList.find((user) => user.uid === selectedPayerUid);
+        const selectedDebtReceiver = userList.find((user) => user.uid === selectedReceiverUid);
+
+        console.log("還款人", payerMap, "收款人", splitMap)
 
         // 金額輸入限制
         const handleDebtAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,24 +68,32 @@ export default function CreatePaymentDebt({
                 setInputDebtAmountValue(rawValue);
             }
         };
-
-        // 假資料
-        const selectedPayerUid = Object.keys(debtPayerMap)[0];
-        const selectedReceiverUid = Object.keys(debtByPersonMap)[0];
-        const selectedDebtPayer = userList.find(user => user.uid === selectedPayerUid);
-        const selectedDebtReceiver = userList.find(user => user.uid === selectedReceiverUid);
-
-        // css
-        //const tokenCount: [number, number] = [inputAmountValue.length, 40];
-        //const errorMessage = inputAmountValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
   
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
         const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
         const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-end")
-          
-        
+
+        // get data
+        useEffect(() => {
+            const payload: CreatePaymentPayload = {    
+                paymentName: "debt",
+                receiptWay: 'debt',    // "split" | "debt"
+                splitWay: null,      // "item" | "person"
+                splitMethod: null, // "percentage" | "actual" | "adjusted"
+                currency: selectCurrencyValue,
+                amount:  parseFloat(inputDebtAmountValue || "0"),
+                categoryId: null,
+                time: inputTimeValue,
+                desc: inputDescValue || "",
+                payerMap: payerMap,
+                splitMap: splitMap,
+            };
+            setPayload(payload);
+        }, [selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap]);
+
+
         return(
             <div className="w-full h-full pb-20 mb-20">
                 <div>
@@ -105,8 +101,8 @@ export default function CreatePaymentDebt({
                         <DebtPayer
                             isDebtPayerOpen = {isDebtPayerOpen}
                             onClose={() => setIsDebtPayerOpen(false)}
-                            debtPayerMap={debtPayerMap}
-                            setDebtPayerMap={setDebtPayerMap}
+                            selectedUid={selectedPayerUid}
+                            setSelectedUid={setSelectedPayerUid}
                             userList={userList}
                         />
                     }
@@ -114,8 +110,8 @@ export default function CreatePaymentDebt({
                         <DebtReceiver
                             isDebtReceiverOpen = {isDebtReceiverOpen}
                             onClose={() => setIsDebtReceiverOpen(false)}
-                            debtByPersonMap={debtByPersonMap}
-                            setDebtByPersonMap={setDebtByPersonMap}
+                            selectedUid={selectedReceiverUid}
+                            setSelectedUid={setSelectedReceiverUid}
                             userList={userList}
                         />
                     }
@@ -144,8 +140,6 @@ export default function CreatePaymentDebt({
                                             width='fit'
                                             variant='text-button'
                                             color='zinc'
-                                            //disabled={isdisabled} 
-                                            //isLoading={isLoading}
                                             onClick={()=> setIsDebtPayerOpen(true)}
                                             >
                                                 其他人
@@ -203,8 +197,6 @@ export default function CreatePaymentDebt({
                                             width='fit'
                                             variant='text-button'
                                             color='zinc'
-                                            //disabled={isdisabled} 
-                                            //isLoading={isLoading}
                                             onClick={()=> setIsDebtReceiverOpen(true)}
                                             >
                                                 其他人

@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSections/CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentSections/CreatePaymentDebt";
-import { ReceiptWay, CreatePaymentPayload } from "./CreatePaymentSections/types";
+import { ReceiptWay, CreatePaymentPayload, CreateItemPayload } from "./CreatePaymentSections/types";
 
 interface CreatePaymentProps {
     onClose: () => void;
@@ -16,6 +16,7 @@ const userList = [
     { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
     { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/2.jpg", name: "Bob", uid: "92jf20fkk29jf" },
     { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/3.jpg", name: "Charlie", uid: "fj30fj39d9s0d" },
+
 ];
 
 export default function CreatePayment({
@@ -25,7 +26,20 @@ export default function CreatePayment({
 
         // receipt-way
         const [receiptWay, setReceiptWay] = useState<ReceiptWay>("split");
-        const [payload, setPayload] = useState<CreatePaymentPayload>();
+        const [payload, setPayload] = useState<CreatePaymentPayload>({
+            paymentName: "",
+            receiptWay: "split",
+            splitWay: null,
+            splitMethod: null,
+            currency: "TWD",
+            amount: 0,
+            categoryId: null,
+            time: new Date().toISOString(),
+            desc: null,
+            payerMap: {},
+            splitMap: {},
+        });
+        const [itemPayload, setItemPayload] = useState<CreateItemPayload>();
         
         useEffect(() => {
             if (open) document.body.style.overflow = 'hidden';
@@ -36,8 +50,10 @@ export default function CreatePayment({
         }, [open]);
 
         const handleSubmitData = () => {
+            console.log("增加內容", payload?.receiptWay, "分帳方式", payload?.splitWay,"分錢方式", payload?.splitMethod)
             console.log("final db",payload)
             // onSubmit(payload); // 把資料丟到外層
+            
         };
 
         return(
@@ -79,17 +95,18 @@ export default function CreatePayment({
                                     轉帳
                             </Button>
                         </div>
-                        {receiptWay === "split" && (
+                        {/* {receiptWay === "split" && (
                             <CreatePaymentSplit
                                 userList={userList}
                                 receiptWay={receiptWay}
                                 setPayload = {setPayload}
+                                setItemPayload = {setItemPayload}
                             />
-                        )}
+                        )} */}
                         {receiptWay === "debt" && (
                             <CreatePaymentDebt
                                 userList={userList}
-                                receiptWay={receiptWay}
+                                setPayload = {setPayload}
                             />
                         )}
                     </div>

@@ -5,92 +5,43 @@ import Input from "@/components/ui/Input";
 import Icon from "@/components/ui/Icon";
 import Select from "@/components/ui/Select";
 import IconButton from "@/components/ui/IconButton";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
-import { User, SplitMethod } from "./types";
+import { User, SplitMethod,SplitWay, SplitMap, CreateItemPayload } from "./types";
+import { formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
+import SplitByItemEdit from "./SplitByItemEditDialog";
 
 
 interface SplitByItemProps {
     isSplitByItemOpen: boolean;
     onClose: () => void;
     userList: User[];
+    inputAmountValue:string;
+    splitWay : SplitWay;
+    setSplitWay: (value: SplitWay) => void;
+    splitByItemMap:SplitMap;
+    setSplitByItemMap:(map: SplitMap) => void;
 
 }
 
 export default function SplitByItem({
         isSplitByItemOpen = false,
         onClose,
-        userList
+        userList,
+        inputAmountValue,
     }:SplitByItemProps){
+
+    const [itempayload, setItemPayload] = useState<CreateItemPayload>();
+    
     // item
     const [step, setStep] = useState<"list" | "singleItem">("list")
     const [isListDetailOpen, setIsListDetailOpen] = useState(false)
 
     // each item split way 
-    const [chooseSplitByItem, setChooseSplitByItem] = useState<SplitMethod>("percentage");
-    const [isPayByUID1, setIsPayByUID1]=useState('')
-    const [inputAmountValue, setInputAmountValue] = useState("");
-    const [inputItemValue, setInputItemValue] = useState("");
+    const [splitWay, setSplitWay] = useState<SplitWay>("item");
+    const [inputItemAmountValue, setInputItemAmountValue] = useState("");
 
-    // render footer
-    const splitByItemDescMap: Record<string, string> = {
-        percentage: '每個人依比例分攤',
-        actual: '每個人實際支出',
-        adjusted: '扣除實際支出後剩餘均分',
-      };      
-    const splitByItemDesc = splitByItemDescMap[chooseSplitByItem] || '';
 
-    const splitByItemAmountMap: Record<string, string> = {
-        percentage: '目前剩餘 {}% / 共計 100%',
-        actual: '目前剩餘 {}元/ 共計 {} 元',
-        adjusted: '剩餘 {}元將均分/ 共計 {} 元',
-      };      
-    const splitByItemAmount = splitByItemAmountMap[chooseSplitByItem] || '';
-
-    const renderFooter = () => {
-        return(
-            <div className="w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
-                {step === 'list' && (
-                    <>
-                        <div className="w-full flex items-start justify-between gap-2 text-base">
-                            <p className="wrap-break-word">支出總金額 {} 元</p>
-                            <p className="shrink-0">剩餘 {} 元</p>
-                        </div>
-                        <Button
-                            size='sm'
-                            width='full'
-                            variant= 'solid'
-                            color= 'primary'
-                            //disabled={isdisabled} 
-                            //isLoading={isLoading}
-                            onClick={() => onClose()}
-                            >
-                                完成
-                        </Button>
-                    </>
-                )}
-                {step === 'singleItem' && (
-                    <>
-                        <div className="w-full flex items-start justify-between gap-2 text-base">
-                            <p className="wrap-break-word">{splitByItemDesc}</p>
-                            <p className="shrink-0">{splitByItemAmount}</p>
-                        </div>
-                        <Button
-                            size='sm'
-                            width='full'
-                            variant= 'solid'
-                            color= 'primary'
-                            //disabled={isdisabled} 
-                            //isLoading={isLoading}
-                            onClick={() => setStep('list')}
-                            >
-                                儲存
-                        </Button>                    
-                    </>
-                )}
-            </div>
-        )
-    }
 
     // render body
     const labelClass = clsx("w-full font-medium truncate")
@@ -103,87 +54,236 @@ export default function SplitByItem({
         return(
             <>
                 {step === 'list' && (
-                    <div className="relative text-zinc-700">
-                        <div className="text-end">
+                    <div className="flex flex-col h-full">
+                        <div className="w-full flex-1 h-full relative text-zinc-700 overflow-hidden">
+                            <div className="text-end">
+                                <Button
+                                    size='sm'
+                                    width='fit'
+                                    variant= 'outline'
+                                    color= 'primary'
+                                    leftIcon="solar:add-circle-bold"
+                                    //disabled={isdisabled} 
+                                    //isLoading={isLoading}
+                                    onClick={()=> setStep('singleItem')}
+                                    >
+                                        增加項目
+                                </Button>
+                            </div>  
+                            <div className={`pt-2 pb-20 h-full overflow-hidden ${scrollClass}`}>
+                                <div className="p-2 rounded-xl hover:bg-sp-green-100">
+                                    <div className="flex items-start justify-start gap-2">
+                                        <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
+                                            <div  className="shrink-0 flex items-center justify-center ">
+                                            <Icon 
+                                                icon='solar:delivery-bold'
+                                                size='xl'
+                                            /> 
+                                            </div>
+                                            <p className="text-base w-full truncate">產品名稱</p>
+                                        </div>
+                                        <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
+                                            <Input
+                                                value={inputItemAmountValue}
+                                                type="number"
+                                                onChange={(e) => setInputItemAmountValue(e.target.value)}
+                                                flexDirection="row"
+                                                width="full"
+                                                placeholder="金額"
+                                                disabled = {true}
+                                            />
+                                            <p className="shrink-0 h-9 text-base flex items-center">元</p>
+                                            <IconButton
+                                                icon={isListDetailOpen ? 'solar:alt-arrow-up-outline' : 'solar:alt-arrow-down-outline'}
+                                                size='sm' 
+                                                variant='outline'
+                                                color= 'zinc'
+                                                //disabled={isdisabled} //根據需求
+                                                //isLoading={isLoading} //根據需求
+                                                type= 'button'
+                                                onClick={() => setIsListDetailOpen(prev => !prev)} 
+                                            />
+                                            <IconButton
+                                                icon='solar:pen-linear'
+                                                size='sm' 
+                                                variant='outline'
+                                                color= 'zinc'
+                                                //disabled={isdisabled} //根據需求
+                                                //isLoading={isLoading} //根據需求
+                                                type= 'button'
+                                                onClick={()=> setStep('singleItem')} 
+                                            />
+                                        </div>
+                                    </div>
+                                    {isListDetailOpen && (
+                                        <div className={`w-full h-fit py-4 px-6 flex flex-col items-start justify-start gap-2 max-h-40 rounded-xl  bg-sp-green-200 overflow-hidden ${scrollClass}`}>
+                                            <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                <p className="w-full truncate">用戶名稱</p>
+                                                <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
+                                            </div>
+                                            <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                <p className="w-full truncate">用戶名稱</p>
+                                                <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
+                                            </div>
+                                            <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                <p className="w-full truncate">用戶名稱</p>
+                                                <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="p-2 rounded-xl hover:bg-sp-green-100">
+                                    <div className="flex items-start justify-start gap-2">
+                                        <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
+                                            <div  className="shrink-0 flex items-center justify-center ">
+                                            <Icon 
+                                                icon='solar:delivery-bold'
+                                                size='xl'
+                                            /> 
+                                            </div>
+                                            <p className="text-base w-full truncate">產品名稱</p>
+                                        </div>
+                                        <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
+                                            <Input
+                                                value={inputItemAmountValue}
+                                                type="number"
+                                                onChange={(e) => setInputItemAmountValue(e.target.value)}
+                                                flexDirection="row"
+                                                width="full"
+                                                placeholder="金額"
+                                                disabled = {true}
+                                            />
+                                            <p className="shrink-0 h-9 text-base flex items-center">元</p>
+                                            <IconButton
+                                                icon={isListDetailOpen ? 'solar:alt-arrow-up-outline' : 'solar:alt-arrow-down-outline'}
+                                                size='sm' 
+                                                variant='outline'
+                                                color= 'zinc'
+                                                //disabled={isdisabled} //根據需求
+                                                //isLoading={isLoading} //根據需求
+                                                type= 'button'
+                                                onClick={() => setIsListDetailOpen(prev => !prev)} 
+                                            />
+                                            <IconButton
+                                                icon='solar:pen-linear'
+                                                size='sm' 
+                                                variant='outline'
+                                                color= 'zinc'
+                                                //disabled={isdisabled} //根據需求
+                                                //isLoading={isLoading} //根據需求
+                                                type= 'button'
+                                                onClick={()=> setStep('singleItem')} 
+                                            />
+                                        </div>
+                                    </div>
+                                    {isListDetailOpen && (
+                                        <div className={`w-full h-fit py-4 px-6 flex flex-col items-start justify-start gap-2 max-h-40 rounded-xl  bg-sp-green-200 overflow-hidden ${scrollClass}`}>
+                                            <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                <p className="w-full truncate">用戶名稱</p>
+                                                <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
+                                            </div>
+                                            <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                <p className="w-full truncate">用戶名稱</p>
+                                                <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
+                                            </div>
+                                            <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                <p className="w-full truncate">用戶名稱</p>
+                                                <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="p-2 rounded-xl hover:bg-sp-green-100">
+                                    <div className="flex items-start justify-start gap-2">
+                                        <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
+                                            <div  className="shrink-0 flex items-center justify-center ">
+                                            <Icon 
+                                                icon='solar:delivery-bold'
+                                                size='xl'
+                                            /> 
+                                            </div>
+                                            <p className="text-base w-full truncate">產品名稱</p>
+                                        </div>
+                                        <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
+                                            <Input
+                                                value={inputItemAmountValue}
+                                                type="number"
+                                                onChange={(e) => setInputItemAmountValue(e.target.value)}
+                                                flexDirection="row"
+                                                width="full"
+                                                placeholder="金額"
+                                                disabled = {true}
+                                            />
+                                            <p className="shrink-0 h-9 text-base flex items-center">元</p>
+                                            <IconButton
+                                                icon={isListDetailOpen ? 'solar:alt-arrow-up-outline' : 'solar:alt-arrow-down-outline'}
+                                                size='sm' 
+                                                variant='outline'
+                                                color= 'zinc'
+                                                //disabled={isdisabled} //根據需求
+                                                //isLoading={isLoading} //根據需求
+                                                type= 'button'
+                                                onClick={() => setIsListDetailOpen(prev => !prev)} 
+                                            />
+                                            <IconButton
+                                                icon='solar:pen-linear'
+                                                size='sm' 
+                                                variant='outline'
+                                                color= 'zinc'
+                                                //disabled={isdisabled} //根據需求
+                                                //isLoading={isLoading} //根據需求
+                                                type= 'button'
+                                                onClick={()=> setStep('singleItem')} 
+                                            />
+                                        </div>
+                                    </div>
+                                    {isListDetailOpen && (
+                                        <div className={`w-full h-fit py-4 px-6 flex flex-col items-start justify-start gap-2 max-h-40 rounded-xl  bg-sp-green-200 overflow-hidden ${scrollClass}`}>
+                                            <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                <p className="w-full truncate">用戶名稱</p>
+                                                <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
+                                            </div>
+                                            <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                <p className="w-full truncate">用戶名稱</p>
+                                                <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
+                                            </div>
+                                            <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                <p className="w-full truncate">用戶名稱</p>
+                                                <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="shrink-0 pt-2 w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
+                            <div className="w-full flex items-start justify-between gap-2 text-base">
+                                <p className="wrap-break-word">支出總金額 {} 元</p>
+                                <p className="shrink-0">剩餘 {} 元</p>
+                            </div>
                             <Button
                                 size='sm'
-                                width='fit'
-                                variant= 'outline'
+                                width='full'
+                                variant= 'solid'
                                 color= 'primary'
-                                leftIcon="solar:add-circle-bold"
                                 //disabled={isdisabled} 
                                 //isLoading={isLoading}
-                                onClick={()=> setStep('singleItem')}
+                                onClick={() => onClose()}
                                 >
-                                    增加項目
+                                    完成
                             </Button>
-                        </div>  
-                        <div className="pt-2">
-                            <div className="p-2 rounded-xl hover:bg-sp-green-100">
-                                <div className="flex items-start justify-start gap-2">
-                                    <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
-                                        <div  className="shrink-0 flex items-center justify-center ">
-                                        <Icon 
-                                            icon='solar:delivery-bold'
-                                            size='xl'
-                                        /> 
-                                        </div>
-                                        <p className="text-base w-full truncate">產品名稱</p>
-                                    </div>
-                                    <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
-                                        <Input
-                                            value={isPayByUID1}
-                                            type="number"
-                                            onChange={(e) => setIsPayByUID1(e.target.value)}
-                                            flexDirection="row"
-                                            width="full"
-                                            placeholder="金額"
-                                            disabled = {true}
-                                        />
-                                        <p className="shrink-0 h-9 text-base flex items-center">元</p>
-                                        <IconButton
-                                            icon={isListDetailOpen ? 'solar:alt-arrow-up-outline' : 'solar:alt-arrow-down-outline'}
-                                            size='sm' 
-                                            variant='outline'
-                                            color= 'zinc'
-                                            //disabled={isdisabled} //根據需求
-                                            //isLoading={isLoading} //根據需求
-                                            type= 'button'
-                                            onClick={() => setIsListDetailOpen(prev => !prev)} 
-                                        />
-                                        <IconButton
-                                            icon='solar:pen-linear'
-                                            size='sm' 
-                                            variant='outline'
-                                            color= 'zinc'
-                                            //disabled={isdisabled} //根據需求
-                                            //isLoading={isLoading} //根據需求
-                                            type= 'button'
-                                            onClick={()=> setStep('singleItem')} 
-                                        />
-                                    </div>
-                                </div>
-                                {isListDetailOpen && (
-                                    <div className={`w-full h-fit py-4 px-6 flex flex-col items-start justify-start gap-2 max-h-40 rounded-xl  bg-sp-green-200 overflow-hidden ${scrollClass}`}>
-                                        <div className="w-full text-base flex items-bottom justify-end gap-4">
-                                            <p className="w-full truncate">用戶名稱</p>
-                                            <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
-                                        </div>
-                                        <div className="w-full text-base flex items-bottom justify-end gap-4">
-                                            <p className="w-full truncate">用戶名稱</p>
-                                            <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
-                                        </div>
-                                        <div className="w-full text-base flex items-bottom justify-end gap-4">
-                                            <p className="w-full truncate">用戶名稱</p>
-                                            <p className="shrink-0 w-40 text-sp-green-500 text-end">543元</p>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
                         </div>
                     </div>
                 )}
                 {step === 'singleItem' && (
+                    <SplitByItemEdit
+                        userList={userList}
+                        step = {step}
+                        setStep = {setStep}
+                        setItemPayload={setItemPayload}
+                    />
+                )}
+                {/* {step === 'singleItem' && (
                     <div className="relative text-zinc-700">                                
                         <div id="receipt-form-frame" className="max-w-xl w-full grid grid-cols-3 gap-2">
                             <div className={formSpan2CLass}>
@@ -200,12 +300,14 @@ export default function SplitByItem({
                             <div className={formSpan1CLass}>
                                 <span className={labelClass}>費用</span>
                                 <Input
-                                value={inputAmountValue}
+                                value={inputItemAmountValue}
                                 type="number"
-                                onChange={(e) => setInputAmountValue(e.target.value)}
+                                onChange={handleSplitAmountChange}
                                 flexDirection="row"
                                 width="full"
                                 placeholder="點擊編輯"
+                                step="0.01"
+                                inputMode="decimal" 
                                 />
                             </div>
                         </div>
@@ -245,96 +347,124 @@ export default function SplitByItem({
                                         特別額
                                 </Button>
                             </div>
+                            <p className="wrap-break-word py-2 px-2 text-sp-blue-500">{splitByItemDesc}</p>
                         </div>
                         {chooseSplitByItem === 'percentage' && (
                             <div className="pt-2">
-                                <div className="px-3 pb-2 flex items-start justify-start gap-2">
-                                    <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
-                                        <div  className="shrink-0 flex items-center justify-center ">
-                                            <Avatar
-                                                size="md"
-                                                img={userData?.avatar}
-                                                userName = {userData?.name}
-                                            />
+                            {userList.map((user) => {
+                                const entry = localSplitPercentageMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
+                                
+                                return(
+                                    <div key={user.uid} className="px-3 pb-2 flex items-start justify-start gap-2">
+                                        <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
+                                            <div  className="shrink-0 flex items-center justify-center ">
+                                                <Avatar
+                                                    size="md"
+                                                    img={user?.avatar}
+                                                    userName = {user?.name}
+                                                />
+                                            </div>
+                                            <p className="text-base w-full truncate">{user?.name}</p>
                                         </div>
-                                        <p className="text-base w-full truncate">{userData?.name}</p>
+                                        <div  className="shrink-0 w-60 flex flex-col items-end justify-start pb-3">
+                                            <div className="w-full flex items-start justify-start gap-2 ">
+                                                <p className="shrink-0 h-9 text-base flex items-center">支出</p>
+                                                <Input
+                                                    value={ rawPercentInputMap[user.uid]  ?? "" }
+                                                    type="number"
+                                                    onChange={(e) => handlePercentageChange(user.uid, e.target.value)}
+                                                    flexDirection="row"
+                                                    width="full"
+                                                    placeholder="支出比例"
+                                                />
+                                                <p className="shrink-0 h-9 text-base flex items-center">%</p>
+                                            </div>
+                                            <p className="shrink-0 w-full mt-[-24px] text-base flex items-center justify-end text-zinc-500"> 
+                                                = {formatNumber(entry.total)} 元
+                                            </p>                                        
+                                        </div>
                                     </div>
-                                    <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
-                                        <p className="shrink-0 h-9 text-base flex items-center">支出</p>
-                                        <Input
-                                            value={isPayByUID1}
-                                            type="number"
-                                            onChange={(e) => setIsPayByUID1(e.target.value)}
-                                            flexDirection="row"
-                                            width="full"
-                                            placeholder="支出比例"
-                                        />
-                                    <p className="shrink-0 h-9 text-base flex items-center">%</p>
-
-                                    </div>
-                                </div>
+                                )
+                            })}
                             </div>
                         )}
                         {chooseSplitByItem === 'actual' && (
                             <div className="pt-2">
-                                <div className="px-3 pb-2 flex items-start justify-start gap-2">
-                                    <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
-                                        <div  className="shrink-0 flex items-center justify-center ">
-                                            <Avatar
-                                                size="md"
-                                                img={userData?.avatar}
-                                                userName = {userData?.name}
-                                            />
+                                {userList.map((user) => {
+                                    return(
+                                        <div key={user.uid} className="px-3 pb-2 flex items-start justify-start gap-2">
+                                            <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
+                                                <div  className="shrink-0 flex items-center justify-center ">
+                                                    <Avatar
+                                                        size="md"
+                                                        img={user?.avatar}
+                                                        userName = {user?.name}
+                                                    />
+                                                </div>
+                                                <p className="text-base w-full truncate">{user?.name}</p>
+                                            </div>
+                                            <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
+                                                <p className="shrink-0 h-9 text-base flex items-center">支出</p>
+                                                <Input
+                                                    value={rawActualInputMap[user.uid]|| ""}
+                                                    type="number"
+                                                    onChange={(e) => handleActualChange(user.uid, e.target.value)}
+                                                    flexDirection="row"
+                                                    width="full"
+                                                    placeholder="支出金額"
+                                                    step="0.01"
+                                                    inputMode="decimal"
+                                                />
+                                                <p className="shrink-0 h-9 text-base flex items-center">元</p>
+                                            </div>
                                         </div>
-                                        <p className="text-base w-full truncate">{userData?.name}</p>
-                                    </div>
-                                    <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
-                                        <p className="shrink-0 h-9 text-base flex items-center">支出</p>
-                                        <Input
-                                            value={isPayByUID1}
-                                            type="number"
-                                            onChange={(e) => setIsPayByUID1(e.target.value)}
-                                            flexDirection="row"
-                                            width="full"
-                                            placeholder="支出金額"
-                                        />
-                                    <p className="shrink-0 h-9 text-base flex items-center">元</p>
-
-                                    </div>
-                                </div>
+                                    )
+                                })}
                             </div>
                         )}
                         {chooseSplitByItem === 'adjusted' && (
                             <div className="pt-2">
-                                <div className="px-3 pb-2 flex items-start justify-start gap-2">
-                                    <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
-                                        <div  className="shrink-0 flex items-center justify-center ">
-                                            <Avatar
-                                                size="md"
-                                                img={userData?.avatar}
-                                                userName = {userData?.name}
-                                            />
-                                        </div>
-                                        <p className="text-base w-full truncate">{userData?.name}</p>
-                                    </div>
-                                    <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
-                                        <p className="shrink-0 h-9 text-base flex items-center">另外支出</p>
-                                        <Input
-                                            value={isPayByUID1}
-                                            type="number"
-                                            onChange={(e) => setIsPayByUID1(e.target.value)}
-                                            flexDirection="row"
-                                            width="full"
-                                            placeholder="支出金額"
-                                        />
-                                    <p className="shrink-0 h-9 text-base flex items-center">元</p>
+                                {userList.map((user) => {
+                                    const entry = localSplitAdjustedMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
 
-                                    </div>
-                                </div>
+                                    return(
+                                        <div key={user.uid} className="px-3 pb-2 flex items-start justify-start gap-2">
+                                            <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
+                                                <div  className="shrink-0 flex items-center justify-center ">
+                                                    <Avatar
+                                                        size="md"
+                                                        img={user?.avatar}
+                                                        userName = {user?.name}
+                                                    />
+                                                </div>
+                                                <p className="text-base w-full truncate">{user?.name}</p>
+                                            </div>
+                                            <div className="shrink-0 w-60 flex flex-col items-end justify-start pb-3">
+                                                <div className="w-full flex items-start justify-start gap-2 ">
+                                                    <p className="shrink-0 h-9 text-base flex items-center">支出</p>
+                                                    <Input
+                                                        value={rawAdjustInputMap[user.uid] || ""}
+                                                        type="number"
+                                                        onChange={(e) => handleAdjustChange(user.uid, e.target.value)}
+                                                        flexDirection="row"
+                                                        width="full"
+                                                        placeholder="支出金額"
+                                                        step="0.01"
+                                                        inputMode="decimal"                                                
+                                                    />
+                                                    <p className="shrink-0 h-9 text-base flex items-center">元</p>
+                                                </div>
+                                                <p className="shrink-0 w-full mt-[-24px] text-base flex items-center justify-end text-zinc-500"> 
+                                                    + {parsePercentToInt(parseFloat((1 / userList.length).toFixed(4)))}% = {formatNumber(entry.total)} 元
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
                             </div>
-                        )}                
+                        )}                         
                     </div>
-                )}
+                )} */}
             </>
         )
     }
@@ -353,7 +483,7 @@ export default function SplitByItem({
                 //hideCloseIcon = false
                 //closeOnBackdropClick = false
                 onLeftIconClick={()=> setStep('list')}
-                footer= {renderFooter()}
+                // footer= {renderFooter()}
             >
                 {renderBody()}
         </Dialog>
