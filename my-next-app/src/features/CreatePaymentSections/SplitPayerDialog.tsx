@@ -29,9 +29,13 @@ export default function SplitPayer({
 
     useEffect(() => {
         if (isSplitPayerOpen) {
-            setLocalPayerMap(splitPayerMap);
-        }
-    }, [isSplitPayerOpen, splitPayerMap]);
+            const initialMap: PayerMap = {};
+            userList.forEach(user => {
+              initialMap[user.uid] = splitPayerMap[user.uid] ?? 0;
+            });
+            setLocalPayerMap(initialMap);
+          }
+    }, [isSplitPayerOpen, splitPayerMap, userList]);
 
     const remaining = useMemo(() => {
         const totalAmount = Object.values(localPayerMap).reduce((acc, cur) => acc + cur, 0);
@@ -63,7 +67,7 @@ export default function SplitPayer({
             <div className="w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
                 <div className="w-full flex items-start justify-between gap-2 text-base">
                     <p className="wrap-break-word">支出總金額 ${inputAmountValue || '0'} 元</p>
-                    <p className={remainingClass}>剩餘 {remaining} 元</p>
+                    <p className={remainingClass}>剩餘 {remaining.toFixed(2)} 元</p>
                 </div>
                 <Button
                     size='sm'
@@ -75,8 +79,8 @@ export default function SplitPayer({
                         const filteredMap = Object.fromEntries(
                             Object.entries(localPayerMap).filter(([_, amount]) => amount > 0)
                         );
-                        onClose()
                         setSplitPayerMap(filteredMap);
+                        onClose()
                         console.log("完成分帳後的 map：", filteredMap);
                     }}
                     >

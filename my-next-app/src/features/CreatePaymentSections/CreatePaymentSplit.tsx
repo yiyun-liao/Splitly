@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useState, useEffect} from "react";
+import { useState, useEffect, useMemo} from "react";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
@@ -47,6 +47,10 @@ export default function CreatePaymentSplit({
             const firstUid = userList[0]?.uid;
             return firstUid ? { [firstUid]: 0 } : {};
         });
+        // 還款人預設
+        const [splitByPersonMap, setSplitByPersonMap] = useState<SplitMap>({});
+        // 項目的還款人設定
+        const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>({});
 
         useEffect(() => {
             if(userList.length > 0 && Number(inputAmountValue) > 0){
@@ -55,21 +59,8 @@ export default function CreatePaymentSplit({
             }
         }, [inputAmountValue, userList]);
 
-
-        // 還款人預設
-        const [splitByPersonMap, setSplitByPersonMap] = useState<SplitMap>(() => {
-            const total = Number(inputAmountValue) || 0;
-            const percentValue = parseFloat((1 / userList.length).toFixed(4));;
-            const average = Math.floor((total * percentValue) * 10000) / 10000;
-            return Object.fromEntries(userList.map(user => [user.uid, {
-                fixed: 0,
-                percent: percentValue,
-                total: average
-            }]));
-        });
-
         useEffect(() => {
-            if ( userList.length > 0 && Number(inputAmountValue) > 0) {
+            if (splitWay === "person" &&  userList.length > 0 && Number(inputAmountValue) > 0) {
                 const amount = parseFloat(inputAmountValue || "0");
                 const percent = parseFloat((1 / userList.length).toFixed(4));
                 const total = Math.floor((amount * percent) * 10000) / 10000;
@@ -85,9 +76,6 @@ export default function CreatePaymentSplit({
             }
         }, [inputAmountValue, splitWay, userList]);
 
-        // 項目的還款人設定
-        const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>({})
-
         console.log("付款人", splitPayerMap, "分帳方式", chooseSplitByPerson, "分帳人", splitByPersonMap,"或是", splitByItemMap)
 
         // 金額輸入限制
@@ -102,7 +90,6 @@ export default function CreatePaymentSplit({
             }
         };
           
-    
         // render category
         useEffect(() => {
             fetchCategoriesForSelect().then((options) => {
@@ -114,7 +101,6 @@ export default function CreatePaymentSplit({
               }
             });
         }, [])
-
 
         // tag hint
         const tagDescMap: Record<string, (entry: SplitDetail, allEntries: SplitMap) => string> = {
@@ -131,28 +117,32 @@ export default function CreatePaymentSplit({
         const getTagDesc = tagDescMap[chooseSplitByPerson] || (() => '');
 
         // get data
-        useEffect(() => {
-            const splitFinalMap = splitWay === 'person' ? splitByPersonMap ?? {} : splitByItemMap ?? {};;
-            const payload: CreatePaymentPayload = {    
+        // splitMap 決定輸出哪一種分帳結果
+          const splitFinalMap = useMemo(() => {
+            return splitWay === "person" ? splitByPersonMap : splitByItemMap;
+        }, [splitWay, splitByPersonMap, splitByItemMap]);
+
+        const payload: CreatePaymentPayload = useMemo(() => {
+            return {
                 paymentName: inputPaymentValue,
-                receiptWay: 'split',    // "split" | "debt"
-                splitWay: splitWay,      // "item" | "person"
-                splitMethod: chooseSplitByPerson, // "percentage" | "actual" | "adjusted"
+                receiptWay: "split",   // "split" | "debt"
+                splitWay: "person",   // "item" | "person"
+                splitMethod: chooseSplitByPerson,  // "percentage" | "actual" | "adjusted"
                 currency: selectCurrencyValue,
-                amount:  parseFloat(inputAmountValue || "0"),
+                amount: parseFloat(inputAmountValue || "0"),
                 categoryId: selectCategoryValue,
                 time: inputTimeValue,
                 desc: inputDescValue || "",
                 payerMap: splitPayerMap,
                 splitMap: splitFinalMap,
             };
+          }, [inputPaymentValue, chooseSplitByPerson, selectCurrencyValue, inputAmountValue, selectCategoryValue, inputTimeValue, inputDescValue, splitPayerMap, splitFinalMap,]);
+        
+        useEffect(() => {
             setPayload(payload);
-        }, [selectCurrencyValue, inputAmountValue,selectCategoryValue,inputPaymentValue,inputTimeValue,inputDescValue,chooseSplitByPerson,splitPayerMap,splitByPersonMap,setPayload, setSplitWay, splitWay,splitByItemMap]);
+        }, [payload, setPayload]);
 
         // css
-        //const tokenCount: [number, number] = [inputAmountValue.length, 40];
-        //const errorMessage = inputAmountValue.length > 40 ? '最多只能輸入 200 字最多只能輸入 200 字' : '';
-  
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
