@@ -9,6 +9,7 @@ import DebtPayer from "./DebtPayerDialog";
 import DebtReceiver from "./DebtReceiverDialog";
 import { getNowDatetimeLocal } from "@/utils/time";
 import { User, CreatePaymentPayload} from "./types"
+import { sanitizeDecimalInput } from "@/utils/parseAmount";
 
 
 interface CreatePaymentDebtProps {
@@ -58,15 +59,11 @@ export default function CreatePaymentDebt({
         console.log("還款人", payerMap, "收款人", splitMap)
 
         // 金額輸入限制
-        const handleDebtAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const rawValue = e.target.value;
-          
-            // 允許：空字串、整數、小數最多兩位
-            const isValid = /^(\d+)?(\.\d{0,2})?$/.test(rawValue);
-          
-            if (isValid) {
-                setInputDebtAmountValue(rawValue);
-            }
+        const handleDebtAmountChange = (actualInput: string) => {
+            const rawValue = sanitizeDecimalInput(actualInput);
+            if (isNaN(rawValue) || rawValue < 0) return; 
+            setInputDebtAmountValue(rawValue.toString())
+
         };
   
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
@@ -167,7 +164,7 @@ export default function CreatePaymentDebt({
                             <Input
                             value={inputDebtAmountValue}
                             type="number"
-                            onChange={handleDebtAmountChange}
+                            onChange={(e)=>{handleDebtAmountChange(e.target.value)}}
                             flexDirection="row"
                             width="full"
                             placeholder="點擊編輯"

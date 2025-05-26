@@ -1,6 +1,6 @@
 'use client'
 import { useParams } from 'next/navigation';
-import { withAuth } from "@/utils/withAuth";
+import { withAuth } from "@/hoc/withAuth";
 import { useAuth } from '@/contexts/AuthContext';
 import ProjectOverview from "@/features/ProjectOverview";
 import PaymentOverview from "@/features/PaymentOverview";

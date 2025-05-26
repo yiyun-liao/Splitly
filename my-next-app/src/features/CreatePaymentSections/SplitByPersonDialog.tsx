@@ -5,6 +5,7 @@ import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import { SplitMap, User, SplitMethod } from "./types";
 import { formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
+import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import clsx from "clsx";
 
 
@@ -117,13 +118,12 @@ export default function SplitByPerson({
     }, [isSplitByPersonOpen, splitByPersonMap, chooseSplitByPerson, inputAmountValue]);
     
     const handlePercentageChange = (uid: string, percentInput: string) => {
-        const sanitizedInput = percentInput.replace(/^(\d+)(\.\d{0,2})?.*$/, '$1$2');
+        const rawPercent = sanitizeDecimalInput(percentInput);
 
         setRawPercentInputMap((prev) => ({
             ...prev,
-            [uid]: sanitizedInput,
+            [uid]: rawPercent.toString(),
         }));
-        const rawPercent = sanitizedInput === "" ? 0 : parseFloat(sanitizedInput);
         if (isNaN(rawPercent) || rawPercent < 0) return; 
         const amount = parseFloat(inputAmountValue || "0");    
         const percent = parsePercentToDecimal(rawPercent);
@@ -136,16 +136,13 @@ export default function SplitByPerson({
     };
 
     const handleActualChange = (uid: string, actualInput: string) => {
-        const sanitizedInput = actualInput.replace(/^(\d+)(\.\d{0,2})?.*$/, '$1$2');
+        const rawActual = sanitizeDecimalInput(actualInput);
 
         setRawActualInputMap((prev) => ({
             ...prev,
-            [uid]: sanitizedInput,
+            [uid]: rawActual.toString(),
         }));
-
-        const rawActual = sanitizedInput === "" ? 0 : parseFloat(sanitizedInput);
         if (isNaN(rawActual) || rawActual < 0) return; 
-    
         const percent = 0;
         const fixed = parseFloat(rawActual.toFixed(4));
         const total = fixed;
@@ -157,14 +154,12 @@ export default function SplitByPerson({
     };
 
     const handleAdjustChange = (uid: string, adjustInput: string) => {
-        const sanitizedInput = adjustInput.replace(/^(\d+)(\.\d{0,2})?.*$/, '$1$2');
+        const rawAdjust = sanitizeDecimalInput(adjustInput);
 
         setRawAdjustInputMap((prev) => ({
             ...prev,
-            [uid]: sanitizedInput,
+            [uid]: rawAdjust.toString(),
         }));
-
-        const rawAdjust = sanitizedInput === "" ? 0 : parseFloat(sanitizedInput);
         if (isNaN(rawAdjust) || rawAdjust < 0) return; 
         updateAdjustedSplitMap(uid, rawAdjust)
     };

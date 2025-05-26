@@ -12,6 +12,8 @@ import SplitByItem from "./SplitByItemDialog";
 import { SplitDetail, SplitMap, PayerMap, User, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, ReceiptWay } from "./types";
 import { formatPercent, formatNumber } from "./utils";
 import { getNowDatetimeLocal } from "@/utils/time";
+import { sanitizeDecimalInput } from "@/utils/parseAmount";
+
 
 interface CreatePaymentSplitProps {
     userList: User[];
@@ -29,6 +31,7 @@ export default function CreatePaymentSplit({
         // receipt-split
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
         const [inputAmountValue, setInputAmountValue] = useState("");
+        
         const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string; disabled: boolean }[]>([]);
         const [selectCategoryValue, setSelectedCategoryValue] = useState("");
         const [inputPaymentValue, setInputPaymentValue] = useState("");
@@ -48,46 +51,42 @@ export default function CreatePaymentSplit({
             return firstUid ? { [firstUid]: 0 } : {};
         });
         // 還款人預設
-        const [splitByPersonMap, setSplitByPersonMap] = useState<SplitMap>({});
+        const [splitByPersonMap, setSplitByPersonMap] = useState<SplitMap>(() => {
+            const total = Number(inputAmountValue) || 0;
+            const percentValue = parseFloat((1 / userList.length).toFixed(4));;
+            const average = Math.floor((total * percentValue) * 10000) / 10000;
+            return Object.fromEntries(userList.map(user => [user.uid, {
+                fixed: 0,
+                percent: percentValue,
+                total: average
+            }]));
+        });
         // 項目的還款人設定
         const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>({});
 
         useEffect(() => {
-            if(userList.length > 0 && Number(inputAmountValue) > 0){
-                const amount = parseFloat(inputAmountValue || "0");
-                setSplitPayerMap({ ["4kjf39480fjlk"]: amount });
-            }
-        }, [inputAmountValue, userList]);
-
-        useEffect(() => {
-            if (splitWay === "person" &&  userList.length > 0 && Number(inputAmountValue) > 0) {
-                const amount = parseFloat(inputAmountValue || "0");
-                const percent = parseFloat((1 / userList.length).toFixed(4));
-                const total = Math.floor((amount * percent) * 10000) / 10000;
-                const map: SplitMap = Object.fromEntries(
-                    userList.map(user => [user.uid, {
-                        fixed: 0,
-                        percent: percent,
-                        total: total
-                    }])
-                );
-                setChooseSplitByPerson("percentage")
-                setSplitByPersonMap(map);
-            }
+            const amount = parseFloat(inputAmountValue || "0");
+            const percent = parseFloat((1 / userList.length).toFixed(4));
+            const total = Math.floor((amount * percent) * 10000) / 10000;
+            const map: SplitMap = Object.fromEntries(
+                userList.map(user => [user.uid, {
+                    fixed: 0,
+                    percent: percent,
+                    total: total
+                }])
+            );
+            setChooseSplitByPerson("percentage");
+            setSplitByPersonMap(map);
+            setSplitPayerMap({ ["4kjf39480fjlk"]: amount });
         }, [inputAmountValue, splitWay, userList]);
 
         console.log("付款人", splitPayerMap, "分帳方式", chooseSplitByPerson, "分帳人", splitByPersonMap,"或是", splitByItemMap)
 
         // 金額輸入限制
-        const handleSplitAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const rawValue = e.target.value;
-          
-            // 允許：空字串、整數、小數最多兩位
-            const isValid = /^(\d+)?(\.\d{0,2})?$/.test(rawValue);
-          
-            if (isValid) {
-              setInputAmountValue(rawValue);
-            }
+        const handleSplitAmountChange = (actualInput: string) => {
+            const rawValue = sanitizeDecimalInput(actualInput);
+            if (isNaN(rawValue) || rawValue < 0) return; 
+            setInputAmountValue(rawValue.toString());
         };
           
         // render category
@@ -206,7 +205,7 @@ export default function CreatePaymentSplit({
                             <Input
                             value={inputAmountValue}
                             type="number"
-                            onChange={handleSplitAmountChange}
+                            onChange={(e) => {handleSplitAmountChange(e.target.value)}}
                             flexDirection="row"
                             width="full"
                             placeholder="點擊編輯"

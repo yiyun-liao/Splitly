@@ -5,7 +5,7 @@ import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 import { PayerMap, User } from "./types";
-
+import { sanitizeDecimalInput } from "@/utils/parseAmount";
 
 interface SplitPayerProps {
     isSplitPayerOpen: boolean;
@@ -47,7 +47,7 @@ export default function SplitPayer({
 
 
     const handleAmountChange = (uid: string, value: string) => {
-        const numeric = parseFloat(value || "0");
+        const numeric = sanitizeDecimalInput(value);
         setLocalPayerMap((prev) => {
             return {
               ...prev,
