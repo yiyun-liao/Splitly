@@ -18,14 +18,14 @@ import { sanitizeDecimalInput } from "@/utils/parseAmount";
 interface CreatePaymentSplitProps {
     userList: User[];
     setPayload : (map: CreatePaymentPayload) => void;
-    setItemPayload : (map: CreateItemPayload) => void;
+    setItemPayloadList : (map: CreateItemPayload[]) => void;
 }
 
 
 export default function CreatePaymentSplit({
     userList,
     setPayload,
-    setItemPayload
+    setItemPayloadList
     }:CreatePaymentSplitProps){
 
         // receipt-split
@@ -69,6 +69,9 @@ export default function CreatePaymentSplit({
                 total: 0
             }]));
         });
+        // 項目細節設定
+        const [localItemPayloadList, setLocalItemPayloadList] = useState<CreateItemPayload[]>([]);
+
 
         useEffect(() => {
             const amount = parseFloat(inputAmountValue || "0");
@@ -123,7 +126,7 @@ export default function CreatePaymentSplit({
 
         // get data
         // splitMap 決定輸出哪一種分帳結果
-          const splitFinalMap = useMemo(() => {
+        const splitFinalMap = useMemo(() => {
             return splitWay === "person" ? splitByPersonMap : splitByItemMap;
         }, [splitWay, splitByPersonMap, splitByItemMap]);
 
@@ -145,7 +148,10 @@ export default function CreatePaymentSplit({
         
         useEffect(() => {
             setPayload(payload);
-        }, [payload, setPayload]);
+            if (splitWay === 'item'){
+                setItemPayloadList(localItemPayloadList || null)
+            }
+        }, [payload, setPayload, splitWay, localItemPayloadList,setLocalItemPayloadList, setItemPayloadList]);
 
         // css
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
@@ -187,7 +193,8 @@ export default function CreatePaymentSplit({
                             inputAmountValue={inputAmountValue}
                             splitByItemMap={splitByItemMap}
                             setSplitByItemMap={setSplitByItemMap}
-                            setItemPayload={setItemPayload}
+                            setItemPayloadList={setLocalItemPayloadList}
+                            setSplitWay={setSplitWay}
                         />
                     }
                 </div>
@@ -290,7 +297,6 @@ export default function CreatePaymentSplit({
                                         color= 'primary'
                                         onClick={() => {
                                             setIsSplitByItemOpen(true)
-                                            setSplitWay('item')
                                         }}
                                         >
                                             項目分帳
@@ -311,9 +317,13 @@ export default function CreatePaymentSplit({
                             </div>
                             <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
                                 {userList
-                                    .filter(user => !!splitByPersonMap[user.uid])
+                                    .filter(user => {
+                                        const map = splitWay === 'item' ? splitByItemMap : splitByPersonMap;
+                                        return !!map[user.uid];
+                                      })
                                     .map(user => {
-                                    const entry = splitByPersonMap[user.uid];
+                                        const map = splitWay === 'item' ? splitByItemMap : splitByPersonMap;
+                                        const entry = map[user.uid];
 
                                     return(<div key={user.uid} className="px-3 py-3 flex items-center justify-start gap-2">
                                         <div className="w-full flex items-center justify-start gap-2 overflow-hidden">

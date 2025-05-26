@@ -39,7 +39,7 @@ export default function CreatePayment({
             payerMap: {},
             splitMap: {},
         });
-        const [itemPayload, setItemPayload] = useState<CreateItemPayload>();
+        const [itemPayloadList, setItemPayloadList] = useState<CreateItemPayload[]>([]);
         
         useEffect(() => {
             if (open) document.body.style.overflow = 'hidden';
@@ -52,6 +52,7 @@ export default function CreatePayment({
         const handleSubmitData = () => {
             console.log("增加內容", payload?.receiptWay, "分帳方式", payload?.splitWay,"分錢方式", payload?.splitMethod)
             console.log("final db",payload)
+            console.log("final item db", itemPayloadList)
             // onSubmit(payload); // 把資料丟到外層
             
         };
@@ -99,7 +100,7 @@ export default function CreatePayment({
                             <CreatePaymentSplit
                                 userList={userList}
                                 setPayload = {setPayload}
-                                setItemPayload = {setItemPayload}
+                                setItemPayloadList = {setItemPayloadList}
                             />
                         )}
                         {receiptWay === "debt" && (

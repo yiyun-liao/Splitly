@@ -17,6 +17,11 @@ export function formatNumber(p: number): string {
 }
 // 33.3333 -> 33.33
 
+export function formatNumberForData(p: number): string {
+    return `${p.toFixed(4)}`;
+}
+// 33.3333333333 -> 33.3333
+
 export function parsePercentToDecimal(p: number): number {
     return parseFloat((p / 100).toFixed(4));
   }

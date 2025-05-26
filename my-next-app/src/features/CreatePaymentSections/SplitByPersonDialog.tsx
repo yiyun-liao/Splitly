@@ -4,7 +4,7 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import { SplitMap, User, SplitMethod } from "./types";
-import { formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
+import { formatNumber,parsePercentToInt,parsePercentToDecimal, formatNumberForData } from "./utils";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import clsx from "clsx";
 
@@ -49,7 +49,7 @@ export default function SplitByPerson({
                 const entry = splitByPersonMap[user.uid];
                 const fixed = 0;
                 const percent = entry?.percent || 0;
-                const total = parseFloat(formatNumber(percent * totalAmount)) || 0;
+                const total = parseFloat(formatNumberForData(percent * totalAmount)) || 0;
                 return [user.uid, { fixed, percent, total }];
             })
         );
@@ -95,8 +95,8 @@ export default function SplitByPerson({
 
                 const entry = splitByPersonMap[user.uid];
                 const fixed = entry?.fixed || 0;
-                const percent = parseFloat((1 / userList.length).toFixed(4));
-                const total = fixed + parseFloat((remaining * percent).toFixed(4));
+                const percent = parseFloat(formatNumberForData(1 / userList.length));
+                const total = fixed + parseFloat(formatNumberForData(remaining * percent));
                 return [user.uid, { fixed, percent, total }];
             })
         );
@@ -184,8 +184,8 @@ export default function SplitByPerson({
         userList.forEach(user => {
             const entry = newMap[user.uid] || { fixed: 0, percent: 0, total: 0 };
             const fixed = entry.fixed || 0;
-            const percent = parseFloat((1 / userList.length).toFixed(4));
-            const total = entry.fixed + parseFloat((remaining * percent).toFixed(4));
+            const percent = parseFloat(formatNumberForData(1 / userList.length));
+            const total = entry.fixed + parseFloat(formatNumberForData(remaining * percent));
     
             updatedMap[user.uid] = { fixed, total, percent };
         });

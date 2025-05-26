@@ -4,7 +4,7 @@ import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
 import { User, SplitMethod,SplitWay, SplitMap, CreateItemPayload } from "./types";
-import { formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
+import { formatNumber,parsePercentToInt,parsePercentToDecimal,formatNumberForData } from "./utils";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 
 
@@ -14,6 +14,7 @@ interface SplitByItemEditProps {
     setStep: React.Dispatch<React.SetStateAction<"list" | "singleItem">>;
     initialPayload?:CreateItemPayload
     setItemPayload : (map: CreateItemPayload) => void;
+    onDeleteItem?: () => void;
 }
 
 export default function SplitByItemEdit({
@@ -21,6 +22,7 @@ export default function SplitByItemEdit({
         setStep,
         initialPayload,
         setItemPayload,
+        onDeleteItem
     }:SplitByItemEditProps){
 
     const [localItemPayload, setLocalItemPayload] = useState<CreateItemPayload>()
@@ -50,7 +52,7 @@ export default function SplitByItemEdit({
                 const entry = itemSplitByPersonMap[user.uid];
                 const fixed = 0;
                 const percent = entry?.percent || 0;
-                const total = parseFloat(formatNumber(percent * totalAmount)) || 0;
+                const total = parseFloat(formatNumberForData(percent * totalAmount)) || 0;
                 return [user.uid, { fixed, percent, total }];
             })
         );
@@ -60,7 +62,7 @@ export default function SplitByItemEdit({
         return Object.fromEntries(
             userList.map(user => {
                 const { total = 0 } = itemSplitByPersonMap[user.uid] || {};
-                return [user.uid, formatNumber(total).toString()];
+                return [user.uid, formatNumberForData(total).toString()];
             })
         );
     });
@@ -95,8 +97,8 @@ export default function SplitByItemEdit({
 
                 const entry = itemSplitByPersonMap[user.uid];
                 const fixed = entry?.fixed || 0;
-                const percent = parseFloat((1 / userList.length).toFixed(4));
-                const total = fixed + parseFloat((remaining * percent).toFixed(4));
+                const percent = parseFloat(formatNumberForData(1 / userList.length));
+                const total = fixed + parseFloat(formatNumberForData(remaining * percent));
                 return [user.uid, { fixed, percent, total }];
             })
         );
@@ -111,7 +113,7 @@ export default function SplitByItemEdit({
 
         if (userList.length > 0 && Number(inputItemAmountValue) > 0) {
             const amount = parseFloat(inputItemAmountValue || "0");
-            const percent = parseFloat((1 / userList.length).toFixed(4));
+            const percent = parseFloat(formatNumberForData(1 / userList.length));
             const total = Math.floor((amount * percent) * 10000) / 10000;
     
             // percentage
@@ -137,7 +139,7 @@ export default function SplitByItemEdit({
             );
             setLocalSplitActualMap(actualMap);
             setRawActualInputMap(Object.fromEntries(
-                userList.map(user => [user.uid, formatNumber(total).toString()])
+                userList.map(user => [user.uid, formatNumberForData(total).toString()])
             ));
     
             // adjusted
@@ -159,7 +161,6 @@ export default function SplitByItemEdit({
     }, [inputItemAmountValue, splitWay, userList, initialPayload]);
 
     // update 
-    console.log("有資料嗎",initialPayload)
     useEffect(() => {
         if (initializedRef.current || !initialPayload || userList.length === 0) return;
 
@@ -183,7 +184,7 @@ export default function SplitByItemEdit({
             setLocalSplitActualMap(map);
             setRawActualInputMap(
                 Object.fromEntries(
-                    Object.entries(map).map(([uid, entry]) => [uid, formatNumber(entry.total).toString()])
+                    Object.entries(map).map(([uid, entry]) => [uid, formatNumberForData(entry.total).toString()])
                 )
             );
         }
@@ -192,16 +193,12 @@ export default function SplitByItemEdit({
             setLocalSplitAdjustedMap(map);
             setRawAdjustInputMap(
                 Object.fromEntries(
-                    Object.entries(map).map(([uid, entry]) => [uid, formatNumber(entry.fixed).toString()])
+                    Object.entries(map).map(([uid, entry]) => [uid, formatNumberForData(entry.fixed).toString()])
                 )
             );
         }
         
     }, [initialPayload, userList]);
-
-    console.log(rawPercentInputMap)
-    console.log(rawActualInputMap)
-    console.log(rawAdjustInputMap)
 
     const handlePercentageChange = (uid: string, percentInput: string) => {
         const rawPercent = sanitizeDecimalInput(percentInput);
@@ -230,7 +227,7 @@ export default function SplitByItemEdit({
         }));
         if (isNaN(rawActual) || rawActual < 0) return;     
         const percent = 0;
-        const fixed = parseFloat(rawActual.toFixed(4));
+        const fixed = parseFloat(formatNumberForData(rawActual));
         const total = fixed;
     
         setLocalSplitActualMap((prev) => ({
@@ -270,8 +267,8 @@ export default function SplitByItemEdit({
         userList.forEach(user => {
             const entry = newMap[user.uid] || { fixed: 0, percent: 0, total: 0 };
             const fixed = entry.fixed || 0;
-            const percent = parseFloat((1 / userList.length).toFixed(4));
-            const total = entry.fixed + parseFloat((remaining * percent).toFixed(4));
+            const percent = parseFloat(formatNumberForData(1 / userList.length));
+            const total = entry.fixed + parseFloat(formatNumberForData(remaining * percent));
     
             updatedMap[user.uid] = { fixed, total, percent };
         });
@@ -334,6 +331,12 @@ export default function SplitByItemEdit({
         adjusted: `/ 共計 ${inputItemAmountValue} 元`,
         };
     const splitByItemTotal = splitByItemTotalMap[chooseSplitByItem] || '';
+
+    const remainingClass = clsx('shrink-0 w-fit text-end',
+        {
+        'text-red-500' : !isComplete,
+        }
+    )
 
     // get data
     const payload: CreateItemPayload = useMemo(() => {
@@ -544,25 +547,43 @@ export default function SplitByItemEdit({
             <div className="shrink-0 pt-2 w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
                 <div className="w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
                     <div className="w-full flex items-center justify-end gap-4 text-base">
-                        <p className="shrink-0 w-fit text-end">{computedFooterInfo}</p>
+                        <p className={remainingClass}>{computedFooterInfo}</p>
                         <p className="shrink-0 w-fit text-end text-sm">{splitByItemTotal}</p>
                     </div>
-                    <Button
-                        size='sm'
-                        width='full'
-                        variant= 'solid'
-                        color= 'primary'
-                        disabled={!isComplete}
-                        onClick={() => {
-                            if (localItemPayload) {
-                                setItemPayload(localItemPayload);
-                                console.log(inputItemValue, localItemPayload)
-                                setStep('list');
-                            }
-                        }}
-                        >
-                            儲存項目
-                    </Button>
+                    <div className="flex w-full gap-4">
+                        {initialPayload && onDeleteItem &&(
+                            <div className="shrink-0 w-40">
+                                <Button
+                                    size='sm'
+                                    width='full'
+                                    variant= 'outline'
+                                    color= 'primary'
+                                    onClick={() => {
+                                        onDeleteItem();   
+                                        setStep('list');                                                                           
+                                    }}
+                                    >
+                                        刪除項目
+                                </Button>
+                            </div>
+                        )}
+                        <Button
+                            size='sm'
+                            width='full'
+                            variant= 'solid'
+                            color= 'primary'
+                            disabled={!isComplete}
+                            onClick={() => {
+                                if (localItemPayload) {
+                                    setItemPayload(localItemPayload);
+                                    console.log(inputItemValue, localItemPayload)
+                                    setStep('list');
+                                }
+                            }}
+                            >
+                                儲存項目
+                        </Button>
+                    </div>
                 </div>                 
             </div>
         </div>

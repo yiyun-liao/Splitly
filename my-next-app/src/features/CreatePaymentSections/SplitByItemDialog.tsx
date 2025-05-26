@@ -19,7 +19,8 @@ interface SplitByItemProps {
     inputAmountValue:string;
     splitByItemMap:SplitMap;
     setSplitByItemMap:(map: SplitMap) => void;
-    setItemPayload:(map:CreateItemPayload) => void;
+    setItemPayloadList:(map:CreateItemPayload[]) => void;
+    setSplitWay:(map:SplitWay) => void;
 }
 
 export default function SplitByItem({
@@ -29,12 +30,14 @@ export default function SplitByItem({
         inputAmountValue,
         splitByItemMap,
         setSplitByItemMap,
-        setItemPayload
+        setItemPayloadList,
+        setSplitWay
     }:SplitByItemProps){
     
     // item
     const [step, setStep] = useState<"list" | "singleItem">("list")
-    const [isListDetailOpen, setIsListDetailOpen] = useState(false)
+    const [openDetailIndex, setOpenDetailIndex] = useState<number | null>(null);
+    const [openSampleDetail, setOpenSampleDetail] = useState(false);
 
     // save all item
     const [itemList, setItemList] = useState<CreateItemPayload[]>([]);
@@ -42,7 +45,50 @@ export default function SplitByItem({
     // update single item, get itemList index
     const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
 
+    // render footer
+    const {remaining, isComplete } = useMemo(() => {
+        const targetAmount = parseFloat(inputAmountValue || "0");
+        let isComplete = false;
+        const currentAmount = Object.values(itemList).reduce((sum, entry) => sum + (entry.amount || 0),0)
+        const remaining = targetAmount - currentAmount
+        isComplete = remaining === 0
+        console.log(itemList)
+    
+        return { remaining, isComplete };
+    }, [inputAmountValue, itemList]);  
 
+    const remainingClass = clsx('shrink-0',
+        {
+        'text-red-500' : !isComplete,
+        }
+    )
+    // get data
+    const updateSplitByItemMapFromItemList = () => {
+        const tempMap: SplitMap = Object.fromEntries(
+            userList.map(user => [
+              user.uid,
+              { fixed: 0, percent: 0, total: 0 },
+            ])
+          );
+      
+        // 累加每筆 item 的付款資訊
+        itemList.forEach(item => {
+            Object.entries(item.splitMap).forEach(([uid, entry]) => {
+              if (tempMap[uid]) {
+                tempMap[uid].fixed = entry.total || 0;
+                tempMap[uid].total = entry.total || 0;
+              }
+            });
+          });
+      
+        // 過濾出 total > 0 的人
+        const filteredMap: SplitMap = Object.fromEntries(
+          Object.entries(tempMap).filter(([_, entry]) => entry.total > 0)
+        );
+      
+        return filteredMap;
+    };
+      
 
     // render body
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
@@ -69,7 +115,58 @@ export default function SplitByItem({
                                 </Button>
                             </div> 
                             <div className={`pt-2 pb-20 h-full overflow-hidden ${scrollClass}`}>
+                                { itemList.length === 0 &&                                
+                                    <div className="p-2 rounded-xl  hover:bg-sp-green-100  opacity-80 bg-sp-green-200">
+                                        <div className="flex items-start justify-start gap-2 pb-2">
+                                            <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
+                                                <div  className="shrink-0 flex items-center justify-center ">
+                                                <Icon 
+                                                    icon='solar:delivery-bold'
+                                                    size='xl'
+                                                /> 
+                                                </div>
+                                                <p className="text-base w-full line-clamp-2 overflow-hidden text-ellipsis break-words">範例。點擊右上角新增！</p>
+                                            </div>
+                                            <div  className="shrink-0 w-50 flex items-start justify-start gap-2">
+                                                <p className="h-9 w-full text-base flex items-center justify-end"> 100 元</p>
+                                                <IconButton
+                                                    icon={openSampleDetail ? 'solar:alt-arrow-up-outline' : 'solar:alt-arrow-down-outline'}
+                                                    size='sm' 
+                                                    variant='outline'
+                                                    color= 'zinc'
+                                                    type= 'button'
+                                                    onClick={() => setOpenSampleDetail(prev => !prev)} 
+                                                />
+                                                <IconButton
+                                                    icon='solar:pen-linear'
+                                                    size='sm' 
+                                                    variant='outline'
+                                                    color= 'zinc'
+                                                    type= 'button'
+                                                    onClick={()=> {}} 
+                                                />
+                                            </div>
+                                        </div>
+                                        {openSampleDetail && (
+                                            <div className={`w-full h-fit py-4 px-6 flex flex-col items-start justify-start gap-2 max-h-40 rounded-xl  bg-sp-green-200 overflow-hidden ${scrollClass}`}>
+                                                <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                    <p className="w-full truncate">小貓</p>
+                                                    <p className="shrink-0 w-40 font-semibold text-sp-green-500 text-end"> 40 元</p>
+                                                </div>
+                                                <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                    <p className="w-full truncate">小狗</p>
+                                                    <p className="shrink-0 w-40 font-semibold text-sp-green-500 text-end"> 20 元</p>
+                                                </div>
+                                                <div className="w-full text-base flex items-bottom justify-end gap-4">
+                                                    <p className="w-full truncate">小豬</p>
+                                                    <p className="shrink-0 w-40 font-semibold text-sp-green-500 text-end"> 40 元</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                }
                                 {itemList.map((item, index) => {
+                                    const isOpen = openDetailIndex === index;
                                     return(                                        
                                         <div key={index} className="p-2 rounded-xl hover:bg-sp-green-100">
                                             <div className="flex items-start justify-start gap-2 pb-2">
@@ -80,17 +177,17 @@ export default function SplitByItem({
                                                         size='xl'
                                                     /> 
                                                     </div>
-                                                    <p className="text-base w-full truncate">{item.paymentName}</p>
+                                                    <p className="text-base w-full line-clamp-2 overflow-hidden text-ellipsis break-words">{item.paymentName}</p>
                                                 </div>
-                                                <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
+                                                <div  className="shrink-0 w-50 flex items-start justify-start gap-2">
                                                     <p className="h-9 w-full text-base flex items-center justify-end">{formatNumber(item.amount)} 元</p>
                                                     <IconButton
-                                                        icon={isListDetailOpen ? 'solar:alt-arrow-up-outline' : 'solar:alt-arrow-down-outline'}
+                                                        icon={isOpen ? 'solar:alt-arrow-up-outline' : 'solar:alt-arrow-down-outline'}
                                                         size='sm' 
                                                         variant='outline'
                                                         color= 'zinc'
                                                         type= 'button'
-                                                        onClick={() => setIsListDetailOpen(prev => !prev)} 
+                                                        onClick={() => {setOpenDetailIndex(isOpen ? null : index);}} 
                                                     />
                                                     <IconButton
                                                         icon='solar:pen-linear'
@@ -106,7 +203,7 @@ export default function SplitByItem({
                                                     />
                                                 </div>
                                             </div>
-                                            {isListDetailOpen && (
+                                            {isOpen && (
                                                 <div className={`w-full h-fit py-4 px-6 flex flex-col items-start justify-start gap-2 max-h-40 rounded-xl  bg-sp-green-200 overflow-hidden ${scrollClass}`}>
                                                     {Object.entries(item.splitMap).map(([uid, detail]) => {
                                                         const user = userList.find(user => user.uid === uid);
@@ -128,18 +225,21 @@ export default function SplitByItem({
                         <div className="shrink-0 pt-2 w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
                             <div className="w-full flex items-start justify-between gap-2 text-base">
                                 <p className="wrap-break-word">支出總金額 {inputAmountValue} 元</p>
-                                <p className="shrink-0">剩餘 {} 元</p>
+                                <p className={remainingClass}>剩餘 {remaining} 元</p>
                             </div>
                             <Button
                                 size='sm'
                                 width='full'
                                 variant= 'solid'
                                 color= 'primary'
-                                //disabled={isdisabled} 
-                                //isLoading={isLoading}
+                                disabled={!isComplete} 
                                 onClick={() => {
-                                    
-                                    onClose()}}
+                                    setSplitByItemMap(updateSplitByItemMapFromItemList());
+                                    setItemPayloadList(itemList);  
+                                    console.log("項目分帳", updateSplitByItemMapFromItemList(), itemList)
+                                    setSplitWay("item")                                  
+                                    onClose()
+                                }}
                                 >
                                     完成
                             </Button>
@@ -162,6 +262,12 @@ export default function SplitByItem({
                               } else {
                                 setItemList((prev) => [...prev, payload]);
                               }                              
+                        }}
+                        onDeleteItem={() => {
+                            if (editItemIndex !== null) {
+                              setItemList((prev) => prev.filter((_, i) => i !== editItemIndex));
+                              setEditItemIndex(null);
+                            }
                         }}
                     />
                 )}
