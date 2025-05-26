@@ -6,6 +6,7 @@ import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 import { PayerMap, User } from "./types";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
+import { formatNumber } from "./utils";
 
 interface SplitPayerProps {
     isSplitPayerOpen: boolean;
@@ -67,7 +68,7 @@ export default function SplitPayer({
             <div className="w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
                 <div className="w-full flex items-start justify-between gap-2 text-base">
                     <p className="wrap-break-word">支出總金額 ${inputAmountValue || '0'} 元</p>
-                    <p className={remainingClass}>剩餘 {remaining.toFixed(2)} 元</p>
+                    <p className={remainingClass}>剩餘 {formatNumber(remaining)} 元</p>
                 </div>
                 <Button
                     size='sm'

@@ -11,7 +11,6 @@ export interface SplitDetail {
     fixed: number;
     percent: number;
     total: number;
-    inputValue?: string; // 只用於輸入中
 }
 
 
@@ -48,7 +47,7 @@ export interface CreatePaymentPayload {
     paymentName: string;
     receiptWay: ReceiptWay;    // "split" | "debt"
     splitWay: SplitWay | null;       // "item" | "person"
-    splitMethod: SplitMethod | null; // "percentage" | "actual" | "adjusted"
+    splitMethod: SplitMethod | null | "item"; // "percentage" | "actual" | "adjusted"
     currency: string;
     amount: number;
     categoryId: string | null;

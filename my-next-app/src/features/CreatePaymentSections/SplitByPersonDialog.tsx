@@ -4,7 +4,7 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import { SplitMap, User, SplitMethod } from "./types";
-import { formatNumber,parsePercentToInt,parsePercentToDecimal, formatNumberForData } from "./utils";
+import { formatNumber,parsePercentToInt,parsePercentToDecimal, formatNumberForData,SplitWay, formatPercent } from "./utils";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import clsx from "clsx";
 
@@ -18,6 +18,8 @@ interface SplitByPersonProps {
     setChooseSplitByPerson: (value: SplitMethod) => void;
     splitByPersonMap: SplitMap;
     setSplitByPersonMap: (map: SplitMap) => void;
+    setSplitWay:(map:SplitWay) => void;
+
 }
 
 export default function SplitByPerson({
@@ -28,7 +30,8 @@ export default function SplitByPerson({
         chooseSplitByPerson,
         setChooseSplitByPerson,
         splitByPersonMap,
-        setSplitByPersonMap
+        setSplitByPersonMap,
+        setSplitWay
     }:SplitByPersonProps){
 
     const [localChooseSplitByPerson, setLocalChooseSplitByPerson] = useState<SplitMethod>("percentage");
@@ -128,7 +131,7 @@ export default function SplitByPerson({
         const amount = parseFloat(inputAmountValue || "0");    
         const percent = parsePercentToDecimal(rawPercent);
         const fixed = 0;
-        const total = Math.floor((amount * percent) * 10000) / 10000;
+        const total = parseFloat(formatNumberForData(amount * percent));
         setLocalSplitPercentageMap((prev) => ({
             ...prev,
             [uid]: { fixed, percent, total },
@@ -144,7 +147,7 @@ export default function SplitByPerson({
         }));
         if (isNaN(rawActual) || rawActual < 0) return; 
         const percent = 0;
-        const fixed = parseFloat(rawActual.toFixed(4));
+        const fixed = parseFloat(formatNumberForData(rawActual));
         const total = fixed;
     
         setLocalSplitActualMap((prev) => ({
@@ -288,6 +291,7 @@ export default function SplitByPerson({
                         setSplitByPersonMap(finalChoose())
                         console.log("最終分帳方式", finalChoose())
                         onClose()
+                        setSplitWay("person")
                     }}
                     >
                         完成
@@ -444,7 +448,7 @@ export default function SplitByPerson({
                                             <p className="shrink-0 h-9 text-base flex items-center">元</p>
                                         </div>
                                         <p className="shrink-0 w-full mt-[-24px] text-base flex items-center justify-end text-zinc-500"> 
-                                            + {parsePercentToInt(parseFloat((1 / userList.length).toFixed(4)))}% = {formatNumber(entry.total)} 元
+                                            + {formatPercent(1 / userList.length)} = {formatNumber(entry.total)} 元
                                         </p>
                                     </div>
                                 </div>

@@ -66,20 +66,19 @@ export default function SplitByItem({
     const updateSplitByItemMapFromItemList = () => {
         const tempMap: SplitMap = Object.fromEntries(
             userList.map(user => [
-              user.uid,
-              { fixed: 0, percent: 0, total: 0 },
+            user.uid,
+            { fixed: 0, percent: 0, total: 0 }
             ])
-          );
-      
+        );      
         // 累加每筆 item 的付款資訊
         itemList.forEach(item => {
             Object.entries(item.splitMap).forEach(([uid, entry]) => {
-              if (tempMap[uid]) {
-                tempMap[uid].fixed = entry.total || 0;
-                tempMap[uid].total = entry.total || 0;
-              }
+                    
+            // 每個人累加自己的金額（覆寫而非疊加）
+            tempMap[uid].fixed = (tempMap[uid].fixed || 0) + (entry.total|| 0);
+            tempMap[uid].total = (tempMap[uid].total || 0) + (entry.total || 0);
             });
-          });
+        });
       
         // 過濾出 total > 0 的人
         const filteredMap: SplitMap = Object.fromEntries(
@@ -107,8 +106,6 @@ export default function SplitByItem({
                                     variant= 'outline'
                                     color= 'primary'
                                     leftIcon="solar:add-circle-bold"
-                                    //disabled={isdisabled} 
-                                    //isLoading={isLoading}
                                     onClick={()=> setStep('singleItem')}
                                     >
                                         增加項目
@@ -225,7 +222,7 @@ export default function SplitByItem({
                         <div className="shrink-0 pt-2 w-full flex flex-col items-start justify-start gap-2 text-base  text-zinc-700">
                             <div className="w-full flex items-start justify-between gap-2 text-base">
                                 <p className="wrap-break-word">支出總金額 {inputAmountValue} 元</p>
-                                <p className={remainingClass}>剩餘 {remaining} 元</p>
+                                <p className={remainingClass}>剩餘 {formatNumber(remaining)} 元</p>
                             </div>
                             <Button
                                 size='sm'
@@ -278,10 +275,10 @@ export default function SplitByItem({
     return(
         <Dialog
                 header="項目分帳"
-                open={isSplitByItemOpen} // 從某處打開
+                open={isSplitByItemOpen} 
                 onClose={ () => {
                     onClose();
-                }} // 點擊哪裡關閉
+                }} 
                 bodyClassName= "overflow-hidden"
                 leftIcon={step === "singleItem" ? "solar:arrow-left-line-duotone" : undefined}
                 onLeftIconClick={()=> {

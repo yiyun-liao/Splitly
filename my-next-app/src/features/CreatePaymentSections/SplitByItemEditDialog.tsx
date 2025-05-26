@@ -4,7 +4,7 @@ import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
 import { User, SplitMethod,SplitWay, SplitMap, CreateItemPayload } from "./types";
-import { formatNumber,parsePercentToInt,parsePercentToDecimal,formatNumberForData } from "./utils";
+import { formatNumber,parsePercentToInt,parsePercentToDecimal,formatNumberForData, formatPercent } from "./utils";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 
 
@@ -51,7 +51,7 @@ export default function SplitByItemEdit({
                 const totalAmount = parseFloat(inputItemAmountValue || "0");
                 const entry = itemSplitByPersonMap[user.uid];
                 const fixed = 0;
-                const percent = entry?.percent || 0;
+                const percent = parseFloat(formatNumberForData(entry?.percent)) || 0;
                 const total = parseFloat(formatNumberForData(percent * totalAmount)) || 0;
                 return [user.uid, { fixed, percent, total }];
             })
@@ -62,7 +62,7 @@ export default function SplitByItemEdit({
         return Object.fromEntries(
             userList.map(user => {
                 const { total = 0 } = itemSplitByPersonMap[user.uid] || {};
-                return [user.uid, formatNumberForData(total).toString()];
+                return [user.uid, formatNumberForData(total)];
             })
         );
     });
@@ -111,10 +111,10 @@ export default function SplitByItemEdit({
     useEffect(() => {
         if (initialPayload || initializedRef.current) return;
 
-        if (userList.length > 0 && Number(inputItemAmountValue) > 0) {
+        if (userList.length > 0) {
             const amount = parseFloat(inputItemAmountValue || "0");
             const percent = parseFloat(formatNumberForData(1 / userList.length));
-            const total = Math.floor((amount * percent) * 10000) / 10000;
+            const total = parseFloat(formatNumberForData(amount * percent));
     
             // percentage
             const percentageMap: SplitMap = Object.fromEntries(
@@ -139,7 +139,7 @@ export default function SplitByItemEdit({
             );
             setLocalSplitActualMap(actualMap);
             setRawActualInputMap(Object.fromEntries(
-                userList.map(user => [user.uid, formatNumberForData(total).toString()])
+                userList.map(user => [user.uid, formatNumberForData(total)])
             ));
     
             // adjusted
@@ -184,7 +184,7 @@ export default function SplitByItemEdit({
             setLocalSplitActualMap(map);
             setRawActualInputMap(
                 Object.fromEntries(
-                    Object.entries(map).map(([uid, entry]) => [uid, formatNumberForData(entry.total).toString()])
+                    Object.entries(map).map(([uid, entry]) => [uid, formatNumberForData(entry.total)])
                 )
             );
         }
@@ -193,7 +193,7 @@ export default function SplitByItemEdit({
             setLocalSplitAdjustedMap(map);
             setRawAdjustInputMap(
                 Object.fromEntries(
-                    Object.entries(map).map(([uid, entry]) => [uid, formatNumberForData(entry.fixed).toString()])
+                    Object.entries(map).map(([uid, entry]) => [uid, formatNumberForData(entry.fixed)])
                 )
             );
         }
@@ -211,7 +211,7 @@ export default function SplitByItemEdit({
         const amount = parseFloat(inputItemAmountValue || "0");    
         const percent = parsePercentToDecimal(rawPercent);
         const fixed = 0;
-        const total = Math.floor((amount * percent) * 10000) / 10000;
+        const total = parseFloat(formatNumberForData(amount * percent));
         setLocalSplitPercentageMap((prev) => ({
             ...prev,
             [uid]: { fixed, percent, total },
@@ -299,7 +299,7 @@ export default function SplitByItemEdit({
             const usedPercent = Object.values(localSplitPercentageMap).reduce((sum, entry) => sum + (entry.percent || 0),0);
             const remainingPercent = 1 - usedPercent;
             isComplete = Math.abs(remainingPercent) < EPSILON;
-            computedFooterInfo = `目前剩餘 ${parsePercentToInt(remainingPercent)}%`;
+            computedFooterInfo = `目前剩餘 ${formatPercent(remainingPercent)}`;
         }
         if (chooseSplitByItem === "actual") {
             const usedAmount = Object.values(localSplitActualMap).reduce((sum, entry) => sum + (entry.total || 0),0);
@@ -535,7 +535,7 @@ export default function SplitByItemEdit({
                                             <p className="shrink-0 h-9 text-base flex items-center">元</p>
                                         </div>
                                         <p className="shrink-0 w-full mt-[-24px] text-base flex items-center justify-end text-zinc-500"> 
-                                            + {parsePercentToInt(parseFloat((1 / userList.length).toFixed(4)))}% = {formatNumber(entry.total)} 元
+                                            + {formatPercent(1 / userList.length)} = {formatNumber(entry.total)} 元
                                         </p>
                                     </div>
                                 </div>
