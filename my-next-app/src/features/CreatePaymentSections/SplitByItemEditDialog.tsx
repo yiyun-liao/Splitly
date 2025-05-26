@@ -1,11 +1,7 @@
-import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
-import Icon from "@/components/ui/Icon";
-import Select from "@/components/ui/Select";
-import IconButton from "@/components/ui/IconButton";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
 import { User, SplitMethod,SplitWay, SplitMap, CreateItemPayload } from "./types";
 import { formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
@@ -15,47 +11,33 @@ import { sanitizeDecimalInput } from "@/utils/parseAmount";
 
 interface SplitByItemEditProps {
     userList: User[];
-    step: "list" | "singleItem";
     setStep: React.Dispatch<React.SetStateAction<"list" | "singleItem">>;
-    itemPayload?: (data: CreateItemPayload) => void; 
-    setItemPayload : (map: CreateItemPayload) => void
+    initialPayload?:CreateItemPayload
+    setItemPayload : (map: CreateItemPayload) => void;
 }
 
 export default function SplitByItemEdit({
         userList = [] ,
-        step = 'singleItem',
         setStep,
-        setItemPayload
+        initialPayload,
+        setItemPayload,
     }:SplitByItemEditProps){
 
     const [localItemPayload, setLocalItemPayload] = useState<CreateItemPayload>()
-
-    // const [splitWay, setSplitWay] = useState<SplitWay>("item");
     const splitWay: SplitWay = "item";
-
     const [chooseSplitByItem, setChooseSplitByItem] = useState<SplitMethod>("percentage");
 
     const [inputItemAmountValue, setInputItemAmountValue] = useState("");
     const [inputItemValue, setInputItemValue] = useState("");
 
-    // const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>(() => {
-    //     return Object.fromEntries(userList.map(user => [user.uid, {
-    //         fixed: 0,
-    //         percent: 0,
-    //         total: 0
-    //     }]));
-    // });
-
-    const splitByItemMap: SplitMap = Object.fromEntries(
+    const itemSplitByPersonMap: SplitMap = Object.fromEntries(
         userList.map(user => [ user.uid, { fixed: 0, percent: 0, total: 0 }])
     );
 
-    console.log(splitByItemMap)
-    
     const [rawPercentInputMap, setRawPercentInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
             userList.map(user => {
-                const { percent = 0 } = splitByItemMap[user.uid] || {};
+                const { percent = 0 } = itemSplitByPersonMap[user.uid] || {};
                 return [user.uid, parsePercentToInt(percent)];
             })
         );
@@ -65,7 +47,7 @@ export default function SplitByItemEdit({
         return Object.fromEntries(
             userList.map(user => {
                 const totalAmount = parseFloat(inputItemAmountValue || "0");
-                const entry = splitByItemMap[user.uid];
+                const entry = itemSplitByPersonMap[user.uid];
                 const fixed = 0;
                 const percent = entry?.percent || 0;
                 const total = parseFloat(formatNumber(percent * totalAmount)) || 0;
@@ -77,7 +59,7 @@ export default function SplitByItemEdit({
     const [rawActualInputMap, setRawActualInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
             userList.map(user => {
-                const { total = 0 } = splitByItemMap[user.uid] || {};
+                const { total = 0 } = itemSplitByPersonMap[user.uid] || {};
                 return [user.uid, formatNumber(total).toString()];
             })
         );
@@ -86,7 +68,7 @@ export default function SplitByItemEdit({
     const [localSplitActualMap, setLocalSplitActualMap] =useState<SplitMap>(() => {
         return Object.fromEntries(
             userList.map(user => {
-                const entry = splitByItemMap[user.uid];
+                const entry = itemSplitByPersonMap[user.uid];
                 const fixed = entry?.total || 0;
                 const percent = 0;
                 const total = entry?.total || 0;
@@ -98,7 +80,7 @@ export default function SplitByItemEdit({
     const [rawAdjustInputMap, setRawAdjustInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
             userList.map(user => {
-                const { fixed = 0 } = splitByItemMap[user.uid] || {};
+                const { fixed = 0 } = itemSplitByPersonMap[user.uid] || {};
                 return [user.uid, fixed.toString()];
             })
         );
@@ -108,10 +90,10 @@ export default function SplitByItemEdit({
         return Object.fromEntries(
             userList.map(user => {
                 const totalAmount = parseFloat(inputItemAmountValue || "0");
-                const totalFixed = Object.values(splitByItemMap).reduce((sum, entry) => sum + (entry.fixed || 0), 0);
+                const totalFixed = Object.values(itemSplitByPersonMap).reduce((sum, entry) => sum + (entry.fixed || 0), 0);
                 const remaining = totalAmount - totalFixed;
 
-                const entry = splitByItemMap[user.uid];
+                const entry = itemSplitByPersonMap[user.uid];
                 const fixed = entry?.fixed || 0;
                 const percent = parseFloat((1 / userList.length).toFixed(4));
                 const total = fixed + parseFloat((remaining * percent).toFixed(4));
@@ -120,7 +102,13 @@ export default function SplitByItemEdit({
         );
     });
 
+    
+    // edit
+    const initializedRef = useRef(false);
+
     useEffect(() => {
+        if (initialPayload || initializedRef.current) return;
+
         if (userList.length > 0 && Number(inputItemAmountValue) > 0) {
             const amount = parseFloat(inputItemAmountValue || "0");
             const percent = parseFloat((1 / userList.length).toFixed(4));
@@ -168,9 +156,52 @@ export default function SplitByItemEdit({
             // 預設為 percentage
             setChooseSplitByItem("percentage");
         }
-    }, [inputItemAmountValue, splitWay, userList]);
-    
+    }, [inputItemAmountValue, splitWay, userList, initialPayload]);
 
+    // update 
+    console.log("有資料嗎",initialPayload)
+    useEffect(() => {
+        if (initializedRef.current || !initialPayload || userList.length === 0) return;
+
+        initializedRef.current = true;
+        setInputItemValue(initialPayload.paymentName);
+        setInputItemAmountValue(initialPayload.amount.toString());
+        setChooseSplitByItem(initialPayload.splitMethod);
+      
+        const map = initialPayload.splitMap;
+      
+        if (initialPayload.splitMethod === 'percentage') {
+            setLocalSplitPercentageMap(map);
+            setRawPercentInputMap(
+                Object.fromEntries(
+                    Object.entries(map).map(([uid, entry]) => [uid, parsePercentToInt(entry.percent)])
+                )
+            );
+        }
+        
+        if (initialPayload.splitMethod === 'actual') {
+            setLocalSplitActualMap(map);
+            setRawActualInputMap(
+                Object.fromEntries(
+                    Object.entries(map).map(([uid, entry]) => [uid, formatNumber(entry.total).toString()])
+                )
+            );
+        }
+        
+        if (initialPayload.splitMethod === 'adjusted') {
+            setLocalSplitAdjustedMap(map);
+            setRawAdjustInputMap(
+                Object.fromEntries(
+                    Object.entries(map).map(([uid, entry]) => [uid, formatNumber(entry.fixed).toString()])
+                )
+            );
+        }
+        
+    }, [initialPayload, userList]);
+
+    console.log(rawPercentInputMap)
+    console.log(rawActualInputMap)
+    console.log(rawAdjustInputMap)
 
     const handlePercentageChange = (uid: string, percentInput: string) => {
         const rawPercent = sanitizeDecimalInput(percentInput);
@@ -250,66 +281,89 @@ export default function SplitByItemEdit({
 
 
     // 金額輸入限制
-    const handleSplitAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const rawValue = e.target.value;
-        
-        // 允許：空字串、整數、小數最多兩位
-        const isValid = /^(\d+)?(\.\d{0,2})?$/.test(rawValue);
-        
-        if (isValid) {
-            setInputItemAmountValue(rawValue);
-        }
+    const handleSplitAmountChange = (input:string) => {
+        const rawValue = sanitizeDecimalInput(input);
+        setInputItemAmountValue(rawValue.toString());
     };    
 
     // render body
     const labelClass = clsx("w-full font-medium truncate")
     const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
     const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
-    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
 
-        // render footer
-        const {computedFooterInfo, isComplete } = useMemo(() => {
-            const totalAmount = parseFloat(inputItemAmountValue || "0");
-            const EPSILON = 0.015;
-            let isComplete = false;
-            let computedFooterInfo = "";
+    // render footer
+    const {computedFooterInfo, isComplete } = useMemo(() => {
+        const totalAmount = parseFloat(inputItemAmountValue || "0");
+        const EPSILON = 0.015;
+        let isComplete = false;
+        let computedFooterInfo = "";
+
+        if (chooseSplitByItem === "percentage") {
+            const usedPercent = Object.values(localSplitPercentageMap).reduce((sum, entry) => sum + (entry.percent || 0),0);
+            const remainingPercent = 1 - usedPercent;
+            isComplete = Math.abs(remainingPercent) < EPSILON;
+            computedFooterInfo = `目前剩餘 ${parsePercentToInt(remainingPercent)}%`;
+        }
+        if (chooseSplitByItem === "actual") {
+            const usedAmount = Object.values(localSplitActualMap).reduce((sum, entry) => sum + (entry.total || 0),0);
+            const remaining = totalAmount - usedAmount;
+            isComplete = Math.abs(remaining) < EPSILON;
+            computedFooterInfo = `目前剩餘 ${formatNumber(remaining)} 元`;
+        }
     
-            if (chooseSplitByItem === "percentage") {
-                const usedPercent = Object.values(localSplitPercentageMap).reduce((sum, entry) => sum + (entry.percent || 0),0);
-                const remainingPercent = 1 - usedPercent;
-                isComplete = Math.abs(remainingPercent) < EPSILON;
-                computedFooterInfo = `目前剩餘 ${parsePercentToInt(remainingPercent)}%`;
-            }
-            if (chooseSplitByItem === "actual") {
-                const usedAmount = Object.values(localSplitActualMap).reduce((sum, entry) => sum + (entry.total || 0),0);
-                const remaining = totalAmount - usedAmount;
-                isComplete = Math.abs(remaining) < EPSILON;
-                computedFooterInfo = `目前剩餘 ${formatNumber(remaining)} 元`;
-            }
-        
-            if (chooseSplitByItem === "adjusted") {
-                const fixedSum = Object.values(localSplitAdjustedMap).reduce((sum, entry) => sum + (entry.fixed || 0),0);
-                const remaining = totalAmount - fixedSum;
-                isComplete = remaining > -0.015;
-                computedFooterInfo = `剩餘 ${formatNumber(remaining)} 元將均分`;
-            }
-        
-            return { computedFooterInfo, isComplete };
-        }, [inputItemAmountValue, chooseSplitByItem, localSplitActualMap, localSplitAdjustedMap, localSplitPercentageMap]);
+        if (chooseSplitByItem === "adjusted") {
+            const fixedSum = Object.values(localSplitAdjustedMap).reduce((sum, entry) => sum + (entry.fixed || 0),0);
+            const remaining = totalAmount - fixedSum;
+            isComplete = remaining > -0.015;
+            computedFooterInfo = `剩餘 ${formatNumber(remaining)} 元將均分`;
+        }
     
-        const splitByItemDescMap: Record<string, string> = {
-            percentage: '每個人依比例分攤',
-            actual: '每個人實際支出',
-            adjusted: '扣除實際支出後剩餘均分',
-          };
-        const splitByItemDesc = splitByItemDescMap[chooseSplitByItem] || '';
+        return { computedFooterInfo, isComplete };
+    }, [inputItemAmountValue, chooseSplitByItem, localSplitActualMap, localSplitAdjustedMap, localSplitPercentageMap]);
+
+    const splitByItemDescMap: Record<string, string> = {
+        percentage: '每個人依比例分攤',
+        actual: '每個人實際支出',
+        adjusted: '扣除實際支出後剩餘均分',
+        };
+    const splitByItemDesc = splitByItemDescMap[chooseSplitByItem] || '';
+
+    const splitByItemTotalMap: Record<string, string> = {
+        percentage: `/ 共計 100%`,
+        actual: `/ 共計 ${inputItemAmountValue} 元`,
+        adjusted: `/ 共計 ${inputItemAmountValue} 元`,
+        };
+    const splitByItemTotal = splitByItemTotalMap[chooseSplitByItem] || '';
+
+    // get data
+    const payload: CreateItemPayload = useMemo(() => {
+        let newSplitMap: SplitMap = {};
+
+        if (chooseSplitByItem === "percentage") {
+            newSplitMap = Object.fromEntries(
+                Object.entries(localSplitPercentageMap).filter(([_, entry]) => entry.total > 0)
+            );
+        } else if (chooseSplitByItem === "actual") {
+            newSplitMap = Object.fromEntries(
+                Object.entries(localSplitActualMap).filter(([_, entry]) => entry.total > 0)
+            );
+        } else if (chooseSplitByItem === "adjusted") {
+            newSplitMap = Object.fromEntries(
+                Object.entries(localSplitAdjustedMap).filter(([_, entry]) => entry.total > 0)
+            );
+        }
+
+        return {
+            amount: parseFloat(inputItemAmountValue  || "0"),
+            paymentName: inputItemValue,
+            splitMethod: chooseSplitByItem, // "percentage" | "actual" | "adjusted"
+            splitMap: newSplitMap,
+        };
+        }, [chooseSplitByItem, inputItemAmountValue, inputItemValue, localSplitActualMap, localSplitAdjustedMap, localSplitPercentageMap]);
     
-        const splitByItemTotalMap: Record<string, string> = {
-            percentage: `/ 共計 100%`,
-            actual: `/ 共計 ${inputItemAmountValue} 元`,
-            adjusted: `/ 共計 ${inputItemAmountValue} 元`,
-          };
-        const splitByItemTotal = splitByItemTotalMap[chooseSplitByItem] || '';
+    useEffect(() => {
+        setLocalItemPayload(payload);
+    }, [payload, setItemPayload]);
 
     return(
         <div className="flex flex-col h-full">
@@ -331,7 +385,7 @@ export default function SplitByItemEdit({
                         <Input
                         value={inputItemAmountValue}
                         type="number"
-                        onChange={handleSplitAmountChange}
+                        onChange={(e)=>{handleSplitAmountChange(e.target.value)}}
                         flexDirection="row"
                         width="full"
                         placeholder="點擊編輯"
@@ -347,8 +401,6 @@ export default function SplitByItemEdit({
                             width='full'
                             variant= {chooseSplitByItem == 'percentage' ? 'solid' : 'text-button'}
                             color= 'primary'
-                            //disabled={isdisabled} 
-                            //isLoading={isLoading}
                             onClick={() => setChooseSplitByItem("percentage")}
                             >
                                 均分
@@ -358,8 +410,6 @@ export default function SplitByItemEdit({
                             width='full'
                             variant={chooseSplitByItem == 'actual' ? 'solid' : 'text-button'}
                             color='primary'
-                            //disabled={isdisabled} 
-                            //isLoading={isLoading}
                             onClick={() => setChooseSplitByItem("actual")}
                             >
                                 金額
@@ -369,8 +419,6 @@ export default function SplitByItemEdit({
                             width='full'
                             variant={chooseSplitByItem == 'adjusted' ? 'solid' : 'text-button'}
                             color='primary'
-                            //disabled={isdisabled} 
-                            //isLoading={isLoading}
                             onClick={() => setChooseSplitByItem("adjusted")}
                             >
                                 特別額
@@ -506,7 +554,11 @@ export default function SplitByItemEdit({
                         color= 'primary'
                         disabled={!isComplete}
                         onClick={() => {
-                            setStep('list')
+                            if (localItemPayload) {
+                                setItemPayload(localItemPayload);
+                                console.log(inputItemValue, localItemPayload)
+                                setStep('list');
+                            }
                         }}
                         >
                             儲存項目

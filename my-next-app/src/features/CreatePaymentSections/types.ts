@@ -55,8 +55,24 @@ export interface CreatePaymentPayload {
     time: string;
     desc: string | null;
     payerMap: PayerMap;
-    splitMap: SplitMap;
+    splitMap: SplitMap; // "splitByPersonMap" | "splitByItemMap"
 }
+
+// paymentName : "rental"
+// receiptWay : "split"
+// splitWay : "person"
+// splitMethod : "adjusted"
+// currency : "TWD"
+// amount : 100
+// categoryId : "2"
+// time : "2025-05-26T15:06"
+// desc : "4/10"
+// payerMap : {4kjf39480fjlk: 50, 92jf20fkk29jf:50}
+// splitMap : {
+//     4kjf39480fjlk : {fixed: 10, total: 39.997, percent: 0.3333}
+//     92jf20fkk29jf : {fixed: 0, total: 29.997, percent: 0.3333}
+//     fj30fj39d9s0d: {fixed: 0, total: 29.997, percent: 0.3333}
+// }
 
 
 // SplitWay = "item"送出子資料資料
@@ -67,3 +83,13 @@ export interface CreateItemPayload {
     splitMap: SplitMap;
 }
 
+// {
+//     amount :  100
+//     paymentName : "beef"
+//     splitMethod : "adjusted"
+//     splitMap : {
+//         4kjf39480fjlk : {fixed: 10, total: 39.997, percent: 0.3333}
+//         92jf20fkk29jf : {fixed: 0, total: 29.997, percent: 0.3333}
+//         fj30fj39d9s0d: {fixed: 0, total: 29.997, percent: 0.3333}
+//     }
+// }

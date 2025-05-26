@@ -62,7 +62,13 @@ export default function CreatePaymentSplit({
             }]));
         });
         // 項目的還款人設定
-        const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>({});
+        const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>(() => {
+            return Object.fromEntries(userList.map(user => [user.uid, {
+                fixed: 0,
+                percent: 0,
+                total: 0
+            }]));
+        });
 
         useEffect(() => {
             const amount = parseFloat(inputAmountValue || "0");
@@ -179,6 +185,7 @@ export default function CreatePaymentSplit({
                             onClose={() => setIsSplitByItemOpen(false)}
                             userList={userList} 
                             inputAmountValue={inputAmountValue}
+                            splitByItemMap={splitByItemMap}
                             setSplitByItemMap={setSplitByItemMap}
                             setItemPayload={setItemPayload}
                         />
