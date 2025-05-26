@@ -1,9 +1,9 @@
 'use client'
 import { useParams } from 'next/navigation';
-import { withAuth } from "@/utils/withAuth";
+import { withAuth } from "@/hoc/withAuth";
 import { useAuth } from '@/contexts/AuthContext';
-import ExpenseOverview from "@/features/ExpenseOverview";
-import DashboardMain from "@/features/DashboardMain";
+import ProjectOverview from "@/features/ProjectOverview";
+import PaymentOverview from "@/features/PaymentOverview";
 
 
 function DashboardPage(){
@@ -17,8 +17,8 @@ function DashboardPage(){
 
     return(
         <>
-            <DashboardMain userData={userData} />
-            <ExpenseOverview userData={userData} />
+            <PaymentOverview userData={userData} />
+            <ProjectOverview userData={userData} />
         </>
     )
 }

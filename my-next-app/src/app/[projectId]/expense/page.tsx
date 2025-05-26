@@ -1,9 +1,9 @@
 'use client'
 import { useParams } from 'next/navigation';
-import { withAuth } from "@/utils/withAuth";
+import { withAuth } from "@/hoc/withAuth";
 import { useAuth } from '@/contexts/AuthContext';
-import ReceiptList from "@/features/ReceiptList";
-import ExpenseOverview from "@/features/ExpenseOverview";
+import PaymentList from "@/features/PaymentList";
+import ProjectOverview from "@/features/ProjectOverview";
 
 function ExpensePage(){
     const params = useParams();
@@ -16,8 +16,8 @@ function ExpensePage(){
 
     return(
         <>
-            <ReceiptList userData={userData} />
-            <ExpenseOverview userData={userData} />
+            <PaymentList userData={userData} />
+            <ProjectOverview userData={userData} />
         </>
     )
 }

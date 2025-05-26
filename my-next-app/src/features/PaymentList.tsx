@@ -1,8 +1,8 @@
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
-import ReceiptCard from "./ReceiptListSections/ReceiptCard";
+import ReceiptCard from "./PaymentListSections/ReceiptCard";
 
-interface ReceiptListProps {
+interface PaymentListProps {
     userData: {
       avatar?: string;
       name?: string;
@@ -10,14 +10,14 @@ interface ReceiptListProps {
     onCreateClick?: () => void;
   }
 
-export default function ReceiptList({
+export default function PaymentList({
     userData
-    }:ReceiptListProps){
+    }:PaymentListProps){
 
         console.log("start to create receipt")
     
     return(
-        <div id="receipt-list" className="shrink-0 w-xl px-3 py-3 rounded-2xl h-full overflow-hidden bg-sp-green-300">
+        <div id="receipt-list" className="shrink-0 w-xl px-3 py-3 rounded-2xl box-border h-full overflow-hidden bg-sp-green-300">
             <div id="receipt-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
                 <p className="text-xl font-medium whitespace-nowrap truncate min-w-0 max-w-100"> 收支紀錄</p>
             </div>
