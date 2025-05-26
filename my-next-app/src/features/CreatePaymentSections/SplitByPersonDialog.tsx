@@ -62,7 +62,7 @@ export default function SplitByPerson({
         return Object.fromEntries(
             userList.map(user => {
                 const { total = 0 } = splitByPersonMap[user.uid] || {};
-                return [user.uid, formatNumber(total).toString()];
+                return [user.uid, formatNumber(total)];
             })
         );
     });
@@ -84,7 +84,7 @@ export default function SplitByPerson({
         return Object.fromEntries(
             userList.map(user => {
                 const { fixed = 0 } = splitByPersonMap[user.uid] || {};
-                return [user.uid, fixed.toString()];
+                return [user.uid, formatNumber(fixed)];
             })
         );
     });
@@ -108,17 +108,45 @@ export default function SplitByPerson({
     useEffect(() => {
         if (isSplitByPersonOpen) {
             setLocalChooseSplitByPerson(chooseSplitByPerson);
-            if (chooseSplitByPerson == 'percentage'){
+    
+            if (chooseSplitByPerson === 'percentage') {
                 setLocalSplitPercentageMap(splitByPersonMap);
+                setRawPercentInputMap(
+                    Object.fromEntries(
+                        userList.map(user => {
+                            const { percent = 0 } = splitByPersonMap[user.uid] || {};
+                            return [user.uid, parsePercentToInt(percent)];
+                        })
+                    )
+                );
             }
-            if (chooseSplitByPerson == 'actual'){
+    
+            if (chooseSplitByPerson === 'actual') {
                 setLocalSplitActualMap(splitByPersonMap);
+                setRawActualInputMap(
+                    Object.fromEntries(
+                        userList.map(user => {
+                            const { total = 0 } = splitByPersonMap[user.uid] || {};
+                            return [user.uid, formatNumber(total)];
+                        })
+                    )
+                );
             }
-            if (chooseSplitByPerson == 'adjusted'){
+    
+            if (chooseSplitByPerson === 'adjusted') {
                 setLocalSplitAdjustedMap(splitByPersonMap);
+                setRawAdjustInputMap(
+                    Object.fromEntries(
+                        userList.map(user => {
+                            const { fixed = 0 } = splitByPersonMap[user.uid] || {};
+                            return [user.uid, formatNumber(fixed)];
+                        })
+                    )
+                );
             }
         }
-    }, [isSplitByPersonOpen, splitByPersonMap, chooseSplitByPerson, inputAmountValue]);
+    }, [isSplitByPersonOpen, splitByPersonMap, chooseSplitByPerson, inputAmountValue, userList]);
+    
     
     const handlePercentageChange = (uid: string, percentInput: string) => {
         const rawPercent = sanitizeDecimalInput(percentInput);
@@ -436,7 +464,7 @@ export default function SplitByPerson({
                                         <div className="w-full flex items-start justify-start gap-2 ">
                                             <p className="shrink-0 h-9 text-base flex items-center">支出</p>
                                             <Input
-                                                value={rawAdjustInputMap[user.uid] || ""}
+                                                value={(rawAdjustInputMap[user.uid]) || ""}
                                                 type="number"
                                                 onChange={(e) => handleAdjustChange(user.uid, e.target.value)}
                                                 flexDirection="row"

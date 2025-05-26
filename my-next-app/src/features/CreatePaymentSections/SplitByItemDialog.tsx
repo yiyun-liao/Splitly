@@ -17,8 +17,8 @@ interface SplitByItemProps {
     onClose: () => void;
     userList: User[];
     inputAmountValue:string;
-    splitByItemMap:SplitMap;
     setSplitByItemMap:(map: SplitMap) => void;
+    itemPayloadList:CreateItemPayload[];
     setItemPayloadList:(map:CreateItemPayload[]) => void;
     setSplitWay:(map:SplitWay) => void;
 }
@@ -28,8 +28,8 @@ export default function SplitByItem({
         onClose,
         userList,
         inputAmountValue,
-        splitByItemMap,
         setSplitByItemMap,
+        itemPayloadList,
         setItemPayloadList,
         setSplitWay
     }:SplitByItemProps){
@@ -44,6 +44,15 @@ export default function SplitByItem({
 
     // update single item, get itemList index
     const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
+
+
+    // reopen the item dialog to update data
+    useEffect(() => {
+        if (isSplitByItemOpen) {
+            setItemList(itemPayloadList);
+        }
+    }, [isSplitByItemOpen, itemPayloadList]);    
+    
 
     // render footer
     const {remaining, isComplete } = useMemo(() => {

@@ -87,7 +87,7 @@ export default function CreatePaymentSplit({
             setChooseSplitByPerson("percentage");
             setSplitByPersonMap(map);
             setSplitPayerMap({ ["4kjf39480fjlk"]: amount });
-        }, [inputAmountValue, splitWay, userList]);
+        }, [inputAmountValue, userList]);
 
         console.log("付款人", splitPayerMap, "分帳方式", chooseSplitByPerson, "分帳人", splitByPersonMap,"或是", splitByItemMap)
 
@@ -205,7 +205,7 @@ export default function CreatePaymentSplit({
                             onClose={() => setIsSplitByItemOpen(false)}
                             userList={userList} 
                             inputAmountValue={inputAmountValue}
-                            splitByItemMap={splitByItemMap}
+                            itemPayloadList = {localItemPayloadList} //回傳作為更新使用
                             setSplitByItemMap={setSplitByItemMap}
                             setItemPayloadList={setLocalItemPayloadList}
                             setSplitWay={setSplitWay} //回傳設定用

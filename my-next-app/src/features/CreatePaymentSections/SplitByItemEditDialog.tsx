@@ -62,7 +62,7 @@ export default function SplitByItemEdit({
         return Object.fromEntries(
             userList.map(user => {
                 const { total = 0 } = itemSplitByPersonMap[user.uid] || {};
-                return [user.uid, formatNumberForData(total)];
+                return [user.uid, formatNumber(total)];
             })
         );
     });
@@ -71,9 +71,9 @@ export default function SplitByItemEdit({
         return Object.fromEntries(
             userList.map(user => {
                 const entry = itemSplitByPersonMap[user.uid];
-                const fixed = entry?.total || 0;
+                const fixed = parseFloat(formatNumberForData(entry?.total ))|| 0;
                 const percent = 0;
-                const total = entry?.total || 0;
+                const total = parseFloat(formatNumberForData(entry?.total)) || 0;
                 return [user.uid, { fixed, percent, total }];
             })
         );
@@ -139,7 +139,7 @@ export default function SplitByItemEdit({
             );
             setLocalSplitActualMap(actualMap);
             setRawActualInputMap(Object.fromEntries(
-                userList.map(user => [user.uid, formatNumberForData(total)])
+                userList.map(user => [user.uid, formatNumber(total)])
             ));
     
             // adjusted
@@ -184,7 +184,7 @@ export default function SplitByItemEdit({
             setLocalSplitActualMap(map);
             setRawActualInputMap(
                 Object.fromEntries(
-                    Object.entries(map).map(([uid, entry]) => [uid, formatNumberForData(entry.total)])
+                    Object.entries(map).map(([uid, entry]) => [uid, formatNumber(entry.total)])
                 )
             );
         }
@@ -193,7 +193,7 @@ export default function SplitByItemEdit({
             setLocalSplitAdjustedMap(map);
             setRawAdjustInputMap(
                 Object.fromEntries(
-                    Object.entries(map).map(([uid, entry]) => [uid, formatNumberForData(entry.fixed)])
+                    Object.entries(map).map(([uid, entry]) => [uid, formatNumber(entry.fixed)])
                 )
             );
         }
