@@ -24,9 +24,9 @@ function Loading({ isLoading, size }: { isLoading: boolean; size: 'sm' | 'md' })
 function getDisabledStyles(variant: ButtonProps['variant'], color: ButtonProps['color']) {
     if (variant === 'solid') {
         if (color === 'primary') {
-            return "text-zinc-50 bg-sp-blue-200 border-sp-blue-200";
+            return "text-zinc-50 bg-zinc-300 border-sp-blue-300";
         } else {
-            return "text-zinc-50 bg-zinc-200 border-zinc-200";
+            return "text-zinc-50 bg-zinc-300 border-zinc-300";
         }
     }
     if (variant === 'outline') {

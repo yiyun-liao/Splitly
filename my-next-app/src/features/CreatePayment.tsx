@@ -49,6 +49,15 @@ export default function CreatePayment({
         };
     }, [open]);
 
+    // disable button
+    const {isComplete } = useMemo(() => {
+        let isComplete = false;
+        if (!!payload.amount && !!payload.payerMap && !!payload.paymentName && !!payload.receiptWay && !!payload.splitMap){
+            isComplete = true;
+        }    
+        return { isComplete };
+    }, [payload]);  
+
     const handleSubmitData = () => {
         console.log("增加內容", payload?.receiptWay, "分帳方式", payload?.splitWay,"分錢方式", payload?.splitMethod)
         console.log("final db",payload)
@@ -69,7 +78,7 @@ export default function CreatePayment({
                             width='fit'
                             variant='solid'
                             color='primary'
-                            //disabled={isdisabled} 
+                            disabled={!isComplete} 
                             //isLoading={isLoading}
                             onClick={handleSubmitData}
                             >
