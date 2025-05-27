@@ -1,8 +1,8 @@
-# user_router.py
+# server/src/routes/auth_router.py
 from fastapi import APIRouter, HTTPException, Request, Depends
 
 from src.database.relational_db import Database
-from src.routes.schema.user import UserSchema
+from src.routes.schema.user import UserSchema, UserLoginSchema
 from src.database.models.user import UserModel
 from src.dependencies.firebase import verify_firebase_token
 
@@ -42,7 +42,7 @@ class AuthRouter:
                 raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")
 
         @self.router.post("/api/auth/login")
-        async def login_user(user: UserSchema, uid_verified: str = Depends(verify_firebase_token)) -> dict:
+        async def login_user(user: UserLoginSchema, uid_verified: str = Depends(verify_firebase_token)) -> dict:
             """Create user"""
             try:
                 userId = uid_verified
