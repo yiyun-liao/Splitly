@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     avatarIndex: data.avatar,
                     avatar: buildAvatarUrl(data.avatar),
                 };
-        
+                console.log("what i get",fullUserData)
                 setUserData(fullUserData);
             } catch (error) {
                 console.error("Error fetching user data:", error);

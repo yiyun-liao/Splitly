@@ -42,7 +42,7 @@ export type SplitMap = Record<string, SplitDetail>;
 //   }
 // }
 
-// SplitWay =  "person" 送出資料
+// SplitWay =  "payment" 送出資料
 export interface CreatePaymentPayload {
     paymentName: string;
     receiptWay: ReceiptWay;    // "split" | "debt"
@@ -74,7 +74,7 @@ export interface CreatePaymentPayload {
 // }
 
 
-// SplitWay = "item"送出子資料資料
+// 如果有 "item"送出子資料資料
 export interface CreateItemPayload {
     amount: number;
     paymentName: string;

@@ -5,11 +5,12 @@ import MemberNav from "@/features/MemberNav";
 import { ReactNode } from "react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const {  userData } = useAuth(); 
-
+  const { userData, loading } = useAuth();
+  if (loading) return <p>Loading...</p>; // 可加 spinner
+  
   return (
     <main className="flex items-start justify-center bg-sp-blue-100">
-      <div className="shrink-0">
+      <div className="shrink-0 box-border">
         <MemberNav userData={userData}/>
       </div>
       <div className="py-4 w-full max-w-520 h-screen box-border flex flex-col items-center justify-start gap-2">

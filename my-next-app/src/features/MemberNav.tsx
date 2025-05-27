@@ -5,9 +5,8 @@ import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import { UserData } from "@/types/user";
-import CreateProject from "./CreateProject";
+import CreateProject from "./CreateProjectSections/CreateProject-main";
 import clsx from "clsx";
-import { p } from "framer-motion/client";
 
 
 export default function MemberNav({ userData }: { userData: UserData | null }){
@@ -24,8 +23,9 @@ export default function MemberNav({ userData }: { userData: UserData | null }){
       setActivePath(pathname);
     }, [pathname]);
 
+    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const navDivClass = clsx(
-        "w-full flex flex-col items-start justify-start py-2 gap-2 px-2",
+        "w-full flex flex-col items-center justify-start py-2 gap-2 px-2",
         {
             "": navStyle === 'contraction',
             "": navStyle === 'expansion'
@@ -38,17 +38,17 @@ export default function MemberNav({ userData }: { userData: UserData | null }){
         router.push('/');    
     }
     return(
-        <div className="w-fit">
+        <div className="w-fit box-border">
             <>
-                {isCreateProject && 
+                {isCreateProject && userData && (
                     <CreateProject
                         onClose={() => setIsCreateProject(false)}
+                        userData = {userData}
                     />
-                }
+                )}
             </>
             {navStyle === 'contraction' && (
                 <nav className="min-w-18 h-screen box-border py-4 flex flex-col items-center justify-start gap-2 bg-sp-white-40">
-
                     <div id="nav-brand-logo" className={navDivClass}>
                         <ImageButton
                             image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
@@ -76,7 +76,7 @@ export default function MemberNav({ userData }: { userData: UserData | null }){
                             />
                         </div>
                     </div>
-                    <div id="nav-project-list" className={`${navDivClass} overflow-y-auto overflow-x-hidden mb-2 scrollbar-gutter-stable scrollbar-thin scroll-smooth`}>
+                    <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
                         <ImageButton
                             image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/1.JPG"
                             size='md'
