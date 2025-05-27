@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { userData, loading } = useAuth();
-  if (loading) return <p>Loading...</p>; // 可加 spinner
+  if (loading || !userData) return <p>Loading...</p>; // 可加 spinner
   
   return (
     <main className="flex items-start justify-center bg-sp-blue-100">

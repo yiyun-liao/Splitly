@@ -76,7 +76,8 @@ export default function CreatePaymentDebt({
         useEffect(() => {
             const payload: CreatePaymentPayload = {    
                 paymentName: "debt",
-                receiptWay: 'debt',    // "split" | "debt"
+                accountType: "group",  
+                recordMode: 'debt',    // "split" | "debt"
                 splitWay: null,      // "item" | "person"
                 splitMethod: null, // "percentage" | "actual" | "adjusted"
                 currency: selectCurrencyValue,

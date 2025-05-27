@@ -8,18 +8,21 @@ import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
 import { UserData } from "@/types/user";
 
 
-export default function MemberHeader({ userData }: { userData: UserData | null }){
+export default function MemberHeader({ userData }: { userData: UserData }){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreatePayment, setIsCreatePayment] = useState(false)
     const router = useRouter();
     const params = useParams();
     const projectId = params.projectId;
+    
+    console.log("header userData", userData);
 
     return(
         <div id="dashboard-header"  className="flex items-center gap-2 w-full box-border justify-between px-6 py-2">
             {isCreatePayment && 
                 <CreatePayment 
                     // userData={userData}  應該要存入 project 的 memberData
+                    userData={userData} 
                     onClose={() => setIsCreatePayment(false)}
                 />
             }

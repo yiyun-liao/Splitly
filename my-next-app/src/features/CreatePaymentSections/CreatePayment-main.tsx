@@ -4,11 +4,13 @@ import Sheet from "@/components/ui/Sheet";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
-import { ReceiptWay, CreatePaymentPayload, CreateItemPayload } from "./types";
+import { RecordMode, CreatePaymentPayload, CreateItemPayload } from "./types";
+import { UserData } from "@/types/user";
 
 interface CreatePaymentProps {
     onClose: () => void;
     open?: boolean;
+    userData: UserData;
 }
 
 const userList = [
@@ -21,13 +23,17 @@ const userList = [
 export default function CreatePayment({
     onClose,
     open = true,
+    userData
     }:CreatePaymentProps){
+        
+    console.log("create payment userData", userData);
 
     // receipt-way
-    const [receiptWay, setReceiptWay] = useState<ReceiptWay>("split");
+    const [recordMode, setRecordMode] = useState<RecordMode>("split");
     const [payload, setPayload] = useState<CreatePaymentPayload>({
         paymentName: "",
-        receiptWay: "split",
+        accountType: "group",
+        recordMode: "split",
         splitWay: null,
         splitMethod: null,
         currency: "TWD",
@@ -51,14 +57,14 @@ export default function CreatePayment({
     // disable button
     const {isComplete } = useMemo(() => {
         let isComplete = false;
-        if (!!payload.amount && !!payload.payerMap && !!payload.paymentName && !!payload.receiptWay && !!payload.splitMap){
+        if (!!payload.amount && !!payload.payerMap && !!payload.paymentName && !!payload.recordMode && !!payload.splitMap){
             isComplete = true;
         }    
         return { isComplete };
     }, [payload]);  
 
     const handleSubmitData = () => {
-        console.log("增加內容", payload?.receiptWay, "分帳方式", payload?.splitWay,"分錢方式", payload?.splitMethod)
+        console.log("帳目", payload?.accountType,"增加內容", payload?.recordMode, "分帳方式", payload?.splitWay,"分錢方式", payload?.splitMethod)
         console.log("final db",payload)
         console.log("final item db", itemPayloadList)
         // onSubmit(payload); // 把資料丟到外層
@@ -71,7 +77,7 @@ export default function CreatePayment({
             <>
                 <div id="receipt-form-header"  className="shrink-0 w-full px-1 max-w-xl flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden">
                     <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
-                    <p className="w-full text-xl font-medium truncate min-w-0"> 新增{receiptWay == 'split' ? '支出' : '轉帳'}</p>
+                    <p className="w-full text-xl font-medium truncate min-w-0"> 新增{recordMode == 'split' ? '支出' : '轉帳'}</p>
                     <Button
                         size='sm'
                         width='fit'
@@ -88,30 +94,31 @@ export default function CreatePayment({
                     <Button
                         size='sm'
                         width='full'
-                        variant= {receiptWay == 'split' ? 'solid' : 'text-button'}
+                        variant= {recordMode == 'split' ? 'solid' : 'text-button'}
                         color= 'primary'
-                        onClick={() => setReceiptWay("split")}
+                        onClick={() => setRecordMode("split")}
                         >
                             支出
                     </Button>
                     <Button
                         size='sm'
                         width='full'
-                        variant={receiptWay == 'debt' ? 'solid' : 'text-button'}
+                        variant={recordMode == 'debt' ? 'solid' : 'text-button'}
                         color='primary'
-                        onClick={() => setReceiptWay("debt")}
+                        onClick={() => setRecordMode("debt")}
                         >
                             轉帳
                     </Button>
                 </div>
-                {receiptWay === "split" && (
+                {recordMode === "split" && (
                     <CreatePaymentSplit
                         userList={userList}
+                        userData={userData}
                         setPayload = {setPayload}
                         setItemPayloadList = {setItemPayloadList}
                     />
                 )}
-                {receiptWay === "debt" && (
+                {recordMode === "debt" && (
                     <CreatePaymentDebt
                         userList={userList}
                         setPayload = {setPayload}
