@@ -114,7 +114,7 @@ export default function CreatePaymentDebt({
                     }
                 </div>
                 <section id="receipt-debt"  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                    <div id="receipt-form-frame" className="max-w-xl w-full grid grid-cols-3 gap-2">
+                    <div id="receipt-form-frame" className="max-w-xl w-full grid grid-cols-3 gap-2 px-1">
                         <div className={`pb-5 ${formSpan3CLass}`}>
                             <div className="w-full flex items-center justify-start gap-2">
                                 <span className={labelClass}>匯款人</span>

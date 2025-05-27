@@ -81,11 +81,13 @@ export default function CreateProject({
     }, [payload]);
 
     //disable button 
-    const { isComplete } = useMemo(() => {
-        return {
-          isComplete: inputProjectName.trim() !== "",
-        };
-      }, [inputProjectName]);
+    const {isComplete } = useMemo(() => {
+        let isComplete = false;
+        if (!!projectPayload.projectName && !!projectPayload.createdBy){
+            isComplete = true;
+        }    
+        return { isComplete };
+    }, [projectPayload]); 
     
     // project data
     const handleSubmitData = () => {
@@ -106,7 +108,7 @@ export default function CreateProject({
         <Sheet open={open} onClose={onClose}>
             {(onClose) => (
                 <>
-                    <div id="project-form-header"  className="shrink-0 w-full max-w-xl flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden">
+                    <div id="project-form-header"  className="shrink-0 w-full max-w-xl flex px-1 pt-1 pb-4 items-center gap-2 justify-start overflow-hidden">
                         <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
                         <p className="w-full text-xl font-medium truncate min-w-0"> 新增專案</p>
                         <Button
@@ -121,150 +123,146 @@ export default function CreateProject({
                                 儲存
                         </Button>
                     </div>
-                    <div className="w-full h-full pb-20 mb-20">
-                        <div>
-                        </div>
-                        <section id="receipt-split"  className={`w-full h-full  pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                            <div id="receipt-form-frame" className="max-w-xl w-full grid grid-cols-6 gap-2">
-                                <div className={formSpan4CLass}>
-                                    <span className={labelClass}>專案名稱</span>
-                                    <Input
-                                    value={inputProjectName}
-                                    type="text"
-                                    onChange={(e) => {setInputProjectName(e.target.value)}}
+                    <section id="project-form-frame" className={`w-full h-full  pb-20 px-1 flex items-start justify-start gap-5 ${scrollClass}`}>
+                        <div className="max-w-xl w-full grid grid-cols-6 gap-2">
+                            <div className={formSpan4CLass}>
+                                <span className={labelClass}>專案名稱</span>
+                                <Input
+                                value={inputProjectName}
+                                type="text"
+                                onChange={(e) => {setInputProjectName(e.target.value)}}
+                                flexDirection="row"
+                                width="full"
+                                placeholder="點擊編輯"                                        
+                                />
+                            </div>
+                            <div className={formSpan2CLass}>
+                                <span className={labelClass}>幣別</span>
+                                <Select
+                                    value={selectProjectCurrency}
+                                    required={true}
+                                    placeholder="點擊選擇"
+                                    onChange={(e) => setSelectedProjectCurrency(e.target.value)}
                                     flexDirection="row"
                                     width="full"
-                                    placeholder="點擊編輯"                                        
-                                    />
-                                </div>
-                                <div className={formSpan2CLass}>
-                                    <span className={labelClass}>幣別</span>
-                                    <Select
-                                        value={selectProjectCurrency}
-                                        required={true}
-                                        placeholder="點擊選擇"
-                                        onChange={(e) => setSelectedProjectCurrency(e.target.value)}
-                                        flexDirection="row"
-                                        width="full"
-                                        disabled = {true}
-                                        options={[
-                                            { label: "TWD", value: "TWD" , disabled: true}
-                                        ]}
-                                    />
-                                </div>
-                                <div className={formSpan6CLass}>
-                                    <span className={labelClass}>專案類別</span>
-                                    <div className="w-full flex  bg-sp-white-20 rounded-xl mb-5">
-                                        <Button
-                                            size='sm'
-                                            width='full'
-                                            variant= {chooseProjectStyle == 'travel' ? 'solid' : 'text-button'}
-                                            color= 'primary'
-                                            onClick={() => setChooseProjectStyle("travel")}
-                                            >
-                                                旅行
-                                        </Button>
-                                        <Button
-                                            size='sm'
-                                            width='full'
-                                            variant= {chooseProjectStyle == 'daily' ? 'solid' : 'text-button'}
-                                            color= 'primary'
-                                            onClick={() => setChooseProjectStyle("daily")}
-                                            >
-                                                日常
-                                        </Button>
-                                        <Button
-                                            size='sm'
-                                            width='full'
-                                            variant= {chooseProjectStyle == 'other' ? 'solid' : 'text-button'}
-                                            color= 'primary'
-                                            onClick={() => setChooseProjectStyle("other")}
-                                            >
-                                                其他
-                                        </Button>
-                                    </div>
-                                </div>                                                              
-                                <div className={formSpan3CLass}>
-                                    <span className={labelClass}>開始時間</span>
-                                    <Input
-                                        value={inputStartTimeValue}
-                                        type="date"
-                                        onChange={(e) => setInputStartTimeValue(e.target.value)}
-                                        flexDirection="row"
-                                        width="full"
-                                        placeholder="點擊編輯"
-                                    />
-                                </div>
-                                <div className={formSpan3CLass}>
-                                    <span className={labelClass}>結束時間</span>
-                                    <Input
-                                        value={inputEndTimeValue}
-                                        type="date"
-                                        onChange={(e) => setInputEndTimeValue(e.target.value)}
-                                        min={inputStartTimeValue} 
-                                        flexDirection="row"
-                                        width="full"
-                                        placeholder="點擊選擇"
-                                    />
-                                </div>  
-                                <div className={formSpan3CLass}>
-                                    <span className={labelClass}>專案預算</span>
-                                    <Input
-                                        value={inputBudgetValue}
-                                        type="number"
-                                        onChange={(e) => setInputBudgetValue(e.target.value)}
-                                        flexDirection="row"
-                                        width="full"
-                                        placeholder="點擊編輯（選填）"
-                                        step="0.01"
-                                        inputMode="decimal"                                          
-                                    />
-                                </div> 
-                                <div className={formSpan3CLass}>
-                                    <span className={labelClass}>個人預算</span>
-                                    <Input
-                                        value={memberBudgetMap[currentUid] ?? ""}
-                                        type="number"
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            setMemberBudgetMap((prev) => ({
-                                              ...prev,
-                                              [currentUid]: val === "" ? undefined : parseFloat(val),
-                                            }));
-                                          }}
-                                        flexDirection="row"
-                                        width="full"
-                                        placeholder="點擊編輯（選填）"
-                                        step="0.01"
-                                        inputMode="decimal"                                          
-                                    />
-                                </div> 
-                                <div className={formSpan6CLass}>
-                                    <span className={labelClass}>備忘錄</span>
-                                    <TextArea
-                                        value={inputDescValue}
-                                        rows={2}
-                                        maxRows={4}
-                                        required={true}
-                                        onChange={(e) => setInputDescValue(e.target.value)}
-                                        flexDirection="row"
-                                        width="full"
-                                        placeholder="點擊編輯"
-                                    />
-                                </div> 
-                                <div className="col-span-6 bg-sp-white-20 rounded-xl p-4 mt-4">
-                                    <p>
-                                        <span className="font-medium text-sp-green-500">專案預算：</span>
-                                        您可以設定整體支出的預算，系統會檢視團隊當前支出狀況提供提醒。
-                                    </p>
-                                    <p className="mt-2">
-                                        <span className="font-medium text-sp-green-500">個人預算：</span>
-                                        您可以在專案中紀錄私人支出，在個人支出分析中會提供提醒，私人支出並不會被其他人看到，詳見增加紀錄功能。
-                                    </p>
-                                </div>                                 
+                                    disabled = {true}
+                                    options={[
+                                        { label: "TWD", value: "TWD" , disabled: true}
+                                    ]}
+                                />
                             </div>
-                        </section>
-                    </div>
+                            <div className={formSpan6CLass}>
+                                <span className={labelClass}>專案類別</span>
+                                <div className="w-full flex  bg-sp-white-20 rounded-xl mb-5">
+                                    <Button
+                                        size='sm'
+                                        width='full'
+                                        variant= {chooseProjectStyle == 'travel' ? 'solid' : 'text-button'}
+                                        color= 'primary'
+                                        onClick={() => setChooseProjectStyle("travel")}
+                                        >
+                                            旅行
+                                    </Button>
+                                    <Button
+                                        size='sm'
+                                        width='full'
+                                        variant= {chooseProjectStyle == 'daily' ? 'solid' : 'text-button'}
+                                        color= 'primary'
+                                        onClick={() => setChooseProjectStyle("daily")}
+                                        >
+                                            日常
+                                    </Button>
+                                    <Button
+                                        size='sm'
+                                        width='full'
+                                        variant= {chooseProjectStyle == 'other' ? 'solid' : 'text-button'}
+                                        color= 'primary'
+                                        onClick={() => setChooseProjectStyle("other")}
+                                        >
+                                            其他
+                                    </Button>
+                                </div>
+                            </div>                                                              
+                            <div className={formSpan3CLass}>
+                                <span className={labelClass}>開始時間</span>
+                                <Input
+                                    value={inputStartTimeValue}
+                                    type="date"
+                                    onChange={(e) => setInputStartTimeValue(e.target.value)}
+                                    flexDirection="row"
+                                    width="full"
+                                    placeholder="點擊編輯"
+                                />
+                            </div>
+                            <div className={formSpan3CLass}>
+                                <span className={labelClass}>結束時間</span>
+                                <Input
+                                    value={inputEndTimeValue}
+                                    type="date"
+                                    onChange={(e) => setInputEndTimeValue(e.target.value)}
+                                    min={inputStartTimeValue} 
+                                    flexDirection="row"
+                                    width="full"
+                                    placeholder="點擊選擇"
+                                />
+                            </div>  
+                            <div className={formSpan3CLass}>
+                                <span className={labelClass}>專案預算</span>
+                                <Input
+                                    value={inputBudgetValue}
+                                    type="number"
+                                    onChange={(e) => setInputBudgetValue(e.target.value)}
+                                    flexDirection="row"
+                                    width="full"
+                                    placeholder="點擊編輯（選填）"
+                                    step="0.01"
+                                    inputMode="decimal"                                          
+                                />
+                            </div> 
+                            <div className={formSpan3CLass}>
+                                <span className={labelClass}>個人預算</span>
+                                <Input
+                                    value={memberBudgetMap[currentUid] ?? ""}
+                                    type="number"
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setMemberBudgetMap((prev) => ({
+                                            ...prev,
+                                            [currentUid]: val === "" ? undefined : parseFloat(val),
+                                        }));
+                                        }}
+                                    flexDirection="row"
+                                    width="full"
+                                    placeholder="點擊編輯（選填）"
+                                    step="0.01"
+                                    inputMode="decimal"                                          
+                                />
+                            </div> 
+                            <div className={formSpan6CLass}>
+                                <span className={labelClass}>備忘錄</span>
+                                <TextArea
+                                    value={inputDescValue}
+                                    rows={2}
+                                    maxRows={4}
+                                    required={true}
+                                    onChange={(e) => setInputDescValue(e.target.value)}
+                                    flexDirection="row"
+                                    width="full"
+                                    placeholder="點擊編輯"
+                                />
+                            </div> 
+                            <div className="col-span-6 bg-sp-white-20 rounded-xl p-4 mt-4">
+                                <p>
+                                    <span className="font-medium text-sp-green-500">專案預算：</span>
+                                    您可以設定整體支出的預算，系統會檢視團隊當前支出狀況提供提醒。
+                                </p>
+                                <p className="mt-2">
+                                    <span className="font-medium text-sp-green-500">個人預算：</span>
+                                    您可以在專案中紀錄私人支出，在個人支出分析中會提供提醒，私人支出並不會被其他人看到，詳見增加紀錄功能。
+                                </p>
+                            </div>                                 
+                        </div>
+                    </section>
                 </>
             )}
         </Sheet>

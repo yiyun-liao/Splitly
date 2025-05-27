@@ -69,7 +69,7 @@ export default function CreatePayment({
     <Sheet open={open} onClose={onClose}>
         {(onClose) => (
             <>
-                <div id="receipt-form-header"  className="shrink-0 w-full max-w-xl flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden">
+                <div id="receipt-form-header"  className="shrink-0 w-full px-1 max-w-xl flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden">
                     <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
                     <p className="w-full text-xl font-medium truncate min-w-0"> 新增{receiptWay == 'split' ? '支出' : '轉帳'}</p>
                     <Button
@@ -84,7 +84,7 @@ export default function CreatePayment({
                             儲存
                     </Button>
                 </div>
-                <div id="receipt-way" className="w-full my-4 flex max-w-xl bg-sp-white-20 rounded-xl">
+                <div id="receipt-way" className="w-full my-4 px-1 flex max-w-xl bg-sp-white-20 rounded-xl">
                     <Button
                         size='sm'
                         width='full'

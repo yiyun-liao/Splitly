@@ -38,7 +38,7 @@ export async function fetchCurrentUser(token: string, userId: string) {
         });
         if (!res.ok) throw new Error("Failed to fetch user data");
         const data = await res.json();
-        console.log(data)
+        console.log("getUser: ",data)
         return data;
     } catch (error) {
         console.error("Error fetching user data from backend:", error);

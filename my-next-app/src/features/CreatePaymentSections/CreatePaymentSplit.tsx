@@ -212,7 +212,7 @@ export default function CreatePaymentSplit({
                         />
                     }
                 </div>
-                <section id="receipt-split"  className={`w-full h-full  pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
+                <section id="receipt-split"  className={`w-full px-1 h-full  pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
                     <div id="receipt-form-frame" className="max-w-xl w-full grid grid-cols-3 gap-2">
                         <div className={formSpan1CLass}>
                             <span className={labelClass}>費用</span>
