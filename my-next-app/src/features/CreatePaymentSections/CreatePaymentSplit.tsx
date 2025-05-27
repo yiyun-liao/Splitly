@@ -32,8 +32,8 @@ export default function CreatePaymentSplit({
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
         const [inputAmountValue, setInputAmountValue] = useState("");
         
-        const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string; disabled: boolean }[]>([]);
-        const [selectCategoryValue, setSelectedCategoryValue] = useState("");
+        const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string; disabled: boolean }[]>([]); //渲染
+        const [selectCategoryValue, setSelectedCategoryValue] = useState(""); //選取
         const [inputPaymentValue, setInputPaymentValue] = useState("");
         const [inputTimeValue, setInputTimeValue] = useState(getNowDatetimeLocal());
         const [inputDescValue, setInputDescValue] = useState("");

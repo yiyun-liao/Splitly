@@ -4,16 +4,11 @@ import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
 import ProjectMemberList from "./ProjectOverviewSections/ProjectMemberListDialog";
-import CreatePayment from "./CreatePayment";
+import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
+import { UserData } from "@/types/user";
 
-interface MemberHeaderProps {
-    userData: {
-      avatar?: string;
-      name?: string;
-    } | null;
-  }
 
-export default function MemberHeader({userData}:MemberHeaderProps){
+export default function MemberHeader({ userData }: { userData: UserData | null }){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreatePayment, setIsCreatePayment] = useState(false)
     const router = useRouter();
@@ -24,14 +19,14 @@ export default function MemberHeader({userData}:MemberHeaderProps){
         <div id="dashboard-header"  className="flex items-center gap-2 w-full box-border justify-between px-6 py-2">
             {isCreatePayment && 
                 <CreatePayment 
-                    userData={userData} 
+                    // userData={userData}  應該要存入 project 的 memberData
                     onClose={() => setIsCreatePayment(false)}
                 />
             }
             <ProjectMemberList 
                 isMemberListOpen={isMemberDialogOpen}
                 onClose = {() => setIsMemberDialogOpen(false)}   
-                userData={userData} 
+                userData={userData}  //應該要存入 project 的 memberData
             />
             <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
                 <ImageButton

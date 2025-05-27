@@ -1,12 +1,10 @@
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
 import { useState } from "react";
+import { UserData } from "@/types/user";
 
 interface PaymentOverviewProps {
-    userData: {
-      avatar?: string;
-      name?: string;
-    } | null;
+    userData: UserData | null;
   }
 
 export default function PaymentOverview({}:PaymentOverviewProps){

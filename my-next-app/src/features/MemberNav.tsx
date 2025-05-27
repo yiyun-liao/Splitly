@@ -4,10 +4,10 @@ import { logOutUser } from "@/lib/auth";
 import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
+import { UserData } from "@/types/user";
 
 
-
-export default function MemberNav(){
+export default function MemberNav({ userData }: { userData: UserData | null }){
     const router = useRouter();
     const params = useParams();
     const pathname = usePathname();

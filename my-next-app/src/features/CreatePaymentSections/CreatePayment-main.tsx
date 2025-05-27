@@ -1,11 +1,9 @@
-import clsx from "clsx";
-import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo } from "react";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
-import CreatePaymentSplit from "./CreatePaymentSections/CreatePaymentSplit";
-import CreatePaymentDebt from "./CreatePaymentSections/CreatePaymentDebt";
-import { ReceiptWay, CreatePaymentPayload, CreateItemPayload } from "./CreatePaymentSections/types";
+import CreatePaymentSplit from "./CreatePaymentSplit";
+import CreatePaymentDebt from "./CreatePaymentDebt";
+import { ReceiptWay, CreatePaymentPayload, CreateItemPayload } from "./types";
 
 interface CreatePaymentProps {
     onClose: () => void;

@@ -1,4 +1,4 @@
-//全域登入狀態紀錄
+//全域登入狀態紀錄 用在 my-next-app/src/hoc/withAuth.tsx
 'use client'
 
 import { createContext, useContext, useEffect, useState } from "react";
@@ -7,15 +7,7 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { logInUser, logOutUser } from "@/lib/auth";
 import { buildAvatarUrl } from "@/utils/avatar";
 import { fetchCurrentUser } from "@/lib/userApi";
-
-export interface UserData {
-    userId: string;
-    email: string;
-    name: string;
-    uidInAuth?:string;
-    avatar?: string; // 最後是 Cloudinary URL
-    avatarIndex?: number; // 後端回傳的 avatar index
-}
+import { UserData } from "@/types/user.js";
 
 type AuthContextType = {
     firebaseUser: User | null;     // Firebase 原始 user
