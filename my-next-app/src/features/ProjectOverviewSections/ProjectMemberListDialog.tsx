@@ -2,14 +2,12 @@ import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import { useState } from "react";
+import { UserData } from "@/types/user";
 
 interface ProjectMemberListProps {
     isMemberListOpen: boolean;
     onClose: () => void;
-    userData: {
-        avatar?: string;
-        name?: string;
-    } | null;
+    userData: UserData | null;
 }
 
 export default function ProjectMemberList({

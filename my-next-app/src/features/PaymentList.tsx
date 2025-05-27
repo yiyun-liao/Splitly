@@ -1,12 +1,10 @@
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
 import ReceiptCard from "./PaymentListSections/ReceiptCard";
+import { UserData } from "@/types/user";
 
 interface PaymentListProps {
-    userData: {
-      avatar?: string;
-      name?: string;
-    } | null;
+    userData: UserData | null;
     onCreateClick?: () => void;
   }
 

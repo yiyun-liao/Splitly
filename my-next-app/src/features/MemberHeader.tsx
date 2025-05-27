@@ -4,26 +4,24 @@ import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
 import ProjectMemberList from "./ProjectOverviewSections/ProjectMemberListDialog";
-import CreatePayment from "./CreatePayment";
+import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
+import { UserData } from "@/types/user";
 
-interface MemberHeaderProps {
-    userData: {
-      avatar?: string;
-      name?: string;
-    } | null;
-  }
 
-export default function MemberHeader({userData}:MemberHeaderProps){
+export default function MemberHeader({ userData }: { userData: UserData }){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreatePayment, setIsCreatePayment] = useState(false)
     const router = useRouter();
     const params = useParams();
     const projectId = params.projectId;
+    
+    console.log("header userData", userData);
 
     return(
         <div id="dashboard-header"  className="flex items-center gap-2 w-full box-border justify-between px-6 py-2">
             {isCreatePayment && 
                 <CreatePayment 
+                    // userData={userData}  應該要存入 project 的 memberData
                     userData={userData} 
                     onClose={() => setIsCreatePayment(false)}
                 />
@@ -31,7 +29,7 @@ export default function MemberHeader({userData}:MemberHeaderProps){
             <ProjectMemberList 
                 isMemberListOpen={isMemberDialogOpen}
                 onClose = {() => setIsMemberDialogOpen(false)}   
-                userData={userData} 
+                userData={userData}  //應該要存入 project 的 memberData
             />
             <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
                 <ImageButton
@@ -55,7 +53,8 @@ export default function MemberHeader({userData}:MemberHeaderProps){
                     >
                         新增紀錄
                 </Button> 
-                <button onClick={() => setIsMemberDialogOpen(true)}  className="shrink-0 flex items-center justify-start gap-2 px-2 py-0.5 rounded-xl cursor-pointer bg-sp-yellow-200 text-sp-blue-500 hover:bg-sp-yellow-400 hover:text-sp-blue-600 active:bg-sp-yellow-600 active:text-sp-blue-700">
+                <button onClick={() => setIsMemberDialogOpen(true)}  
+                    className="shrink-0 flex items-center justify-start gap-2 px-2 py-0.5 rounded-xl cursor-pointer bg-sp-yellow-200 text-sp-blue-500 hover:bg-sp-yellow-400 hover:text-sp-blue-600 active:bg-sp-yellow-600 active:text-sp-blue-700">
                     <div className="flex items-center justify-start -space-x-2">
                         <Avatar
                             size="md"

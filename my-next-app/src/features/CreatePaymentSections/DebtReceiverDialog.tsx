@@ -1,10 +1,7 @@
 import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
-import Input from "@/components/ui/Input";
 import IconButton from "@/components/ui/IconButton";
-import { useState } from "react";
-import { User,SplitMap } from "./types";
+import { User } from "./types";
 
 
 

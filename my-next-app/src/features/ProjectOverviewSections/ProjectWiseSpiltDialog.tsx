@@ -3,14 +3,12 @@ import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Icon from "@/components/ui/Icon";
 import { useState } from "react";
+import { UserData } from "@/types/user";
 
 interface ProjectWiseSpiltProps {
     isProjectWiseSpiltOpen: boolean;
     onClose: () => void;
-    userData: {
-        avatar?: string;
-        name?: string;
-    } | null;
+    userData: UserData | null;
 }
 
 export default function ProjectWiseSpilt({

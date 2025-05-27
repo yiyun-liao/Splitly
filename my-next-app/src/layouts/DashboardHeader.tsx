@@ -5,12 +5,10 @@ import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
 import ProjectMemberList from "../features/ProjectOverviewSections/ProjectMemberListDialog";
 import CreatePayment from "./CreatePayment";
+import { UserData } from "@/types/user";
 
 interface DashboardHeaderProps {
-    userData: {
-      avatar?: string;
-      name?: string;
-    } | null;
+    userData: UserData | null;
   }
 
 export default function DashboardHeader({userData}:DashboardHeaderProps){

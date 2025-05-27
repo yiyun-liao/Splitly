@@ -1,17 +1,14 @@
 'use client'
 import { useParams } from 'next/navigation';
-import { withAuth } from "@/hoc/withAuth";
-import { useAuth } from '@/contexts/AuthContext';
+import { withAuth } from "@/hoc/withAuth"; //withAuth 保護頁面 + 傳入 userData
 import PaymentList from "@/features/PaymentList";
-import ProjectOverview from "@/features/ProjectOverview";
+import ProjectOverview from '@/features/ProjectOverviewSections/ProjectOverview-main';
+import { UserData } from '@/types/user';
 
-function ExpensePage(){
+
+function ExpensePage({ userData }: { userData: UserData }){
     const params = useParams();
     const projectId = params.projectId;
-    const { firebaseUser, userData, loading } = useAuth();
-    
-
-    console.log(userData, loading)
     console.log('projectId:', projectId);
 
     return(

@@ -11,6 +11,7 @@ class UserSchema(BaseModel):
     avatar: int
 
     """
+    userId: str
     name: str
     email: str
     uidInAuth: str 

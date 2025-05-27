@@ -1,14 +1,11 @@
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
-import Avatar from "@/components/ui/Avatar";
-import Input from "@/components/ui/Input";
 import Icon from "@/components/ui/Icon";
-import Select from "@/components/ui/Select";
 import IconButton from "@/components/ui/IconButton";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
-import { User, SplitMethod,SplitWay, SplitMap, CreateItemPayload } from "./types";
-import { formatNumber,parsePercentToInt,parsePercentToDecimal } from "./utils";
+import { User, SplitWay, SplitMap, CreateItemPayload } from "./types";
+import { formatNumber } from "./utils";
 import SplitByItemEdit from "./SplitByItemEditDialog";
 
 

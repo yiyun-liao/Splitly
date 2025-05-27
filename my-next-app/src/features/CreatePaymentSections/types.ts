@@ -14,13 +14,16 @@ export interface SplitDetail {
 }
 
 
-// 功能區分
-export type ReceiptWay = "split" | "debt";
+// 紀錄類型：分帳還是借還帳
+export type RecordMode = "split" | "debt";
 
-// 分帳方式
+// 帳本類型：私人 or 團體
+export type AccountType= "personal" | "group" ;
+
+// 分帳方式：以人或品項為單位
 export type SplitWay = "item" | "person";
 
-// person 下再分三種
+// 以人分帳的進階方式
 export type SplitMethod = "percentage" | "actual" | "adjusted";
 
 // 付款人 db
@@ -42,12 +45,13 @@ export type SplitMap = Record<string, SplitDetail>;
 //   }
 // }
 
-// SplitWay =  "person" 送出資料
+// SplitWay =  "payment" 送出資料
 export interface CreatePaymentPayload {
-    paymentName: string;
-    receiptWay: ReceiptWay;    // "split" | "debt"
-    splitWay: SplitWay | null;       // "item" | "person"
-    splitMethod: SplitMethod | null | "item"; // "percentage" | "actual" | "adjusted"
+    paymentName: string; 
+    accountType: AccountType; // "personal" | "group"
+    recordMode: RecordMode | "personal" ;    // "split" | "debt" | "personal" 
+    splitWay: SplitWay | null  ;       // "item" | "person" 
+    splitMethod: SplitMethod | null | "item"  ; // "percentage" | "actual" | "adjusted" 
     currency: string;
     amount: number;
     categoryId: string | null;
@@ -58,7 +62,8 @@ export interface CreatePaymentPayload {
 }
 
 // paymentName : "rental"
-// receiptWay : "split"
+// accountType: "group"
+// recordMode : "split"
 // splitWay : "person"
 // splitMethod : "adjusted"
 // currency : "TWD"
@@ -74,7 +79,7 @@ export interface CreatePaymentPayload {
 // }
 
 
-// SplitWay = "item"送出子資料資料
+// 如果有 "item"送出子資料資料
 export interface CreateItemPayload {
     amount: number;
     paymentName: string;
