@@ -16,6 +16,7 @@ class ProjectRouter:
         self._add_routes()
 
     def _add_routes(self):
+        # 建立專案
         @self.router.post("/api/project",response_model=ProjectCreateMinimalResponse)
         def create_project(body: CreateProjectSchema):
             try:
@@ -29,6 +30,7 @@ class ProjectRouter:
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
 
+        # 刪除專案
         @self.router.delete("/api/project", response_model=dict)
         def delete_project(id: str):
             try:
@@ -40,6 +42,7 @@ class ProjectRouter:
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
 
+        # 取得某使用者的專案列表
         @self.router.get("/api/project/by-user", response_model=list[CreateProjectSchema])
         def get_user_projects(uid: str):
             try:
@@ -50,6 +53,7 @@ class ProjectRouter:
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Failed to fetch projects: {str(e)}")
             
+        # 新增成員到專案
         @self.router.post("/api/project/member")
         def add_project_members(projectId: str,payload: AddProjectMembersSchema):
             try:
