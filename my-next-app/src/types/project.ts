@@ -9,7 +9,7 @@ export type MemberBudgetMap = Record<MemberUID, number | undefined>;
 // { "uid1": 500, "uid2": 300 } 表示各成員預算分配
 
 // 建立專案
-export interface CreateProjectPayload {
+export interface ProjectData {
   project_name: string;
   start_time?: string;             
   end_time?: string;
@@ -21,5 +21,6 @@ export interface CreateProjectPayload {
   member?: MemberUID[];           
   member_budgets?: MemberBudgetMap;
   desc?: string;
-  img:number;
+  img:number; // 後端回傳的 avatar index
+  imgURL?: string; // 最後是 Cloudinary URL
 }

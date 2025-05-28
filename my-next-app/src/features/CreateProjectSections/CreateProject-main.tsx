@@ -6,7 +6,7 @@ import Sheet from "@/components/ui/Sheet";
 import Select from "@/components/ui/Select";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
-import { ProjectStyle, MemberBudgetMap, CreateProjectPayload } from "@/types/project";
+import { ProjectStyle, MemberBudgetMap, ProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
 import { getNowDateLocal } from "@/utils/time";
 import { createProject } from "@/lib/projectApi";
@@ -35,7 +35,7 @@ export default function CreateProject({
     const [memberBudgetMap, setMemberBudgetMap] = useState<MemberBudgetMap>({[currentUid]: undefined,});
     const [inputDescValue, setInputDescValue] = useState("");
 
-    const [projectPayload, setProjectPayload] = useState<CreateProjectPayload>({
+    const [projectPayload, setProjectPayload] = useState<ProjectData>({
         project_name: "",
         style: "travel",
         currency: "TWD",       
@@ -59,7 +59,7 @@ export default function CreateProject({
     
 
     // get data
-    const payload: CreateProjectPayload = useMemo(() => {
+    const payload: ProjectData = useMemo(() => {
         return {
             project_name: inputProjectName,
             start_time: inputStartTimeValue || undefined,

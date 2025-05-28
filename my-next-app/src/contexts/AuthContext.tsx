@@ -1,13 +1,17 @@
 //全域登入狀態紀錄 用在 my-next-app/src/hoc/withAuth.tsx
 'use client'
-
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { logInUser, logOutUser } from "@/lib/auth";
-import { buildAvatarUrl } from "@/utils/avatar";
+
 import { fetchCurrentUser } from "@/lib/userApi";
 import { UserData } from "@/types/user.js";
+import { buildAvatarUrl } from "@/utils/avatar";
+
+import { fetchProjectsByUser } from "@/lib/projectApi";
+import { ProjectData } from "@/types/project";
+import { buildProjectCoverUrl } from "@/utils/projectCover";
 
 type AuthContextType = {
     firebaseUser: User | null;     // Firebase 原始 user
@@ -15,11 +19,13 @@ type AuthContextType = {
     loading: boolean;
     logInUser: () => Promise<boolean>;
     logOutUser: () => Promise<boolean>;
+    projectData: ProjectData[];
 };
 
 export const AuthContext = createContext<AuthContextType>({
     firebaseUser: null,
     userData: null,
+    projectData:[],
     loading: true,
     logInUser: async () => false,
     logOutUser: async () => true,
@@ -33,6 +39,7 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
     const [userData, setUserData] = useState<UserData | null>(null);
+    const [projectData, setProjectData] = useState<ProjectData[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -42,21 +49,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (userAuth) {
             try {
                 const token = await userAuth.getIdToken();
-                const data = await fetchCurrentUser(token, userAuth.uid);
+                const userData = await fetchCurrentUser(token, userAuth.uid);
+                const projectData: ProjectData[] = await fetchProjectsByUser(userAuth.uid);
         
                 const fullUserData: UserData = {
-                    uid: data.uid,
-                    email: data.email,
-                    name: data.name,
-                    uid_in_auth: data.uid_in_auth,
-                    avatar_index: data.avatar,
-                    avatar: buildAvatarUrl(data.avatar),
+                    uid: userData.uid,
+                    email: userData.email,
+                    name: userData.name,
+                    uid_in_auth: userData.uid_in_auth,
+                    avatar_index: userData.avatar,
+                    avatar: buildAvatarUrl(userData.avatar),
                 };
-                console.log("what i get",fullUserData)
+
+                const fullProjectList: ProjectData[] = projectData.map((project) => ({
+                    ...project,
+                    imgURL: buildProjectCoverUrl(project.img),
+                  }));
+
+
+                console.log("what i get userData",fullUserData)
+                console.log("what i get projectData",fullProjectList)
+
                 setUserData(fullUserData);
+                setProjectData(fullProjectList);
             } catch (error) {
                 console.error("Error fetching user data:", error);
                 setUserData(null);
+                setProjectData([])
             }
         } else {
             setUserData(null);
@@ -70,7 +89,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     return (
         <AuthContext.Provider
-            value={{ firebaseUser, userData, loading, logInUser, logOutUser }}
+            value={{ firebaseUser, projectData, userData, loading, logInUser, logOutUser }}
         >
         {children}
         </AuthContext.Provider>
