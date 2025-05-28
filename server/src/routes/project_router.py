@@ -14,7 +14,7 @@ class ProjectRouter:
         self._add_routes()
 
     def _add_routes(self):
-        @self.router.post("/api/create-project",response_model=ProjectCreateMinimalResponse)
+        @self.router.post("/api/project",response_model=ProjectCreateMinimalResponse)
         def create_project(body: CreateProjectSchema):
             try:
                 db_session: Session = self.db.get_session()
@@ -26,3 +26,15 @@ class ProjectRouter:
                 }
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
+
+        @self.router.delete("/api/project", response_model=dict)
+        def delete_project(id: str):
+            try:
+                db_session: Session = self.db.get_session()
+                project_db = ProjectDB(db_session)
+                project_db.delete_project(id)
+
+                return {"success": True, "message": f"Project {id} deleted"}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+

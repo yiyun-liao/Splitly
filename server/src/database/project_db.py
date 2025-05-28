@@ -41,3 +41,19 @@ class ProjectDB:
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Create Project failed: {str(e)}")
+
+    def delete_project(self, project_id: str):
+        # 查詢主專案
+        project = self.db.query(ProjectModel).filter(ProjectModel.id == project_id).first()
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+
+        # 刪除 editor 關聯
+        self.db.query(ProjectEditorRelation).filter_by(project_id=project_id).delete()
+
+        # 刪除 member 關聯
+        self.db.query(ProjectMemberRelation).filter_by(project_id=project_id).delete()
+
+        # 刪除專案本體
+        self.db.delete(project)
+        self.db.commit()
