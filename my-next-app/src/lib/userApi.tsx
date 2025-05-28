@@ -1,15 +1,18 @@
+// my-next-app/src/lib/userApi.tsx
+
+const BASE_URL = "http://localhost:8000";
 
 export async function createNewUser(
-    token: string | null,
+    token: string,
     user: {
-    name: string | '';
-    email: string | '';
-    uidInAuth: string;
-    avatar: number;
+        name: string | '';
+        email: string | '';
+        uid_in_auth: string;
+        avatar: number;
     }
 ) {
     try {
-    const response = await fetch("http://localhost:8000/api/auth/login", {
+    const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`,
@@ -31,11 +34,12 @@ export async function createNewUser(
     }
 }
 
-export async function fetchCurrentUser(token: string, userId: string) {
+export async function fetchCurrentUser(token: string, uid: string) {
     try {
-        const res = await fetch(`/api/auth/getUser?userId=${userId}`, {
+        const res = await fetch(`${BASE_URL}/api/auth/getUser?uid=${uid}`, {
             headers: { Authorization: `Bearer ${token}` },
         });
+        
         if (!res.ok) throw new Error("Failed to fetch user data");
         const data = await res.json();
         console.log("getUser: ",data)

@@ -54,7 +54,7 @@ export async function logOutUser() {
 }
 
 export interface UserData {
-    userId: string;
+    uid: string;
     email: string;
 }
 
@@ -71,7 +71,7 @@ export function useUser(){
                     const fireStoreData = userSnap.data();
                     setUserData({
                         ...fireStoreData,
-                        userId: user.uid,
+                        uid: user.uid,
                     } as UserData);
                 } else {
                     setUserData(null);

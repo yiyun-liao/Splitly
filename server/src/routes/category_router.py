@@ -19,8 +19,6 @@ class CategoryRouter:
             db_session: Session = self.db.get_session()
             category_db = CategoryDB(db_session)
             data = category_db.get_all_categories()
-            # pydantic_data = [CategoryOutSchema.model_validate(item) for item in data]
-            # print([item.model_dump() for item in pydantic_data])
             return data
 
         @self.router.get("/api/category-nest", response_model=list[CategoryOutSchema])

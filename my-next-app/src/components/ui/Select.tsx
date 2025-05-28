@@ -76,40 +76,40 @@ export default function Select({
 
     return (
         <div className={selectFrameClass}>
-        {label && <label className={labelClasses}>{label}</label>}
-        <div className={selectItemClass}>
-            <div className={wrapperClass}>
-            {leftIconNode}
-            <select
-                ref={selectRef}
-                value={value}
-                required={required}
-                disabled={disabled || isLoading}
-                onChange={onChange}
-                className={selectClasses}
-                {...props}
-            >
-                { !!placeholder && 
-                    <option value="placeholder" disabled >
-                    {placeholder}
-                    </option>
-                }
-                {options.map((opt: SelectOption) => (
-                    <option key={opt.value} value={opt.value} disabled={opt.disabled}>
-                    {opt.label}
-                    </option>
-                ))}
-            </select>
-            {isLoading && (
-                <div className="ml-2">
-                    <Icon icon="solar:spinner" size="lg" className="animate-spin" />
+            {label && <label className={labelClasses}>{label}</label>}
+            <div className={selectItemClass}>
+                <div className={wrapperClass}>
+                {leftIconNode}
+                <select
+                    ref={selectRef}
+                    value={value}
+                    required={required}
+                    disabled={disabled || isLoading}
+                    onChange={onChange}
+                    className={selectClasses}
+                    {...props}
+                >
+                    { !!placeholder && 
+                        <option value="placeholder" disabled >
+                        {placeholder}
+                        </option>
+                    }
+                    {options.map((opt: SelectOption) => (
+                        <option key={opt.value} value={opt.value} disabled={opt.disabled}>
+                        {opt.label}
+                        </option>
+                    ))}
+                </select>
+                {isLoading && (
+                    <div className="ml-2">
+                        <Icon icon="solar:spinner" size="lg" className="animate-spin" />
+                    </div>
+                )}
                 </div>
-            )}
+                <div className={helperClasses}>
+                    {errorMessage && <p className={errorMessageClasses}>{errorMessage}</p>}
+                </div>  
             </div>
-            <div className={helperClasses}>
-                {errorMessage && <p className={errorMessageClasses}>{errorMessage}</p>}
-            </div>  
-        </div>
         </div>
     );
 }

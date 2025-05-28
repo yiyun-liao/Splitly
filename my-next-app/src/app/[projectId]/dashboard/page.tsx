@@ -14,7 +14,7 @@ function DashboardPage({ userData }: { userData: UserData }){
     return(
         <>
             <PaymentOverview userData={userData} />
-            <ProjectOverview userData={userData} />
+            <ProjectOverview />
         </>
     )
 }

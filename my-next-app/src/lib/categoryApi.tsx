@@ -1,4 +1,6 @@
 // my-next-app/src/lib/categoryApi.tsx
+// get useable data on : my-next-app/src/hooks/category.tsx
+
 export async function getCategories() {
     try {
     const response = await fetch("http://localhost:8000/api/category-all", {
@@ -37,20 +39,4 @@ export async function getCategoryNest() {
     console.error("Error syncing user to backend:", err);
     return []; // 加上 fallback
     }
-}
-
-interface Category {
-    id: number | string;
-    name: string;
-    parent_id: number | string | null;
-}
-
-export async function fetchCategoriesForSelect(): Promise<{ label: string; value: string; disabled: boolean }[]> {
-    const categories: Category[] = await getCategories();
-    const categoryOptions = categories.map((cat: Category) => ({
-        value: String(cat.id),
-        label: cat.name,
-        disabled: cat.parent_id === null,
-    }));
-    return categoryOptions;
 }

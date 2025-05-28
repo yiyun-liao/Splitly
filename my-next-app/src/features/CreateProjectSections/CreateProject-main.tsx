@@ -1,14 +1,16 @@
 import { useState, useEffect, useMemo } from "react";
+import clsx from "clsx";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Sheet from "@/components/ui/Sheet";
 import Select from "@/components/ui/Select";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
-import clsx from "clsx";
-import { getNowDateLocal } from "@/utils/time";
-import { ProjectStyle, MemberList, MemberBudgetMap, CreateProjectPayload } from "./types";
+import { ProjectStyle, MemberBudgetMap, ProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
+import { getNowDateLocal } from "@/utils/time";
+import { createProject } from "@/lib/projectApi";
+import { getRandomProjectCoverIndex } from "@/utils/projectCover";
 
 interface CreatePaymentProps {
     onClose: () => void;
@@ -22,7 +24,7 @@ export default function CreateProject({
     userData
     }:CreatePaymentProps){
 
-    const currentUid = userData.userId;
+    const currentUid = userData.uid;
 
     const [inputProjectName, setInputProjectName] = useState("");
     const [inputStartTimeValue, setInputStartTimeValue] = useState(getNowDateLocal());
@@ -33,17 +35,13 @@ export default function CreateProject({
     const [memberBudgetMap, setMemberBudgetMap] = useState<MemberBudgetMap>({[currentUid]: undefined,});
     const [inputDescValue, setInputDescValue] = useState("");
 
-    const [projectPayload, setProjectPayload] = useState<CreateProjectPayload>({
-        createdBy: currentUid,
-        projectName: "",
-        startTime: null,      
-        endTime: null,
+    const [projectPayload, setProjectPayload] = useState<ProjectData>({
+        project_name: "",
         style: "travel",
         currency: "TWD",       
-        budget: 0,
-        memberList: {"owner": currentUid}, // 成員 UID 陣列
-        memberBudgets: {},
-        desc: null,
+        owner: currentUid,
+        editor: [currentUid],
+        img: 1,
     });    
     
     useEffect(() => {
@@ -61,18 +59,20 @@ export default function CreateProject({
     
 
     // get data
-    const payload: CreateProjectPayload = useMemo(() => {
+    const payload: ProjectData = useMemo(() => {
         return {
-            createdBy: currentUid,
-            projectName: inputProjectName,
-            startTime: inputStartTimeValue ?? null,
-            endTime: inputEndTimeValue ?? null,
+            project_name: inputProjectName,
+            start_time: inputStartTimeValue || undefined,
+            end_time: inputEndTimeValue || undefined,
             style: chooseProjectStyle,
             currency: "TWD",       
-            budget: inputBudgetValue === "" ? null : parseFloat(inputBudgetValue), 
-            memberList: {"owner": currentUid}, // 成員 UID 陣列
-            memberBudgets: memberBudgetMap ?? null, 
-            desc: inputDescValue ?? null,
+            budget: inputBudgetValue === "" ? undefined : parseFloat(inputBudgetValue), 
+            owner: currentUid,
+            editor: [currentUid],
+            member: undefined,
+            member_budgets: memberBudgetMap || undefined, 
+            desc: inputDescValue || undefined,
+            img: getRandomProjectCoverIndex(),
         };
         }, [currentUid, inputProjectName,inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue,memberBudgetMap,inputDescValue]);
     
@@ -83,18 +83,18 @@ export default function CreateProject({
     //disable button 
     const {isComplete } = useMemo(() => {
         let isComplete = false;
-        if (!!projectPayload.projectName && !!projectPayload.createdBy){
+        if (!!projectPayload.project_name && !!projectPayload.owner){
             isComplete = true;
         }    
         return { isComplete };
     }, [projectPayload]); 
     
     // project data
-    const handleSubmitData = () => {
-        console.log("create", projectPayload)
-        // onSubmit(payload); // 把資料丟到外層
-        // onClose()
-    };
+    const handleSubmitData = async () => {
+        console.log("create", projectPayload);
+        await createProject(projectPayload);
+        // onClose(); // 如果你要關掉 dialog 也可以寫在這
+      };
 
     // css
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")

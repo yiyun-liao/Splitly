@@ -7,12 +7,7 @@ from typing import List, Optional, ForwardRef
 CategoryOutSchema = ForwardRef("CategoryOutSchema")
 
 class CategorySchema(BaseModel):
-    """Schema for category routes
-    
-    Args:
-    name: str
-    parent_id:int
-    """
+    """Schema for category routes"""
     name: str
     parent_id: Optional[int] = None
 

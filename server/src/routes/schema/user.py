@@ -1,20 +1,21 @@
+# server/src/routes/schema/user.py
 from pydantic import BaseModel
 from typing import List
 
 
-class UserSchema(BaseModel):
-    """Schema for user routes
-    
-    Args:
+class UserLoginSchema(BaseModel):
     name: str
     email: str
+    uid_in_auth: str
     avatar: int
 
-    """
-    userId: str
+
+class UserSchema(BaseModel):
+    """Schema for user routes """
+    uid: str
     name: str
     email: str
-    uidInAuth: str 
+    uid_in_auth: str 
     avatar: int
 
 

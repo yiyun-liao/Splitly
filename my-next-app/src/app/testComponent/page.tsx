@@ -63,7 +63,7 @@ const Page = () => {
 
             <Avatar
                 size="md"
-                userId="user_234"
+                uid="user_234"
                 onAvatarClick={() => console.log('Clicked!')}
             />
             <div>
