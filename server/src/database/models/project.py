@@ -28,6 +28,7 @@ class ProjectModel(Base):
 
     member_budgets = Column(JSON, nullable=True)  # { uid: 1000 }
     desc = Column(String, nullable=True)
+    img = Column(Integer, nullable=False)
 
 
 # Editor 關聯

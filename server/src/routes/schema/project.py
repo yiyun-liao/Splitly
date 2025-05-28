@@ -16,11 +16,13 @@ class CreateProjectSchema(BaseModel):
     member: Optional[List[str]]
     member_budgets: Optional[Dict[str, Optional[int]]]
     desc: Optional[str]
+    img: int
+
 
     model_config = {
         "from_attributes": True
     }
-    
+
 class ProjectCreateMinimalResponse(BaseModel):
     success: bool
     project_name: str
