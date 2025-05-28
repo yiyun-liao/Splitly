@@ -23,6 +23,9 @@ class CreateProjectSchema(BaseModel):
         "from_attributes": True
     }
 
+class GetProjectSchema(CreateProjectSchema):
+    id:str
+
 class AddProjectMembersSchema(BaseModel):
     member: List[str]
 

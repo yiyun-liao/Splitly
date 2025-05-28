@@ -1,9 +1,9 @@
-import { ProjectData } from "@/types/project";
+import { GetProjectData } from "@/types/project";
 
 const BASE_URL = "http://localhost:8000";
 
 // 建立專案
-export async function createProject(payload: ProjectData) {
+export async function createProject(payload: GetProjectData) {
     try {
         const res = await fetch(`${BASE_URL}/api/project`, {
             method: "POST",
@@ -49,9 +49,11 @@ export async function deleteProject(projectId: string) {
 }
 
 // 取得某使用者的專案列表
-export async function fetchProjectsByUser(uid: string) {
+export async function fetchProjectsByUser(token: string,uid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project/by-user?uid=${uid}`);
+        const res = await fetch(`${BASE_URL}/api/project/by-user?uid=${uid}`,{
+            headers: { Authorization: `Bearer ${token}` },
+        });
 
         if (!res.ok) {
             const errorText = await res.text();

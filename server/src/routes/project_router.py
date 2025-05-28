@@ -1,7 +1,7 @@
 #server/src/routes/project_router.py
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from src.routes.schema.project import CreateProjectSchema, ProjectCreateMinimalResponse,AddProjectMembersSchema
+from src.routes.schema.project import CreateProjectSchema, ProjectCreateMinimalResponse,AddProjectMembersSchema, GetProjectSchema
 from src.database.project_db import ProjectDB
 from src.database.relational_db import Database
 from src.dependencies.firebase import verify_firebase_token
@@ -40,8 +40,10 @@ class ProjectRouter:
                 raise HTTPException(status_code=500, detail=str(e))
 
         # 取得某使用者的專案列表
-        @self.router.get("/api/project/by-user", response_model=list[CreateProjectSchema])
-        def get_user_projects(uid: str):
+        @self.router.get("/api/project/by-user", response_model=list[GetProjectSchema])
+        def get_user_projects(uid: str, currentUserId: str = Depends(verify_firebase_token)):
+            if uid != currentUserId:
+                raise HTTPException(status_code=403, detail="Unauthorized access")
             try:
                 db_session: Session = self.db.get_session()
                 project_db = ProjectDB(db_session)

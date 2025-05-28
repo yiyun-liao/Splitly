@@ -10,7 +10,7 @@ import { UserData } from "@/types/user.js";
 import { buildAvatarUrl } from "@/utils/avatar";
 
 import { fetchProjectsByUser } from "@/lib/projectApi";
-import { ProjectData } from "@/types/project";
+import { GetProjectData } from "@/types/project";
 import { buildProjectCoverUrl } from "@/utils/projectCover";
 
 type AuthContextType = {
@@ -19,7 +19,7 @@ type AuthContextType = {
     loading: boolean;
     logInUser: () => Promise<boolean>;
     logOutUser: () => Promise<boolean>;
-    projectData: ProjectData[];
+    projectData: GetProjectData[];
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -39,18 +39,23 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
     const [userData, setUserData] = useState<UserData | null>(null);
-    const [projectData, setProjectData] = useState<ProjectData[]>([]);
+    const [projectData, setProjectData] = useState<GetProjectData[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let fetched = false;
+
         const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
         setFirebaseUser(userAuth);
-    
+        if (fetched) return;
+        fetched = true;
+        console.log("✅ running onAuthStateChanged fetcher"); 
+
         if (userAuth) {
             try {
                 const token = await userAuth.getIdToken();
                 const userData = await fetchCurrentUser(token, userAuth.uid);
-                const projectData: ProjectData[] = await fetchProjectsByUser(userAuth.uid);
+                const projectData: GetProjectData[] = await fetchProjectsByUser(token, userAuth.uid);
         
                 const fullUserData: UserData = {
                     uid: userData.uid,
@@ -61,7 +66,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     avatar: buildAvatarUrl(userData.avatar),
                 };
 
-                const fullProjectList: ProjectData[] = projectData.map((project) => ({
+                const fullProjectList: GetProjectData[] = projectData.map((project) => ({
                     ...project,
                     imgURL: buildProjectCoverUrl(project.img),
                   }));

@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from src.database.models.project import ProjectModel, ProjectEditorRelation, ProjectMemberRelation
-from src.routes.schema.project import CreateProjectSchema
+from src.routes.schema.project import CreateProjectSchema, GetProjectSchema
 from fastapi import HTTPException
 from uuid import uuid4
 from datetime import datetime
@@ -92,7 +92,7 @@ class ProjectDB:
                     .filter_by(project_id=project.id)
                     .all()
                 ]
-                result.append(CreateProjectSchema(
+                result.append(GetProjectSchema(
                     id=project.id,
                     project_name=project.project_name,
                     start_time=project.start_time,

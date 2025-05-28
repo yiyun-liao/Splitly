@@ -14,7 +14,7 @@ function ExpensePage({ userData }: { userData: UserData }){
     return(
         <>
             <PaymentList userData={userData} />
-            <ProjectOverview userData={userData} />
+            <ProjectOverview />
         </>
     )
 }

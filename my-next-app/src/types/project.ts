@@ -22,5 +22,21 @@ export interface ProjectData {
   member_budgets?: MemberBudgetMap;
   desc?: string;
   img:number; // 後端回傳的 avatar index
+}
+
+export interface GetProjectData {
+  id:string;
+  project_name: string;
+  start_time?: string;             
+  end_time?: string;
+  style: ProjectStyle; // "travel" | "daily" | "else"
+  currency: string;
+  budget?: number; // 預算金額
+  owner: string;
+  editor: MemberUID[];
+  member?: MemberUID[];           
+  member_budgets?: MemberBudgetMap;
+  desc?: string;
+  img:number; // 後端回傳的 avatar index
   imgURL?: string; // 最後是 Cloudinary URL
 }

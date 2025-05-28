@@ -1,19 +1,21 @@
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton"
-import { logOutUser } from "@/lib/auth";
 import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
-import { UserData } from "@/types/user";
-import CreateProject from "./CreateProjectSections/CreateProject-main";
 import clsx from "clsx";
+import CreateProject from "./CreateProjectSections/CreateProject-main";
+import { logOutUser } from "@/lib/auth";
+import { useProjectData } from "@/contexts/ProjectContext";
 
 
-export default function MemberNav({ userData }: { userData: UserData | null }){
+
+export default function MemberNav() {
     const router = useRouter();
     const params = useParams();
     const pathname = usePathname();
-    const projectId = params.projectId;
+    const currentProjectId = params.projectId;
+    const {projectData, userData} = useProjectData();
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")
     const [activePath, setActivePath] = useState(pathname); // 對應當前功能頁面渲染按鈕
@@ -61,32 +63,34 @@ export default function MemberNav({ userData }: { userData: UserData | null }){
                             <IconButton
                                 icon='solar:widget-2-bold'
                                 size='md'
-                                variant={activePath === `/${projectId}/dashboard` ? 'solid' : 'outline'}
+                                variant={activePath === `/${currentProjectId}/dashboard` ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${projectId}/dashboard`)} 
+                                onClick={() => router.push(`/${currentProjectId}/dashboard`)} 
                             />
                             <IconButton
                                 icon='solar:reorder-bold'
                                 size='md'
-                                variant={activePath === `/${projectId}/expense` ? 'solid' : 'outline'}
+                                variant={activePath === `/${currentProjectId}/expense` ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${projectId}/expense`)} 
+                                onClick={() => router.push(`/${currentProjectId}/expense`)} 
                             />
                         </div>
                     </div>
                     <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
-                        <ImageButton
-                            image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/1.JPG"
-                            size='md'
-                            imageName= "Splitly"
-                        />
-                        <ImageButton
-                            image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/2.JPG"
-                            size='md'
-                            imageName= "Splitly"
-                        />
+                        {projectData
+                            .map(project => {
+                            return(
+                                <ImageButton
+                                    key={project.id}
+                                    image={project.imgURL}
+                                    size='md'
+                                    imageName= {project.project_name}
+                                    onClick={() => router.push(`/${project.id}/expense`)}
+                                />
+                            )}
+                        )}
                         <IconButton
                             icon='solar:add-circle-bold'
                             size='md'

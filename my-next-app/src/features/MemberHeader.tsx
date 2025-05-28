@@ -1,44 +1,47 @@
 import { useState } from "react";
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
 import ProjectMemberList from "./ProjectOverviewSections/ProjectMemberListDialog";
 import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
-import { UserData } from "@/types/user";
+import { useProjectData } from "@/contexts/ProjectContext";
 
 
-export default function MemberHeader({ userData }: { userData: UserData }){
+
+export default function MemberHeader(){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreatePayment, setIsCreatePayment] = useState(false)
-    const router = useRouter();
     const params = useParams();
     const projectId = params.projectId;
-    
-    console.log("header userData", userData);
+    const {projectData, userData} = useProjectData();
+    const currentProjectData = projectData.find(p => p.id === projectId);
 
+    
     return(
         <div id="dashboard-header"  className="flex items-center gap-2 w-full box-border justify-between px-6 py-2">
-            {isCreatePayment && 
-                <CreatePayment 
-                    // userData={userData}  應該要存入 project 的 memberData
-                    userData={userData} 
-                    onClose={() => setIsCreatePayment(false)}
+            <div>
+                {isCreatePayment && 
+                    <CreatePayment 
+                        // userData={userData}  應該要存入 project 的 memberData
+                        userData={userData} 
+                        onClose={() => setIsCreatePayment(false)}
+                    />
+                }
+                <ProjectMemberList 
+                    isMemberListOpen={isMemberDialogOpen}
+                    onClose = {() => setIsMemberDialogOpen(false)}   
+                    userData={userData}  //應該要存入 project 的 memberData
                 />
-            }
-            <ProjectMemberList 
-                isMemberListOpen={isMemberDialogOpen}
-                onClose = {() => setIsMemberDialogOpen(false)}   
-                userData={userData}  //應該要存入 project 的 memberData
-            />
+            </div>
             <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
                 <ImageButton
-                    image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/2.JPG"
+                    image={currentProjectData?.imgURL}
                     size='md'
-                    imageName= "Splitly"
+                    imageName= {currentProjectData?.project_name || ""}
                     >
                 </ImageButton>
-                <p className="text-2xl font-medium text-zinc-700 whitespace-nowrap truncate min-w-0 max-w-100"> Project name </p>
+                <p className="text-2xl font-medium text-zinc-700 whitespace-nowrap truncate min-w-0 max-w-100">{currentProjectData?.project_name || ""}</p>
             </div>
             <div className="shrink-0 flex items-center justify-start gap-2">
                 <Button
