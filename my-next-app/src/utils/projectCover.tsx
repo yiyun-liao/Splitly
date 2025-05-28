@@ -5,11 +5,11 @@ const PROJECT_COVER_FOLDER = "projectCover";
 
 // ---------- feature: get amount in folder to auto-random
 
-export function getRandomAvatarIndex(): number {
+export function getRandomProjectCoverIndex(): number {
   return Math.floor(Math.random() * 12) + 1;
 }
 
 // 組合 Cloudinary 頭貼網址
-export function buildAvatarUrl(index: number): string {
+export function buildProjectCoverUrl(index: number): string {
   return `${CLOUDINARY_BASE}/${PROJECT_COVER_FOLDER}/${index}.jpg`;
 }

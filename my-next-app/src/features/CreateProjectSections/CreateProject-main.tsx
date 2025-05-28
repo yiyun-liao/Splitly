@@ -1,14 +1,16 @@
 import { useState, useEffect, useMemo } from "react";
+import clsx from "clsx";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Sheet from "@/components/ui/Sheet";
 import Select from "@/components/ui/Select";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
-import clsx from "clsx";
-import { getNowDateLocal } from "@/utils/time";
-import { ProjectStyle, MemberBudgetMap, CreateProjectPayload } from "./types";
+import { ProjectStyle, MemberBudgetMap, CreateProjectPayload } from "@/types/project";
 import { UserData } from "@/types/user";
+import { getNowDateLocal } from "@/utils/time";
+import { createProject } from "@/lib/projectApi";
+import { getRandomProjectCoverIndex } from "@/utils/projectCover";
 
 interface CreatePaymentProps {
     onClose: () => void;
@@ -35,16 +37,11 @@ export default function CreateProject({
 
     const [projectPayload, setProjectPayload] = useState<CreateProjectPayload>({
         project_name: "",
-        start_time: null,      
-        end_time: null,
         style: "travel",
         currency: "TWD",       
-        budget: 0,
         owner: currentUid,
         editor: [currentUid],
-        member: null,
-        member_budgets: {},
-        desc: null,
+        img: 1,
     });    
     
     useEffect(() => {
@@ -65,16 +62,17 @@ export default function CreateProject({
     const payload: CreateProjectPayload = useMemo(() => {
         return {
             project_name: inputProjectName,
-            start_time: inputStartTimeValue ?? null,
-            end_time: inputEndTimeValue ?? null,
+            start_time: inputStartTimeValue || undefined,
+            end_time: inputEndTimeValue || undefined,
             style: chooseProjectStyle,
             currency: "TWD",       
-            budget: inputBudgetValue === "" ? null : parseFloat(inputBudgetValue), 
+            budget: inputBudgetValue === "" ? undefined : parseFloat(inputBudgetValue), 
             owner: currentUid,
             editor: [currentUid],
-            member:null,
-            member_budgets: memberBudgetMap ?? null, 
-            desc: inputDescValue ?? null,
+            member: undefined,
+            member_budgets: memberBudgetMap || undefined, 
+            desc: inputDescValue || undefined,
+            img: getRandomProjectCoverIndex(),
         };
         }, [currentUid, inputProjectName,inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue,memberBudgetMap,inputDescValue]);
     
@@ -92,11 +90,11 @@ export default function CreateProject({
     }, [projectPayload]); 
     
     // project data
-    const handleSubmitData = () => {
-        console.log("create", projectPayload)
-        // onSubmit(payload); // 把資料丟到外層
-        // onClose()
-    };
+    const handleSubmitData = async () => {
+        console.log("create", projectPayload);
+        await createProject(projectPayload);
+        // onClose(); // 如果你要關掉 dialog 也可以寫在這
+      };
 
     // css
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")

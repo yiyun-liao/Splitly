@@ -6,9 +6,6 @@ from src.database.project_db import ProjectDB
 from src.database.relational_db import Database
 from src.dependencies.firebase import verify_firebase_token
 
-
-
-
 class ProjectRouter:
     def __init__(self, db: Database):
         self.router = APIRouter()
