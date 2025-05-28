@@ -45,11 +45,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 const data = await fetchCurrentUser(token, userAuth.uid);
         
                 const fullUserData: UserData = {
-                    userId: data.userId,
+                    uid: data.uid,
                     email: data.email,
                     name: data.name,
-                    uidInAuth: data.uidInAuth,
-                    avatarIndex: data.avatar,
+                    uid_in_auth: data.uid_in_auth,
+                    avatar_index: data.avatar,
                     avatar: buildAvatarUrl(data.avatar),
                 };
                 console.log("what i get",fullUserData)

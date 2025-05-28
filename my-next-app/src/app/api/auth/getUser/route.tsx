@@ -1,16 +1,16 @@
     import { NextRequest, NextResponse } from "next/server";
 
     export async function GET(req: NextRequest) {
-    const userId = req.nextUrl.searchParams.get("userId");
+    const uid = req.nextUrl.searchParams.get("uid");
     const token = req.headers.get("Authorization");
 
     console.log(token)
-    if (!userId || !token) {
-        return NextResponse.json({ error: "Missing userId or token" }, { status: 400 });
+    if (!uid || !token) {
+        return NextResponse.json({ error: "Missing uid or token" }, { status: 400 });
     }
 
     try {
-        const res = await fetch(`http://127.0.0.1:8000/api/auth/getUser?userId=${userId}`, {
+        const res = await fetch(`http://127.0.0.1:8000/api/auth/getUser?uid=${uid}`, {
         method: "GET",
         headers: {
             Authorization: token,

@@ -18,7 +18,7 @@ export async function logInUser() {
             const newUserData = {
                 name: result.user.displayName ?? "",
                 email: result.user.email ?? "",
-                uidInAuth: result.user.uid,
+                uid_in_auth: result.user.uid,
                 avatar: getRandomAvatarIndex(),
             }
 

@@ -12,4 +12,4 @@ class UserModel(Base):
     uid_in_auth = Column(String, unique=True, nullable=False) 
     avatar = Column(Integer, nullable=False)
 
-    projects_created = relationship("ProjectModel", back_populates="creator")
+    created_projects = relationship("ProjectModel", back_populates="creator")

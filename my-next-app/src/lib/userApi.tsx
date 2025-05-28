@@ -2,10 +2,10 @@
 export async function createNewUser(
     token: string | null,
     user: {
-    name: string | '';
-    email: string | '';
-    uidInAuth: string;
-    avatar: number;
+        name: string | '';
+        email: string | '';
+        uid_in_auth: string;
+        avatar: number;
     }
 ) {
     try {
@@ -31,11 +31,12 @@ export async function createNewUser(
     }
 }
 
-export async function fetchCurrentUser(token: string, userId: string) {
+export async function fetchCurrentUser(token: string, uid: string) {
     try {
-        const res = await fetch(`/api/auth/getUser?userId=${userId}`, {
+        const res = await fetch(`/api/auth/getUser?uid=${uid}`, {
             headers: { Authorization: `Bearer ${token}` },
         });
+        
         if (!res.ok) throw new Error("Failed to fetch user data");
         const data = await res.json();
         console.log("getUser: ",data)

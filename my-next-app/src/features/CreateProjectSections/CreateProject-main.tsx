@@ -7,7 +7,7 @@ import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import clsx from "clsx";
 import { getNowDateLocal } from "@/utils/time";
-import { ProjectStyle, MemberList, MemberBudgetMap, CreateProjectPayload } from "./types";
+import { ProjectStyle, MemberBudgetMap, CreateProjectPayload } from "./types";
 import { UserData } from "@/types/user";
 
 interface CreatePaymentProps {
@@ -22,7 +22,7 @@ export default function CreateProject({
     userData
     }:CreatePaymentProps){
 
-    const currentUid = userData.userId;
+    const currentUid = userData.uid;
 
     const [inputProjectName, setInputProjectName] = useState("");
     const [inputStartTimeValue, setInputStartTimeValue] = useState(getNowDateLocal());
@@ -34,15 +34,16 @@ export default function CreateProject({
     const [inputDescValue, setInputDescValue] = useState("");
 
     const [projectPayload, setProjectPayload] = useState<CreateProjectPayload>({
-        createdBy: currentUid,
-        projectName: "",
-        startTime: null,      
-        endTime: null,
+        project_name: "",
+        start_time: null,      
+        end_time: null,
         style: "travel",
         currency: "TWD",       
         budget: 0,
-        memberList: {"owner": currentUid}, // 成員 UID 陣列
-        memberBudgets: {},
+        owner: currentUid,
+        editor: [currentUid],
+        member: null,
+        member_budgets: {},
         desc: null,
     });    
     
@@ -63,15 +64,16 @@ export default function CreateProject({
     // get data
     const payload: CreateProjectPayload = useMemo(() => {
         return {
-            createdBy: currentUid,
-            projectName: inputProjectName,
-            startTime: inputStartTimeValue ?? null,
-            endTime: inputEndTimeValue ?? null,
+            project_name: inputProjectName,
+            start_time: inputStartTimeValue ?? null,
+            end_time: inputEndTimeValue ?? null,
             style: chooseProjectStyle,
             currency: "TWD",       
             budget: inputBudgetValue === "" ? null : parseFloat(inputBudgetValue), 
-            memberList: {"owner": currentUid}, // 成員 UID 陣列
-            memberBudgets: memberBudgetMap ?? null, 
+            owner: currentUid,
+            editor: [currentUid],
+            member:null,
+            member_budgets: memberBudgetMap ?? null, 
             desc: inputDescValue ?? null,
         };
         }, [currentUid, inputProjectName,inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue,memberBudgetMap,inputDescValue]);
@@ -83,7 +85,7 @@ export default function CreateProject({
     //disable button 
     const {isComplete } = useMemo(() => {
         let isComplete = false;
-        if (!!projectPayload.projectName && !!projectPayload.createdBy){
+        if (!!projectPayload.project_name && !!projectPayload.owner){
             isComplete = true;
         }    
         return { isComplete };

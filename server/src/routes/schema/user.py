@@ -6,16 +6,16 @@ from typing import List
 class UserLoginSchema(BaseModel):
     name: str
     email: str
-    uidInAuth: str
+    uid_in_auth: str
     avatar: int
 
 
 class UserSchema(BaseModel):
     """Schema for user routes """
-    userId: str
+    uid: str
     name: str
     email: str
-    uidInAuth: str 
+    uid_in_auth: str 
     avatar: int
 
 

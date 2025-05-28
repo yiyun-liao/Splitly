@@ -1,8 +1,8 @@
 export interface UserData {
-    userId: string;
+    uid: string;
     email: string;
     name: string;
-    uidInAuth?:string;
+    uid_in_auth?:string;
     avatar?: string; // 最後是 Cloudinary URL
-    avatarIndex?: number; // 後端回傳的 avatar index
+    avatar_index?: number; // 後端回傳的 avatar index
 }
