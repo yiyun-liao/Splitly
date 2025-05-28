@@ -1,6 +1,6 @@
 
 export async function createNewUser(
-    token: string | null,
+    token: string,
     user: {
         name: string | '';
         email: string | '';
