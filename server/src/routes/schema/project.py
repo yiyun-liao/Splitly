@@ -23,6 +23,21 @@ class CreateProjectSchema(BaseModel):
         "from_attributes": True
     }
 
+class AddProjectMembersSchema(BaseModel):
+    member: List[str]
+
+class UpdateProjectSchema(BaseModel):
+    project_name: Optional[str]
+    start_time: Optional[date]
+    end_time: Optional[date]
+    style: Optional[Literal["travel", "daily", "other"]]
+    currency: Optional[str]
+    budget: Optional[int]
+    img: Optional[int]
+    desc: Optional[str]
+    member_budgets: Optional[Dict[str, Optional[int]]]
+
 class ProjectCreateMinimalResponse(BaseModel):
     success: bool
-    project_name: str
+    project_name: Optional[str]
+    member: Optional[List[str]]
