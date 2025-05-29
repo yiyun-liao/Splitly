@@ -56,8 +56,6 @@ export default function CreatePaymentDebt({
         const selectedDebtPayer = userList.find((user) => user.uid === selectedPayerUid);
         const selectedDebtReceiver = userList.find((user) => user.uid === selectedReceiverUid);
 
-        console.log("還款人", payerMap, "收款人", splitMap)
-
         // 金額輸入限制
         const handleDebtAmountChange = (actualInput: string) => {
             const rawValue = sanitizeDecimalInput(actualInput);

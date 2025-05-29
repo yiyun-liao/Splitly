@@ -202,7 +202,6 @@ export default function CreatePaymentSplit({
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
         const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
         const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-end")
-        console.log("userData", userData);
 
         return(
             <div className="w-full h-full pb-20 mb-20">

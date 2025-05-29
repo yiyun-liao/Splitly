@@ -26,8 +26,6 @@ export default function CreatePayment({
     userData
     }:CreatePaymentProps){
         
-    console.log("create payment userData", userData);
-
     // receipt-way
     const [recordMode, setRecordMode] = useState<RecordMode>("split");
     const [payload, setPayload] = useState<CreatePaymentPayload>({
@@ -52,7 +50,7 @@ export default function CreatePayment({
     // disable button
     const {isComplete } = useMemo(() => {
         let isComplete = false;
-        if (!!payload.amount && !!payload.payerMap && !!payload.paymentName && !!payload.recordMode && !!payload.splitMap){
+        if (!!payload.amount && !!payload.payerMap && !!payload.paymentName){
             isComplete = true;
         }    
         return { isComplete };

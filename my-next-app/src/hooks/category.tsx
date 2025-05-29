@@ -1,10 +1,11 @@
 // my-next-app/src/hooks/category.tsx
 import { useEffect, useState } from "react";
-import { getCategories } from "@/lib/categoryApi"; // 假設你把 API 拆出來了
+import { getCategories } from "@/lib/categoryApi"; 
 
 interface Category {
     id: number | string;
-    name: string;
+    name_zh: string;
+    name_en: string;
     parent_id: number | string | null;
 }
 
@@ -25,7 +26,7 @@ export function useCategorySelectOptions() {
         try {
         const categories: Category[] = await getCategories();
         const mapped = categories.map((cat) => ({
-            label: cat.name,
+            label: cat.name_zh,
             value: String(cat.id),
             disabled: cat.parent_id === null,
         }));
