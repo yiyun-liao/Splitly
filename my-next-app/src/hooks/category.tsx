@@ -32,3 +32,11 @@ export function useCategorySelectOptions() {
 
     return {options,selectedValue,setSelectedValue};
 }
+
+
+export function useCategoryParent() {
+    const categories = useCategoryOptions(); // 取自全域 context
+    const categoryParents = categories.filter((opt) => !opt.parent_id); 
+
+    return {categoryParents};
+}

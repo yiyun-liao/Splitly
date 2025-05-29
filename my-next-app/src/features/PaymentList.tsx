@@ -7,6 +7,7 @@ interface PaymentListProps {
 export default function PaymentList({
     }:PaymentListProps){
     
+    
     return(
         <div id="receipt-list" className="shrink-0 w-xl px-3 py-3 rounded-2xl box-border h-full overflow-hidden bg-sp-green-300">
             <div id="receipt-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">

@@ -13,8 +13,7 @@ import { useProjectData } from "@/contexts/ProjectContext";
 export default function MemberNav() {
     const router = useRouter();
     const pathname = usePathname();
-    const { currentProjectId } = useParams();
-
+    const { projectId } = useParams();
     const {projectData, userData} = useProjectData();
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")
@@ -63,18 +62,18 @@ export default function MemberNav() {
                             <IconButton
                                 icon='solar:widget-2-bold'
                                 size='md'
-                                variant={activePath === `/${currentProjectId}/dashboard` ? 'solid' : 'outline'}
+                                variant={activePath === `/${projectId}/dashboard` ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${currentProjectId}/dashboard`)} 
+                                onClick={() => router.push(`/${projectId}/dashboard`)} 
                             />
                             <IconButton
                                 icon='solar:reorder-bold'
                                 size='md'
-                                variant={activePath === `/${currentProjectId}/expense` ? 'solid' : 'outline'}
+                                variant={activePath === `/${projectId}/expense` ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${currentProjectId}/expense`)} 
+                                onClick={() => router.push(`/${projectId}/expense`)} 
                             />
                         </div>
                     </div>
@@ -86,7 +85,7 @@ export default function MemberNav() {
                                     image={project.imgURL}
                                     size='md'
                                     imageName= {project.project_name}
-                                    onClick={() => router.push(`/${project.id}/expense`)}
+                                    onClick={() => router.push(`/${project.id}/dashboard`)}
                                 />
                             )}
                         )}

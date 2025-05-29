@@ -3,4 +3,5 @@ export interface Category {
     name_zh: string;
     name_en: string;
     parent_id: number | string | null;
+    imgURL?:string;
 }

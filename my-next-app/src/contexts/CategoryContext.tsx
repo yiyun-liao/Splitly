@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getCategories } from '@/lib/categoryApi';
 import { Category } from '@/types/category';
-
+import { buildCatUrl } from '@/utils/category';
 
 
 const CategoryContext = createContext<Category[] | undefined>(undefined);
@@ -11,7 +11,20 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
   const [categoryOptions, setCategoryOptions] = useState<Category[]>([]);
 
   useEffect(() => {
-    getCategories().then(setCategoryOptions);
+    async function fetchAndBuildCategories() {
+        try {
+        const categories = await getCategories(); 
+        const finalCategory: Category[] = categories.map((cat:Category) => ({
+            ...cat,
+            imgURL: buildCatUrl(cat.name_en),
+        }));
+        setCategoryOptions(finalCategory);
+        } catch (error) {
+        console.error("取得分類失敗", error);
+        }
+    }
+    
+    fetchAndBuildCategories();
   }, []);
 
   return (
