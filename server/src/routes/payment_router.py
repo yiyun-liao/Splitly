@@ -1,7 +1,7 @@
 # server/src/routes/payment_router.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from src.routes.schema.payment import CreatePaymentSchema,PaymentCreateMinimalResponse,GetPaymentListSchema
+from src.routes.schema.payment import CreatePaymentSchema,PaymentCreateMinimalResponse,GetPaymentListSchema,UpdatePaymentSchema
 from src.database.payment_db import PaymentDB
 from src.database.relational_db import Database
 
@@ -37,3 +37,13 @@ class PaymentRouter:
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
 
+        # 更新費用
+        @self.router.put("/api/payment/by-payment", response_model=PaymentCreateMinimalResponse)
+        def update_payment(body: UpdatePaymentSchema):
+            try:
+                db_session: Session = self.db.get_session()
+                payment_db = PaymentDB(db_session)
+                new_payment = payment_db.update_payment(body)
+                return {"success": True, "payment_name": new_payment.payment_name}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Update payment failed: {str(e)}")

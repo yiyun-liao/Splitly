@@ -7,7 +7,7 @@ from uuid import uuid4
 from datetime import datetime
 
 from src.database.models.payment import PaymentModel, PaymentPayerRelation, PaymentSplitRelation, ItemModel, ItemSplitRelation
-from src.routes.schema.payment import CreatePaymentSchema, SplitDetail,GetPaymentListSchema,GetPaymentSchema, GetItemSchema
+from src.routes.schema.payment import CreatePaymentSchema, SplitDetail,GetPaymentListSchema,GetPaymentSchema, GetItemSchema,UpdatePaymentSchema
 
 
 class PaymentDB:
@@ -36,18 +36,18 @@ class PaymentDB:
         self.db.add(payment)
 
         # Add payer_map
-        for uid, amount in payment_data.payer_map.items():
+        for user_id, amount in payment_data.payer_map.items():
             self.db.add(PaymentPayerRelation(
                 payment_id=payment_id,
-                user_id=uid,
+                user_id=user_id,
                 amount=amount
             ))
 
         # Add split_map
-        for uid, detail in payment_data.split_map.items():
+        for user_id, detail in payment_data.split_map.items():
             self.db.add(PaymentSplitRelation(
                 payment_id=payment_id,
-                user_id=uid,
+                user_id=user_id,
                 fixed=detail.fixed,
                 total=detail.total,
                 percent=detail.percent
@@ -153,3 +153,67 @@ class PaymentDB:
             raise HTTPException(status_code=500, detail=f"Get payments failed: {str(e)}")
 
 
+    def update_payment(self, payment_data: UpdatePaymentSchema) -> PaymentModel:
+        payment = self.db.query(PaymentModel).filter_by(id=payment_data.id).first()
+        if not payment:
+            raise ValueError(f"Payment not found: {payment_data.id}")
+
+        # === 更新主資料 ===
+        for field, value in payment_data.model_dump(exclude_unset=True).items():
+            if field not in {"payer_map", "split_map", "items", "id"}:
+                setattr(payment, field, value)
+
+        # === 清除舊的 payer/split 關聯 ===
+        self.db.query(PaymentPayerRelation).filter_by(payment_id=payment.id).delete()
+        self.db.query(PaymentSplitRelation).filter_by(payment_id=payment.id).delete()
+
+        # === 建立新的 payer_map ===
+        for user_id, amt in payment_data.payer_map.items():
+            self.db.add(PaymentPayerRelation(
+                payment_id=payment.id,
+                user_id=user_id,
+                amount=amt
+            ))
+
+        # === 建立新的 split_map ===
+        for uid, split in payment_data.split_map.items():
+            self.db.add(PaymentSplitRelation(
+                payment_id=payment.id,
+                user_id=uid,
+                fixed=split.fixed,
+                total=split.total,
+                percent=split.percent
+            ))
+
+        # === 清除舊 item 與 split（強刪除） ===
+        for item in payment.items:
+            self.db.query(ItemSplitRelation).filter_by(item_id=item.id).delete()
+            self.db.delete(item)
+
+        # === 重新建立 items（若是 item 模式）===
+        if payment_data.split_way == "item" and payment_data.items:
+            for item_data in payment_data.items:
+                new_item_id = str(uuid4())
+                new_item = ItemModel(
+                    id=new_item_id,
+                    payment_id=payment.id,
+                    amount=item_data.amount,
+                    payment_name=item_data.payment_name,
+                    split_method=item_data.split_method
+                )
+                self.db.add(new_item)
+
+                for uid, split in item_data.split_map.items():
+                    self.db.add(ItemSplitRelation(
+                        item_id=new_item_id,
+                        user_id=uid,
+                        fixed=split.fixed,
+                        total=split.total,
+                        percent=split.percent
+                    ))
+        try:
+            self.db.commit()
+            return payment
+        except Exception as e:
+            self.db.rollback()
+            raise HTTPException(status_code=500, detail=f"Get payments failed: {str(e)}")
