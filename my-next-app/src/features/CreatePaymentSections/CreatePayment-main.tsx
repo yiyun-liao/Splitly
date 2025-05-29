@@ -4,7 +4,7 @@ import Sheet from "@/components/ui/Sheet";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
-import { RecordMode, CreatePaymentPayload, CreateItemPayload } from "./types";
+import { RecordMode, CreatePaymentPayload } from "./types";
 import { UserData } from "@/types/user";
 
 interface CreatePaymentProps {
@@ -40,7 +40,6 @@ export default function CreatePayment({
         payer_map: {},
         split_map: {},
     });
-    const [itemPayloadList, setItemPayloadList] = useState<CreateItemPayload[]>([]);
     
     useEffect(() => {
         if (open) document.body.style.overflow = 'hidden';
@@ -62,7 +61,6 @@ export default function CreatePayment({
     const handleSubmitData = () => {
         console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
         console.log("final db",payload)
-        console.log("final item db", itemPayloadList)
         // onSubmit(payload); // 把資料丟到外層
         
     };
@@ -111,7 +109,6 @@ export default function CreatePayment({
                         userList={userList}
                         userData={userData}
                         setPayload = {setPayload}
-                        setItemPayloadList = {setItemPayloadList}
                     />
                 )}
                 {recordMode === "debt" && (

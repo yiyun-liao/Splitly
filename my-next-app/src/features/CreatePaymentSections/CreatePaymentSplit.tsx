@@ -20,7 +20,6 @@ interface CreatePaymentSplitProps {
     userList: User[];
     userData: UserData;
     setPayload : (map: CreatePaymentPayload) => void;
-    setItemPayloadList : (map: CreateItemPayload[]) => void;
 }
 
 
@@ -28,7 +27,6 @@ export default function CreatePaymentSplit({
     userList,
     userData,
     setPayload,
-    setItemPayloadList
     }:CreatePaymentSplitProps){
         const currentUid = userData.uid;
 
@@ -171,6 +169,10 @@ export default function CreatePaymentSplit({
             return accountType === "personal" ? personalSplitMap : splitWay === "person" ? splitByPersonMap : splitByItemMap;
         }, [splitWay, splitByPersonMap, splitByItemMap, accountType,personalSplitMap]);
 
+        const itemsFinal = useMemo(() => {
+            return splitWay === "item"  ? localItemPayloadList : undefined;
+        }, [localItemPayloadList, splitWay]);
+
         const payload: CreatePaymentPayload = useMemo(() => {
             return {
                 owner:currentUid,
@@ -186,15 +188,13 @@ export default function CreatePaymentSplit({
                 desc: inputDescValue || undefined,
                 payer_map: payerFinalMap,
                 split_map: splitFinalMap,
+                items:itemsFinal,
             };
-          }, [currentUid,inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap]);
+          }, [currentUid,inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap,itemsFinal]);
         
         useEffect(() => {
             setPayload(payload);
-            if (splitWay === 'item'){
-                setItemPayloadList(localItemPayloadList || null)
-            }
-        }, [payload, setPayload, splitWay, localItemPayloadList,setLocalItemPayloadList, setItemPayloadList]);
+        }, [payload, setPayload]);
 
         // css
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")

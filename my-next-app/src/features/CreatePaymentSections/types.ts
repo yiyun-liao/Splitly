@@ -45,6 +45,17 @@ export type SplitMap = Record<string, SplitDetail>;
 //   }
 // }
 
+// 如果有 "item"送出子資料資料
+export interface CreateItemPayload {
+    payment_id:string;
+    amount: number;
+    payment_name: string;
+    split_method: SplitMethod;
+    split_map: SplitMap;
+}
+
+
+
 // SplitWay =  "payment" 送出資料
 export interface CreatePaymentPayload {
     payment_name: string; 
@@ -60,6 +71,7 @@ export interface CreatePaymentPayload {
     desc?: string;
     payer_map: PayerMap;
     split_map: SplitMap; // "splitByPersonMap" | "splitByItemMap"
+    items?: CreateItemPayload[];
 }
 
 // paymentName : "rental"
@@ -78,26 +90,18 @@ export interface CreatePaymentPayload {
 //     92jf20fkk29jf : {fixed: 0, total: 29.997, percent: 0.3333}
 //     fj30fj39d9s0d: {fixed: 0, total: 29.997, percent: 0.3333}
 // }
-
-
-// 如果有 "item"送出子資料資料
-export interface CreateItemPayload {
-    amount: number;
-    payment_name: string;
-    split_method: SplitMethod;
-    split_map: SplitMap;
-}
-
-// {
-//     amount :  100
-//     paymentName : "beef"
-//     splitMethod : "adjusted"
-//     splitMap : {
-//         4kjf39480fjlk : {fixed: 10, total: 39.997, percent: 0.3333}
-//         92jf20fkk29jf : {fixed: 0, total: 29.997, percent: 0.3333}
-//         fj30fj39d9s0d: {fixed: 0, total: 29.997, percent: 0.3333}
+// items : [
+//     {
+//         amount :  100
+//         paymentName : "beef"
+//         splitMethod : "adjusted"
+//         splitMap : {
+//             4kjf39480fjlk : {fixed: 10, total: 39.997, percent: 0.3333}
+//             92jf20fkk29jf : {fixed: 0, total: 29.997, percent: 0.3333}
+//             fj30fj39d9s0d: {fixed: 0, total: 29.997, percent: 0.3333}
+//         }
 //     }
-// }
+// ]
 
 
 
@@ -116,11 +120,5 @@ export interface GetPaymentData {
     desc?: string;
     payer_map: PayerMap;
     split_map: SplitMap; // "splitByPersonMap" | "splitByItemMap"
-}
-
-export interface GetItemPayload {
-    amount: number;
-    payment_name: string;
-    split_method: SplitMethod;
-    split_map: SplitMap;
+    items?: CreateItemPayload[];
 }

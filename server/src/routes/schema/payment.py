@@ -11,6 +11,18 @@ class SplitDetail(BaseModel):
     total: float
     percent: float
 
+# ====================== Item ======================
+class ItemDetailSchema(BaseModel):
+    payment_id: str
+    amount: float
+    payment_name: str
+    split_method: Literal["percentage", "actual", "adjusted"]
+    split_map: Dict[str, SplitDetail]
+
+class GetItemSchema(ItemDetailSchema):
+    id: str
+
+# ====================== Payment ======================
 class CreatePaymentSchema(BaseModel):
     payment_name: str
     project_id: str
@@ -28,35 +40,40 @@ class CreatePaymentSchema(BaseModel):
     payer_map: Dict[str, float]  # {uid: float}
     split_map: Dict[str, SplitDetail] # {uid: {fixed:float, total:float, percent:float}}
 
+    items: Optional[List[ItemDetailSchema]] = None
+
     model_config = {
         "from_attributes": True
     }
 
 
-
-class GetPaymentSchema(CreatePaymentSchema):
+class GetPaymentSchema(BaseModel):
     id: str
+    payment_name: str
+    project_id: str
+    owner: str  
+    account_type: Literal["personal", "group"]
+    record_mode: Optional[Literal["split", "debt"]] = None
+    split_way: Optional[Literal["item", "person"]] = None
+    split_method: Optional[Literal["percentage", "actual", "adjusted"]] = None
+    currency: str
+    amount: float
+    category_id: Optional[int] = None
+    time: datetime
+    desc: Optional[str] = None
+
+    payer_map: Dict[str, float]  # {uid: float}
+    split_map: Dict[str, SplitDetail] # {uid: {fixed:float, total:float, percent:float}}
+
+    items: Optional[List[GetItemSchema]] = None
+
+    model_config = {
+        "from_attributes": True
+    }
+
 
 class GetPaymentListSchema(BaseModel):
     payments: List[GetPaymentSchema]
-
-
-# item ============================
-
-class CreateItemSchema(BaseModel):
-    payment_id: str
-    amount: float
-    payment_name: str
-    split_method: Literal["percentage", "actual", "adjusted"]
-    split_map: Dict[str, SplitDetail]
-
-    model_config = {
-        "from_attributes": True
-    }
-
-
-class GetItemSchema(CreateItemSchema):
-    id: str
 
 
 
@@ -74,12 +91,9 @@ class UpdatePaymentSchema(BaseModel):
     desc: Optional[str] = None
     payer_map: Optional[Dict[str, float]] = None
     split_map: Optional[Dict[str, SplitDetail]] = None
+    items: Optional[List[ItemDetailSchema]] = None
 
 
-# schema/payment.py
-class CreatePaymentRequestSchema(BaseModel):
-    payload: CreatePaymentSchema
-    items: Optional[List[CreateItemSchema]] = []
 
 # response
 class PaymentCreateMinimalResponse(BaseModel):

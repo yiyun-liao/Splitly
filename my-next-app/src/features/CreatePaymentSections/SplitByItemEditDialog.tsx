@@ -357,6 +357,7 @@ export default function SplitByItemEdit({
         }
 
         return {
+            payment_id:"",
             amount: parseFloat(inputItemAmountValue  || "0"),
             payment_name: inputItemValue,
             split_method: chooseSplitByItem, // "percentage" | "actual" | "adjusted"

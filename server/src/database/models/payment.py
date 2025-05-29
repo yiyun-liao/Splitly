@@ -27,6 +27,7 @@ class SplitMethodEnum(str, enum.Enum):
     adjusted = "adjusted"
 
 
+# ====================== Payment ======================
 class PaymentModel(Base):
     __tablename__ = "payments"
 
@@ -77,12 +78,14 @@ class PaymentSplitRelation(Base):
     payment = relationship("PaymentModel", back_populates="split_relations")
 
 
+# ====================== Item ======================
 class ItemModel(Base):
     __tablename__ = "items"
 
     id = Column(String, primary_key=True, index=True)
     payment_id = Column(String, ForeignKey("payments.id"), nullable=False)
 
+    split_method = Column(Enum(SplitMethodEnum), nullable=False)
     amount = Column(Float, nullable=False)
     payment_name = Column(String, nullable=False)
 
