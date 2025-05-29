@@ -33,14 +33,9 @@ export default function CreatePayment({
     const [payload, setPayload] = useState<CreatePaymentPayload>({
         paymentName: "",
         accountType: "group",
-        recordMode: "split",
-        splitWay: null,
-        splitMethod: null,
         currency: "TWD",
         amount: 0,
-        categoryId: null,
         time: new Date().toISOString(),
-        desc: null,
         payerMap: {},
         splitMap: {},
     });

@@ -148,16 +148,21 @@ export default function CreatePaymentSplit({
         // get data
         // splitMap 決定輸出哪一種分帳結果
         const recordFinalWay = useMemo(() => {
-            return accountType === "personal" ? "personal" : "split";
+            return accountType === "personal" ? undefined : "split";
         }, [accountType]);
 
         const splitFinalWay = useMemo(() => {
-            return accountType === "personal" ? null : splitWay;
+            return accountType === "personal" ? undefined : splitWay;
         }, [accountType, splitWay]);
 
         const splitFinalMethod = useMemo(() => {
-            return accountType === "personal" ? null : splitWay === "item" ? "item" :  chooseSplitByPerson;
+            return accountType === "personal" ? undefined : splitWay === "item" ? undefined :  chooseSplitByPerson;
         }, [splitWay, chooseSplitByPerson,accountType]);
+
+        const finalAmount  = useMemo(() => {
+            const value = parseFloat(inputAmountValue);
+            return isNaN(value) ? 0 : value;
+        }, [inputAmountValue]);
 
         const payerFinalMap = useMemo(() => {
             return accountType === "personal" ? personalPayerMap : splitPayerMap;
@@ -175,14 +180,14 @@ export default function CreatePaymentSplit({
                 splitWay: splitFinalWay,   // "item" | "person" | "personal"
                 splitMethod: splitFinalMethod,  // "percentage" | "actual" | "adjusted" | "item"  | "personal"
                 currency: selectCurrencyValue,
-                amount: parseFloat(inputAmountValue || "0"),
-                categoryId: selectedCategoryValue, 
+                amount: finalAmount,
+                categoryId: selectedCategoryValue|| undefined, 
                 time: inputTimeValue,
-                desc: inputDescValue || "",
+                desc: inputDescValue || undefined,
                 payerMap: payerFinalMap,
                 splitMap: splitFinalMap,
             };
-          }, [inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,inputAmountValue,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap]);
+          }, [inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap]);
         
         useEffect(() => {
             setPayload(payload);

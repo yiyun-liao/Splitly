@@ -77,12 +77,9 @@ export default function CreatePaymentDebt({
             const payload: CreatePaymentPayload = {    
                 paymentName: "debt",
                 accountType: "group",  
-                recordMode: 'debt',    // "split" | "debt"
-                splitWay: null,      // "item" | "person"
-                splitMethod: null, // "percentage" | "actual" | "adjusted"
+                recordMode: 'debt',   
                 currency: selectCurrencyValue,
                 amount:  parseFloat(inputDebtAmountValue || "0"),
-                categoryId: null,
                 time: inputTimeValue,
                 desc: inputDescValue || "",
                 payerMap: payerMap,

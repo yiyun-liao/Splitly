@@ -49,14 +49,14 @@ export type SplitMap = Record<string, SplitDetail>;
 export interface CreatePaymentPayload {
     paymentName: string; 
     accountType: AccountType; // "personal" | "group"
-    recordMode: RecordMode | "personal" ;    // "split" | "debt" | "personal" 
-    splitWay: SplitWay | null  ;       // "item" | "person" 
-    splitMethod: SplitMethod | null | "item"  ; // "percentage" | "actual" | "adjusted" 
+    recordMode?: RecordMode ;    // "split" | "debt" 
+    splitWay?: SplitWay ;  // "item" | "person" 
+    splitMethod?: SplitMethod ; // "percentage" | "actual" | "adjusted"
     currency: string;
     amount: number;
-    categoryId: string | null;
+    categoryId?: string;
     time: string;
-    desc: string | null;
+    desc?: string;
     payerMap: PayerMap;
     splitMap: SplitMap; // "splitByPersonMap" | "splitByItemMap"
 }
