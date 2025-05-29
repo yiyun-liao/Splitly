@@ -25,10 +25,13 @@ export default function CreatePayment({
     open = true,
     userData
     }:CreatePaymentProps){
-        
+    
+    const currentUid = userData.uid;
+
     // receipt-way
     const [recordMode, setRecordMode] = useState<RecordMode>("split");
     const [payload, setPayload] = useState<CreatePaymentPayload>({
+        owner:currentUid,
         payment_name: "",
         account_type: "group",
         currency: "TWD",
@@ -114,6 +117,7 @@ export default function CreatePayment({
                 {recordMode === "debt" && (
                     <CreatePaymentDebt
                         userList={userList}
+                        userData={userData}
                         setPayload = {setPayload}
                     />
                 )}

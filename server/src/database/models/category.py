@@ -11,7 +11,10 @@ class CategoryModel(Base):
     name_zh = Column(String, nullable=False)
     parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
 
-    parent = relationship("CategoryModel", remote_side=[id], backref="children")
+    parent = relationship("CategoryModel", remote_side=[id], back_populates="children")
+    children = relationship("CategoryModel", back_populates="parent", cascade="all, delete")
+    payments = relationship("PaymentModel", back_populates="category", cascade="all, delete")
+
 
     __table_args__ = (
         UniqueConstraint("name_en", "parent_id", name="uq_category_name_en_parent"),

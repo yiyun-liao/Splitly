@@ -10,17 +10,21 @@ import DebtReceiver from "./DebtReceiverDialog";
 import { getNowDatetimeLocal } from "@/utils/time";
 import { User, CreatePaymentPayload} from "./types"
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
+import { UserData } from "@/types/user";
 
 
 interface CreatePaymentDebtProps {
     userList: User[];
+    userData: UserData;
     setPayload : (map: CreatePaymentPayload) => void
 }
 
 export default function CreatePaymentDebt({
     userList,
+    userData,
     setPayload
     }:CreatePaymentDebtProps){
+        const currentUid = userData.uid;
 
         // receipt-debt
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
@@ -73,6 +77,7 @@ export default function CreatePaymentDebt({
         // get data
         useEffect(() => {
             const payload: CreatePaymentPayload = {    
+                owner:currentUid,
                 payment_name: "debt",
                 account_type: "group",  
                 record_mode: 'debt',   
@@ -84,7 +89,7 @@ export default function CreatePaymentDebt({
                 split_map: splitMap,
             };
             setPayload(payload);
-        }, [selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap]);
+        }, [currentUid,selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap]);
 
 
         return(

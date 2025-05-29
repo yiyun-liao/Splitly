@@ -52,6 +52,7 @@ export interface CreatePaymentPayload {
     record_mode?: RecordMode ;    // "split" | "debt" 
     split_way?: SplitWay ;  // "item" | "person" 
     split_method?: SplitMethod ; // "percentage" | "actual" | "adjusted"
+    owner:string;
     currency: string;
     amount: number;
     category_Id?: string;
@@ -107,6 +108,7 @@ export interface GetPaymentData {
     record_mode?: RecordMode ;    // "split" | "debt" 
     split_way?: SplitWay ;  // "item" | "person" 
     split_method?: SplitMethod ; // "percentage" | "actual" | "adjusted"
+    owner:string;
     currency: string;
     amount: number;
     category_Id?: string;

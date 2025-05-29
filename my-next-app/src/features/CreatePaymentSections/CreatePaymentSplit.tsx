@@ -30,6 +30,7 @@ export default function CreatePaymentSplit({
     setPayload,
     setItemPayloadList
     }:CreatePaymentSplitProps){
+        const currentUid = userData.uid;
 
         // receipt-split
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
@@ -172,6 +173,7 @@ export default function CreatePaymentSplit({
 
         const payload: CreatePaymentPayload = useMemo(() => {
             return {
+                owner:currentUid,
                 payment_name: inputPaymentValue,
                 account_type:accountType, // "personal" | "group"
                 record_mode: recordFinalWay,   // "split" | "debt" | "personal"
@@ -185,7 +187,7 @@ export default function CreatePaymentSplit({
                 payer_map: payerFinalMap,
                 split_map: splitFinalMap,
             };
-          }, [inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap]);
+          }, [currentUid,inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap]);
         
         useEffect(() => {
             setPayload(payload);
