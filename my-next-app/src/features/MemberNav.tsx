@@ -12,9 +12,9 @@ import { useProjectData } from "@/contexts/ProjectContext";
 
 export default function MemberNav() {
     const router = useRouter();
-    const params = useParams();
     const pathname = usePathname();
-    const currentProjectId = params.projectId;
+    const { currentProjectId } = useParams();
+
     const {projectData, userData} = useProjectData();
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")
@@ -79,8 +79,7 @@ export default function MemberNav() {
                         </div>
                     </div>
                     <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
-                        {projectData
-                            .map(project => {
+                        {projectData?.map(project => {
                             return(
                                 <ImageButton
                                     key={project.id}

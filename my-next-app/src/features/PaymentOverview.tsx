@@ -1,13 +1,8 @@
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
 import { useState } from "react";
-import { UserData } from "@/types/user";
 
-interface PaymentOverviewProps {
-    userData: UserData | null;
-  }
-
-export default function PaymentOverview({}:PaymentOverviewProps){
+export default function PaymentOverview(){
     // receipt-way
     const [viewExpenseWay, setViewExpenseWay] = useState<"shared" | "personal">("shared");
 

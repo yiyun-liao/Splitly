@@ -3,7 +3,8 @@ import { UserData } from "@/types/user";
 import { GetProjectData } from "@/types/project";
 
 type ProjectContextType = {
-    projectData: GetProjectData[];
+    projectData?: GetProjectData[];
+    currentProjectData?: GetProjectData;
     userData: UserData;
   };
 

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useParams } from 'next/navigation';
 import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
@@ -12,10 +11,7 @@ import { useProjectData } from "@/contexts/ProjectContext";
 export default function MemberHeader(){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreatePayment, setIsCreatePayment] = useState(false)
-    const params = useParams();
-    const projectId = params.projectId;
-    const {projectData, userData} = useProjectData();
-    const currentProjectData = projectData.find(p => p.id === projectId);
+    const {userData, currentProjectData} = useProjectData();
 
     
     return(

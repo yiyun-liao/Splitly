@@ -1,5 +1,3 @@
-import Button from "@/components/ui/Button"
-import ImageButton from "@/components/ui/ImageButton"
 import ReceiptCard from "./PaymentListSections/ReceiptCard";
 
 interface PaymentListProps {

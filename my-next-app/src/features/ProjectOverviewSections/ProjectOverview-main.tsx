@@ -20,8 +20,7 @@ export default function ProjectOverview(){
     const router = useRouter();
     const params = useParams();
     const projectId = params.projectId as string;
-    const {projectData, userData} = useProjectData();
-    const currentProjectData = projectData.find(p => p.id === projectId);
+    const {currentProjectData, userData} = useProjectData();
     console.log(currentProjectData, userData)
 
     // render currentProjectData 
