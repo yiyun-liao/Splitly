@@ -37,13 +37,28 @@ class PaymentRouter:
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
 
-        # 更新費用
+        # 更新紀錄
         @self.router.put("/api/payment/by-payment", response_model=PaymentCreateMinimalResponse)
-        def update_payment(body: UpdatePaymentSchema):
+        def update_payment(paymentId: str, body: UpdatePaymentSchema):
             try:
+                if not body.id:
+                    body.id = paymentId
                 db_session: Session = self.db.get_session()
                 payment_db = PaymentDB(db_session)
                 new_payment = payment_db.update_payment(body)
-                return {"success": True, "payment_name": new_payment.payment_name}
+                if new_payment == True:
+                    return {"success": True, "payment_name": paymentId}
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Update payment failed: {str(e)}")
+
+        # 刪除紀錄
+        @self.router.delete("/api/payment/by-payment", response_model=PaymentCreateMinimalResponse)
+        def delete_payment(paymentId: str):
+            try:
+                db_session: Session = self.db.get_session()
+                payment_db = PaymentDB(db_session)
+                delete_success = payment_db.delete_payment(paymentId)
+                if delete_success == True:
+                    return {"success": True, "payment_name": paymentId}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Delete payment failed: {str(e)}")

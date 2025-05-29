@@ -153,7 +153,7 @@ class PaymentDB:
             raise HTTPException(status_code=500, detail=f"Get payments failed: {str(e)}")
 
 
-    def update_payment(self, payment_data: UpdatePaymentSchema) -> PaymentModel:
+    def update_payment(self, payment_data: UpdatePaymentSchema):
         payment = self.db.query(PaymentModel).filter_by(id=payment_data.id).first()
         if not payment:
             raise ValueError(f"Payment not found: {payment_data.id}")
@@ -213,7 +213,21 @@ class PaymentDB:
                     ))
         try:
             self.db.commit()
-            return payment
+            return True
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=500, detail=f"Get payments failed: {str(e)}")
+
+    def delete_payment(self, payment_id: str):
+        payment = self.db.query(PaymentModel).filter_by(id=payment_id).first()
+        if not payment:
+            raise ValueError(f"Payment not found: {payment_id}")
+        # 會連動刪除 ItemModel、PaymentPayerRelation、PaymentSplitRelation、ItemSplitRelation
+        # 因為之前在 PaymentModel 定義了 `cascade="all, delete"` or `delete-orphan`
+        try:
+            self.db.delete(payment)
+            self.db.commit()
+            return True
+        except Exception as e:
+            self.db.rollback()
+            raise HTTPException(status_code=500, detail=f"Delete payment failed: {str(e)}")
