@@ -78,7 +78,7 @@ export default function SplitByItem({
         );      
         // 累加每筆 item 的付款資訊
         itemList.forEach(item => {
-            Object.entries(item.splitMap).forEach(([uid, entry]) => {
+            Object.entries(item.split_map ?? {}).forEach(([uid, entry]) => {
                     
             // 每個人累加自己的金額（覆寫而非疊加）
             tempMap[uid].fixed = (tempMap[uid].fixed || 0) + (entry.total|| 0);
@@ -180,7 +180,7 @@ export default function SplitByItem({
                                                         size='xl'
                                                     /> 
                                                     </div>
-                                                    <p className="text-base w-full line-clamp-2 overflow-hidden text-ellipsis break-words">{item.paymentName}</p>
+                                                    <p className="text-base w-full line-clamp-2 overflow-hidden text-ellipsis break-words">{item.payment_name}</p>
                                                 </div>
                                                 <div  className="shrink-0 w-50 flex items-start justify-start gap-2">
                                                     <p className="h-9 w-full text-base flex items-center justify-end">{formatNumber(item.amount)} 元</p>
@@ -208,7 +208,7 @@ export default function SplitByItem({
                                             </div>
                                             {isOpen && (
                                                 <div className={`w-full h-fit py-4 px-6 flex flex-col items-start justify-start gap-2 max-h-40 rounded-xl  bg-sp-green-200 overflow-hidden ${scrollClass}`}>
-                                                    {Object.entries(item.splitMap).map(([uid, detail]) => {
+                                                    {Object.entries(item.split_map).map(([uid, detail]) => {
                                                         const user = userList.find(user => user.uid === uid);
                                                         const name = user?.name ?? "";
                                                         return(

@@ -47,24 +47,24 @@ export type SplitMap = Record<string, SplitDetail>;
 
 // SplitWay =  "payment" 送出資料
 export interface CreatePaymentPayload {
-    paymentName: string; 
-    accountType: AccountType; // "personal" | "group"
-    recordMode?: RecordMode ;    // "split" | "debt" 
-    splitWay?: SplitWay ;  // "item" | "person" 
-    splitMethod?: SplitMethod ; // "percentage" | "actual" | "adjusted"
+    payment_name: string; 
+    account_type: AccountType; // "personal" | "group"
+    record_mode?: RecordMode ;    // "split" | "debt" 
+    split_way?: SplitWay ;  // "item" | "person" 
+    split_method?: SplitMethod ; // "percentage" | "actual" | "adjusted"
     currency: string;
     amount: number;
-    categoryId?: string;
+    category_Id?: string;
     time: string;
     desc?: string;
-    payerMap: PayerMap;
-    splitMap: SplitMap; // "splitByPersonMap" | "splitByItemMap"
+    payer_map: PayerMap;
+    split_map: SplitMap; // "splitByPersonMap" | "splitByItemMap"
 }
 
 // paymentName : "rental"
 // accountType: "group"
 // recordMode : "split"
-// splitWay : "person"
+// splitWay : "item"
 // splitMethod : "adjusted"
 // currency : "TWD"
 // amount : 100
@@ -82,9 +82,9 @@ export interface CreatePaymentPayload {
 // 如果有 "item"送出子資料資料
 export interface CreateItemPayload {
     amount: number;
-    paymentName: string;
-    splitMethod: SplitMethod;
-    splitMap: SplitMap;
+    payment_name: string;
+    split_method: SplitMethod;
+    split_map: SplitMap;
 }
 
 // {
@@ -97,3 +97,28 @@ export interface CreateItemPayload {
 //         fj30fj39d9s0d: {fixed: 0, total: 29.997, percent: 0.3333}
 //     }
 // }
+
+
+
+export interface GetPaymentData {
+    id:string;
+    payment_name: string; 
+    account_type: AccountType; // "personal" | "group"
+    record_mode?: RecordMode ;    // "split" | "debt" 
+    split_way?: SplitWay ;  // "item" | "person" 
+    split_method?: SplitMethod ; // "percentage" | "actual" | "adjusted"
+    currency: string;
+    amount: number;
+    category_Id?: string;
+    time: string;
+    desc?: string;
+    payer_map: PayerMap;
+    split_map: SplitMap; // "splitByPersonMap" | "splitByItemMap"
+}
+
+export interface GetItemPayload {
+    amount: number;
+    payment_name: string;
+    split_method: SplitMethod;
+    split_map: SplitMap;
+}

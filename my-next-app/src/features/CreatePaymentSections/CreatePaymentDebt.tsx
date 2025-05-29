@@ -73,15 +73,15 @@ export default function CreatePaymentDebt({
         // get data
         useEffect(() => {
             const payload: CreatePaymentPayload = {    
-                paymentName: "debt",
-                accountType: "group",  
-                recordMode: 'debt',   
+                payment_name: "debt",
+                account_type: "group",  
+                record_mode: 'debt',   
                 currency: selectCurrencyValue,
                 amount:  parseFloat(inputDebtAmountValue || "0"),
                 time: inputTimeValue,
                 desc: inputDescValue || "",
-                payerMap: payerMap,
-                splitMap: splitMap,
+                payer_map: payerMap,
+                split_map: splitMap,
             };
             setPayload(payload);
         }, [selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap]);

@@ -172,18 +172,18 @@ export default function CreatePaymentSplit({
 
         const payload: CreatePaymentPayload = useMemo(() => {
             return {
-                paymentName: inputPaymentValue,
-                accountType:accountType, // "personal" | "group"
-                recordMode: recordFinalWay,   // "split" | "debt" | "personal"
-                splitWay: splitFinalWay,   // "item" | "person" | "personal"
-                splitMethod: splitFinalMethod,  // "percentage" | "actual" | "adjusted" | "item"  | "personal"
+                payment_name: inputPaymentValue,
+                account_type:accountType, // "personal" | "group"
+                record_mode: recordFinalWay,   // "split" | "debt" | "personal"
+                split_way: splitFinalWay,   // "item" | "person" | "personal"
+                split_method: splitFinalMethod,  // "percentage" | "actual" | "adjusted" | "item"  | "personal"
                 currency: selectCurrencyValue,
                 amount: finalAmount,
-                categoryId: selectedCategoryValue|| undefined, 
+                category_Id: selectedCategoryValue|| undefined, 
                 time: inputTimeValue,
                 desc: inputDescValue || undefined,
-                payerMap: payerFinalMap,
-                splitMap: splitFinalMap,
+                payer_map: payerFinalMap,
+                split_map: splitFinalMap,
             };
           }, [inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap]);
         

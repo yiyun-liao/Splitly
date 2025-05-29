@@ -29,13 +29,13 @@ export default function CreatePayment({
     // receipt-way
     const [recordMode, setRecordMode] = useState<RecordMode>("split");
     const [payload, setPayload] = useState<CreatePaymentPayload>({
-        paymentName: "",
-        accountType: "group",
+        payment_name: "",
+        account_type: "group",
         currency: "TWD",
         amount: 0,
         time: new Date().toISOString(),
-        payerMap: {},
-        splitMap: {},
+        payer_map: {},
+        split_map: {},
     });
     const [itemPayloadList, setItemPayloadList] = useState<CreateItemPayload[]>([]);
     
@@ -50,14 +50,14 @@ export default function CreatePayment({
     // disable button
     const {isComplete } = useMemo(() => {
         let isComplete = false;
-        if (!!payload.amount && !!payload.payerMap && !!payload.paymentName){
+        if (!!payload.amount && !!payload.payer_map && !!payload.payment_name){
             isComplete = true;
         }    
         return { isComplete };
     }, [payload]);  
 
     const handleSubmitData = () => {
-        console.log("帳目", payload?.accountType,"增加內容", payload?.recordMode, "分帳方式", payload?.splitWay,"分錢方式", payload?.splitMethod)
+        console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
         console.log("final db",payload)
         console.log("final item db", itemPayloadList)
         // onSubmit(payload); // 把資料丟到外層

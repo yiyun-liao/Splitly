@@ -165,13 +165,13 @@ export default function SplitByItemEdit({
         if (initializedRef.current || !initialPayload || userList.length === 0) return;
 
         initializedRef.current = true;
-        setInputItemValue(initialPayload.paymentName);
+        setInputItemValue(initialPayload.payment_name);
         setInputItemAmountValue(initialPayload.amount.toString());
-        setChooseSplitByItem(initialPayload.splitMethod);
+        setChooseSplitByItem(initialPayload.split_method);
       
-        const map = initialPayload.splitMap;
+        const map = initialPayload.split_map;
       
-        if (initialPayload.splitMethod === 'percentage') {
+        if (initialPayload.split_method === 'percentage') {
             setLocalSplitPercentageMap(map);
             setRawPercentInputMap(
                 Object.fromEntries(
@@ -180,7 +180,7 @@ export default function SplitByItemEdit({
             );
         }
         
-        if (initialPayload.splitMethod === 'actual') {
+        if (initialPayload.split_method === 'actual') {
             setLocalSplitActualMap(map);
             setRawActualInputMap(
                 Object.fromEntries(
@@ -189,7 +189,7 @@ export default function SplitByItemEdit({
             );
         }
         
-        if (initialPayload.splitMethod === 'adjusted') {
+        if (initialPayload.split_method === 'adjusted') {
             setLocalSplitAdjustedMap(map);
             setRawAdjustInputMap(
                 Object.fromEntries(
@@ -358,9 +358,9 @@ export default function SplitByItemEdit({
 
         return {
             amount: parseFloat(inputItemAmountValue  || "0"),
-            paymentName: inputItemValue,
-            splitMethod: chooseSplitByItem, // "percentage" | "actual" | "adjusted"
-            splitMap: newSplitMap,
+            payment_name: inputItemValue,
+            split_method: chooseSplitByItem, // "percentage" | "actual" | "adjusted"
+            split_map: newSplitMap,
         };
         }, [chooseSplitByItem, inputItemAmountValue, inputItemValue, localSplitActualMap, localSplitAdjustedMap, localSplitPercentageMap]);
     
