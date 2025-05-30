@@ -1,23 +1,49 @@
 import ImageButton from "@/components/ui/ImageButton"
+import clsx from "clsx";
 
-export default function ReceiptCard(){
-    return(
+interface ReceiptCardProps{
+    payment_name: string;
+    amount: number;
+    payer_text:string;
+    isBorrowed?: boolean;
+    category: {
+        imgURL: string;
+        name_en: string;
+    };
+}
+
+export default function ReceiptCard({
+    payment_name,
+    amount,
+    payer_text,
+    isBorrowed,
+    category
+}:ReceiptCardProps){
+    // css
+    const borrowText = clsx("text-sm whitespace-nowrap truncate font-semibold",
+        {
+            "text-sp-blue-500" : isBorrowed,
+            "text-sp-green-400" : !isBorrowed,
+        }
+    )
+
+    return( 
         <div className="flex items-center justify-start p-2 gap-2 h-16 rounded-lg hover:bg-sp-white-20 active:bg-sp-white-40 cursor-pointer">
             <div className="h-full">
                 <ImageButton
-                    image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
+                    image={category.imgURL}
                     size='md'
-                    imageName= "Splitly"
+                    imageName= {category.name_en}
                     >
                 </ImageButton> 
             </div>
             <div className="flex-1 overflow-hidden ">
-                <p className="text-base font-semibold whitespace-nowrap truncate">飲料錢</p>
-                <p className="text-sm whitespace-nowrap truncate">JJ 支付了 $580459</p>
+                <p className="text-base font-semibold whitespace-nowrap truncate">{payment_name}</p>
+                <p className="text-sm whitespace-nowrap truncate">{payer_text}</p>
             </div>
             <div className="shrink-0 text-right overflow-hidden ">
-                <p className="text-sm whitespace-nowrap truncate">借出</p>
-                <p className="text-base font-semibold whitespace-nowrap truncate">$4359</p>
+                <p className={borrowText}>{isBorrowed ? "借出" : "花費"}</p>
+                <p className="text-base font-semibold whitespace-nowrap truncate">${amount}</p>
             </div>
         </div>
     )

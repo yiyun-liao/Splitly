@@ -26,10 +26,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         return projectData.find(project => project.id === projectId);
     }, [projectData, projectId, myDataLoading]);
 
-    const { users: currentProjectUsers, isReady: usersLoading } = useProjectUsers(currentProjectData?.id);
+    const { users: currentProjectUsers, payments:currentPaymentList, isReady: usersLoading } = useProjectUsers(currentProjectData?.id);
 
+    console.log("who am i", userData)
+    console.log("what project i involved", projectData)
     console.log("what i get currentProjectData",currentProjectData)
     console.log("what i get currentUserData",currentProjectUsers)
+    console.log("what i get currentPaymentList", currentPaymentList)
 
 
     if ( !myDataLoading || !usersLoading) return <p>Loading...</p>;
@@ -49,7 +52,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         
     return (
         <GlobalProjectContext.Provider value={{ projectData: projectData ?? [], userData}}>
-            <CurrentProjectContext.Provider value={{ currentProjectData, currentProjectUsers }}>
+            <CurrentProjectContext.Provider value={{ currentProjectData, currentProjectUsers, currentPaymentList }}>
                 <CategoryProvider>
                     <main className="flex items-start justify-center bg-sp-blue-100">
                     <div className="shrink-0 box-border">
@@ -58,7 +61,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                     <div className="py-4 w-full max-w-520 h-screen box-border flex flex-col items-center justify-start gap-2">
                         <MemberHeader/>
                         <div className="flex items-start justify-start box-border px-6 gap-6 w-full h-full overflow-hidden text-zinc-700">
-                        {children} {/* 所有 children 都能透過 useGlobalProjectData 拿到 projectData */}
+                        {children} 
                         </div>
                     </div>
                     </main>

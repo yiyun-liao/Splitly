@@ -5,7 +5,6 @@ import { useState } from "react";
 import { UserData } from "@/types/user";
 import { GetProjectData } from "@/types/project";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
-import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 
 interface ProjectMemberListProps {
@@ -19,7 +18,7 @@ export default function ProjectMemberList({
     isMemberListOpen = false,
     onClose,
     currentProjectUsers,
-    currentProjectData
+    currentProjectData,
 }:ProjectMemberListProps){
 
     const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/join?pid=${currentProjectData.id}`;
@@ -111,7 +110,9 @@ export default function ProjectMemberList({
                             複製專案連結
                         </Button>
                     </div>
-                    {/* QR code  */}
+                    <div>
+                        {/* QR code  */}
+                    </div>
                 </div>
             )
         }
@@ -128,7 +129,7 @@ export default function ProjectMemberList({
                 footerClassName= "items-center justify-end"
                 leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
                 closeOnBackdropClick = {true}
-                onLeftIconClick={handleBack}
+                // onLeftIconClick={handleBack}
                 footer={
                     step === "list" ? (
                         <>
@@ -136,7 +137,7 @@ export default function ProjectMemberList({
                                 variant="outline"
                                 color="primary"
                                 width = 'full'
-                                disabled = {true}
+                                // disabled = {true}
                                 onClick={() => alert('建立虛擬成員')}
                             >
                                 建立虛擬成員(還沒做)

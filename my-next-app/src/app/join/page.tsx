@@ -47,6 +47,7 @@ if (!projectId) return <p>無效的邀請連結</p>;
 return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4">
         <h1 className="text-2xl font-bold mb-4">邀請加入專案</h1>
+        <p>這頁只是還沒做介面，請放心加入</p>
         <p className="mb-2">您確定要加入這個專案嗎？</p>
         {error && <p className="text-red-500 mb-2">{error}</p>}
         {joined ? (

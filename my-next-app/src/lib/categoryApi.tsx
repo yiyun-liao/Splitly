@@ -11,8 +11,8 @@ export async function getCategories() {
             const errorText = await response.text();
             throw new Error("Failed to sync user: " + errorText);
         }
-
         const data = await response.json();
+        console.log(data)
         return data;
     } catch (err) {
         console.error("Error syncing user to backend:", err);
