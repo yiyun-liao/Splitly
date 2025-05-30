@@ -40,6 +40,7 @@ export const CurrentProjectProvider = ({ children }: CurrentProjectProviderProps
 
     useEffect(() => {
         if (!currentProjectData?.id) return;
+        console.log("✅ running currentProjectContext fetcher"); 
         
         const fetchProjectUsers = async(projectId:string) => {
             setLoading(true);
@@ -80,6 +81,7 @@ export const CurrentProjectProvider = ({ children }: CurrentProjectProviderProps
             currentProjectData,
             currentProjectUsers,
             currentPaymentList,
+            setCurrentPaymentList,
             isReady,
         }}
         >

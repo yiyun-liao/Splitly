@@ -24,13 +24,13 @@ class GetItemSchema(ItemDetailSchema):
 
 # ====================== Payment ======================
 class CreatePaymentSchema(BaseModel):
-    payment_name: str
     project_id: str
-    owner: str  
+    payment_name: str
     account_type: Literal["personal", "group"]
     record_mode: Optional[Literal["split", "debt"]] = None
     split_way: Optional[Literal["item", "person"]] = None
     split_method: Optional[Literal["percentage", "actual", "adjusted"]] = None
+    owner: str  
     currency: str
     amount: float
     category_id: Optional[int] = None

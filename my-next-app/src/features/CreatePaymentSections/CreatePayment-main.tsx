@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Sheet from "@/components/ui/Sheet";
 import IconButton from "@/components/ui/IconButton";
@@ -22,12 +23,17 @@ export default function CreatePayment({
     }:CreatePaymentProps){
 
     const {userData} = useGlobalProjectData();
-    const currentUid = userData.uid;
+    const currentUid = userData?.uid;
+    const rawProjectId = useParams()?.projectId;
+    const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
+
+    console.log("where am i",projectId)
 
     // receipt-way
     const [recordMode, setRecordMode] = useState<RecordMode>("split");
     const [payload, setPayload] = useState<CreatePaymentPayload>({
-        owner:currentUid,
+        project_id: projectId,
+        owner:currentUid || "",
         payment_name: "",
         account_type: "group",
         currency: "TWD",
@@ -48,7 +54,7 @@ export default function CreatePayment({
     // disable button
     const {isComplete } = useMemo(() => {
         let isComplete = false;
-        if (!!payload.amount && !!payload.payer_map && !!payload.payment_name){
+        if (!!payload.amount && !!payload.payer_map && !!payload.payment_name && !!payload.owner){
             isComplete = true;
         }    
         return { isComplete };
@@ -107,14 +113,14 @@ export default function CreatePayment({
                                 轉帳
                         </Button>
                     </div>
-                    {recordMode === "split" && (
+                    {recordMode === "split"  && userData && (
                         <CreatePaymentSplit
                             currentProjectUsers={currentProjectUsers}
                             userData={userData}
                             setPayload = {setPayload}
                         />
                     )}
-                    {recordMode === "debt" && (
+                    {recordMode === "debt"  && userData && (
                         <CreatePaymentDebt
                             currentProjectUsers={currentProjectUsers}
                             userData={userData}

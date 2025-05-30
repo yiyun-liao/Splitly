@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { useState, useEffect, useMemo} from "react";
+import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
@@ -29,6 +30,8 @@ export default function CreatePaymentSplit({
     setPayload,
     }:CreatePaymentSplitProps){
         const currentUid = userData.uid;
+        const rawProjectId = useParams()?.projectId;
+        const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";    
 
         // receipt-split
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
@@ -175,6 +178,7 @@ export default function CreatePaymentSplit({
 
         const payload: CreatePaymentPayload = useMemo(() => {
             return {
+                project_id:projectId,
                 owner:currentUid,
                 payment_name: inputPaymentValue,
                 account_type:accountType, // "personal" | "group"
@@ -190,7 +194,7 @@ export default function CreatePaymentSplit({
                 split_map: splitFinalMap,
                 items:itemsFinal,
             };
-          }, [currentUid,inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap,itemsFinal]);
+          }, [projectId,currentUid,inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap,itemsFinal]);
         
         useEffect(() => {
             setPayload(payload);

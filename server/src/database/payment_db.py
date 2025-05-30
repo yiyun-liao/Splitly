@@ -14,7 +14,7 @@ class PaymentDB:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_payment(self, payment_data: CreatePaymentSchema) -> PaymentModel:
+    def create_payment(self, payment_data: CreatePaymentSchema) -> GetPaymentSchema:
         payment_id = str(uuid4())
 
         # Create PaymentModel
@@ -54,6 +54,7 @@ class PaymentDB:
             ))
 
         # If split_way is item, create items and item_splits
+        item_models = [] 
         if payment_data.split_way == "item" and payment_data.items:
             for item in payment_data.items:
                 item_id = str(uuid4())
@@ -66,6 +67,9 @@ class PaymentDB:
                 )
                 self.db.add(new_item)
 
+                # 新增到 item_models 做後續組裝
+                item_models.append((new_item, item.split_map))
+
                 for uid, detail in item.split_map.items():
                     self.db.add(ItemSplitRelation(
                         item_id=item_id,
@@ -77,10 +81,63 @@ class PaymentDB:
         try:
             self.db.commit()
             self.db.refresh(payment)
-            return payment
+            print("加入成功")
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Create Payment failed: {str(e)}")
+
+        # 查出 payer_map
+        payer_relations = (
+            self.db.query(PaymentPayerRelation)
+            .filter(PaymentPayerRelation.payment_id == payment.id)
+            .all()
+        )
+        payer_map = {rel.user_id: rel.amount for rel in payer_relations}
+
+        # 查出 split_map
+        split_relations = (
+            self.db.query(PaymentSplitRelation)
+            .filter(PaymentSplitRelation.payment_id == payment.id)
+            .all()
+        )
+        split_map = {
+            rel.user_id: {
+                "fixed": rel.fixed,
+                "total": rel.total,
+                "percent": rel.percent
+            } for rel in split_relations
+        }
+
+        #  組裝 items (含每個 item 的 split_map)
+        items = []
+        if payment_data.split_way == "item"  and payment_data.items:
+            for item_model, raw_split_map in item_models:
+                item_split_map = {
+                    uid: {
+                        "fixed": detail.fixed,
+                        "total": detail.total,
+                        "percent": detail.percent
+                    } for uid, detail in raw_split_map.items()
+                }
+
+                items.append(GetItemSchema(
+                    id=item_model.id,
+                    payment_id=payment_id,
+                    amount=item_model.amount,
+                    split_method=item_model.split_method,
+                    payment_name=item_model.payment_name,
+                    split_map=item_split_map
+                ))
+
+        # 8. 回傳符合 schema 的 GetPaymentSchema
+        return GetPaymentSchema(
+            **payment.__dict__,
+            payer_map=payer_map,
+            split_map=split_map,
+            items=items
+        )
+
+
 
 
     def get_payments_by_project(self, project_id: str) -> GetPaymentListSchema:
@@ -88,6 +145,7 @@ class PaymentDB:
             payments = (
                 self.db.query(PaymentModel)
                 .filter(PaymentModel.project_id == project_id, PaymentModel.deleted_at == None)
+                .order_by(PaymentModel.time.desc())
                 .all()
             )
             result = []

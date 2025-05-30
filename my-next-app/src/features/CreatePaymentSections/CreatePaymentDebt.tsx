@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { useState, useEffect, useMemo} from "react";
+import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
@@ -25,6 +26,8 @@ export default function CreatePaymentDebt({
     setPayload
     }:CreatePaymentDebtProps){
         const currentUid = userData.uid;
+        const rawProjectId = useParams()?.projectId;
+        const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";   
 
         // receipt-debt
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
@@ -79,7 +82,8 @@ export default function CreatePaymentDebt({
 
         // get data
         useEffect(() => {
-            const payload: CreatePaymentPayload = {    
+            const payload: CreatePaymentPayload = { 
+                project_id:projectId,   
                 owner:currentUid,
                 payment_name: "debt",
                 account_type: "group",  
@@ -92,7 +96,7 @@ export default function CreatePaymentDebt({
                 split_map: splitMap,
             };
             setPayload(payload);
-        }, [currentUid,selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap]);
+        }, [projectId,currentUid,selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap]);
 
 
         return(

@@ -59,6 +59,7 @@ export interface GetItemPayload {
 
 // "payment" 送出資料
 export interface CreatePaymentPayload {
+    project_id:string;
     payment_name: string; 
     account_type: AccountType; // "personal" | "group"
     record_mode?: RecordMode ;    // "split" | "debt" 
@@ -107,6 +108,7 @@ export interface CreatePaymentPayload {
 
 
 export interface GetPaymentData {
+    project_id:string;
     id:string;
     payment_name: string; 
     account_type: AccountType; // "personal" | "group"
