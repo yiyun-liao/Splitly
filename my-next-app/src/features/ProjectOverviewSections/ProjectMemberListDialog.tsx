@@ -2,27 +2,21 @@ import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import { useState } from "react";
-import { UserData } from "@/types/user";
-import { GetProjectData } from "@/types/project";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 
 interface ProjectMemberListProps {
     isMemberListOpen: boolean;
     onClose: () => void;
-    currentProjectUsers : UserData[];
-    currentProjectData:GetProjectData;
 }
 
 export default function ProjectMemberList({
     isMemberListOpen = false,
     onClose,
-    currentProjectUsers,
-    currentProjectData,
 }:ProjectMemberListProps){
 
-    const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/join?pid=${currentProjectData.id}`;
-    const {userData} = useGlobalProjectData();
+    const {currentProjectData, currentProjectUsers} = useCurrentProjectData();
+    const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/join?pid=${currentProjectData?.id}`;
     
     const [step, setStep] = useState<"list" | "add">("list")
     const handleBack = () => {
@@ -46,7 +40,7 @@ export default function ProjectMemberList({
                                 </div>
                                 <p className="text-base w-fll  truncate">{user.name}</p>
                             </div>
-                            {currentProjectData.owner  == user.uid && (
+                            {currentProjectData?.owner  == user.uid && (
                                 <div className="shrink-0 p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">擁有者</div>
                             )}
                         </div>
@@ -129,7 +123,7 @@ export default function ProjectMemberList({
                 footerClassName= "items-center justify-end"
                 leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
                 closeOnBackdropClick = {true}
-                // onLeftIconClick={handleBack}
+                onLeftIconClick={handleBack}
                 footer={
                     step === "list" ? (
                         <>

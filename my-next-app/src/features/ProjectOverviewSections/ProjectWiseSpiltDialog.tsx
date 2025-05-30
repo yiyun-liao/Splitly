@@ -2,7 +2,6 @@ import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Icon from "@/components/ui/Icon";
-import { useState } from "react";
 import { UserData } from "@/types/user";
 
 interface ProjectWiseSpiltProps {

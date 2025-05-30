@@ -114,7 +114,7 @@ export default function MemberNav() {
                             variant='text-button'
                             color='primary'
                             type= 'button'
-                            //onClick={()=>{setNavStyle('expansion')}} 
+                            onClick={()=>{setNavStyle('expansion')}} 
                             >
                         </IconButton> 
                         <IconButton

@@ -1,7 +1,5 @@
 import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
-import { useState } from "react";
 import { UserData } from "@/types/user";
 
 interface ProjectDebtDetailProps {
@@ -56,7 +54,6 @@ export default function ProjectDebtDetail({
             </div>
         )
 }
-    //console.log('self expense dialog state', isSelfExpenseOpen)
     return(
         <Dialog
                 header="您在專案中"
@@ -64,14 +61,7 @@ export default function ProjectDebtDetail({
                 onClose={ () => {
                     onClose();
                 }} // 點擊哪裡關閉
-                //headerClassName= {step === "add" ? undefined : "ml-11"}
-                // bodyClassName= string // 看需求
                 footerClassName= "items-center justify-end"
-                //leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
-                //hideCloseIcon = false
-                //closeOnBackdropClick = false
-                //onLeftIconClick={handleBack}
-                // footer= React.ReactNode
             >
                 {renderBody()}
         </Dialog>

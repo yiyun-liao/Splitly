@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import { groupBy } from "lodash";
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from "react";
 import Icon from "@/components/ui/Icon";
@@ -27,7 +26,7 @@ export default function ProjectOverview(){
     // 判斷顯示支出或是圖表
     const currentUserId = userData?.uid || "";
     const userList = currentProjectUsers || [];
-    const projectId = data.id;
+    const projectId = data?.id;
     const [currentPage, setCurrentPage] = useState("");
     const router = useRouter();
     const pathname = usePathname();
@@ -37,7 +36,11 @@ export default function ProjectOverview(){
 
 
     // render data 
-    const privateBudget = data?.member_budgets?.[userData.uid] ?? undefined;
+    let privateBudget: number | undefined;
+
+    if (userData?.uid) {
+      privateBudget = data?.member_budgets?.[userData.uid];
+    }
     // const budgetStatus = getBudgetStatus( total, data?.budget);
     const budgetStatus = getBudgetStatus( 7300, data?.budget);
 
@@ -48,13 +51,15 @@ export default function ProjectOverview(){
     return(
         <div className={`${scrollClass} w-full box-border h-full  text-zinc-700`}>
             <div>
-                <ProjectDetail
-                    isProjectDialogOpen={isProjectDialogOpen}
-                    onClose = {() => setIsProjectDialogOpen(false)}   
-                    userData={userData} 
-                    currentProjectData = {data}
-                    currentProjectUsers = {userList}
-                />
+                {userData && data && (
+                    <ProjectDetail
+                        isProjectDialogOpen={isProjectDialogOpen}
+                        onClose = {() => setIsProjectDialogOpen(false)}   
+                        userData={userData} 
+                        currentProjectData = {data}
+                        currentProjectUsers = {userList}
+                    />
+                )}
                 <ProjectDebtDetail
                     isSelfExpenseOpen={isSelfExpenseDialogOpen}
                     onClose = {() => setIsSelfExpenseDialogOpen(false)}   
@@ -197,7 +202,7 @@ export default function ProjectOverview(){
                                     <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                         <Avatar
                                             size="md"
-                                            img={userData?.avatar}
+                                            img={userData?.avatarURL}
                                             userName = {userData?.name}
                                             //onAvatarClick={() => console.log('Clicked!')}
                                         />
@@ -305,7 +310,7 @@ export default function ProjectOverview(){
                                         payer_map={payment.payer_map}
                                         currentUserId={currentUserId}
                                         userList={userList}
-                                        categoryId={payment.category_id}
+                                        categoryId={payment.category_id ?? ""}
                                         categoryList={categoryList}
                                     />
                                     {index !== 4 && (

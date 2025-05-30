@@ -47,15 +47,12 @@ export default function MemberHeader(){
             <div>
                 {isCreatePayment && currentProjectUsers && (
                     <CreatePayment 
-                        currentProjectUsers = {currentProjectUsers}
                         onClose={() => setIsCreatePayment(false)}
                     />
                 )}
                 {isMemberDialogOpen  && currentProjectUsers && (
                     <ProjectMemberList 
                         isMemberListOpen={isMemberDialogOpen}
-                        currentProjectUsers = {currentProjectUsers}
-                        currentProjectData = {currentProjectData}
                         onClose = {() => setIsMemberDialogOpen(false)}   
                     />
                 )}

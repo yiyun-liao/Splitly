@@ -7,22 +7,21 @@ import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
 import { RecordMode, CreatePaymentPayload } from "@/types/payment";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
-import { UserData } from "@/types/user";
 import { useCreatePayment } from "./hooks";
+import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 interface CreatePaymentProps {
     open?: boolean;
     onClose: () => void;
-    currentProjectUsers: UserData[]; 
 }
 
 export default function CreatePayment({
     open = true,
     onClose,
-    currentProjectUsers
     }:CreatePaymentProps){
 
     const {userData} = useGlobalProjectData();
+    const {currentProjectUsers} = useCurrentProjectData();
     const currentUid = userData?.uid;
     const rawProjectId = useParams()?.projectId;
     const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
@@ -113,14 +112,14 @@ export default function CreatePayment({
                                 轉帳
                         </Button>
                     </div>
-                    {recordMode === "split"  && userData && (
+                    {recordMode === "split"  && userData && currentProjectUsers&& (
                         <CreatePaymentSplit
                             currentProjectUsers={currentProjectUsers}
                             userData={userData}
                             setPayload = {setPayload}
                         />
                     )}
-                    {recordMode === "debt"  && userData && (
+                    {recordMode === "debt"  && userData && currentProjectUsers&& (
                         <CreatePaymentDebt
                             currentProjectUsers={currentProjectUsers}
                             userData={userData}

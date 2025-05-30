@@ -89,7 +89,7 @@ export default function SplitByItem({
       
         // 過濾出 total > 0 的人
         const filteredMap: SplitMap = Object.fromEntries(
-          Object.entries(tempMap).filter(([_, entry]) => entry.total > 0)
+          Object.entries(tempMap).filter(([, entry]) => entry.total > 0)
         );
       
         return filteredMap;

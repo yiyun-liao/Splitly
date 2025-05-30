@@ -68,7 +68,7 @@ export interface CreatePaymentPayload {
     owner:string;
     currency: string;
     amount: number;
-    category_Id?: string;
+    category_id?: string;
     time: string;
     desc?: string;
     payer_map: PayerMap;
@@ -118,7 +118,7 @@ export interface GetPaymentData {
     owner:string;
     currency: string;
     amount: number;
-    category_Id?: string;
+    category_id?: string;
     time: string;
     desc?: string;
     payer_map: PayerMap;

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Icon from "./Icon"
 import clsx from 'clsx';
 
@@ -89,7 +89,9 @@ export default function Input({
 
     const leftIconNode = leftIcon ? <Icon icon={leftIcon} size="md" className="mr-2" /> : null;
 
-    const currentValue = !!value && value?.length > 0
+    const currentValue =
+        (typeof value === "string" && value.length > 0) ||
+        (typeof value === "number" && value !== 0);
     const rightIconNode = !currentValue  ?
         null : !disabled && !isLoading && value ? (
             <button type="button" onClick={handleClear} className="ml-2 hover:text-sp-blue-500 cursor-pointer">

@@ -345,15 +345,15 @@ export default function SplitByItemEdit({
 
         if (chooseSplitByItem === "percentage") {
             newSplitMap = Object.fromEntries(
-                Object.entries(localSplitPercentageMap).filter(([_, entry]) => entry.total > 0)
+                Object.entries(localSplitPercentageMap).filter(([, entry]) => entry.total > 0)
             );
         } else if (chooseSplitByItem === "actual") {
             newSplitMap = Object.fromEntries(
-                Object.entries(localSplitActualMap).filter(([_, entry]) => entry.total > 0)
+                Object.entries(localSplitActualMap).filter(([, entry]) => entry.total > 0)
             );
         } else if (chooseSplitByItem === "adjusted") {
             newSplitMap = Object.fromEntries(
-                Object.entries(localSplitAdjustedMap).filter(([_, entry]) => entry.total > 0)
+                Object.entries(localSplitAdjustedMap).filter(([, entry]) => entry.total > 0)
             );
         }
 
