@@ -274,21 +274,21 @@ export default function SplitByPerson({
     const finalChoose = () => {
         if (localChooseSplitByPerson === "percentage") {
             const newPercentageMap = Object.fromEntries(
-                Object.entries(localSplitPercentageMap).filter(([_, entry]) => entry.total > 0)
+                Object.entries(localSplitPercentageMap).filter(([, entry]) => entry.total > 0)
             );
             return newPercentageMap;
         }
     
         if (localChooseSplitByPerson === "actual") {
             const newActualMap = Object.fromEntries(
-                Object.entries(localSplitActualMap).filter(([_, entry]) => entry.total > 0)
+                Object.entries(localSplitActualMap).filter(([, entry]) => entry.total > 0)
             );
             return newActualMap;
         }
     
         if (localChooseSplitByPerson === "adjusted") {
             const newAdjustMap = Object.fromEntries(
-                Object.entries(localSplitAdjustedMap).filter(([_, entry]) => entry.total > 0)
+                Object.entries(localSplitAdjustedMap).filter(([, entry]) => entry.total > 0)
             );
             return newAdjustMap;
         }

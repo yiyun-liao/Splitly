@@ -79,7 +79,7 @@ export default function SplitPayer({
                     disabled={!isComplete} 
                     onClick={() => {
                         const filteredMap = Object.fromEntries(
-                            Object.entries(localPayerMap).filter(([_, amount]) => amount > 0)
+                            Object.entries(localPayerMap).filter(([, amount]) => amount > 0)
                         );
                         setSplitPayerMap(filteredMap);
                         onClose()

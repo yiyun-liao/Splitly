@@ -41,7 +41,7 @@ export default function PaymentList(){
                                     payer_map={payment.payer_map}
                                     currentUserId={currentUserId}
                                     userList={userList}
-                                    categoryId={payment.category_id}
+                                    categoryId={payment.category_id ?? ""}
                                     categoryList={categoryList}
                                 />
                                 {index !== payments.length - 1 && (

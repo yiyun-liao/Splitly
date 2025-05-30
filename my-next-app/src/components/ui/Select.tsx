@@ -128,7 +128,7 @@ export default function Select({
     leftIcon="solar:document-bold-duotone"
     isLoading={false}
     disabled={false}
-    errorMessage={formErrorａ}
+    errorMessage={formError}
     options={[
         { label: "工作", value: "work" , disabled: true},
         { label: "生活", value: "life" , disabled: true },

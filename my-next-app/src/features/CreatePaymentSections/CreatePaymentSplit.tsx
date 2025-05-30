@@ -187,7 +187,7 @@ export default function CreatePaymentSplit({
                 split_method: splitFinalMethod,  // "percentage" | "actual" | "adjusted" | "item"  | "personal"
                 currency: selectCurrencyValue,
                 amount: finalAmount,
-                category_Id: selectedCategoryValue|| undefined, 
+                category_id: selectedCategoryValue|| undefined, 
                 time: inputTimeValue,
                 desc: inputDescValue || undefined,
                 payer_map: payerFinalMap,

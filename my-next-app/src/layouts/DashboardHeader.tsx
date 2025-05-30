@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useRouter, useParams } from 'next/navigation';
 import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
 import ProjectMemberList from "../features/ProjectOverviewSections/ProjectMemberListDialog";
-import CreatePayment from "./CreatePayment";
+import CreatePayment from "@/features/CreatePaymentSections/CreatePayment-main";
 import { UserData } from "@/types/user";
 
 interface DashboardHeaderProps {
@@ -14,22 +13,16 @@ interface DashboardHeaderProps {
 export default function DashboardHeader({userData}:DashboardHeaderProps){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreatePayment, setIsCreatePayment] = useState(false)
-    const router = useRouter();
-    const params = useParams();
-    const projectId = params.projectId;
-
     return(
         <div id="dashboard-header"  className="flex box-border items-center gap-2 w-full justify-between px-6 py-2">
             {isCreatePayment && 
                 <CreatePayment 
-                    userData={userData} 
                     onClose={() => setIsCreatePayment(false)}
                 />
             }
             <ProjectMemberList 
                 isMemberListOpen={isMemberDialogOpen}
                 onClose = {() => setIsMemberDialogOpen(false)}   
-                userData={userData} 
             />
             <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
                 <ImageButton

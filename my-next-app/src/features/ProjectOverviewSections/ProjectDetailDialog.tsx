@@ -1,6 +1,5 @@
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
-import { useState } from "react";
 import { UserData } from "@/types/user";
 import { GetProjectData } from "@/types/project";
 
@@ -15,9 +14,7 @@ interface ProjectDetailProps {
 export default function ProjectDetail({
     isProjectDialogOpen = false,
     onClose,
-    userData,
     currentProjectData,
-    currentProjectUsers
 }:ProjectDetailProps){
 
     const renderBody = () => {
