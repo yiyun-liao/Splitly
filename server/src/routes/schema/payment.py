@@ -115,4 +115,5 @@ class GetPaymentListSchema(BaseModel):
 # response
 class PaymentCreateMinimalResponse(BaseModel):
     success: bool
+    payment: Optional[GetPaymentSchema] = None
     payment_name: Optional[str]  = None

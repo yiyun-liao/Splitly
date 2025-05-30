@@ -56,7 +56,7 @@ export default function CreatePaymentSplit({
 
         // 個人帳目付款人設定
         const [personalPayerMap, setPersonalPayerMap] = useState<PayerMap>(() =>{
-            return { [userData?.uid]: 0 }
+            return { [currentUid]: 0 }
         })
 
         // 還款人預設
@@ -82,8 +82,7 @@ export default function CreatePaymentSplit({
 
        // 個人帳目還款人設定
        const [personalSplitMap, setPersonalSplitMap] = useState<SplitMap>(() => {
-            const firstUid = currentProjectUsers.find(user => user.uid === currentUid)?.uid || "" ;
-            return { [firstUid]: { fixed: 0,percent: 0,total: 0}};
+            return { [currentUid]: { fixed: 0,percent: 0,total: 0}};
         });
 
         // 項目細節設定
@@ -101,16 +100,16 @@ export default function CreatePaymentSplit({
                     total: total
                 }])
             );
-            const personalMap: SplitMap = { [userData?.uid]: { fixed: amount, percent: 0, total: amount}}
+            const personalMap: SplitMap = { [currentUid]: { fixed: amount, percent: 0, total: amount}}
 
             setChooseSplitByPerson("percentage");
             setSplitByPersonMap(groupMap);
-            setSplitPayerMap({[userData?.uid]: amount });
+            setSplitPayerMap({[currentUid]: amount });
             // person
-            setPersonalPayerMap({[userData?.uid]: amount })
+            setPersonalPayerMap({[currentUid]: amount })
             setPersonalSplitMap(personalMap);
 
-        }, [inputAmountValue, currentProjectUsers, userData]);
+        }, [inputAmountValue, currentProjectUsers, userData,currentUid]);
 
 
         // 金額輸入限制

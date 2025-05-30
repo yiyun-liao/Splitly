@@ -1,12 +1,4 @@
 // 型別定義
-
-export interface User {
-    avatarURL?: string;
-    name?: string;
-    uid:string;
-}
-//{ avatarURL: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
-
 export interface SplitDetail {
     fixed: number;
     percent: number;
@@ -65,7 +57,7 @@ export interface GetItemPayload {
 
 
 
-// SplitWay =  "payment" 送出資料
+// "payment" 送出資料
 export interface CreatePaymentPayload {
     payment_name: string; 
     account_type: AccountType; // "personal" | "group"

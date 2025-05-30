@@ -21,7 +21,7 @@ class PaymentRouter:
                 payment = payment_db.create_payment(body)
                 return {
                     "success": True,
-                    "project_name": payment.payment_name
+                    "project": payment
                 }
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))

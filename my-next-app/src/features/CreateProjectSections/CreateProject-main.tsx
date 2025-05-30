@@ -126,7 +126,7 @@ export default function CreateProject({
                             width='fit'
                             variant='solid'
                             color='primary'
-                            disabled={!isComplete  || isLoading} 
+                            disabled={!isComplete || isLoading} 
                             isLoading={isLoading}
                             onClick={async()=> {
                                 console.log("create", projectPayload);
