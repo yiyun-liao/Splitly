@@ -6,7 +6,7 @@ import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import IconButton from "@/components/ui/IconButton";
 import Select from "@/components/ui/Select";
-import { useCategorySelectOptions } from "@/hooks/category";
+import { useCategorySelectOptions } from "@/hooks/useCategory";
 import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
@@ -321,7 +321,7 @@ export default function CreatePaymentSplit({
                                             <div className="shrink-0 flex items-center justify-center">
                                                 <Avatar
                                                 size="md"
-                                                img={userData?.avatar}
+                                                img={userData?.avatarURL}
                                                 userName={userData?.name}
                                                 />
                                             </div>
@@ -452,7 +452,7 @@ export default function CreatePaymentSplit({
                                             <div className="shrink-0 flex items-center justify-center">
                                                 <Avatar
                                                 size="md"
-                                                img={user.avatar}
+                                                img={user.avatarURL}
                                                 userName={user.name}
                                                 />
                                             </div>
@@ -509,7 +509,7 @@ export default function CreatePaymentSplit({
                                                 <div className="shrink-0  flex items-center justify-center ">
                                                     <Avatar
                                                     size="md"
-                                                    img={user.avatar}
+                                                    img={user.avatarURL}
                                                     userName={user.name}
                                                     />
                                                 </div>

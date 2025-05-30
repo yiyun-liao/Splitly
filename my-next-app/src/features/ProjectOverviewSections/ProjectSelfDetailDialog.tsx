@@ -24,7 +24,7 @@ export default function ProjectSelfDetail({
                         <div  className="shrink-0  flex items-center justify-center ">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />
@@ -41,7 +41,7 @@ export default function ProjectSelfDetail({
                         <div  className="shrink-0  flex items-center justify-center ">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />

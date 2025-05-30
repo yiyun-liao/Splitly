@@ -66,8 +66,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     email: userData.email,
                     name: userData.name,
                     uid_in_auth: userData.uid_in_auth,
-                    avatar_index: userData.avatar,
-                    avatar: buildAvatarUrl(userData.avatar),
+                    avatar: userData.avatar,
+                    avatarURL: buildAvatarUrl(userData.avatar),
                 };
 
                 const fullProjectList: GetProjectData[] = projectData.map((project) => ({

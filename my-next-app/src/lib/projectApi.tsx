@@ -51,11 +51,10 @@ export async function deleteProject(projectId: string) {
 // 取得某使用者的專案列表
 export async function fetchProjectsByUser(token: string,uid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project/by-user?uid=${uid}`,{
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },        });
+        const res = await fetch(`${BASE_URL}/api/project/by-user?uid=${uid}`,{ 
+            method: "GET", 
+            headers: { Authorization: `Bearer ${token}` },
+        });
 
         if (!res.ok) {
             const errorText = await res.text();
@@ -72,10 +71,11 @@ export async function fetchProjectsByUser(token: string,uid: string) {
 }
 
 // 取得專案的所有成員
-export async function fetchUserByProject(token: string,pid: string) {
+export async function fetchUserByProject(pid: string) {
     try {
         const res = await fetch(`${BASE_URL}/api/getUsers/by-project?pid=${pid}`,{
-            headers: { Authorization: `Bearer ${token}` },
+            method: "GET",
+            headers: {"Content-Type": "application/json",},
         });
 
         if (!res.ok) {

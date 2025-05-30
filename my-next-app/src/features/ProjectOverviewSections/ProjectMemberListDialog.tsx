@@ -3,18 +3,28 @@ import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import { useState } from "react";
 import { UserData } from "@/types/user";
+import { GetProjectData } from "@/types/project";
+import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+
 
 interface ProjectMemberListProps {
     isMemberListOpen: boolean;
     onClose: () => void;
-    userData: UserData | null;
+    currentProjectUsers : UserData[];
+    currentProjectData:GetProjectData;
 }
 
 export default function ProjectMemberList({
     isMemberListOpen = false,
     onClose,
-    userData
+    currentProjectUsers,
+    currentProjectData
 }:ProjectMemberListProps){
+
+
+    const {userData} = useGlobalProjectData();
+    
     const [step, setStep] = useState<"list" | "add">("list")
     const handleBack = () => {
         setStep('list')
@@ -24,34 +34,24 @@ export default function ProjectMemberList({
         if (step === 'list'){
             return(
                 <div>
-                    <div className="px-3 py-3 flex items-center justify-start gap-2">
-                        <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                            <div  className="shrink-0  flex items-center justify-center ">
-                                <Avatar
-                                    size="md"
-                                    img={userData?.avatar}
-                                    userName = {userData?.name}
-                                    //onAvatarClick={() => console.log('Clicked!')}
-                                />
+                    {currentProjectUsers?.map((user) => (
+                        <div key={user.uid} className="px-3 py-3 flex items-center justify-start gap-2">
+                            <div  className="w-full flex items-center justify-start gap-2 overflow-hidden">
+                                <div  className="shrink-0  flex items-center justify-center ">
+                                    <Avatar
+                                        size="md"
+                                        img={user.avatarURL}
+                                        userName = {user.name}
+                                        //onAvatarClick={() => console.log('Clicked!')}
+                                    />
+                                </div>
+                                <p className="text-base w-fll  truncate">{user.name}</p>
                             </div>
-                            <p className="text-base w-fll  truncate">{userData?.name}</p>
+                            {currentProjectData.owner  == user.uid && (
+                                <div className="shrink-0 p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">擁有者</div>
+                            )}
                         </div>
-                        <p className="shrink-0 text-base font-semibold">---</p>
-                    </div>
-                    <div className="px-3 py-3 flex items-center justify-start gap-2">
-                        <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                            <div  className="shrink-0  flex items-center justify-center ">
-                                <Avatar
-                                    size="md"
-                                    img={userData?.avatar}
-                                    userName = {userData?.name}
-                                    //onAvatarClick={() => console.log('Clicked!')}
-                                />
-                            </div>
-                            <p className="text-base w-fll  truncate">{userData?.name}</p>
-                        </div>
-                        <p className="shrink-0 text-base font-semibold">---</p>
-                    </div>
+                    ))}
                 </div>
             )
         }
@@ -87,6 +87,7 @@ export default function ProjectMemberList({
                             <Button
                                 variant="outline"
                                 color="primary"
+                                width = 'full'
                                 onClick={() => alert('建立虛擬成員')}
                             >
                                 建立虛擬成員
@@ -94,6 +95,7 @@ export default function ProjectMemberList({
                             <Button
                                 variant="outline"
                                 color="primary"
+                                width = 'full'
                                 onClick={() => setStep("add")}
                             >
                                 新增成員
@@ -103,6 +105,7 @@ export default function ProjectMemberList({
                         <Button
                             variant="solid"
                             color="primary"
+                            width = 'full'
                             onClick={handleBack}
                         >
                             返回成員列表

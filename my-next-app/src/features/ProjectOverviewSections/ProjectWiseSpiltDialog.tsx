@@ -25,7 +25,7 @@ export default function ProjectWiseSpilt({
                         <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />
@@ -46,7 +46,7 @@ export default function ProjectWiseSpilt({
                         <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />
@@ -72,7 +72,7 @@ export default function ProjectWiseSpilt({
                         <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />
@@ -93,7 +93,7 @@ export default function ProjectWiseSpilt({
                         <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />
@@ -119,7 +119,7 @@ export default function ProjectWiseSpilt({
                         <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />
@@ -140,7 +140,7 @@ export default function ProjectWiseSpilt({
                         <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />

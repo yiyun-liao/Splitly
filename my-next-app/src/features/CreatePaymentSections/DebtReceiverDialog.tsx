@@ -39,7 +39,7 @@ export default function DebtReceiver({
                     >
                     <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
                         <div className="shrink-0 flex items-center justify-center">
-                        <Avatar size="md" img={user.avatar} userName={user.name} />
+                        <Avatar size="md" img={user.avatarURL} userName={user.name} />
                         </div>
                         <p className="text-base w-full truncate">{user.name}</p>
                     </div>

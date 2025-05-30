@@ -1,11 +1,11 @@
 // 型別定義
 
 export interface User {
-    avatar?: string;
+    avatarURL?: string;
     name?: string;
     uid:string;
 }
-//{ avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
+//{ avatarURL: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
 
 export interface SplitDetail {
     fixed: number;

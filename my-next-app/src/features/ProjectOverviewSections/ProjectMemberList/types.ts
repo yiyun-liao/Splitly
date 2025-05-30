@@ -1,6 +1,6 @@
 // 型別定義
 export interface UserData {
-    avatar?: string;
+    avatarURL?: string;
     name?: string;
 }
 

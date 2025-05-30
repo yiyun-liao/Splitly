@@ -1,7 +1,7 @@
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
 import { useState } from "react";
-import { useCategoryParent } from "@/hooks/category";
+import { useCategoryParent } from "@/hooks/useCategory";
 import clsx from "clsx";
 
 

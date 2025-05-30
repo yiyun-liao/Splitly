@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import clsx from "clsx";
 import CreateProject from "./CreateProjectSections/CreateProject-main";
 import { logOutUser } from "@/lib/auth";
-import { useProjectData } from "@/contexts/GlobalProjectContext";
+import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 
 
 
@@ -14,7 +14,7 @@ export default function MemberNav() {
     const router = useRouter();
     const pathname = usePathname();
     const { projectId } = useParams();
-    const {projectData, userData} = useProjectData();
+    const {projectData, userData} = useGlobalProjectData();
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")
     const [activePath, setActivePath] = useState(pathname); // 對應當前功能頁面渲染按鈕

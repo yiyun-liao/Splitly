@@ -4,7 +4,7 @@ import { GetProjectData } from "@/types/project";
 
 type CurrentProjectContextType = {
   currentProjectData: GetProjectData;
-  currentProjectUserData?: UserData;
+  currentProjectUsers?: UserData[];
 };
 
 export const CurrentProjectContext = createContext<CurrentProjectContextType | undefined>(undefined);

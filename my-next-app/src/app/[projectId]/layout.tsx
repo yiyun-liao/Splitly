@@ -2,20 +2,21 @@
 import { ReactNode } from "react";
 import { useMemo } from "react";
 import { useParams } from 'next/navigation';
-import { useEffect } from "react";
 import { useRouter } from 'next/navigation';
 
 import { useAuth } from "@/contexts/AuthContext"; //用 context 拿 userData 不驗證
 import { GlobalProjectContext } from "@/contexts/GlobalProjectContext";
-import { CurrentProjectContext } from "@/contexts/CurrentProjectContext";
+import { CurrentProjectContext} from "@/contexts/CurrentProjectContext";
 import { CategoryProvider } from "@/contexts/CategoryContext";
+import { useProjectUsers } from "@/hooks/useProjectUsers";
+
 import MemberHeader from "@/features/MemberHeader";
 import MemberNav from "@/features/MemberNav";
 
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
     const router = useRouter();
-    const { userData, loading, projectData } = useAuth();
+    const { userData, projectData, loading:myDataLoading } = useAuth();
     const { projectId } = useParams();
     console.log('projectId:', projectId);
 
@@ -23,21 +24,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         return projectData.find(project => project.id === projectId);
     }, [projectData, projectId]);
 
-    const [currentProjectUserData, setCurrentProjectUserData] = useState<UserData[] | undefined>(undefined);
+    const { users: currentProjectUsers, loading: usersLoading } = useProjectUsers(currentProjectData?.id);
 
-    useEffect(() => {
-      if (!currentProjectData?.id) return;
-  
-      fetchProjectUsers(currentProjectData.id)
-        .then((users) => {
-          setCurrentProjectUserData(users);
-        })
-        .catch((err) => {
-          console.error("取得專案使用者失敗：", err);
-        });
-    }, [currentProjectData?.id]);
+    console.log("what i get currentProjectData",currentProjectData)
+    console.log("what i get currentUserData",currentProjectUsers)
 
-    if (loading) return <p>Loading...</p>; // 可加 spinner
+
+    if (myDataLoading || usersLoading) return <p>Loading...</p>;
+
     if (!currentProjectData){
         console.error("沒有", projectId)
         router.push(`/${projectData[0].id}/dashboard`);
@@ -50,7 +44,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         
     return (
         <GlobalProjectContext.Provider value={{ projectData: projectData ?? [], userData}}>
-            <CurrentProjectContext.Provider value={{ currentProjectData, currentProjectUserData }}>
+            <CurrentProjectContext.Provider value={{ currentProjectData, currentProjectUsers }}>
                 <CategoryProvider>
                     <main className="flex items-start justify-center bg-sp-blue-100">
                     <div className="shrink-0 box-border">
@@ -59,7 +53,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                     <div className="py-4 w-full max-w-520 h-screen box-border flex flex-col items-center justify-start gap-2">
                         <MemberHeader/>
                         <div className="flex items-start justify-start box-border px-6 gap-6 w-full h-full overflow-hidden text-zinc-700">
-                        {children} {/* 所有 children 都能透過 useProjectData 拿到 projectData */}
+                        {children} {/* 所有 children 都能透過 useGlobalProjectData 拿到 projectData */}
                         </div>
                     </div>
                     </main>

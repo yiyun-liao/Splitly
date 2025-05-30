@@ -379,7 +379,7 @@ export default function SplitByPerson({
                                         <div  className="shrink-0 flex items-center justify-center ">
                                             <Avatar
                                                 size="md"
-                                                img={user?.avatar}
+                                                img={user?.avatarURL}
                                                 userName = {user?.name}
                                             />
                                         </div>
@@ -418,7 +418,7 @@ export default function SplitByPerson({
                                         <div  className="shrink-0 flex items-center justify-center ">
                                             <Avatar
                                                 size="md"
-                                                img={user?.avatar}
+                                                img={user?.avatarURL}
                                                 userName = {user?.name}
                                             />
                                         </div>
@@ -454,7 +454,7 @@ export default function SplitByPerson({
                                         <div  className="shrink-0 flex items-center justify-center ">
                                             <Avatar
                                                 size="md"
-                                                img={user?.avatar}
+                                                img={user?.avatarURL}
                                                 userName = {user?.name}
                                             />
                                         </div>

@@ -5,12 +5,13 @@ import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
 import { RecordMode, CreatePaymentPayload } from "../../types/payment";
+import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { UserData } from "@/types/user";
 
 interface CreatePaymentProps {
-    onClose: () => void;
     open?: boolean;
-    userData: UserData;
+    onClose: () => void;
+    currentProjectUsers: UserData[]; 
 }
 
 const userList = [
@@ -21,11 +22,12 @@ const userList = [
 ];
 
 export default function CreatePayment({
-    onClose,
     open = true,
-    userData
+    onClose,
+    currentProjectUsers
     }:CreatePaymentProps){
-    
+
+    const {userData} = useGlobalProjectData();
     const currentUid = userData.uid;
 
     // receipt-way

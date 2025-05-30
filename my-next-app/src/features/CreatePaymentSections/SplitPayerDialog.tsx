@@ -101,7 +101,7 @@ export default function SplitPayer({
                                 <div  className="shrink-0 flex items-center justify-center ">
                                     <Avatar
                                         size="md"
-                                        img={user?.avatar}
+                                        img={user?.avatarURL}
                                         userName = {user?.name}
                                     />
                                 </div>

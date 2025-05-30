@@ -7,8 +7,9 @@ import Avatar from "@/components/ui/Avatar";
 import ProjectSelfDetail from "./ProjectSelfDetailDialog";
 import ProjectWiseSpilt from "./ProjectWiseSpiltDialog";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
-import { useProjectData } from "@/contexts/GlobalProjectContext";
+import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { getBudgetStatus } from "@/utils/budgetHint";
+import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 
 export default function ProjectOverview(){
@@ -20,7 +21,9 @@ export default function ProjectOverview(){
     const router = useRouter();
     const params = useParams();
     const projectId = params.projectId as string;
-    const {currentProjectData, userData} = useProjectData();
+    const {userData} = useGlobalProjectData();
+    const {currentProjectData} = useCurrentProjectData();
+    
     console.log(currentProjectData, userData)
 
     // render currentProjectData 
@@ -124,7 +127,7 @@ export default function ProjectOverview(){
                                 <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
                                     <Avatar
                                         size="md"
-                                        img={userData?.avatar}
+                                        img={userData?.avatarURL}
                                         userName = {userData?.name}
                                         //onAvatarClick={() => console.log('Clicked!')}
                                     />
@@ -155,7 +158,7 @@ export default function ProjectOverview(){
                                     <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                         <Avatar
                                             size="md"
-                                            img={userData?.avatar}
+                                            img={userData?.avatarURL}
                                             userName = {userData?.name}
                                             //onAvatarClick={() => console.log('Clicked!')}
                                         />
@@ -187,7 +190,7 @@ export default function ProjectOverview(){
                                     <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                         <Avatar
                                             size="md"
-                                            img={userData?.avatar}
+                                            img={userData?.avatarURL}
                                             userName = {userData?.name}
                                             //onAvatarClick={() => console.log('Clicked!')}
                                         />
@@ -208,7 +211,7 @@ export default function ProjectOverview(){
                                     <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                         <Avatar
                                             size="md"
-                                            img={userData?.avatar}
+                                            img={userData?.avatarURL}
                                             userName = {userData?.name}
                                             //onAvatarClick={() => console.log('Clicked!')}
                                         />
@@ -219,7 +222,7 @@ export default function ProjectOverview(){
                                     <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                         <Avatar
                                             size="md"
-                                            img={userData?.avatar}
+                                            img={userData?.avatarURL}
                                             userName = {userData?.name}
                                             //onAvatarClick={() => console.log('Clicked!')}
                                         />
@@ -240,7 +243,7 @@ export default function ProjectOverview(){
                                     <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                         <Avatar
                                             size="md"
-                                            img={userData?.avatar}
+                                            img={userData?.avatarURL}
                                             userName = {userData?.name}
                                             //onAvatarClick={() => console.log('Clicked!')}
                                         />

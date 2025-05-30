@@ -126,7 +126,7 @@ export default function CreatePaymentDebt({
                                         <div className="shrink-0  flex items-center justify-center ">
                                             <Avatar
                                                 size="md"
-                                                img={selectedDebtPayer?.avatar}
+                                                img={selectedDebtPayer?.avatarURL}
                                                 userName = {selectedDebtPayer?.name}
                                             />
                                         </div>
@@ -183,7 +183,7 @@ export default function CreatePaymentDebt({
                                         <div className="shrink-0  flex items-center justify-center ">
                                             <Avatar
                                                 size="md"
-                                                img={selectedDebtReceiver?.avatar}
+                                                img={selectedDebtReceiver?.avatarURL}
                                                 userName = {selectedDebtReceiver?.name}
                                             />
                                         </div>

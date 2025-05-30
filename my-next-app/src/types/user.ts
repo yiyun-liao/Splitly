@@ -3,6 +3,6 @@ export interface UserData {
     email: string;
     name: string;
     uid_in_auth?:string;
-    avatar?: string; // 最後是 Cloudinary URL
-    avatar_index?: number; // 後端回傳的 avatar index
+    avatarURL?: string; // 最後是 Cloudinary URL
+    avatar?: number; // 後端回傳的 avatar index
 }
