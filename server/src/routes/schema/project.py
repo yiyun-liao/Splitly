@@ -28,7 +28,9 @@ class GetProjectSchema(CreateProjectSchema):
 
 class AddProjectMembersSchema(BaseModel):
     member: List[str]
+    # 要有 member_budgets
 
+# 更新用（所有欄位選填）
 class UpdateProjectSchema(BaseModel):
     project_name: Optional[str]  = None
     start_time: Optional[date]  = None
@@ -42,5 +44,6 @@ class UpdateProjectSchema(BaseModel):
 
 class ProjectCreateMinimalResponse(BaseModel):
     success: bool
+    project: Optional[GetProjectSchema] = None
     project_name: Optional[str]  = None
     member: Optional[List[str]]  = None

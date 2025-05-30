@@ -4,17 +4,17 @@ import Avatar from "@/components/ui/Avatar";
 import { useState } from "react";
 import { UserData } from "@/types/user";
 
-interface ProjectSelfDetailProps {
+interface ProjectDebtDetailProps {
     isSelfExpenseOpen: boolean;
     onClose: () => void;
     userData: UserData | null;
 }
 
-export default function ProjectSelfDetail({
+export default function ProjectDebtDetail({
     isSelfExpenseOpen = false,
     onClose,
     userData
-}:ProjectSelfDetailProps){
+}:ProjectDebtDetailProps){
 
     const renderBody = () => {
         return(
@@ -24,7 +24,7 @@ export default function ProjectSelfDetail({
                         <div  className="shrink-0  flex items-center justify-center ">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />
@@ -41,7 +41,7 @@ export default function ProjectSelfDetail({
                         <div  className="shrink-0  flex items-center justify-center ">
                             <Avatar
                                 size="md"
-                                img={userData?.avatar}
+                                img={userData?.avatarURL}
                                 userName = {userData?.name}
                                 //onAvatarClick={() => console.log('Clicked!')}
                             />

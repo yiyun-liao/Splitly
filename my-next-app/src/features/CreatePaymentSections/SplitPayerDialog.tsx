@@ -4,14 +4,15 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
-import { PayerMap, User } from "./types";
+import { PayerMap} from "@/types/payment";
+import { UserData } from "@/types/user";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { formatNumber } from "./utils";
 
 interface SplitPayerProps {
     isSplitPayerOpen: boolean;
     onClose: () => void;
-    userList: User[];
+    currentProjectUsers: UserData[];
     inputAmountValue:string;
     splitPayerMap: PayerMap;
     setSplitPayerMap:  (map: PayerMap) => void;
@@ -20,7 +21,7 @@ interface SplitPayerProps {
 export default function SplitPayer({
         isSplitPayerOpen = false,
         onClose,
-        userList,
+        currentProjectUsers,
         inputAmountValue,
         splitPayerMap,
         setSplitPayerMap,
@@ -31,12 +32,12 @@ export default function SplitPayer({
     useEffect(() => {
         if (isSplitPayerOpen) {
             const initialMap: PayerMap = {};
-            userList.forEach(user => {
+            currentProjectUsers.forEach(user => {
               initialMap[user.uid] = splitPayerMap[user.uid] ?? 0;
             });
             setLocalPayerMap(initialMap);
           }
-    }, [isSplitPayerOpen, splitPayerMap, userList]);
+    }, [isSplitPayerOpen, splitPayerMap, currentProjectUsers]);
 
     const remaining = useMemo(() => {
         const totalAmount = Object.values(localPayerMap).reduce((acc, cur) => acc + cur, 0);
@@ -82,7 +83,6 @@ export default function SplitPayer({
                         );
                         setSplitPayerMap(filteredMap);
                         onClose()
-                        // console.log("完成分帳後的 map：", filteredMap);
                     }}
                     >
                         完成
@@ -94,14 +94,14 @@ export default function SplitPayer({
     const renderBody = () => {
         return(
             <div>
-                {userList.map((user) => {
+                {currentProjectUsers.map((user) => {
                     return(
                         <div key={user.uid} className="px-3 pb-2 flex items-start justify-start gap-2">
                             <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
                                 <div  className="shrink-0 flex items-center justify-center ">
                                     <Avatar
                                         size="md"
-                                        img={user?.avatar}
+                                        img={user?.avatarURL}
                                         userName = {user?.name}
                                     />
                                 </div>

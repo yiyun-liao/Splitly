@@ -1,42 +1,42 @@
 import clsx from "clsx";
 import { useState, useEffect, useMemo} from "react";
+import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import IconButton from "@/components/ui/IconButton";
 import Select from "@/components/ui/Select";
-import { useCategorySelectOptions } from "@/hooks/category";
+import { useCategorySelectOptions } from "@/hooks/useCategory";
 import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
-import { SplitDetail, SplitMap, PayerMap, User, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType} from "./types";
+import { UserData } from "@/types/user";
+import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType} from "../../types/payment";
 import { formatPercent, formatNumber, formatNumberForData } from "./utils";
 import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
-import { UserData } from "@/types/user";
 
 interface CreatePaymentSplitProps {
-    userList: User[];
+    currentProjectUsers: UserData[];
     userData: UserData;
     setPayload : (map: CreatePaymentPayload) => void;
-    setItemPayloadList : (map: CreateItemPayload[]) => void;
 }
 
 
 export default function CreatePaymentSplit({
-    userList,
+    currentProjectUsers,
     userData,
     setPayload,
-    setItemPayloadList
     }:CreatePaymentSplitProps){
+        const currentUid = userData.uid;
+        const rawProjectId = useParams()?.projectId;
+        const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";    
 
         // receipt-split
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
         const [inputAmountValue, setInputAmountValue] = useState("");
         
-        // const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string; disabled: boolean }[]>([]); //渲染
-        // const [selectedCategoryValue, setSelectedCategoryValue] = useState(""); //選取
         const { options: categoryOptions, selectedValue: selectedCategoryValue, setSelectedValue: setSelectedCategoryValue,} = useCategorySelectOptions();
 
         const [inputPaymentValue, setInputPaymentValue] = useState("");
@@ -53,21 +53,21 @@ export default function CreatePaymentSplit({
 
         //  付款人預設
         const [splitPayerMap, setSplitPayerMap] = useState<PayerMap>(()=>{
-            const firstUid = userList[0]?.uid;
-            return firstUid ? { [firstUid]: 0 } : {};
+            const firstUid = currentProjectUsers.find(user => user.uid === currentUid)?.uid || currentProjectUsers[0]?.uid ;
+            return { [firstUid]: 0 } ;
         });
 
         // 個人帳目付款人設定
         const [personalPayerMap, setPersonalPayerMap] = useState<PayerMap>(() =>{
-            return { [userData?.uid]: 0 }
+            return { [currentUid]: 0 }
         })
 
         // 還款人預設
         const [splitByPersonMap, setSplitByPersonMap] = useState<SplitMap>(() => {
             const total = Number(inputAmountValue) || 0;
-            const percentValue = parseFloat(formatNumberForData(1 / userList.length));;
+            const percentValue = parseFloat(formatNumberForData(1 / currentProjectUsers.length));;
             const average = parseFloat(formatNumberForData(total * percentValue))
-            return Object.fromEntries(userList.map(user => [user.uid, {
+            return Object.fromEntries(currentProjectUsers.map(user => [user.uid, {
                 fixed: 0,
                 percent: percentValue,
                 total: average
@@ -76,7 +76,7 @@ export default function CreatePaymentSplit({
 
         // 項目的還款人設定
         const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>(() => {
-            return Object.fromEntries(userList.map(user => [user.uid, {
+            return Object.fromEntries(currentProjectUsers.map(user => [user.uid, {
                 fixed: 0,
                 percent: 0,
                 total: 0
@@ -85,7 +85,7 @@ export default function CreatePaymentSplit({
 
        // 個人帳目還款人設定
        const [personalSplitMap, setPersonalSplitMap] = useState<SplitMap>(() => {
-            return { [userData?.uid]: { fixed: 0,percent: 0,total: 0}};
+            return { [currentUid]: { fixed: 0,percent: 0,total: 0}};
         });
 
         // 項目細節設定
@@ -94,25 +94,25 @@ export default function CreatePaymentSplit({
         // 價格改變就重設 
         useEffect(() => {
             const amount = parseFloat(inputAmountValue || "0");
-            const percent = parseFloat(formatNumberForData(1 / userList.length));
+            const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
             const total = parseFloat(formatNumberForData(amount * percent))
             const groupMap: SplitMap = Object.fromEntries(
-                userList.map(user => [user.uid, {
+                currentProjectUsers.map(user => [user.uid, {
                     fixed: 0,
                     percent: percent,
                     total: total
                 }])
             );
-            const personalMap: SplitMap = { [userData?.uid]: { fixed: amount, percent: 0, total: amount}}
+            const personalMap: SplitMap = { [currentUid]: { fixed: amount, percent: 0, total: amount}}
 
             setChooseSplitByPerson("percentage");
             setSplitByPersonMap(groupMap);
-            setSplitPayerMap({["4kjf39480fjlk"]: amount });
+            setSplitPayerMap({[currentUid]: amount });
             // person
-            setPersonalPayerMap({[userData?.uid]: amount })
+            setPersonalPayerMap({[currentUid]: amount })
             setPersonalSplitMap(personalMap);
 
-        }, [inputAmountValue, userList, userData]);
+        }, [inputAmountValue, currentProjectUsers, userData,currentUid]);
 
 
         // 金額輸入限制
@@ -148,16 +148,21 @@ export default function CreatePaymentSplit({
         // get data
         // splitMap 決定輸出哪一種分帳結果
         const recordFinalWay = useMemo(() => {
-            return accountType === "personal" ? "personal" : "split";
+            return accountType === "personal" ? undefined : "split";
         }, [accountType]);
 
         const splitFinalWay = useMemo(() => {
-            return accountType === "personal" ? null : splitWay;
+            return accountType === "personal" ? undefined : splitWay;
         }, [accountType, splitWay]);
 
         const splitFinalMethod = useMemo(() => {
-            return accountType === "personal" ? null : splitWay === "item" ? "item" :  chooseSplitByPerson;
+            return accountType === "personal" ? undefined : splitWay === "item" ? undefined :  chooseSplitByPerson;
         }, [splitWay, chooseSplitByPerson,accountType]);
+
+        const finalAmount  = useMemo(() => {
+            const value = parseFloat(inputAmountValue);
+            return isNaN(value) ? 0 : value;
+        }, [inputAmountValue]);
 
         const payerFinalMap = useMemo(() => {
             return accountType === "personal" ? personalPayerMap : splitPayerMap;
@@ -167,29 +172,33 @@ export default function CreatePaymentSplit({
             return accountType === "personal" ? personalSplitMap : splitWay === "person" ? splitByPersonMap : splitByItemMap;
         }, [splitWay, splitByPersonMap, splitByItemMap, accountType,personalSplitMap]);
 
+        const itemsFinal = useMemo(() => {
+            return splitWay === "item"  ? localItemPayloadList : undefined;
+        }, [localItemPayloadList, splitWay]);
+
         const payload: CreatePaymentPayload = useMemo(() => {
             return {
-                paymentName: inputPaymentValue,
-                accountType:accountType, // "personal" | "group"
-                recordMode: recordFinalWay,   // "split" | "debt" | "personal"
-                splitWay: splitFinalWay,   // "item" | "person" | "personal"
-                splitMethod: splitFinalMethod,  // "percentage" | "actual" | "adjusted" | "item"  | "personal"
+                project_id:projectId,
+                owner:currentUid,
+                payment_name: inputPaymentValue,
+                account_type:accountType, // "personal" | "group"
+                record_mode: recordFinalWay,   // "split" | "debt" | "personal"
+                split_way: splitFinalWay,   // "item" | "person" | "personal"
+                split_method: splitFinalMethod,  // "percentage" | "actual" | "adjusted" | "item"  | "personal"
                 currency: selectCurrencyValue,
-                amount: parseFloat(inputAmountValue || "0"),
-                categoryId: selectedCategoryValue, 
+                amount: finalAmount,
+                category_Id: selectedCategoryValue|| undefined, 
                 time: inputTimeValue,
-                desc: inputDescValue || "",
-                payerMap: payerFinalMap,
-                splitMap: splitFinalMap,
+                desc: inputDescValue || undefined,
+                payer_map: payerFinalMap,
+                split_map: splitFinalMap,
+                items:itemsFinal,
             };
-          }, [inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,inputAmountValue,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap]);
+          }, [projectId,currentUid,inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap,itemsFinal]);
         
         useEffect(() => {
             setPayload(payload);
-            if (splitWay === 'item'){
-                setItemPayloadList(localItemPayloadList || null)
-            }
-        }, [payload, setPayload, splitWay, localItemPayloadList,setLocalItemPayloadList, setItemPayloadList]);
+        }, [payload, setPayload]);
 
         // css
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
@@ -197,7 +206,6 @@ export default function CreatePaymentSplit({
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
         const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
         const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-end")
-        console.log("userData", userData);
 
         return(
             <div className="w-full h-full pb-20 mb-20">
@@ -206,7 +214,7 @@ export default function CreatePaymentSplit({
                         <SplitPayer
                             isSplitPayerOpen = {isSplitPayerOpen}
                             onClose={() => setIsSplitPayerOpen(false)}
-                            userList={userList}
+                            currentProjectUsers={currentProjectUsers}
                             inputAmountValue={inputAmountValue}
                             splitPayerMap={splitPayerMap}
                             setSplitPayerMap={setSplitPayerMap}
@@ -216,7 +224,7 @@ export default function CreatePaymentSplit({
                         <SplitByPerson
                             isSplitByPersonOpen = {isSplitByPersonOpen}
                             onClose={() => setIsSplitByPersonOpen(false)}
-                            userList={userList}
+                            currentProjectUsers={currentProjectUsers}
                             inputAmountValue={inputAmountValue}
                             chooseSplitByPerson = {chooseSplitByPerson}
                             setChooseSplitByPerson = {setChooseSplitByPerson}
@@ -229,7 +237,7 @@ export default function CreatePaymentSplit({
                         <SplitByItem
                             isSplitByItemOpen = {isSplitByItemOpen}
                             onClose={() => setIsSplitByItemOpen(false)}
-                            userList={userList} 
+                            currentProjectUsers={currentProjectUsers} 
                             inputAmountValue={inputAmountValue}
                             itemPayloadList = {localItemPayloadList} //回傳作為更新使用
                             setSplitByItemMap={setSplitByItemMap}
@@ -317,7 +325,7 @@ export default function CreatePaymentSplit({
                                             <div className="shrink-0 flex items-center justify-center">
                                                 <Avatar
                                                 size="md"
-                                                img={userData?.avatar}
+                                                img={userData?.avatarURL}
                                                 userName={userData?.name}
                                                 />
                                             </div>
@@ -440,7 +448,7 @@ export default function CreatePaymentSplit({
                                 </div>
                                 <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
                                     {Object.entries(splitPayerMap).map(([uid, amount]) => {
-                                        const user = userList.find(user => user.uid === uid);
+                                        const user = currentProjectUsers.find(user => user.uid === uid);
                                         if (!user) return null;
                                         return (
                                         <div key={uid} className="px-3 py-3 flex items-center justify-start gap-2">
@@ -448,7 +456,7 @@ export default function CreatePaymentSplit({
                                             <div className="shrink-0 flex items-center justify-center">
                                                 <Avatar
                                                 size="md"
-                                                img={user.avatar}
+                                                img={user.avatarURL}
                                                 userName={user.name}
                                                 />
                                             </div>
@@ -491,7 +499,7 @@ export default function CreatePaymentSplit({
                                     </div>
                                 </div>
                                 <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
-                                    {userList
+                                    {currentProjectUsers
                                         .filter(user => {
                                             const map = splitWay === 'item' ? splitByItemMap : splitByPersonMap;
                                             return !!map[user.uid];
@@ -505,7 +513,7 @@ export default function CreatePaymentSplit({
                                                 <div className="shrink-0  flex items-center justify-center ">
                                                     <Avatar
                                                     size="md"
-                                                    img={user.avatar}
+                                                    img={user.avatarURL}
                                                     userName={user.name}
                                                     />
                                                 </div>

@@ -4,15 +4,16 @@ import Icon from "@/components/ui/Icon";
 import IconButton from "@/components/ui/IconButton";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
-import { User, SplitWay, SplitMap, CreateItemPayload } from "./types";
+import { SplitWay, SplitMap, CreateItemPayload } from "../../types/payment";
 import { formatNumber } from "./utils";
 import SplitByItemEdit from "./SplitByItemEditDialog";
+import { UserData } from "@/types/user";
 
 
 interface SplitByItemProps {
     isSplitByItemOpen: boolean;
     onClose: () => void;
-    userList: User[];
+    currentProjectUsers: UserData[];
     inputAmountValue:string;
     setSplitByItemMap:(map: SplitMap) => void;
     itemPayloadList:CreateItemPayload[];
@@ -23,7 +24,7 @@ interface SplitByItemProps {
 export default function SplitByItem({
         isSplitByItemOpen = false,
         onClose,
-        userList,
+        currentProjectUsers,
         inputAmountValue,
         setSplitByItemMap,
         itemPayloadList,
@@ -71,14 +72,14 @@ export default function SplitByItem({
     // get data
     const updateSplitByItemMapFromItemList = () => {
         const tempMap: SplitMap = Object.fromEntries(
-            userList.map(user => [
+            currentProjectUsers.map(user => [
             user.uid,
             { fixed: 0, percent: 0, total: 0 }
             ])
         );      
         // 累加每筆 item 的付款資訊
         itemList.forEach(item => {
-            Object.entries(item.splitMap).forEach(([uid, entry]) => {
+            Object.entries(item.split_map ?? {}).forEach(([uid, entry]) => {
                     
             // 每個人累加自己的金額（覆寫而非疊加）
             tempMap[uid].fixed = (tempMap[uid].fixed || 0) + (entry.total|| 0);
@@ -180,7 +181,7 @@ export default function SplitByItem({
                                                         size='xl'
                                                     /> 
                                                     </div>
-                                                    <p className="text-base w-full line-clamp-2 overflow-hidden text-ellipsis break-words">{item.paymentName}</p>
+                                                    <p className="text-base w-full line-clamp-2 overflow-hidden text-ellipsis break-words">{item.payment_name}</p>
                                                 </div>
                                                 <div  className="shrink-0 w-50 flex items-start justify-start gap-2">
                                                     <p className="h-9 w-full text-base flex items-center justify-end">{formatNumber(item.amount)} 元</p>
@@ -208,8 +209,8 @@ export default function SplitByItem({
                                             </div>
                                             {isOpen && (
                                                 <div className={`w-full h-fit py-4 px-6 flex flex-col items-start justify-start gap-2 max-h-40 rounded-xl  bg-sp-green-200 overflow-hidden ${scrollClass}`}>
-                                                    {Object.entries(item.splitMap).map(([uid, detail]) => {
-                                                        const user = userList.find(user => user.uid === uid);
+                                                    {Object.entries(item.split_map).map(([uid, detail]) => {
+                                                        const user = currentProjectUsers.find(user => user.uid === uid);
                                                         const name = user?.name ?? "";
                                                         return(
                                                             <div key={uid} className="w-full text-base flex items-bottom justify-end gap-4">
@@ -251,7 +252,7 @@ export default function SplitByItem({
                 )}
                 {step === 'singleItem' && (
                     <SplitByItemEdit
-                        userList={userList}
+                        currentProjectUsers={currentProjectUsers}
                         setStep = {setStep}
                         initialPayload={editItemIndex !== null ? itemList[editItemIndex] : undefined}
                         setItemPayload={(payload) => {

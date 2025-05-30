@@ -12,7 +12,20 @@ class CategoryDB:
         return self.db.query(CategoryModel).all()
 
     def create_category(self, category: CategorySchema):
-        db_category = CategoryModel(name=category.name, parent_id=category.parent_id)
+        existing = self.db.query(CategoryModel).filter_by(
+            name_en=category.name_en,
+            parent_id=category.parent_id
+        ).first()
+        if existing:
+            raise HTTPException(
+                status_code=400,
+                detail="Category with the same English name already exists under this parent.",
+            )
+        db_category = CategoryModel(
+            name_en=category.name_en,
+            name_zh=category.name_zh,
+            parent_id=category.parent_id
+        )
         self.db.add(db_category)
         try:
             self.db.commit()

@@ -57,19 +57,19 @@ export default function DashboardHeader({userData}:DashboardHeaderProps){
                     <div className="flex items-center justify-start -space-x-2">
                         <Avatar
                             size="md"
-                            img={userData?.avatar}
+                            img={userData?.avatarURL}
                             userName = {userData?.name || ''}
                             className = 'border-2 border-zinc-100'
                         />
                         <Avatar
                             size="md"
-                            img={userData?.avatar}
+                            img={userData?.avatarURL}
                             userName = {userData?.name || ''}
                             className = 'border-2 border-zinc-100'
                         />
                         <Avatar
                             size="md"
-                            img={userData?.avatar}
+                            img={userData?.avatarURL}
                             userName = {userData?.name || ''}
                             className = 'border-2 border-zinc-100'
                         />

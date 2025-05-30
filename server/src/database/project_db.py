@@ -40,7 +40,21 @@ class ProjectDB:
         try:
             self.db.commit()
             self.db.refresh(project)
-            return project
+            return GetProjectSchema(
+                id=project.id,
+                project_name=project.project_name,
+                start_time=project.start_time,
+                end_time=project.end_time,
+                style=project.style,
+                currency=project.currency,
+                budget=project.budget,
+                owner=project.owner,
+                editor=project_data.editor,  # 直接用原始傳入值
+                member=project_data.member,
+                member_budgets=project.member_budgets,
+                desc=project.desc,
+                img=project.img
+            )
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Create Project failed: {str(e)}")

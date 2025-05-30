@@ -16,19 +16,21 @@ import { buildProjectCoverUrl } from "@/utils/projectCover";
 type AuthContextType = {
     firebaseUser: User | null;     // Firebase 原始 user
     userData: UserData | null;      // 後端取得的完整使用者資料
-    loading: boolean;
+    isReady: boolean;
     logInUser: () => Promise<boolean>;
     logOutUser: () => Promise<boolean>;
     projectData: GetProjectData[];
+    addProject: (project: GetProjectData) => void;
 };
 
 export const AuthContext = createContext<AuthContextType>({
     firebaseUser: null,
     userData: null,
     projectData:[],
-    loading: true,
+    isReady: false,
     logInUser: async () => false,
     logOutUser: async () => true,
+    addProject: () => {}
 });
 
 
@@ -41,14 +43,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [userData, setUserData] = useState<UserData | null>(null);
     const [projectData, setProjectData] = useState<GetProjectData[]>([]);
     const [loading, setLoading] = useState(true);
+    const isReady = !!firebaseUser && !!userData && !loading;
+
+    const addProject = (newProject: GetProjectData) => {
+        setProjectData(prev => [...prev, newProject]);
+    };
 
     useEffect(() => {
-        let fetched = false;
-
         const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
         setFirebaseUser(userAuth);
-        if (fetched) return;
-        fetched = true;
+        setLoading(true);
         console.log("✅ running onAuthStateChanged fetcher"); 
 
         if (userAuth) {
@@ -62,8 +66,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     email: userData.email,
                     name: userData.name,
                     uid_in_auth: userData.uid_in_auth,
-                    avatar_index: userData.avatar,
-                    avatar: buildAvatarUrl(userData.avatar),
+                    avatar: userData.avatar,
+                    avatarURL: buildAvatarUrl(userData.avatar),
                 };
 
                 const fullProjectList: GetProjectData[] = projectData.map((project) => ({
@@ -94,7 +98,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     return (
         <AuthContext.Provider
-            value={{ firebaseUser, projectData, userData, loading, logInUser, logOutUser }}
+            value={{ firebaseUser, projectData, userData, isReady, logInUser, logOutUser,addProject, }}
         >
         {children}
         </AuthContext.Provider>

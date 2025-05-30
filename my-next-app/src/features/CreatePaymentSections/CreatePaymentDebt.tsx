@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { useState, useEffect, useMemo} from "react";
+import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
@@ -8,19 +9,25 @@ import Select from "@/components/ui/Select";
 import DebtPayer from "./DebtPayerDialog";
 import DebtReceiver from "./DebtReceiverDialog";
 import { getNowDatetimeLocal } from "@/utils/time";
-import { User, CreatePaymentPayload} from "./types"
+import {  CreatePaymentPayload} from "@/types/payment"
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
+import { UserData } from "@/types/user";
 
 
 interface CreatePaymentDebtProps {
-    userList: User[];
+    currentProjectUsers: UserData[];
+    userData: UserData;
     setPayload : (map: CreatePaymentPayload) => void
 }
 
 export default function CreatePaymentDebt({
-    userList,
+    currentProjectUsers,
+    userData,
     setPayload
     }:CreatePaymentDebtProps){
+        const currentUid = userData.uid;
+        const rawProjectId = useParams()?.projectId;
+        const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";   
 
         // receipt-debt
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
@@ -33,7 +40,9 @@ export default function CreatePaymentDebt({
 
 
         // 付款人預設
-        const [selectedPayerUid, setSelectedPayerUid] = useState(userList[0]?.uid || "");
+        const [selectedPayerUid, setSelectedPayerUid] = useState(() => {
+            return currentProjectUsers.find(user => user.uid === currentUid)?.uid || currentProjectUsers[0]?.uid ;
+        });
 
         const payerMap = useMemo(() => ({
             [selectedPayerUid]: parseFloat(inputDebtAmountValue || "0")
@@ -41,8 +50,9 @@ export default function CreatePaymentDebt({
 
             
         // 收款人預設
-        const [selectedReceiverUid, setSelectedReceiverUid] = useState(userList[1]?.uid || "");
-
+        const [selectedReceiverUid, setSelectedReceiverUid] = useState(() => {
+            return currentProjectUsers.find(user => user.uid !== currentUid)?.uid || currentProjectUsers[0]?.uid;
+        });
 
         const splitMap = useMemo(() => ({
             [selectedReceiverUid]: {
@@ -53,10 +63,8 @@ export default function CreatePaymentDebt({
         }), [selectedReceiverUid, inputDebtAmountValue]);
 
         // 假資料
-        const selectedDebtPayer = userList.find((user) => user.uid === selectedPayerUid);
-        const selectedDebtReceiver = userList.find((user) => user.uid === selectedReceiverUid);
-
-        console.log("還款人", payerMap, "收款人", splitMap)
+        const selectedDebtPayer = currentProjectUsers.find((user) => user.uid === selectedPayerUid);
+        const selectedDebtReceiver = currentProjectUsers.find((user) => user.uid === selectedReceiverUid);
 
         // 金額輸入限制
         const handleDebtAmountChange = (actualInput: string) => {
@@ -74,22 +82,21 @@ export default function CreatePaymentDebt({
 
         // get data
         useEffect(() => {
-            const payload: CreatePaymentPayload = {    
-                paymentName: "debt",
-                accountType: "group",  
-                recordMode: 'debt',    // "split" | "debt"
-                splitWay: null,      // "item" | "person"
-                splitMethod: null, // "percentage" | "actual" | "adjusted"
+            const payload: CreatePaymentPayload = { 
+                project_id:projectId,   
+                owner:currentUid,
+                payment_name: "debt",
+                account_type: "group",  
+                record_mode: 'debt',   
                 currency: selectCurrencyValue,
                 amount:  parseFloat(inputDebtAmountValue || "0"),
-                categoryId: null,
                 time: inputTimeValue,
                 desc: inputDescValue || "",
-                payerMap: payerMap,
-                splitMap: splitMap,
+                payer_map: payerMap,
+                split_map: splitMap,
             };
             setPayload(payload);
-        }, [selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap]);
+        }, [projectId,currentUid,selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap]);
 
 
         return(
@@ -101,7 +108,7 @@ export default function CreatePaymentDebt({
                             onClose={() => setIsDebtPayerOpen(false)}
                             selectedUid={selectedPayerUid}
                             setSelectedUid={setSelectedPayerUid}
-                            userList={userList}
+                            currentProjectUsers={currentProjectUsers}
                         />
                     }
                     {isDebtReceiverOpen &&
@@ -110,7 +117,7 @@ export default function CreatePaymentDebt({
                             onClose={() => setIsDebtReceiverOpen(false)}
                             selectedUid={selectedReceiverUid}
                             setSelectedUid={setSelectedReceiverUid}
-                            userList={userList}
+                            currentProjectUsers={currentProjectUsers}
                         />
                     }
                 </div>
@@ -126,7 +133,7 @@ export default function CreatePaymentDebt({
                                         <div className="shrink-0  flex items-center justify-center ">
                                             <Avatar
                                                 size="md"
-                                                img={selectedDebtPayer?.avatar}
+                                                img={selectedDebtPayer?.avatarURL}
                                                 userName = {selectedDebtPayer?.name}
                                             />
                                         </div>
@@ -183,7 +190,7 @@ export default function CreatePaymentDebt({
                                         <div className="shrink-0  flex items-center justify-center ">
                                             <Avatar
                                                 size="md"
-                                                img={selectedDebtReceiver?.avatar}
+                                                img={selectedDebtReceiver?.avatarURL}
                                                 userName = {selectedDebtReceiver?.name}
                                             />
                                         </div>

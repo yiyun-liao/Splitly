@@ -21,7 +21,7 @@ export interface ProjectData {
   member?: MemberUID[];           
   member_budgets?: MemberBudgetMap;
   desc?: string;
-  img:number; // 後端回傳的 avatar index
+  img:number; // 後端回傳的 project index
 }
 
 export interface GetProjectData {
@@ -37,6 +37,6 @@ export interface GetProjectData {
   member?: MemberUID[];           
   member_budgets?: MemberBudgetMap;
   desc?: string;
-  img:number; // 後端回傳的 avatar index
+  img:number; // 後端回傳的 project index
   imgURL?: string; // 最後是 Cloudinary URL
 }

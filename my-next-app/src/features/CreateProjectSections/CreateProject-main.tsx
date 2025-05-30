@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from 'next/navigation';
 import clsx from "clsx";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
@@ -9,8 +10,8 @@ import TextArea from "@/components/ui/textArea";
 import { ProjectStyle, MemberBudgetMap, ProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
 import { getNowDateLocal } from "@/utils/time";
-import { createProject } from "@/lib/projectApi";
 import { getRandomProjectCoverIndex } from "@/utils/projectCover";
+import { useCreateProject } from "./hooks";
 
 interface CreatePaymentProps {
     onClose: () => void;
@@ -25,6 +26,8 @@ export default function CreateProject({
     }:CreatePaymentProps){
 
     const currentUid = userData.uid;
+    const router = useRouter();
+    
 
     const [inputProjectName, setInputProjectName] = useState("");
     const [inputStartTimeValue, setInputStartTimeValue] = useState(getNowDateLocal());
@@ -74,7 +77,7 @@ export default function CreateProject({
             desc: inputDescValue || undefined,
             img: getRandomProjectCoverIndex(),
         };
-        }, [currentUid, inputProjectName,inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue,memberBudgetMap,inputDescValue]);
+    }, [currentUid, inputProjectName,inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue,memberBudgetMap,inputDescValue]);
     
     useEffect(() => {
         setProjectPayload(payload);
@@ -88,13 +91,20 @@ export default function CreateProject({
         }    
         return { isComplete };
     }, [projectPayload]); 
+
+    // submit and create project
+    const { handleCreateProject, isLoading  } = useCreateProject({
+        onSuccess: (project) => {
+          console.log("✅ 成功建立專案：", project);
+          router.push(`/${project.id}/dashboard`);
+          onClose();
+        },
+        onError: (err) => {
+          alert("建立專案失敗，請稍後再試");
+          console.log("專案建立" , err)
+        },
+    });
     
-    // project data
-    const handleSubmitData = async () => {
-        console.log("create", projectPayload);
-        await createProject(projectPayload);
-        // onClose(); // 如果你要關掉 dialog 也可以寫在這
-      };
 
     // css
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
@@ -116,9 +126,12 @@ export default function CreateProject({
                             width='fit'
                             variant='solid'
                             color='primary'
-                            disabled={!isComplete} 
-                            //isLoading={isLoading}
-                            onClick={handleSubmitData}
+                            disabled={!isComplete || isLoading} 
+                            isLoading={isLoading}
+                            onClick={async()=> {
+                                console.log("create", projectPayload);
+                                await handleCreateProject(projectPayload);
+                            }}
                             >
                                 儲存
                         </Button>

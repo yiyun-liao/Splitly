@@ -3,14 +3,15 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
-import { User, SplitMethod,SplitWay, SplitMap, CreateItemPayload } from "./types";
+import { UserData } from "@/types/user";
+import { SplitMethod,SplitWay, SplitMap, CreateItemPayload } from "../../types/payment";
 import { formatNumber,parsePercentToInt,parsePercentToDecimal,formatNumberForData, formatPercent } from "./utils";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 
 
 
 interface SplitByItemEditProps {
-    userList: User[];
+    currentProjectUsers: UserData[];
     setStep: React.Dispatch<React.SetStateAction<"list" | "singleItem">>;
     initialPayload?:CreateItemPayload
     setItemPayload : (map: CreateItemPayload) => void;
@@ -18,7 +19,7 @@ interface SplitByItemEditProps {
 }
 
 export default function SplitByItemEdit({
-        userList = [] ,
+        currentProjectUsers = [] ,
         setStep,
         initialPayload,
         setItemPayload,
@@ -33,12 +34,12 @@ export default function SplitByItemEdit({
     const [inputItemValue, setInputItemValue] = useState("");
 
     const itemSplitByPersonMap: SplitMap = Object.fromEntries(
-        userList.map(user => [ user.uid, { fixed: 0, percent: 0, total: 0 }])
+        currentProjectUsers.map(user => [ user.uid, { fixed: 0, percent: 0, total: 0 }])
     );
 
     const [rawPercentInputMap, setRawPercentInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
-            userList.map(user => {
+            currentProjectUsers.map(user => {
                 const { percent = 0 } = itemSplitByPersonMap[user.uid] || {};
                 return [user.uid, parsePercentToInt(percent)];
             })
@@ -47,7 +48,7 @@ export default function SplitByItemEdit({
     
     const [localSplitPercentageMap, setLocalSplitPercentageMap] =useState<SplitMap>(() => {
         return Object.fromEntries(
-            userList.map(user => {
+            currentProjectUsers.map(user => {
                 const totalAmount = parseFloat(inputItemAmountValue || "0");
                 const entry = itemSplitByPersonMap[user.uid];
                 const fixed = 0;
@@ -60,7 +61,7 @@ export default function SplitByItemEdit({
 
     const [rawActualInputMap, setRawActualInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
-            userList.map(user => {
+            currentProjectUsers.map(user => {
                 const { total = 0 } = itemSplitByPersonMap[user.uid] || {};
                 return [user.uid, formatNumber(total)];
             })
@@ -69,7 +70,7 @@ export default function SplitByItemEdit({
 
     const [localSplitActualMap, setLocalSplitActualMap] =useState<SplitMap>(() => {
         return Object.fromEntries(
-            userList.map(user => {
+            currentProjectUsers.map(user => {
                 const entry = itemSplitByPersonMap[user.uid];
                 const fixed = parseFloat(formatNumberForData(entry?.total ))|| 0;
                 const percent = 0;
@@ -81,7 +82,7 @@ export default function SplitByItemEdit({
 
     const [rawAdjustInputMap, setRawAdjustInputMap] = useState<Record<string, string>>(() => {
         return Object.fromEntries(
-            userList.map(user => {
+            currentProjectUsers.map(user => {
                 const { fixed = 0 } = itemSplitByPersonMap[user.uid] || {};
                 return [user.uid, fixed.toString()];
             })
@@ -90,14 +91,14 @@ export default function SplitByItemEdit({
 
     const [localSplitAdjustedMap, setLocalSplitAdjustedMap] =useState<SplitMap>(() => {
         return Object.fromEntries(
-            userList.map(user => {
+            currentProjectUsers.map(user => {
                 const totalAmount = parseFloat(inputItemAmountValue || "0");
                 const totalFixed = Object.values(itemSplitByPersonMap).reduce((sum, entry) => sum + (entry.fixed || 0), 0);
                 const remaining = totalAmount - totalFixed;
 
                 const entry = itemSplitByPersonMap[user.uid];
                 const fixed = entry?.fixed || 0;
-                const percent = parseFloat(formatNumberForData(1 / userList.length));
+                const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
                 const total = fixed + parseFloat(formatNumberForData(remaining * percent));
                 return [user.uid, { fixed, percent, total }];
             })
@@ -111,14 +112,14 @@ export default function SplitByItemEdit({
     useEffect(() => {
         if (initialPayload || initializedRef.current) return;
 
-        if (userList.length > 0) {
+        if (currentProjectUsers.length > 0) {
             const amount = parseFloat(inputItemAmountValue || "0");
-            const percent = parseFloat(formatNumberForData(1 / userList.length));
+            const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
             const total = parseFloat(formatNumberForData(amount * percent));
     
             // percentage
             const percentageMap: SplitMap = Object.fromEntries(
-                userList.map(user => [user.uid, {
+                currentProjectUsers.map(user => [user.uid, {
                     fixed: 0,
                     percent: percent,
                     total: total
@@ -126,12 +127,12 @@ export default function SplitByItemEdit({
             );
             setLocalSplitPercentageMap(percentageMap);
             setRawPercentInputMap(Object.fromEntries(
-                userList.map(user => [user.uid, parsePercentToInt(percent)])
+                currentProjectUsers.map(user => [user.uid, parsePercentToInt(percent)])
             ));
     
             // actual
             const actualMap: SplitMap = Object.fromEntries(
-                userList.map(user => [user.uid, {
+                currentProjectUsers.map(user => [user.uid, {
                     fixed: total,
                     percent: 0,
                     total: total
@@ -139,12 +140,12 @@ export default function SplitByItemEdit({
             );
             setLocalSplitActualMap(actualMap);
             setRawActualInputMap(Object.fromEntries(
-                userList.map(user => [user.uid, formatNumber(total)])
+                currentProjectUsers.map(user => [user.uid, formatNumber(total)])
             ));
     
             // adjusted
             const adjustedMap: SplitMap = Object.fromEntries(
-                userList.map(user => [user.uid, {
+                currentProjectUsers.map(user => [user.uid, {
                     fixed: 0,
                     percent: percent,
                     total: total
@@ -152,26 +153,26 @@ export default function SplitByItemEdit({
             );
             setLocalSplitAdjustedMap(adjustedMap);
             setRawAdjustInputMap(Object.fromEntries(
-                userList.map(user => [user.uid, "0"])
+                currentProjectUsers.map(user => [user.uid, "0"])
             ));
     
             // 預設為 percentage
             setChooseSplitByItem("percentage");
         }
-    }, [inputItemAmountValue, splitWay, userList, initialPayload]);
+    }, [inputItemAmountValue, splitWay, currentProjectUsers, initialPayload]);
 
     // update 
     useEffect(() => {
-        if (initializedRef.current || !initialPayload || userList.length === 0) return;
+        if (initializedRef.current || !initialPayload || currentProjectUsers.length === 0) return;
 
         initializedRef.current = true;
-        setInputItemValue(initialPayload.paymentName);
+        setInputItemValue(initialPayload.payment_name);
         setInputItemAmountValue(initialPayload.amount.toString());
-        setChooseSplitByItem(initialPayload.splitMethod);
+        setChooseSplitByItem(initialPayload.split_method);
       
-        const map = initialPayload.splitMap;
+        const map = initialPayload.split_map;
       
-        if (initialPayload.splitMethod === 'percentage') {
+        if (initialPayload.split_method === 'percentage') {
             setLocalSplitPercentageMap(map);
             setRawPercentInputMap(
                 Object.fromEntries(
@@ -180,7 +181,7 @@ export default function SplitByItemEdit({
             );
         }
         
-        if (initialPayload.splitMethod === 'actual') {
+        if (initialPayload.split_method === 'actual') {
             setLocalSplitActualMap(map);
             setRawActualInputMap(
                 Object.fromEntries(
@@ -189,7 +190,7 @@ export default function SplitByItemEdit({
             );
         }
         
-        if (initialPayload.splitMethod === 'adjusted') {
+        if (initialPayload.split_method === 'adjusted') {
             setLocalSplitAdjustedMap(map);
             setRawAdjustInputMap(
                 Object.fromEntries(
@@ -198,7 +199,7 @@ export default function SplitByItemEdit({
             );
         }
         
-    }, [initialPayload, userList]);
+    }, [initialPayload, currentProjectUsers]);
 
     const handlePercentageChange = (uid: string, percentInput: string) => {
         const rawPercent = sanitizeDecimalInput(percentInput);
@@ -264,10 +265,10 @@ export default function SplitByItemEdit({
     
         // 更新每個人的 total 與 percent
         const updatedMap: SplitMap = {};
-        userList.forEach(user => {
+        currentProjectUsers.forEach(user => {
             const entry = newMap[user.uid] || { fixed: 0, percent: 0, total: 0 };
             const fixed = entry.fixed || 0;
-            const percent = parseFloat(formatNumberForData(1 / userList.length));
+            const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
             const total = entry.fixed + parseFloat(formatNumberForData(remaining * percent));
     
             updatedMap[user.uid] = { fixed, total, percent };
@@ -357,10 +358,11 @@ export default function SplitByItemEdit({
         }
 
         return {
+            payment_id:"",
             amount: parseFloat(inputItemAmountValue  || "0"),
-            paymentName: inputItemValue,
-            splitMethod: chooseSplitByItem, // "percentage" | "actual" | "adjusted"
-            splitMap: newSplitMap,
+            payment_name: inputItemValue,
+            split_method: chooseSplitByItem, // "percentage" | "actual" | "adjusted"
+            split_map: newSplitMap,
         };
         }, [chooseSplitByItem, inputItemAmountValue, inputItemValue, localSplitActualMap, localSplitAdjustedMap, localSplitPercentageMap]);
     
@@ -431,7 +433,7 @@ export default function SplitByItemEdit({
                 </div>
                 {chooseSplitByItem === 'percentage' && (
                     <div className="pt-2">
-                    {userList.map((user) => {
+                    {currentProjectUsers.map((user) => {
                         const entry = localSplitPercentageMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
                         
                         return(
@@ -440,7 +442,7 @@ export default function SplitByItemEdit({
                                     <div  className="shrink-0 flex items-center justify-center ">
                                         <Avatar
                                             size="md"
-                                            img={user?.avatar}
+                                            img={user?.avatarURL}
                                             userName = {user?.name}
                                         />
                                     </div>
@@ -470,14 +472,14 @@ export default function SplitByItemEdit({
                 )}
                 {chooseSplitByItem === 'actual' && (
                     <div className="pt-2">
-                        {userList.map((user) => {
+                        {currentProjectUsers.map((user) => {
                             return(
                                 <div key={user.uid} className="px-3 pb-2 flex items-start justify-start gap-2">
                                     <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
                                         <div  className="shrink-0 flex items-center justify-center ">
                                             <Avatar
                                                 size="md"
-                                                img={user?.avatar}
+                                                img={user?.avatarURL}
                                                 userName = {user?.name}
                                             />
                                         </div>
@@ -504,7 +506,7 @@ export default function SplitByItemEdit({
                 )}
                 {chooseSplitByItem === 'adjusted' && (
                     <div className="pt-2">
-                        {userList.map((user) => {
+                        {currentProjectUsers.map((user) => {
                             const entry = localSplitAdjustedMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
 
                             return(
@@ -513,7 +515,7 @@ export default function SplitByItemEdit({
                                         <div  className="shrink-0 flex items-center justify-center ">
                                             <Avatar
                                                 size="md"
-                                                img={user?.avatar}
+                                                img={user?.avatarURL}
                                                 userName = {user?.name}
                                             />
                                         </div>
@@ -535,7 +537,7 @@ export default function SplitByItemEdit({
                                             <p className="shrink-0 h-9 text-base flex items-center">元</p>
                                         </div>
                                         <p className="shrink-0 w-full mt-[-24px] text-base flex items-center justify-end text-zinc-500"> 
-                                            + {formatPercent(1 / userList.length)} = {formatNumber(entry.total)} 元
+                                            + {formatPercent(1 / currentProjectUsers.length)} = {formatNumber(entry.total)} 元
                                         </p>
                                     </div>
                                 </div>

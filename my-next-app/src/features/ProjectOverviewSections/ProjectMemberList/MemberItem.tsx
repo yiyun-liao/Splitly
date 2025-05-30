@@ -13,7 +13,7 @@ export default function MemberItem({ userData }: MemberItemProps) {
       <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
         <Avatar 
             size="md" 
-            img={userData?.avatar} 
+            img={userData?.avatarURL} 
             userName={userData?.name} 
             //onAvatarClick={() => console.log('Clicked!')}
         />

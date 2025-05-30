@@ -1,9 +1,9 @@
-import { GetProjectData } from "@/types/project";
+import { ProjectData } from "@/types/project";
 
 const BASE_URL = "http://localhost:8000";
 
 // 建立專案
-export async function createProject(payload: GetProjectData) {
+export async function createProject(payload: ProjectData) {
     try {
         const res = await fetch(`${BASE_URL}/api/project`, {
             method: "POST",
@@ -30,7 +30,7 @@ export async function createProject(payload: GetProjectData) {
 // 刪除專案
 export async function deleteProject(projectId: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project?id=${projectId}`, {
+        const res = await fetch(`${BASE_URL}/api/project?pid=${projectId}`, {
             method: "DELETE",
         });
 
@@ -51,8 +51,31 @@ export async function deleteProject(projectId: string) {
 // 取得某使用者的專案列表
 export async function fetchProjectsByUser(token: string,uid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project/by-user?uid=${uid}`,{
+        const res = await fetch(`${BASE_URL}/api/project/by-user?uid=${uid}`,{ 
+            method: "GET", 
             headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error("Failed to fetch projects: " + errorText);
+        }
+
+        const data = await res.json();
+        console.log("fetchProjectsByUser:", data);
+        return data;
+    } catch (err) {
+        console.error("Error fetching projects:", err);
+        throw err;
+    }
+}
+
+// 取得專案的所有成員
+export async function fetchUserByProject(pid: string) {
+    try {
+        const res = await fetch(`${BASE_URL}/api/getUsers/by-project?pid=${pid}`,{
+            method: "GET",
+            headers: {"Content-Type": "application/json",},
         });
 
         if (!res.ok) {

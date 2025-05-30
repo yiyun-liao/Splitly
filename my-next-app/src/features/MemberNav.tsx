@@ -6,16 +6,15 @@ import { usePathname } from 'next/navigation';
 import clsx from "clsx";
 import CreateProject from "./CreateProjectSections/CreateProject-main";
 import { logOutUser } from "@/lib/auth";
-import { useProjectData } from "@/contexts/ProjectContext";
+import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 
 
 
 export default function MemberNav() {
     const router = useRouter();
-    const params = useParams();
     const pathname = usePathname();
-    const currentProjectId = params.projectId;
-    const {projectData, userData} = useProjectData();
+    const { projectId } = useParams();
+    const {projectData, userData} = useGlobalProjectData();
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")
     const [activePath, setActivePath] = useState(pathname); // 對應當前功能頁面渲染按鈕
@@ -63,31 +62,30 @@ export default function MemberNav() {
                             <IconButton
                                 icon='solar:widget-2-bold'
                                 size='md'
-                                variant={activePath === `/${currentProjectId}/dashboard` ? 'solid' : 'outline'}
+                                variant={activePath === `/${projectId}/dashboard` ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${currentProjectId}/dashboard`)} 
+                                onClick={() => router.push(`/${projectId}/dashboard`)} 
                             />
                             <IconButton
                                 icon='solar:reorder-bold'
                                 size='md'
-                                variant={activePath === `/${currentProjectId}/expense` ? 'solid' : 'outline'}
+                                variant={activePath === `/${projectId}/expense` ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${currentProjectId}/expense`)} 
+                                onClick={() => router.push(`/${projectId}/expense`)} 
                             />
                         </div>
                     </div>
                     <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
-                        {projectData
-                            .map(project => {
+                        {projectData?.map(project => {
                             return(
                                 <ImageButton
                                     key={project.id}
                                     image={project.imgURL}
                                     size='md'
                                     imageName= {project.project_name}
-                                    onClick={() => router.push(`/${project.id}/expense`)}
+                                    onClick={() => router.push(`/${project.id}/dashboard`)}
                                 />
                             )}
                         )}

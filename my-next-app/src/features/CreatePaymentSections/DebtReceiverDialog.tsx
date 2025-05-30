@@ -1,7 +1,7 @@
 import Dialog from "@/components/ui/Dialog";
 import Avatar from "@/components/ui/Avatar";
 import IconButton from "@/components/ui/IconButton";
-import { User } from "./types";
+import { UserData } from "@/types/user";
 
 
 
@@ -10,7 +10,7 @@ interface DebtReceiverProps {
     onClose: () => void;
     selectedUid: string;
     setSelectedUid: (uid: string) => void;
-    userList: User[];
+    currentProjectUsers: UserData[];
 }
 
 export default function DebtReceiver({
@@ -18,14 +18,14 @@ export default function DebtReceiver({
         onClose,
         selectedUid,
         setSelectedUid,
-        userList
+        currentProjectUsers
     }:DebtReceiverProps){
 
 
     const renderBody = () => {
         return(
             <div>
-                {userList.map((user) => {
+                {currentProjectUsers.map((user) => {
                 const isSelected = user.uid === selectedUid;
 
                 return (
@@ -37,21 +37,21 @@ export default function DebtReceiver({
                         onClose(); 
                     }}
                     >
-                    <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
-                        <div className="shrink-0 flex items-center justify-center">
-                        <Avatar size="md" img={user.avatar} userName={user.name} />
+                        <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
+                            <div className="shrink-0 flex items-center justify-center">
+                            <Avatar size="md" img={user.avatarURL} userName={user.name} />
+                            </div>
+                            <p className="text-base w-full truncate">{user.name}</p>
                         </div>
-                        <p className="text-base w-full truncate">{user.name}</p>
-                    </div>
-                    <div className="shrink-0 flex items-start justify-start gap-2">
-                        <IconButton
-                        icon={isSelected ? "solar:unread-bold" : "solar:stop-line-duotone"}
-                        size="sm"
-                        variant="text-button"
-                        color="zinc"
-                        type="button"
-                        />
-                    </div>
+                        <div className="shrink-0 flex items-start justify-start gap-2">
+                            <IconButton
+                            icon={isSelected ? "solar:unread-bold" : "solar:stop-line-duotone"}
+                            size="sm"
+                            variant="text-button"
+                            color="zinc"
+                            type="button"
+                            />
+                        </div>
                     </div>
                 );
                 })}
@@ -62,18 +62,11 @@ export default function DebtReceiver({
     return(
         <Dialog
                 header="匯款人"
-                open={isDebtReceiverOpen} // 從某處打開
+                open={isDebtReceiverOpen} 
                 onClose={ () => {
                     onClose();
-                }} // 點擊哪裡關閉
-                //headerClassName= {step === "add" ? undefined : "ml-11"}
-                // bodyClassName= string // 看需求
-                //footerClassName= "items-center justify-end"
-                //leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
-                //hideCloseIcon = false
+                }}
                 closeOnBackdropClick = {true}
-                //onLeftIconClick={handleBack}
-                //footer= {renderFooter()}
             >
                 {renderBody()}
         </Dialog>
