@@ -44,5 +44,6 @@ class UpdateProjectSchema(BaseModel):
 
 class ProjectCreateMinimalResponse(BaseModel):
     success: bool
+    project: Optional[GetProjectSchema] = None
     project_name: Optional[str]  = None
     member: Optional[List[str]]  = None

@@ -22,7 +22,7 @@ class ProjectRouter:
                 project = project_db.create_project(body)
                 return {
                     "success": True,
-                    "project_name": project.project_name
+                    "project": project
                 }
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))

@@ -20,6 +20,7 @@ type AuthContextType = {
     logInUser: () => Promise<boolean>;
     logOutUser: () => Promise<boolean>;
     projectData: GetProjectData[];
+    addProject: (project: GetProjectData) => void;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -29,6 +30,7 @@ export const AuthContext = createContext<AuthContextType>({
     loading: true,
     logInUser: async () => false,
     logOutUser: async () => true,
+    addProject: () => {}
 });
 
 
@@ -41,7 +43,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [userData, setUserData] = useState<UserData | null>(null);
     const [projectData, setProjectData] = useState<GetProjectData[]>([]);
     const [loading, setLoading] = useState(true);
-
+    const addProject = (newProject: GetProjectData) => {
+        setProjectData(prev => [...prev, newProject]);
+    };
     useEffect(() => {
         let fetched = false;
 
@@ -94,7 +98,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     return (
         <AuthContext.Provider
-            value={{ firebaseUser, projectData, userData, loading, logInUser, logOutUser }}
+            value={{ firebaseUser, projectData, userData, loading, logInUser, logOutUser,addProject, }}
         >
         {children}
         </AuthContext.Provider>
