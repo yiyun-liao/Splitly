@@ -1,21 +1,14 @@
 import { groupBy } from "lodash";
 
 import ReceiptCard from "./PaymentListSections/ReceiptCard";
-import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
-import { getPayerText, isBorrowed, getCategoryImg } from "./PaymentListSections/ReceiptCardutils";
+import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 
+export default function PaymentList(){
 
-interface PaymentListProps {
-    onCreateClick?: () => void;
-  }
-
-export default function PaymentList({
-    }:PaymentListProps){
-
-    const {userData} = useAuth();
     const categoryList = useCategoryOptions();
+    const {userData} = useGlobalProjectData();
     const {currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
 
     const currentUserId = userData?.uid || "";
@@ -44,10 +37,12 @@ export default function PaymentList({
                             <div key={payment.id}>
                                 <ReceiptCard
                                     payment_name={payment.payment_name}
-                                    payer_text={getPayerText(payment.payer_map,payment.amount, currentUserId, userList)}
-                                    isBorrowed={isBorrowed(payment.payer_map, currentUserId)}
                                     amount={payment.amount}
-                                    category={getCategoryImg(payment.category_id?? 0, categoryList)}
+                                    payer_map={payment.payer_map}
+                                    currentUserId={currentUserId}
+                                    userList={userList}
+                                    categoryId={payment.category_id}
+                                    categoryList={categoryList}
                                 />
                                 {index !== payments.length - 1 && (
                                     <div className="w-full h-0.25 bg-sp-green-200"></div>

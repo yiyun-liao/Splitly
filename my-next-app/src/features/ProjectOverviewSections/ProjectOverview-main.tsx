@@ -1,6 +1,8 @@
 import clsx from "clsx";
+import { groupBy } from "lodash";
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from "react";
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from "react";
 import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
@@ -8,29 +10,37 @@ import ProjectSelfDetail from "./ProjectSelfDetailDialog";
 import ProjectWiseSpilt from "./ProjectWiseSpiltDialog";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
-import { getBudgetStatus } from "@/utils/budgetHint";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-
+import { getBudgetStatus } from "@/utils/budgetHint";
+import { useCategoryOptions } from "@/contexts/CategoryContext";
 
 export default function ProjectOverview(){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
     const [isWiseSpiltDialogOpen, setIsWiseSpiltDialogOpen] = useState(false)
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false)
-
-
-    const router = useRouter();
-    const params = useParams();
-    const projectId = params.projectId as string;
-    const {userData} = useGlobalProjectData();
-    const {currentProjectData} = useCurrentProjectData();
     
-    console.log(currentProjectData, userData)
+    const categoryList = useCategoryOptions();
+    const {userData} = useGlobalProjectData();
+    const {currentProjectData:data, currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
+    
+    // 判斷顯示支出或是圖表
+    const currentUserId = userData?.uid || "";
+    const userList = currentProjectUsers || [];
+    const projectId = data.id;
+    const [currentPage, setCurrentPage] = useState("");
+    const router = useRouter();
+    const pathname = usePathname();
+    useEffect(() => {
+        setCurrentPage(pathname);
+    }, [pathname]);
 
-    // render currentProjectData 
-    const privateBudget = currentProjectData?.member_budgets?.[userData.uid] ?? undefined;
-    // const budgetStatus = getBudgetStatus( total, currentProjectData?.budget);
-    const budgetStatus = getBudgetStatus( 7300, currentProjectData?.budget);
 
+    // render data 
+    const privateBudget = data?.member_budgets?.[userData.uid] ?? undefined;
+    // const budgetStatus = getBudgetStatus( total, data?.budget);
+    const budgetStatus = getBudgetStatus( 7300, data?.budget);
+
+    // css
     const overviewBubbleClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-white-40 overflow-hidden hover:bg-sp-blue-200 hover:shadow")
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     
@@ -72,16 +82,16 @@ export default function ProjectOverview(){
                                     </Button>
                                 </div>
                             </div>
-                            {(!!currentProjectData?.start_time || !!currentProjectData?.end_time) && (
+                            {(!!data?.start_time || !!data?.end_time) && (
                                 <div className="px-3 pb-3">
-                                    <p className="text-base font-semibold">{currentProjectData?.start_time ?? "過去某天"} - {currentProjectData?.end_time ?? "至今"} </p>
+                                    <p className="text-base font-semibold">{data?.start_time ?? "過去某天"} - {data?.end_time ?? "至今"} </p>
                                 </div>
                             )}
                             <div className="flex gap-2 flex-wrap justify-between w-full">
-                                {(!!currentProjectData?.budget) && (
+                                {(!!data?.budget) && (
                                     <div className="px-3 py-3 w-fit">
                                         <p className="text-base">專案預算規劃</p>
-                                        <p className="text-2xl  font-semibold">${currentProjectData.budget}</p>
+                                        <p className="text-2xl  font-semibold">${data.budget}</p>
                                     </div>
                                 )}
                                 {(!!privateBudget) && (
@@ -108,7 +118,7 @@ export default function ProjectOverview(){
                     <div className="w-full xl:w-1/2 flex flex-col items-start justify-start gap-3">
                         <div id="overview-bubble-spilt-self" className={`${overviewBubbleClass}`}>
                             <div className="pl-3 pb-3 flex items-center justify-start gap-2">
-                                <p className="text-base w-full">你在專案中借出</p>
+                                <p className="text-base w-full">你在專案中借出(這裡還沒做)</p>
                                 <div className="shrink-0 ">
                                     <Button
                                         size='sm'
@@ -138,7 +148,7 @@ export default function ProjectOverview(){
                         </div>
                         <div id="overview-bubble-spilt" className={`${overviewBubbleClass} flex-1`}>
                             <div className="pl-3 pb-3 flex items-center justify-start gap-2">
-                                <p className="text-base w-full">分帳</p>
+                                <p className="text-base w-full">分帳(這裡還沒做)</p>
                                 <div className="shrink-0 ">
                                     <Button
                                         size='sm'
@@ -254,13 +264,13 @@ export default function ProjectOverview(){
                         </div>
                     </div>
                 </div>
-                {location.pathname === `/${projectId}/expense` &&(
+                {currentPage === `/${projectId}/expense` &&(
                     <div id="overview-bubble-expense-chart" className={`${overviewBubbleClass} h-100 shrink-0 text-center`}>
                         chart
                         <img src="https://res.cloudinary.com/ddkkhfzuk/image/upload/test.JPG" width={480} height={200} alt="圖" />
                     </div>
                 )}
-                {location.pathname === `/${projectId}/dashboard` && (
+                {currentPage === `/${projectId}/dashboard` && (
                     <div id="overview-bubble-expense-quick-view" className={`${overviewBubbleClass} shrink-0`}>
                         <div className="pl-3 pb-3 flex items-center justify-start gap-2">
                             <p className="text-base w-full">近五筆收支紀錄</p>
@@ -279,15 +289,22 @@ export default function ProjectOverview(){
                             </div>
                         </div>
                         <div id="expense-list-frame" className="w-full pb-4 px-3">
-                            <ReceiptCard/>
-                            <div className="w-full h-0.25 bg-sp-green-200"></div>
-                            <ReceiptCard/>
-                            <div className="w-full h-0.25 bg-sp-green-200"></div>
-                            <ReceiptCard/>
-                            <div className="w-full h-0.25 bg-sp-green-200"></div>
-                            <ReceiptCard/>
-                            <div className="w-full h-0.25 bg-sp-green-200"></div>
-                            <ReceiptCard/>
+                            {(list || []).slice(0, 5).map((payment, index) => (
+                                <div key={payment.id}>
+                                    <ReceiptCard
+                                        payment_name={payment.payment_name}
+                                        amount={payment.amount}
+                                        payer_map={payment.payer_map}
+                                        currentUserId={currentUserId}
+                                        userList={userList}
+                                        categoryId={payment.category_id}
+                                        categoryList={categoryList}
+                                    />
+                                    {index !== 4 && (
+                                        <div className="w-full h-0.25 bg-sp-green-200"></div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )}

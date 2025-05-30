@@ -51,7 +51,7 @@ export default function PaymentOverview(){
                     </div>
                     <div id="expense-list" className="px-3 py-3 mb-4 rounded-2xl h-fit bg-sp-blue-200">
                         <div id="expense-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
-                            <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視</p>
+                            <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視（這裡還沒做）</p>
                         </div>
                         <div id="expense-list-frame" className="py-2 px-4 ">
                             {!!categoryParents && (categoryParents.map(cat => {
@@ -90,7 +90,7 @@ export default function PaymentOverview(){
                     </div>
                     <div id="expense-list" className="px-3 py-3 mb-4 rounded-2xl h-fit bg-sp-blue-200">
                         <div id="expense-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
-                            <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視</p>
+                            <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視（這裡還沒做）</p>
                         </div>
                         <div id="expense-list-frame" className="py-2 px-4 ">
                             {!!categoryParents && (categoryParents.map(cat => {
