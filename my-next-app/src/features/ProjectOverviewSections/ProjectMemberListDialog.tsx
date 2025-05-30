@@ -22,7 +22,7 @@ export default function ProjectMemberList({
     currentProjectData
 }:ProjectMemberListProps){
 
-
+    const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/join?pid=${currentProjectData.id}`;
     const {userData} = useGlobalProjectData();
     
     const [step, setStep] = useState<"list" | "add">("list")
@@ -57,9 +57,60 @@ export default function ProjectMemberList({
         }
         if (step === 'add'){
             return(
-                <div>
-                    <p className="text-base w-full">新增成員</p>
-                    <p>專案 URL: https://yourproject.com/1/expense</p>
+                <div className="flex flex-col justify-start items-center gap-4 pt-20">
+                    <p className="text-xl w-full text-sp-blue-500 font-bold text-center">新增成員</p>
+                    <div  className="w-full flex items-center justify-center -space-x-2">
+                            <Avatar
+                                size="lg"
+                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg"
+                                userName="demo"
+                                className="border-2 border-zinc-100"
+                            />
+                            <Avatar
+                                size="lg"
+                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/2.jpg"
+                                userName="demo"
+                                className="border-2 border-zinc-100"
+                            />
+                            <Avatar
+                                size="lg"
+                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/3.jpg"
+                                userName="demo"
+                                className="border-2 border-zinc-100"
+                            />
+                            <Avatar
+                                size="lg"
+                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/4.jpg"
+                                userName="demo"
+                                className="border-2 border-zinc-100"
+                            />
+                            <Avatar
+                                size="lg"
+                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/5.jpg"
+                                userName="demo"
+                                className="border-2 border-zinc-100"
+                            />
+                            <Avatar
+                                size="lg"
+                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/6.jpg"
+                                userName="demo"
+                                className="border-2 border-zinc-100"
+                            />
+                    </div>
+                    <div className="w-60">
+                        <Button
+                            size="md"
+                            variant="solid"
+                            color="primary"
+                            width = 'full'
+                            onClick={()=>{
+                                navigator.clipboard.writeText(inviteUrl);
+                                alert("複製成功，請分享連結給團員")
+                            }}
+                        >
+                            複製專案連結
+                        </Button>
+                    </div>
                     {/* QR code  */}
                 </div>
             )
@@ -69,17 +120,14 @@ export default function ProjectMemberList({
     return(
         <Dialog
                 header="成員"
-                open={isMemberListOpen} // 從某處打開
+                open={isMemberListOpen}
                 onClose={ () => {
                     setStep("list");
                     onClose();
-                }} // 點擊哪裡關閉
-                //headerClassName= {step === "add" ? undefined : "ml-11"}
-                // bodyClassName= string // 看需求
+                }} 
                 footerClassName= "items-center justify-end"
                 leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
-                //hideCloseIcon = false
-                //closeOnBackdropClick = false
+                closeOnBackdropClick = {true}
                 onLeftIconClick={handleBack}
                 footer={
                     step === "list" ? (
@@ -88,9 +136,10 @@ export default function ProjectMemberList({
                                 variant="outline"
                                 color="primary"
                                 width = 'full'
+                                disabled = {true}
                                 onClick={() => alert('建立虛擬成員')}
                             >
-                                建立虛擬成員
+                                建立虛擬成員(還沒做)
                             </Button>
                             <Button
                                 variant="outline"
@@ -101,16 +150,7 @@ export default function ProjectMemberList({
                                 新增成員
                             </Button>
                         </>
-                    ) : (
-                        <Button
-                            variant="solid"
-                            color="primary"
-                            width = 'full'
-                            onClick={handleBack}
-                        >
-                            返回成員列表
-                        </Button>
-                    )
+                    ) : ("")
                 }
             >
                 {renderBody()}

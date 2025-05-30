@@ -16,27 +16,32 @@ import MemberNav from "@/features/MemberNav";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
     const router = useRouter();
-    const { userData, projectData, loading:myDataLoading } = useAuth();
+    const { userData, projectData, isReady:myDataLoading } = useAuth();
     const { projectId } = useParams();
     console.log('projectId:', projectId);
 
-    const currentProjectData = useMemo(() => {
-        return projectData.find(project => project.id === projectId);
-    }, [projectData, projectId]);
 
-    const { users: currentProjectUsers, loading: usersLoading } = useProjectUsers(currentProjectData?.id);
+    const currentProjectData = useMemo(() => {
+        if (!projectId || !myDataLoading) return undefined;
+        return projectData.find(project => project.id === projectId);
+    }, [projectData, projectId, myDataLoading]);
+
+    const { users: currentProjectUsers, isReady: usersLoading } = useProjectUsers(currentProjectData?.id);
 
     console.log("what i get currentProjectData",currentProjectData)
     console.log("what i get currentUserData",currentProjectUsers)
 
 
-    if (myDataLoading || usersLoading) return <p>Loading...</p>;
+    if ( !myDataLoading || !usersLoading) return <p>Loading...</p>;
 
-    if (!currentProjectData){
-        console.error("沒有", projectId)
-        router.push(`/${projectData[0].id}/dashboard`);
+    if (!currentProjectData) {
+        console.error("沒有拿到 currentProjectData", projectId);
+        if (projectData.length > 0) {
+            router.push(`/${projectData[0].id}/dashboard`);
+        }
         return null;
     }
+
     if (!userData) {
         console.error("userData is null");
         return <p>無法取得使用者資料</p>; // 或 return null

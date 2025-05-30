@@ -95,13 +95,13 @@ export default function ProjectOverview(){
                         <div id="overview-bubble-expense" className={`${overviewBubbleClass}`}>
                             <div className="px-3 py-3">
                                 <p className="text-base">整體支出</p>
-                                <p className="text-2xl font-bold">$8000.00</p>
+                                <p className="text-2xl font-bold">$8000.00(假的)</p>
                             </div>
                         </div>
                         <div id="overview-bubble-expense-self" className={`${overviewBubbleClass}`}>
                             <div className="px-3 py-3">
                                 <p className="text-base">你的支出</p>
-                                <p className="text-2xl font-bold">$4231.00</p>
+                                <p className="text-2xl font-bold">$4231.00(假的)</p>
                             </div>
                         </div>                        
                     </div>

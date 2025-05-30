@@ -7,6 +7,7 @@ import { fetchUserByProject } from "@/lib/projectApi";
 export function useProjectUsers(projectId?: string) {
   const [users, setUsers] = useState<UserData[] | undefined>();
   const [loading, setLoading] = useState(false);
+  const isReady = !!users && !loading;
 
   useEffect(() => {
     if (!projectId) return;
@@ -32,5 +33,5 @@ export function useProjectUsers(projectId?: string) {
     fetchProjectUsers(projectId);
   }, [projectId]);
 
-  return { users, loading };
+  return { users, isReady };
 }
