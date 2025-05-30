@@ -7,7 +7,7 @@ import Avatar from "@/components/ui/Avatar";
 import ProjectSelfDetail from "./ProjectSelfDetailDialog";
 import ProjectWiseSpilt from "./ProjectWiseSpiltDialog";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
-import { useProjectData } from "@/contexts/ProjectContext";
+import { useProjectData } from "@/contexts/GlobalProjectContext";
 import { getBudgetStatus } from "@/utils/budgetHint";
 
 

@@ -4,7 +4,7 @@ import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
 import ProjectMemberList from "./ProjectOverviewSections/ProjectMemberListDialog";
 import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
-import { useProjectData } from "@/contexts/ProjectContext";
+import { useProjectData } from "@/contexts/GlobalProjectContext";
 
 
 

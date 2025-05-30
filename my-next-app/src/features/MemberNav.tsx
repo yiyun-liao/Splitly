@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import clsx from "clsx";
 import CreateProject from "./CreateProjectSections/CreateProject-main";
 import { logOutUser } from "@/lib/auth";
-import { useProjectData } from "@/contexts/ProjectContext";
+import { useProjectData } from "@/contexts/GlobalProjectContext";
 
 
 
