@@ -4,17 +4,17 @@ import Avatar from "@/components/ui/Avatar";
 import { useState } from "react";
 import { UserData } from "@/types/user";
 
-interface ProjectSelfDetailProps {
+interface ProjectDebtDetailProps {
     isSelfExpenseOpen: boolean;
     onClose: () => void;
     userData: UserData | null;
 }
 
-export default function ProjectSelfDetail({
+export default function ProjectDebtDetail({
     isSelfExpenseOpen = false,
     onClose,
     userData
-}:ProjectSelfDetailProps){
+}:ProjectDebtDetailProps){
 
     const renderBody = () => {
         return(

@@ -14,13 +14,13 @@ import { UserData } from "@/types/user";
 
 
 interface CreatePaymentDebtProps {
-    userList: User[];
+    currentProjectUsers: UserData[];
     userData: UserData;
     setPayload : (map: CreatePaymentPayload) => void
 }
 
 export default function CreatePaymentDebt({
-    userList,
+    currentProjectUsers,
     userData,
     setPayload
     }:CreatePaymentDebtProps){
@@ -37,7 +37,9 @@ export default function CreatePaymentDebt({
 
 
         // 付款人預設
-        const [selectedPayerUid, setSelectedPayerUid] = useState(userList[0]?.uid || "");
+        const [selectedPayerUid, setSelectedPayerUid] = useState(() => {
+            return currentProjectUsers.find(user => user.uid === currentUid)?.uid || currentProjectUsers[0]?.uid ;
+        });
 
         const payerMap = useMemo(() => ({
             [selectedPayerUid]: parseFloat(inputDebtAmountValue || "0")
@@ -45,8 +47,9 @@ export default function CreatePaymentDebt({
 
             
         // 收款人預設
-        const [selectedReceiverUid, setSelectedReceiverUid] = useState(userList[1]?.uid || "");
-
+        const [selectedReceiverUid, setSelectedReceiverUid] = useState(() => {
+            return currentProjectUsers.find(user => user.uid !== currentUid)?.uid || currentProjectUsers[0]?.uid;
+        });
 
         const splitMap = useMemo(() => ({
             [selectedReceiverUid]: {
@@ -57,8 +60,8 @@ export default function CreatePaymentDebt({
         }), [selectedReceiverUid, inputDebtAmountValue]);
 
         // 假資料
-        const selectedDebtPayer = userList.find((user) => user.uid === selectedPayerUid);
-        const selectedDebtReceiver = userList.find((user) => user.uid === selectedReceiverUid);
+        const selectedDebtPayer = currentProjectUsers.find((user) => user.uid === selectedPayerUid);
+        const selectedDebtReceiver = currentProjectUsers.find((user) => user.uid === selectedReceiverUid);
 
         // 金額輸入限制
         const handleDebtAmountChange = (actualInput: string) => {
@@ -101,7 +104,7 @@ export default function CreatePaymentDebt({
                             onClose={() => setIsDebtPayerOpen(false)}
                             selectedUid={selectedPayerUid}
                             setSelectedUid={setSelectedPayerUid}
-                            userList={userList}
+                            currentProjectUsers={currentProjectUsers}
                         />
                     }
                     {isDebtReceiverOpen &&
@@ -110,7 +113,7 @@ export default function CreatePaymentDebt({
                             onClose={() => setIsDebtReceiverOpen(false)}
                             selectedUid={selectedReceiverUid}
                             setSelectedUid={setSelectedReceiverUid}
-                            userList={userList}
+                            currentProjectUsers={currentProjectUsers}
                         />
                     }
                 </div>

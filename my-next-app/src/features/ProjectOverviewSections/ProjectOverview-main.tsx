@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
-import ProjectSelfDetail from "./ProjectSelfDetailDialog";
+import ProjectDebtDetail from "./ProjectDebtDetailDialog";
 import ProjectWiseSpilt from "./ProjectWiseSpiltDialog";
+import ProjectDetail from "./ProjectDetailDialog";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
@@ -47,7 +48,14 @@ export default function ProjectOverview(){
     return(
         <div className={`${scrollClass} w-full box-border h-full  text-zinc-700`}>
             <div>
-                <ProjectSelfDetail
+                <ProjectDetail
+                    isProjectDialogOpen={isProjectDialogOpen}
+                    onClose = {() => setIsProjectDialogOpen(false)}   
+                    userData={userData} 
+                    currentProjectData = {data}
+                    currentProjectUsers = {userList}
+                />
+                <ProjectDebtDetail
                     isSelfExpenseOpen={isSelfExpenseDialogOpen}
                     onClose = {() => setIsSelfExpenseDialogOpen(false)}   
                     userData={userData} 

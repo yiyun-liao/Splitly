@@ -1,7 +1,7 @@
 import Dialog from "@/components/ui/Dialog";
 import Avatar from "@/components/ui/Avatar";
 import IconButton from "@/components/ui/IconButton";
-import { User } from "../../types/payment";
+import { UserData } from "@/types/user";
 
 
 
@@ -10,7 +10,7 @@ interface DebtReceiverProps {
     onClose: () => void;
     selectedUid: string;
     setSelectedUid: (uid: string) => void;
-    userList: User[];
+    currentProjectUsers: UserData[];
 }
 
 export default function DebtReceiver({
@@ -18,14 +18,14 @@ export default function DebtReceiver({
         onClose,
         selectedUid,
         setSelectedUid,
-        userList
+        currentProjectUsers
     }:DebtReceiverProps){
 
 
     const renderBody = () => {
         return(
             <div>
-                {userList.map((user) => {
+                {currentProjectUsers.map((user) => {
                 const isSelected = user.uid === selectedUid;
 
                 return (

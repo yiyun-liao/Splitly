@@ -48,8 +48,6 @@ export default function MemberHeader(){
                     variant='solid'
                     color='primary'
                     leftIcon='solar:clipboard-add-linear'
-                    //disabled={isdisabled} 
-                    //isLoading={isLoading}
                     onClick={() => setIsCreatePayment(true)}
                     >
                         新增紀錄

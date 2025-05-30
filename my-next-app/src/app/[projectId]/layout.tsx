@@ -31,7 +31,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     console.log("who am i", userData)
     console.log("what project i involved", projectData)
     console.log("what i get currentProjectData",currentProjectData)
-    console.log("what i get currentUserData",currentProjectUsers)
+    console.log("what i get currentProjectUsers",currentProjectUsers)
     console.log("what i get currentPaymentList", currentPaymentList)
 
 

@@ -115,7 +115,7 @@ export default function CreatePayment({
                 )}
                 {recordMode === "debt" && (
                     <CreatePaymentDebt
-                        userList={userList}
+                        currentProjectUsers={currentProjectUsers}
                         userData={userData}
                         setPayload = {setPayload}
                     />

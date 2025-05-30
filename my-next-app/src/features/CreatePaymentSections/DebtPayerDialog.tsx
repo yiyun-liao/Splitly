@@ -1,7 +1,7 @@
 import Dialog from "@/components/ui/Dialog";
 import Avatar from "@/components/ui/Avatar";
 import IconButton from "@/components/ui/IconButton";
-import { User} from "../../types/payment";
+import { UserData } from "@/types/user";
 
 
 interface DebtPayerProps {
@@ -9,7 +9,7 @@ interface DebtPayerProps {
     onClose: () => void;
     selectedUid: string;
     setSelectedUid: (uid: string) => void;
-    userList: User[];
+    currentProjectUsers: UserData[];
 }
 
 export default function DebtPayer({
@@ -17,14 +17,14 @@ export default function DebtPayer({
         onClose,
         selectedUid,
         setSelectedUid,
-        userList
+        currentProjectUsers
     }:DebtPayerProps){
 
 
     const renderBody = () => {
         return(
             <div>
-                {userList.map((user) => {
+                {currentProjectUsers.map((user) => {
                 const isSelected = user.uid === selectedUid;
 
                 return (
