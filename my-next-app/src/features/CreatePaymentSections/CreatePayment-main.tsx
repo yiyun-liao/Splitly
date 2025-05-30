@@ -14,13 +14,6 @@ interface CreatePaymentProps {
     currentProjectUsers: UserData[]; 
 }
 
-const userList = [
-    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg", name: "Alice", uid: "4kjf39480fjlk" },
-    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/2.jpg", name: "Bob", uid: "92jf20fkk29jf" },
-    { avatar: "https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/3.jpg", name: "Charlie", uid: "fj30fj39d9s0d" },
-
-];
-
 export default function CreatePayment({
     open = true,
     onClose,
@@ -108,7 +101,7 @@ export default function CreatePayment({
                 </div>
                 {recordMode === "split" && (
                     <CreatePaymentSplit
-                        userList={userList}
+                        currentProjectUsers={currentProjectUsers}
                         userData={userData}
                         setPayload = {setPayload}
                     />

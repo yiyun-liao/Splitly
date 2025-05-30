@@ -10,21 +10,21 @@ import { useCategorySelectOptions } from "@/hooks/useCategory";
 import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
-import { SplitDetail, SplitMap, PayerMap, User, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType} from "../../types/payment";
+import { UserData } from "@/types/user";
+import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType} from "../../types/payment";
 import { formatPercent, formatNumber, formatNumberForData } from "./utils";
 import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
-import { UserData } from "@/types/user";
 
 interface CreatePaymentSplitProps {
-    userList: User[];
+    currentProjectUsers: UserData[];
     userData: UserData;
     setPayload : (map: CreatePaymentPayload) => void;
 }
 
 
 export default function CreatePaymentSplit({
-    userList,
+    currentProjectUsers,
     userData,
     setPayload,
     }:CreatePaymentSplitProps){
@@ -50,8 +50,8 @@ export default function CreatePaymentSplit({
 
         //  付款人預設
         const [splitPayerMap, setSplitPayerMap] = useState<PayerMap>(()=>{
-            const firstUid = userList[0]?.uid;
-            return firstUid ? { [firstUid]: 0 } : {};
+            const firstUid = currentProjectUsers.find(user => user.uid === currentUid)?.uid || currentProjectUsers[0]?.uid ;
+            return { [firstUid]: 0 } ;
         });
 
         // 個人帳目付款人設定
@@ -62,9 +62,9 @@ export default function CreatePaymentSplit({
         // 還款人預設
         const [splitByPersonMap, setSplitByPersonMap] = useState<SplitMap>(() => {
             const total = Number(inputAmountValue) || 0;
-            const percentValue = parseFloat(formatNumberForData(1 / userList.length));;
+            const percentValue = parseFloat(formatNumberForData(1 / currentProjectUsers.length));;
             const average = parseFloat(formatNumberForData(total * percentValue))
-            return Object.fromEntries(userList.map(user => [user.uid, {
+            return Object.fromEntries(currentProjectUsers.map(user => [user.uid, {
                 fixed: 0,
                 percent: percentValue,
                 total: average
@@ -73,7 +73,7 @@ export default function CreatePaymentSplit({
 
         // 項目的還款人設定
         const [splitByItemMap, setSplitByItemMap] = useState<SplitMap>(() => {
-            return Object.fromEntries(userList.map(user => [user.uid, {
+            return Object.fromEntries(currentProjectUsers.map(user => [user.uid, {
                 fixed: 0,
                 percent: 0,
                 total: 0
@@ -82,7 +82,8 @@ export default function CreatePaymentSplit({
 
        // 個人帳目還款人設定
        const [personalSplitMap, setPersonalSplitMap] = useState<SplitMap>(() => {
-            return { [userData?.uid]: { fixed: 0,percent: 0,total: 0}};
+            const firstUid = currentProjectUsers.find(user => user.uid === currentUid)?.uid || "" ;
+            return { [firstUid]: { fixed: 0,percent: 0,total: 0}};
         });
 
         // 項目細節設定
@@ -91,10 +92,10 @@ export default function CreatePaymentSplit({
         // 價格改變就重設 
         useEffect(() => {
             const amount = parseFloat(inputAmountValue || "0");
-            const percent = parseFloat(formatNumberForData(1 / userList.length));
+            const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
             const total = parseFloat(formatNumberForData(amount * percent))
             const groupMap: SplitMap = Object.fromEntries(
-                userList.map(user => [user.uid, {
+                currentProjectUsers.map(user => [user.uid, {
                     fixed: 0,
                     percent: percent,
                     total: total
@@ -104,12 +105,12 @@ export default function CreatePaymentSplit({
 
             setChooseSplitByPerson("percentage");
             setSplitByPersonMap(groupMap);
-            setSplitPayerMap({["4kjf39480fjlk"]: amount });
+            setSplitPayerMap({[userData?.uid]: amount });
             // person
             setPersonalPayerMap({[userData?.uid]: amount })
             setPersonalSplitMap(personalMap);
 
-        }, [inputAmountValue, userList, userData]);
+        }, [inputAmountValue, currentProjectUsers, userData]);
 
 
         // 金額輸入限制
@@ -210,7 +211,7 @@ export default function CreatePaymentSplit({
                         <SplitPayer
                             isSplitPayerOpen = {isSplitPayerOpen}
                             onClose={() => setIsSplitPayerOpen(false)}
-                            userList={userList}
+                            currentProjectUsers={currentProjectUsers}
                             inputAmountValue={inputAmountValue}
                             splitPayerMap={splitPayerMap}
                             setSplitPayerMap={setSplitPayerMap}
@@ -220,7 +221,7 @@ export default function CreatePaymentSplit({
                         <SplitByPerson
                             isSplitByPersonOpen = {isSplitByPersonOpen}
                             onClose={() => setIsSplitByPersonOpen(false)}
-                            userList={userList}
+                            currentProjectUsers={currentProjectUsers}
                             inputAmountValue={inputAmountValue}
                             chooseSplitByPerson = {chooseSplitByPerson}
                             setChooseSplitByPerson = {setChooseSplitByPerson}
@@ -233,7 +234,7 @@ export default function CreatePaymentSplit({
                         <SplitByItem
                             isSplitByItemOpen = {isSplitByItemOpen}
                             onClose={() => setIsSplitByItemOpen(false)}
-                            userList={userList} 
+                            currentProjectUsers={currentProjectUsers} 
                             inputAmountValue={inputAmountValue}
                             itemPayloadList = {localItemPayloadList} //回傳作為更新使用
                             setSplitByItemMap={setSplitByItemMap}
@@ -444,7 +445,7 @@ export default function CreatePaymentSplit({
                                 </div>
                                 <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
                                     {Object.entries(splitPayerMap).map(([uid, amount]) => {
-                                        const user = userList.find(user => user.uid === uid);
+                                        const user = currentProjectUsers.find(user => user.uid === uid);
                                         if (!user) return null;
                                         return (
                                         <div key={uid} className="px-3 py-3 flex items-center justify-start gap-2">
@@ -495,7 +496,7 @@ export default function CreatePaymentSplit({
                                     </div>
                                 </div>
                                 <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
-                                    {userList
+                                    {currentProjectUsers
                                         .filter(user => {
                                             const map = splitWay === 'item' ? splitByItemMap : splitByPersonMap;
                                             return !!map[user.uid];
