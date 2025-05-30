@@ -18,10 +18,10 @@ class UserSchema(BaseModel):
     uid_in_auth: str 
     avatar: int
 
-
     model_config = {
         "from_attributes": True
     }
+
 
 class UsersListSchema(BaseModel):
     """Schema for a single user."""

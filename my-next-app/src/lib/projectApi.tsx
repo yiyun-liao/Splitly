@@ -30,7 +30,7 @@ export async function createProject(payload: ProjectData) {
 // 刪除專案
 export async function deleteProject(projectId: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project?id=${projectId}`, {
+        const res = await fetch(`${BASE_URL}/api/project?pid=${projectId}`, {
             method: "DELETE",
         });
 
@@ -52,6 +52,29 @@ export async function deleteProject(projectId: string) {
 export async function fetchProjectsByUser(token: string,uid: string) {
     try {
         const res = await fetch(`${BASE_URL}/api/project/by-user?uid=${uid}`,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error("Failed to fetch projects: " + errorText);
+        }
+
+        const data = await res.json();
+        console.log("fetchProjectsByUser:", data);
+        return data;
+    } catch (err) {
+        console.error("Error fetching projects:", err);
+        throw err;
+    }
+}
+
+// 取得專案的所有成員
+export async function fetchUserByProject(token: string,pid: string) {
+    try {
+        const res = await fetch(`${BASE_URL}/api/getUsers/by-project?pid=${pid}`,{
             headers: { Authorization: `Bearer ${token}` },
         });
 

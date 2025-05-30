@@ -29,13 +29,13 @@ class ProjectRouter:
 
         # 刪除專案
         @self.router.delete("/api/project", response_model=dict)
-        def delete_project(id: str):
+        def delete_project(pid: str):
             try:
                 db_session: Session = self.db.get_session()
                 project_db = ProjectDB(db_session)
-                project_db.delete_project(id)
+                project_db.delete_project(pid)
 
-                return {"success": True, "message": f"Project {id} deleted"}
+                return {"success": True, "message": f"Project {pid} deleted"}
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
 

@@ -1,13 +1,12 @@
 # server/src/routes/auth_router.py
 from fastapi import APIRouter, HTTPException, Request, Depends
 
-from src.database.relational_db import Database
 from src.routes.schema.user import UserSchema, UserLoginSchema
 from src.database.models.user import UserModel
+from src.database.relational_db import Database
 from src.dependencies.firebase import verify_firebase_token
+
 import logging
-
-
 from src.firebase import firebase_admin
 firebase_auth = firebase_admin.auth
 
@@ -66,13 +65,6 @@ class AuthRouter:
                 return {"status": "success", "uid": uid}
             except Exception as e:
                 raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")
-        
-        @self.router.get("/api/auth/getUsers", response_model=list[UserSchema])
-        def getUsers(uid_verified: str = Depends(verify_firebase_token)):
-            """Get all users (requires login)"""
-            users = self.db.get_all(UserModel)
-            users_schema = [UserSchema.model_validate(user, from_attributes=True) for user in users]
-            return users_schema
         
         @self.router.delete("/api/auth/deleteUser")
         def delete_user(uid: str, uid_verified: str = Depends(verify_firebase_token)):
