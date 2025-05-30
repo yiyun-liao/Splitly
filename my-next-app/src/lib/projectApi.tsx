@@ -1,9 +1,9 @@
-import { GetProjectData } from "@/types/project";
+import { ProjectData } from "@/types/project";
 
 const BASE_URL = "http://localhost:8000";
 
 // 建立專案
-export async function createProject(payload: GetProjectData) {
+export async function createProject(payload: ProjectData) {
     try {
         const res = await fetch(`${BASE_URL}/api/project`, {
             method: "POST",

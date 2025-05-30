@@ -4,7 +4,7 @@ import Icon from "@/components/ui/Icon";
 import IconButton from "@/components/ui/IconButton";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
-import { User, SplitWay, SplitMap, CreateItemPayload } from "./types";
+import { User, SplitWay, SplitMap, CreateItemPayload } from "../../types/payment";
 import { formatNumber } from "./utils";
 import SplitByItemEdit from "./SplitByItemEditDialog";
 

@@ -8,7 +8,7 @@ import Select from "@/components/ui/Select";
 import DebtPayer from "./DebtPayerDialog";
 import DebtReceiver from "./DebtReceiverDialog";
 import { getNowDatetimeLocal } from "@/utils/time";
-import { User, CreatePaymentPayload} from "./types"
+import { User, CreatePaymentPayload} from "../../types/payment"
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { UserData } from "@/types/user";
 

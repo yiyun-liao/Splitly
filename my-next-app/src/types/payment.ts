@@ -54,6 +54,15 @@ export interface CreateItemPayload {
     split_map: SplitMap;
 }
 
+export interface GetItemPayload {
+    id:string;
+    payment_id:string;
+    amount: number;
+    payment_name: string;
+    split_method: SplitMethod;
+    split_map: SplitMap;
+}
+
 
 
 // SplitWay =  "payment" 送出資料
@@ -120,5 +129,5 @@ export interface GetPaymentData {
     desc?: string;
     payer_map: PayerMap;
     split_map: SplitMap; // "splitByPersonMap" | "splitByItemMap"
-    items?: CreateItemPayload[];
+    items?: GetItemPayload[];
 }

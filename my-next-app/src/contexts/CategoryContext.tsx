@@ -19,6 +19,7 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
             imgURL: buildCatUrl(cat.name_en),
         }));
         setCategoryOptions(finalCategory);
+        console.log("cat", categoryOptions)
         } catch (error) {
         console.error("取得分類失敗", error);
         }

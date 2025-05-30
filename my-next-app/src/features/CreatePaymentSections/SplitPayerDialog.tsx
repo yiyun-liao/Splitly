@@ -4,7 +4,7 @@ import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
-import { PayerMap, User } from "./types";
+import { PayerMap, User } from "../../types/payment";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { formatNumber } from "./utils";
 

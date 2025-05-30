@@ -1,7 +1,7 @@
 import Dialog from "@/components/ui/Dialog";
 import Avatar from "@/components/ui/Avatar";
 import IconButton from "@/components/ui/IconButton";
-import { User} from "./types";
+import { User} from "../../types/payment";
 
 
 interface DebtPayerProps {

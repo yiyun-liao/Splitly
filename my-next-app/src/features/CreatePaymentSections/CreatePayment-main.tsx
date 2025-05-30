@@ -4,7 +4,7 @@ import Sheet from "@/components/ui/Sheet";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
-import { RecordMode, CreatePaymentPayload } from "./types";
+import { RecordMode, CreatePaymentPayload } from "../../types/payment";
 import { UserData } from "@/types/user";
 
 interface CreatePaymentProps {

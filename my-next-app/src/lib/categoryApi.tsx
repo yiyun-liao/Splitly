@@ -3,21 +3,20 @@
 
 export async function getCategories() {
     try {
-    const response = await fetch("http://localhost:8000/api/category-all", {
-        method: "GET",
-    });
+        const response = await fetch("http://localhost:8000/api/category-all", {
+            method: "GET",
+        });
 
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error("Failed to sync user: " + errorText);
-    }
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error("Failed to sync user: " + errorText);
+        }
 
-    const data = await response.json();
-    console.log('get category', data)
-    return data;
+        const data = await response.json();
+        return data;
     } catch (err) {
-    console.error("Error syncing user to backend:", err);
-    return []; // 加上 fallback
+        console.error("Error syncing user to backend:", err);
+        return []; // 加上 fallback
     }
 }
 

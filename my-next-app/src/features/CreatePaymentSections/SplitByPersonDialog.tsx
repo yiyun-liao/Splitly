@@ -3,7 +3,7 @@ import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo } from "react";
-import { SplitMap, User, SplitMethod,SplitWay } from "./types";
+import { SplitMap, User, SplitMethod,SplitWay } from "../../types/payment";
 import { formatNumber,parsePercentToInt,parsePercentToDecimal, formatNumberForData, formatPercent } from "./utils";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import clsx from "clsx";

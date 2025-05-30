@@ -93,7 +93,7 @@ export default function CreateProject({
     const handleSubmitData = async () => {
         console.log("create", projectPayload);
         await createProject(projectPayload);
-        // onClose(); // 如果你要關掉 dialog 也可以寫在這
+        onClose(); // 如果你要關掉 dialog 也可以寫在這
       };
 
     // css
