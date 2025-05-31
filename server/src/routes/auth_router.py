@@ -3,8 +3,11 @@ from fastapi import APIRouter, HTTPException, Request, Depends
 
 from src.routes.schema.user import UserSchema, UserLoginSchema
 from src.database.models.user import UserModel
+from src.database.user_db import UserDB
 from src.database.relational_db import Database
 from src.dependencies.firebase import verify_firebase_token
+from sqlalchemy.orm import Session
+
 
 import logging
 from src.firebase import firebase_admin
@@ -26,8 +29,10 @@ class AuthRouter:
             if uid != currentUserId:
                 print("🚫 身份不符")
                 raise HTTPException(status_code=403, detail="Unauthorized access")
-
-            user = self.db.get_by_uid(UserModel, uid)
+            
+            db_session: Session = self.db.get_session()
+            user_db = UserDB(db_session)
+            user = user_db.get_by_uid(uid)
             if not user:
                 print("❌ 查不到 user")
                 raise HTTPException(status_code=404, detail="User not found")
@@ -49,7 +54,9 @@ class AuthRouter:
                 uid = uid_verified
 
                 # 若資料庫中尚無該用戶則新增
-                existing_user = self.db.get_by_uid(UserModel, uid)
+                db_session: Session = self.db.get_session()
+                user_db = UserDB(db_session)
+                existing_user = user_db.get_by_uid(uid)
                 if not existing_user:
                     new_user = UserModel(
                         uid=uid,  # Firebase uid 當作主鍵
@@ -69,8 +76,9 @@ class AuthRouter:
             """Delete user by uid, only allow self-delete"""
             if uid != uid_verified:
                 raise HTTPException(status_code=403, detail="Unauthorized")
-
-            user = self.db.get_by_uid(UserModel, uid)
+            db_session: Session = self.db.get_session()
+            user_db = UserDB(db_session)
+            user = user_db.get_by_uid(uid)
             if not user:
                 raise HTTPException(status_code=404, detail="User not found")
 

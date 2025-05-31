@@ -61,9 +61,9 @@ class Database:
                 query = query.filter(model.deleted_at.is_(None))
             return query.first()
 
-    def get_by_uid(self, model, uid):
-        with self.session_scope() as session:
-            return session.query(model).filter_by(uid=uid).first()
+    # def get_by_uid(self, model, uid):
+    #     with self.session_scope() as session:
+    #         return session.query(model).filter_by(uid=uid).first()
 
     def update(self, model, id_, **kwargs):
         with self.session_scope() as session:
