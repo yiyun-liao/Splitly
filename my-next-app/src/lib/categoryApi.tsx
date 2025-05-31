@@ -1,9 +1,12 @@
 // my-next-app/src/lib/categoryApi.tsx
 // get useable data on : my-next-app/src/hooks/category.tsx
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+
 export async function getCategories() {
     try {
-        const response = await fetch("http://localhost:8000/api/category-all", {
+        const response = await fetch(`${BASE_URL}/api/category-all`, {
             method: "GET",
         });
 
@@ -22,7 +25,7 @@ export async function getCategories() {
 
 // export async function getCategoryNest() {
 //     try {
-//     const response = await fetch("http://localhost:8000/api/category-nest", {
+//     const response = await fetch(`${BASE_URL}/api/category-nest`, {
 //         method: "GET",
 //     });
 

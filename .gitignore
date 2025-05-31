@@ -1,11 +1,41 @@
-*.db
-*__pycache__
-.env
-*.sqlite3
-db.sqlite3
+# --- 通用 ---
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.bak
 
-server/splitly-tw-firebase-adminsdk-fbsvc-37d36dba03.json
+# --- Node.js / Next.js (前端) ---
+my-next-app/.next/
+my-next-app/node_modules/
+my-next-app/.env
+my-next-app/.env.local
+my-next-app/.env.production
+my-next-app/.env.development
+my-next-app/.vercel/
+my-next-app/package-lock.json
 
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
+# --- Python / FastAPI (後端) ---
+server/__pycache__/
+server/**/*.py[cod]
+server/venv/
+server/env/
+server/.env
+server/.env.*
+
+# SQLite 資料庫（部署時再手動放進 EC2）
+server/db.sqlite3
+server/*.sqlite3
+
+# Firebase credentials（千萬別上傳）
+server/*.json
+!server/firebase-example.json  # 可選：保留格式範例檔
+
+# --- VSCode / JetBrains IDEs ---
+.vscode/
+.idea/
+
+# --- 測試與發佈資料夾（如有使用） ---
+dist/
+build/
+coverage/

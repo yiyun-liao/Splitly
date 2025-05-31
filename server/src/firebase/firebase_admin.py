@@ -14,7 +14,7 @@ print("Firebase key absolute path:", FIREBASE_KEY)
 
 # 檔案路徑處理（可根據 main.py 的 cwd 調整）
 key_path = Path(FIREBASE_KEY).resolve()
-print(f"Initializing Firebase Admin SDK...")
+print(f"🌿 Initializing Firebase Admin SDK...")
 if not firebase_admin._apps:
     cred = credentials.Certificate(str(key_path))
     firebase_admin.initialize_app(cred)
