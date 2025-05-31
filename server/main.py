@@ -57,9 +57,6 @@ app.include_router(project_router_instance.router)
 app.include_router(payment_router_instance.router)
 
 
-
-
-
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000)
 
