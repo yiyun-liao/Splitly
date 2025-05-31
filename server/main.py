@@ -16,7 +16,9 @@ from src.routes.payment_router import PaymentRouter
 load_dotenv()
 app = FastAPI()  # Create FastAPI app instance
 
+
 ENV = os.getenv("ENV", "dev")  # 預設為 dev，除非環境變數指定為 production
+print(f"✅ ENV loaded as: {ENV}")
 
 if ENV == "dev":
     origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
