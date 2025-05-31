@@ -41,7 +41,11 @@ async def log_request(request: Request, call_next):
     response = await call_next(request)
     return response
 
-db = Database(db_url="sqlite:///./db.sqlite3")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL not found in .env")
+
+db = Database(db_url=DATABASE_URL, echo=True) 
 
 auth_router_instance = AuthRouter(db=db)
 user_router_instance = UserRouter(db=db)
