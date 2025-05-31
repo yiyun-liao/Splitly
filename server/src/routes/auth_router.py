@@ -21,28 +21,26 @@ class AuthRouter:
 
         @self.router.get("/api/auth/getUser", response_model=UserSchema)
         def getUser(uid: str, currentUserId: str = Depends(verify_firebase_token)):
-            """Get user by uid with token verification"""
-            # 確保只查詢登入者自己的資料
-            if uid != currentUserId:
-                raise HTTPException(status_code=403, detail="Unauthorized access")
+            print(f"🚦 調用 getUser，前端傳 uid={uid}，驗證後 uid={currentUserId}")
             
-            try:
-                user = self.db.get_by_uid(UserModel, uid)
+            if uid != currentUserId:
+                print("🚫 身份不符")
+                raise HTTPException(status_code=403, detail="Unauthorized access")
 
-                if not user:
-                    raise HTTPException(status_code=404, detail="User not found")
+            user = self.db.get_by_uid(UserModel, uid)
+            if not user:
+                print("❌ 查不到 user")
+                raise HTTPException(status_code=404, detail="User not found")
 
-                logger = logging.getLogger(__name__)
-                logger.debug("User retrieved: %s", user.uid)
-                return UserSchema(
-                    uid=user.uid,
-                    email=user.email,
-                    name=user.name,
-                    uid_in_auth=user.uid_in_auth,
-                    avatar=user.avatar
-                )
-            except Exception as e:
-                raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")
+            print("✅ 成功取得 user，回傳資料")
+            return UserSchema(
+                uid=user.uid,
+                email=user.email,
+                name=user.name,
+                uid_in_auth=user.uid_in_auth,
+                avatar=user.avatar
+            )
+
 
         @self.router.post("/api/auth/login")
         async def login_user(user: UserLoginSchema, uid_verified: str = Depends(verify_firebase_token)) -> dict:
