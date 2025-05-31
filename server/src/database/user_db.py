@@ -12,6 +12,24 @@ class UserDB:
     def __init__(self, db: Session):
         self.db = db
 
+    def get_by_uid(self, uid: str) -> UserModel:
+        """依 uid 取得使用者"""
+        try:
+            user = (
+                self.db.query(UserModel)
+                .filter(UserModel.uid == uid)
+                .first()
+            )
+
+            if not user:
+                raise HTTPException(status_code=404, detail="User not found")
+
+            return user
+
+        except Exception as e:
+            self.db.rollback()
+            raise HTTPException(status_code=400, detail=f"Get user by uid failed: {str(e)}")
+        
     def get_users_by_pid(self, pid) -> list[UserModel]:
         try:
             project = (
