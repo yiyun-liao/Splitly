@@ -2,8 +2,14 @@
 from src.database.relational_db import Database
 from src.database.models.category import CategoryModel
 from src.database.models.base import Base
+import os
+from dotenv import load_dotenv
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL not found in .env")
 
-db = Database(db_url="sqlite:///./db.sqlite3")  # ✅ 請改成你的正式 DB
+db = Database(db_url=DATABASE_URL)
 
 # 類別中英對照
 nested_categories = {

@@ -13,9 +13,14 @@
 #     ItemSplitRelation
 # )
 
+# from dotenv import load_dotenv
+# load_dotenv()
+# DATABASE_URL = os.getenv("DATABASE_URL")
+# if not DATABASE_URL:
+#     raise RuntimeError("DATABASE_URL not found in .env")
 
 # if __name__ == "__main__":
-#     db = Database(db_url="sqlite:///./db.sqlite3", verbose=True)  
+#     db = Database(db_url=DATABASE_URL, verbose=True)  
 
 #     # 手動 drop 指定 table（順序很重要：先關聯、再主表）
 #     print("🔁 Dropping tables...")
