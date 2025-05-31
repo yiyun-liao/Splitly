@@ -16,8 +16,10 @@ export default function ProjectMemberList({
 }:ProjectMemberListProps){
 
     const {currentProjectData, currentProjectUsers} = useCurrentProjectData();
-    const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/join?pid=${currentProjectData?.id}`;
-    
+
+    const inviteUrl = `${window.location.origin}/join?pid=${currentProjectData?.id}`;
+
+
     const [step, setStep] = useState<"list" | "add">("list")
     const handleBack = () => {
         setStep('list')

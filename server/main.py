@@ -1,6 +1,8 @@
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+import os
+from dotenv import load_dotenv
 
 
 from src.database.relational_db import Database
@@ -11,12 +13,16 @@ from src.routes.project_router import ProjectRouter
 from src.routes.payment_router import PaymentRouter
 
 
-
+load_dotenv()
 app = FastAPI()  # Create FastAPI app instance
 
-origins = [
-    "http://localhost:3000",
-]
+ENV = os.getenv("ENV", "dev")  # 預設為 dev，除非環境變數指定為 production
+
+if ENV == "dev":
+    origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+else:
+    origins = ["https://splitly-steel.vercel.app"]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,4 +58,4 @@ app.include_router(payment_router_instance.router)
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)

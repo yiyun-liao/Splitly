@@ -1,6 +1,7 @@
 import { GetPaymentData, CreatePaymentPayload } from "@/types/payment";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
 // 建立支出
 export async function createPayment(payload: CreatePaymentPayload) {
