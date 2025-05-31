@@ -21,7 +21,10 @@ ENV = os.getenv("ENV", "dev")  # 預設為 dev，除非環境變數指定為 pro
 if ENV == "dev":
     origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
 else:
-    origins = ["https://splitly-steel.vercel.app"]
+    origins = [
+    "https://splitlyme.online",
+    "https://splitly-steel.vercel.app"
+]
 
 
 app.add_middleware(
