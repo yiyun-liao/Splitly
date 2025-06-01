@@ -12,6 +12,17 @@ class UserDB:
     def __init__(self, db: Session):
         self.db = db
 
+    def create_user(self, user: UserModel) -> UserModel:
+        try:
+            self.db.add(user)
+            self.db.commit()
+            self.db.refresh(user)  # optional, 如果要取得 id 等
+            return user
+        except Exception as e:
+            self.db.rollback()
+            print("❌ 建立使用者失敗：", str(e))
+            raise HTTPException(status_code=400, detail=f"Create user failed: {str(e)}")
+    
     def get_by_uid(self, uid: str) -> UserModel:
         """依 uid 取得使用者"""
         try:
@@ -20,10 +31,6 @@ class UserDB:
                 .filter(UserModel.uid == uid)
                 .first()
             )
-
-            if not user:
-                raise HTTPException(status_code=404, detail="User not found")
-
             return user
 
         except Exception as e:

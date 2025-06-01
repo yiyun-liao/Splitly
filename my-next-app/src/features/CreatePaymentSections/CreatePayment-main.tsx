@@ -26,8 +26,6 @@ export default function CreatePayment({
     const rawProjectId = useParams()?.projectId;
     const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
 
-    console.log("where am i",projectId)
-
     // receipt-way
     const [recordMode, setRecordMode] = useState<RecordMode>("split");
     const [payload, setPayload] = useState<CreatePaymentPayload>({

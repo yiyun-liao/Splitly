@@ -1,7 +1,7 @@
 # server/src/routes/auth_router.py
 from fastapi import APIRouter, HTTPException, Request, Depends
 
-from src.routes.schema.user import UserSchema, UserLoginSchema
+from src.routes.schema.user import UserSchema, UserLoginSchema, UserCreateMinimalResponse
 from src.database.models.user import UserModel
 from src.database.user_db import UserDB
 from src.database.relational_db import Database
@@ -49,16 +49,14 @@ class AuthRouter:
 
 
         @self.router.post("/api/auth/login")
-        async def login_user(user: UserLoginSchema, uid_verified: str = Depends(verify_firebase_token)) -> dict:
+        async def login_user(user: UserLoginSchema, uid_verified: str = Depends(verify_firebase_token)) -> UserCreateMinimalResponse:
             """Create user"""
             try:
                 uid = uid_verified
-
-                # 若資料庫中尚無該用戶則新增
                 db_session: Session = self.db.get_session()
                 user_db = UserDB(db_session)
-                existing_user = user_db.get_by_uid(uid)
 
+                existing_user = user_db.get_by_uid(uid)
                 if not existing_user:
                     new_user = UserModel(
                         uid=uid,  # Firebase uid 當作主鍵
@@ -67,11 +65,11 @@ class AuthRouter:
                         uid_in_auth=user.uid_in_auth,
                         avatar=user.avatar,
                     )
-                    self.db.add(new_user)
+                    user_db.create_user(new_user)
                     print("👻 新用戶建立", new_user)
 
-                print("✅ 成功取得 uid: {uid}")
-                return {"status": "success", "uid": uid}
+                print("✅ 成功取得 uid:", uid)
+                return {"success": True, "uid": uid}
             except Exception as e:
                 raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")
         
