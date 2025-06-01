@@ -17,22 +17,21 @@ import { useCreateProject } from "@/features/CreateProjectSections/hooks";
 
 
 export default function CreateFirstProject() {
-    const pathname = usePathname()
+    // const pathname = usePathname()
     const { projectId } = useParams()
     const router = useRouter()
-    const [isFirstProject, setIsFirstProject] = useState(false)
     const { firebaseUser, userData, isReady } = useAuth();
     const currentUid = userData?.uid;
     const open = true;
   
-    useEffect(() => {
-        if (pathname === '/create') {
-          setIsFirstProject(true)
-        } else if (projectId) {
-            setIsFirstProject(false)
-            router.push(`/${projectId}/dashboard`)
-        }
-    }, [pathname, router, projectId])
+    // useEffect(() => {
+    //     if (pathname === '/create') {
+    //       setIsFirstProject(true)
+    //     } else if (projectId) {
+    //         setIsFirstProject(false)
+    //         router.push(`/${projectId}/dashboard`)
+    //     }
+    // }, [pathname, router, projectId])
 
     useEffect(() => {
         if (isReady) return;
@@ -134,7 +133,7 @@ export default function CreateFirstProject() {
             {(handleClose) => (
                 <>
                     <div id="project-form-header"  className="shrink-0 w-full max-w-xl flex px-1 pt-1 pb-4 items-center gap-2 justify-start overflow-hidden">
-                        {isFirstProject && (<IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={handleClose} />)}
+                        {!open && (<IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={handleClose} />)}
                         <p className="w-full text-xl font-medium truncate min-w-0"> 建立第一個專案！</p>
                         <Button
                             size='sm'
