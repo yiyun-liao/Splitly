@@ -14,7 +14,7 @@ async def verify_firebase_token(authorization: str = Header(...)):
         print("🔥 Extracted token:", token[:20], "...")  # print 前20碼方便 debug
 
         decoded_token = auth.verify_id_token(token)
-        print("✅ Decoded token:", decoded_token)
+        # print("✅ Decoded token:", decoded_token)
 
         uid = decoded_token.get("uid")
         if not uid:
