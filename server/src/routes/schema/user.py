@@ -1,6 +1,6 @@
 # server/src/routes/schema/user.py
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 class UserLoginSchema(BaseModel):
@@ -26,3 +26,8 @@ class UserSchema(BaseModel):
 class UsersListSchema(BaseModel):
     """Schema for a single user."""
     users: List[UserSchema]
+
+
+class UserCreateMinimalResponse(BaseModel):
+    success: bool
+    uid: Optional[str] = None

@@ -96,7 +96,7 @@ def reset_categories():
     print("✅ categories table 已重新建立")
 
 def seed_categories():
-    with db.get_session() as session:
+    with db.session_scope() as session:
         for parent_en, meta in nested_categories.items():
             parent_zh = meta["zh"]
             children = meta["children"]

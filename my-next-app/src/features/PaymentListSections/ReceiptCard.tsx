@@ -1,14 +1,17 @@
 // src/features/PaymentListSections/ReceiptCard.tsx
 import ImageButton from "@/components/ui/ImageButton";
 import clsx from "clsx";
-import { PayerMap } from "@/types/payment";
+import { PayerMap, SplitMap, AccountType, RecordMode } from "@/types/payment";
 import { UserData } from "@/types/user";
 import { Category } from "@/types/category";
 
 interface ReceiptCardProps {
+    account_type : AccountType;
+    record_mode : RecordMode | undefined;
     payment_name: string;
     amount: number;
     payer_map: PayerMap;
+    split_map: SplitMap;
     currentUserId: string;
     userList: UserData[];
     categoryId: number | string;
@@ -16,12 +19,12 @@ interface ReceiptCardProps {
 }
 
 const getPayerText = (
-    payerMap: PayerMap,
+    payer_map: PayerMap,
     amount: number,
     currentUserId: string,
     userList: UserData[]
     ) => {
-    const payerUids = Object.keys(payerMap ?? {});
+    const payerUids = Object.keys(payer_map ?? {});
     const payerCount = payerUids.length;
 
     if (payerCount > 1) {
@@ -32,15 +35,41 @@ const getPayerText = (
     const onlyPayer = (userList ?? []).find((user) => user.uid === onlyPayerUid);
     if (onlyPayerUid === currentUserId) {
         return `你支付了 $${amount}`;
-}
+    }
 
-const name = onlyPayer?.name || "";
-    return `${name} 支付了 $${amount}`;
+    const name = onlyPayer?.name || "";
+        return `${name} 支付了 $${amount}`;
 };
 
-const isBorrowed = (payerMap: PayerMap, currentUserId: string) => {
-    if (!payerMap) return false;
-    return Object.keys(payerMap).includes(currentUserId);
+const getMyText = (
+    account_type: AccountType,
+    record_mode:RecordMode | undefined,
+    payer_map: PayerMap,
+    split_map: SplitMap,
+    currentUserId: string,
+    ) => {
+    if (account_type === 'personal' || record_mode === 'debt'){
+        return Math.abs(payer_map?.[currentUserId] ?? 0);
+    }
+    const payer = payer_map?.[currentUserId] ?? 0;
+    const split = split_map?.[currentUserId]?.total ?? 0;
+    return Math.abs(payer - split);
+};
+
+const isBorrowed = (
+    account_type: AccountType,
+    record_mode:RecordMode | undefined,
+    payer_map: PayerMap,
+    split_map: SplitMap,
+    currentUserId: string
+    ) => {
+    if (!payer_map) return false;
+    if (account_type === 'personal' || record_mode === 'debt') return true;
+    const payer = payer_map?.[currentUserId] ?? 0;
+    const split = split_map?.[currentUserId]?.total ?? 0;
+    if (payer - split > 0){
+        return true
+    } else return false;
 };
 
 const getCategoryImg = (
@@ -55,17 +84,21 @@ const getCategoryImg = (
 };
 
 export default function ReceiptCard({
+    account_type,
+    record_mode,
     payment_name,
     amount,
     payer_map,
+    split_map,
     currentUserId,
     userList,
     categoryId,
     categoryList,
     }: ReceiptCardProps) {
     const payer_text = getPayerText(payer_map, amount, currentUserId, userList);
-    const borrowed = isBorrowed(payer_map, currentUserId);
     const category = getCategoryImg(categoryId, categoryList);
+    const borrowed = isBorrowed(account_type, record_mode ,payer_map, split_map, currentUserId);
+    const displayAmount = getMyText(account_type,record_mode, payer_map, split_map, currentUserId)
 
     const borrowText = clsx("text-sm whitespace-nowrap truncate font-semibold", {
         "text-sp-blue-500": borrowed,
@@ -82,8 +115,8 @@ export default function ReceiptCard({
             <p className="text-sm whitespace-nowrap truncate">{payer_text}</p>
         </div>
         <div className="shrink-0 text-right overflow-hidden">
-            <p className={borrowText}>{borrowed ? "借出" : "花費"}</p>
-            <p className="text-base font-semibold whitespace-nowrap truncate">${amount}</p>
+            <p className={borrowText}>{record_mode === 'debt' ? "還款" : account_type === 'personal' ? "個人" : borrowed ? "借出" : "借用"}</p>
+            <p className="text-base font-semibold whitespace-nowrap truncate">${displayAmount}</p>
         </div>
         </div>
     );
