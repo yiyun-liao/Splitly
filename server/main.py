@@ -16,9 +16,7 @@ from src.routes.payment_router import PaymentRouter
 load_dotenv()
 app = FastAPI()  # Create FastAPI app instance
 
-
 ENV = os.getenv("ENV", "dev")  # 預設為 dev，除非環境變數指定為 production
-print(f"✅ ENV loaded as: {ENV}")
 
 if ENV == "dev":
     origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
@@ -27,7 +25,6 @@ else:
     "https://splitlyme.online",
     "https://splitly-steel.vercel.app"
 ]
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,9 +36,17 @@ app.add_middleware(
 
 @app.middleware("http")
 async def log_request(request: Request, call_next):
-    print("🔥 收到請求：", request.method, request.url)
+    api = request.url
+    origin = request.headers.get("origin", "No Origin")
+    method = request.method
+    path = request.url.path
+    print(f"🔥 收到請求：  [REQ] Origin: {origin} | Method: {method} | Path: {path} | Api: {api}")
+
     response = await call_next(request)
     return response
+
+print("🌎 啟動 FastAPI，ENV=", ENV)
+print("✅ 啟用 CORS origins：", origins)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
