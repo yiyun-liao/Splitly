@@ -27,6 +27,8 @@ export default function LandingClient() {
             router.push(redirectUrl);
         } else if (projectData.length > 0) {
             router.push(`/${projectData[0].id}/dashboard`);
+        } else {
+            router.push(`/create`);
         }
     }, [isReady, isLoginTriggered, searchParams, router, projectData]);
 

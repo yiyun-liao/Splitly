@@ -90,7 +90,7 @@ class ProjectDB:
                     ProjectModel.deleted_at.is_(None)
                 )
             )
-            allData = owner_projects.union(editor_projects).union(member_projects).all()
+            allData = owner_projects.union_all(editor_projects).union_all(member_projects).all()
 
             result = []
             for project in allData:
