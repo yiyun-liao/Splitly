@@ -12,8 +12,8 @@ import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
 import { UserData } from "@/types/user";
-import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType} from "../../types/payment";
-import { formatPercent, formatNumber, formatNumberForData } from "./utils";
+import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType} from "@/types/payment";
+import { formatPercent, formatNumber, formatNumberForData } from "@/utils/parseNumber";
 import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 

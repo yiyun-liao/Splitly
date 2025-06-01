@@ -4,8 +4,8 @@ import Input from "@/components/ui/Input";
 import { useState, useEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
 import { UserData } from "@/types/user";
-import { SplitMethod,SplitWay, SplitMap, CreateItemPayload } from "../../types/payment";
-import { formatNumber,parsePercentToInt,parsePercentToDecimal,formatNumberForData, formatPercent } from "./utils";
+import { SplitMethod,SplitWay, SplitMap, CreateItemPayload } from "@/types/payment";
+import { formatNumber,parsePercentToInt,parsePercentToDecimal,formatNumberForData, formatPercent } from "@/utils/parseNumber";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 
 

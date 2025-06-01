@@ -13,6 +13,7 @@ import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { getBudgetStatus } from "@/utils/budgetHint";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
+import { formatNumber } from "@/utils/parseNumber";
 
 export default function ProjectOverview(){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
@@ -41,8 +42,12 @@ export default function ProjectOverview(){
     if (userData?.uid) {
       privateBudget = data?.member_budgets?.[userData.uid];
     }
-    // const budgetStatus = getBudgetStatus( total, data?.budget);
-    const budgetStatus = getBudgetStatus( 7300, data?.budget);
+    const projectTotal = list?.reduce((sum, item) => sum + item.amount, 0) || 0;
+    const myTotal = list?.reduce((sum, item) => {
+        const total = item.split_map?.[currentUserId]?.total ?? 0;
+        return sum + total;
+      }, 0) || 0;
+    const budgetStatus = getBudgetStatus( projectTotal, data?.budget);
 
     // css
     const overviewBubbleClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-white-40 overflow-hidden hover:bg-sp-blue-200 hover:shadow")
@@ -118,13 +123,13 @@ export default function ProjectOverview(){
                         <div id="overview-bubble-expense" className={`${overviewBubbleClass}`}>
                             <div className="px-3 py-3">
                                 <p className="text-base">整體支出</p>
-                                <p className="text-2xl font-bold">$8000.00(假的)</p>
+                                <p className="text-2xl font-bold">${formatNumber(projectTotal)}</p>
                             </div>
                         </div>
                         <div id="overview-bubble-expense-self" className={`${overviewBubbleClass}`}>
                             <div className="px-3 py-3">
                                 <p className="text-base">你的支出</p>
-                                <p className="text-2xl font-bold">$4231.00(假的)</p>
+                                <p className="text-2xl font-bold">${formatNumber(myTotal)}</p>
                             </div>
                         </div>                        
                     </div>

@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { PayerMap} from "@/types/payment";
 import { UserData } from "@/types/user";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
-import { formatNumber } from "./utils";
+import { formatNumber } from "@/utils/parseNumber";
 
 interface SplitPayerProps {
     isSplitPayerOpen: boolean;
