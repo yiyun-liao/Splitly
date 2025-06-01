@@ -24,10 +24,20 @@ class Database:
         """
         self.engine = create_engine(db_url, echo=echo, future=True)
         self.SessionLocal = sessionmaker(bind=self.engine, autoflush=False, autocommit=False)
+        self.Session = sessionmaker(bind=self.engine)
+        self.session = self.Session()
 
     def get_session(self) -> Session:
         """Create a new session"""
         return self.SessionLocal()
+    
+    def add(self, instance):
+        try:
+            self.session.add(instance)
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
     # Optional: 提供 context manager 方式使用
     @contextmanager
@@ -43,9 +53,9 @@ class Database:
             session.close()
 
     # 以下是內建 CRUD 範例方法
-    def add(self, instance):
-        with self.session_scope() as session:
-            session.add(instance)
+    # def add(self, instance):
+    #     with self.session_scope() as session:
+    #         session.add(instance)
 
     def get_all(self, model, include_deleted=False):
         with self.session_scope() as session:

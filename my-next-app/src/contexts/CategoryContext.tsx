@@ -14,12 +14,13 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
     async function fetchAndBuildCategories() {
         try {
         const categories = await getCategories(); 
+        console.log("📥 原始 categories", categories);
         const finalCategory: Category[] = categories.map((cat:Category) => ({
             ...cat,
             imgURL: buildCatUrl(cat.name_en),
         }));
+        console.log("🛠 加工後 finalCategory", finalCategory);
         setCategoryOptions(finalCategory);
-        console.log("cat", categoryOptions)
         } catch (error) {
         console.error("取得分類失敗", error);
         }

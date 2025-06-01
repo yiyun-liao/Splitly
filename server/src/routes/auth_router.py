@@ -33,6 +33,7 @@ class AuthRouter:
             db_session: Session = self.db.get_session()
             user_db = UserDB(db_session)
             user = user_db.get_by_uid(uid)
+
             if not user:
                 print("❌ 查不到 user")
                 raise HTTPException(status_code=404, detail="User not found")
@@ -57,6 +58,7 @@ class AuthRouter:
                 db_session: Session = self.db.get_session()
                 user_db = UserDB(db_session)
                 existing_user = user_db.get_by_uid(uid)
+
                 if not existing_user:
                     new_user = UserModel(
                         uid=uid,  # Firebase uid 當作主鍵
@@ -66,7 +68,7 @@ class AuthRouter:
                         avatar=user.avatar,
                     )
                     self.db.add(new_user)
-                    print("👻 新用戶建立")
+                    print("👻 新用戶建立", new_user)
 
                 print("✅ 成功取得 uid: {uid}")
                 return {"status": "success", "uid": uid}
@@ -78,6 +80,7 @@ class AuthRouter:
             """Delete user by uid, only allow self-delete"""
             if uid != uid_verified:
                 raise HTTPException(status_code=403, detail="Unauthorized")
+            
             db_session: Session = self.db.get_session()
             user_db = UserDB(db_session)
             user = user_db.get_by_uid(uid)
