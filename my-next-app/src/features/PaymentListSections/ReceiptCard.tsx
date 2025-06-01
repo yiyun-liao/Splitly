@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { PayerMap, SplitMap, AccountType, RecordMode } from "@/types/payment";
 import { UserData } from "@/types/user";
 import { Category } from "@/types/category";
+import { formatNumber } from "@/utils/parseNumber";
 
 interface ReceiptCardProps {
     account_type : AccountType;
@@ -53,7 +54,7 @@ const getMyText = (
     }
     const payer = payer_map?.[currentUserId] ?? 0;
     const split = split_map?.[currentUserId]?.total ?? 0;
-    return Math.abs(payer - split);
+    return formatNumber(Math.abs(payer - split));
 };
 
 const isBorrowed = (
