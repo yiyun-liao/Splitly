@@ -26,7 +26,7 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
     }
     
     fetchAndBuildCategories();
-  }, []);
+  }, [categoryOptions]);
 
   return (
     <CategoryContext.Provider value={categoryOptions}>

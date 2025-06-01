@@ -66,7 +66,9 @@ class AuthRouter:
                         avatar=user.avatar,
                     )
                     self.db.add(new_user)
+                    print("👻 新用戶建立")
 
+                print("✅ 成功取得 uid: {uid}")
                 return {"status": "success", "uid": uid}
             except Exception as e:
                 raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")

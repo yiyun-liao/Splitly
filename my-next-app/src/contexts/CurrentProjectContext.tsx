@@ -70,7 +70,7 @@ export const CurrentProjectProvider = ({ children }: CurrentProjectProviderProps
 
     // 若找不到專案，自動跳轉到第一個
     useEffect(() => {
-        if (myDataLoading && !currentProjectData && projectData.length > 0) {
+        if ( !currentProjectData && projectData.length > 0) {
         router.push(`/${projectData[0].id}/dashboard`);
         }
     }, [myDataLoading, currentProjectData, projectData, router]);

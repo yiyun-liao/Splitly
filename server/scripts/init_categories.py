@@ -96,21 +96,21 @@ def reset_categories():
     print("✅ categories table 已重新建立")
 
 def seed_categories():
-    for parent_en, meta in nested_categories.items():
-        parent_zh = meta["zh"]
-        children = meta["children"]
+    with db.get_session() as session:
+        for parent_en, meta in nested_categories.items():
+            parent_zh = meta["zh"]
+            children = meta["children"]
 
-        parent = CategoryModel(name_en=parent_en, name_zh=parent_zh)
-        db.add(parent)
-        db.session.flush()
+            parent = CategoryModel(name_en=parent_en, name_zh=parent_zh)
+            session.add(parent)
+            session.flush()
 
-        for child_en, child_zh in children.items():
-            child = CategoryModel(name_en=child_en, name_zh=child_zh, parent_id=parent.id)
-            db.add(child)
+            for child_en, child_zh in children.items():
+                child = CategoryModel(name_en=child_en, name_zh=child_zh, parent_id=parent.id)
+                session.add(child)
 
-    db.session.commit()
+    session.commit()
     print("✅ 成功建立中英文分類！")
 
 if __name__ == "__main__":
-    reset_categories()
     seed_categories()

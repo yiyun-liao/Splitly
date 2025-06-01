@@ -40,7 +40,7 @@ async def log_request(request: Request, call_next):
     origin = request.headers.get("origin", "No Origin")
     method = request.method
     path = request.url.path
-    print(f"🔥 收到請求：  [REQ] Origin: {origin} | Method: {method} | Path: {path} | Api: {api}")
+    print(f"🔥 收到請求： | Method: {method} | Path: {path} | Api: {api} | Origin: {origin}")
 
     response = await call_next(request)
     return response
