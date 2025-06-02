@@ -13,8 +13,8 @@ import MemberNav from "@/features/MemberNav";
 export default function DashboardLayout({ children }: { children: ReactNode }) {        
     return (
         <GlobalProjectProvider>
-            <CurrentProjectProvider>
-                <CategoryProvider>
+            <CategoryProvider>
+                <CurrentProjectProvider>
                     <main className="flex items-start justify-center bg-sp-blue-100">
                         <div className="shrink-0 box-border">
                             <MemberNav/>
@@ -26,8 +26,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                             </div>
                         </div>
                     </main>
-                </CategoryProvider>
-            </CurrentProjectProvider>
+                </CurrentProjectProvider>
+            </CategoryProvider>
         </GlobalProjectProvider>
     );
 }

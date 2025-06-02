@@ -1,37 +1,37 @@
 # server/src/routes/auth_router.py
 from fastapi import APIRouter, HTTPException, Request, Depends
+from sqlalchemy.orm import Session
 
 from src.routes.schema.user import UserSchema, UserLoginSchema, UserCreateMinimalResponse
 from src.database.models.user import UserModel
 from src.database.user_db import UserDB
-from src.database.relational_db import Database
 from src.dependencies.firebase import verify_firebase_token
-from sqlalchemy.orm import Session
+from src.dependencies.database import get_db_session
 
-
-import logging
 from src.firebase import firebase_admin
 firebase_auth = firebase_admin.auth
 
 
 class AuthRouter:
-    def __init__(self, db: Database):
+    def __init__(self):
         self.router = APIRouter()
-        self.db = db
         self._add_routes()
 
     def _add_routes(self):
 
         @self.router.get("/api/auth/getUser", response_model=UserSchema)
-        def getUser(uid: str, currentUserId: str = Depends(verify_firebase_token)):
+        def getUser(
+            uid: str, 
+            currentUserId: str = Depends(verify_firebase_token),
+            db: Session = Depends(get_db_session)
+        ):
             print(f"🚦 調用 getUser，前端傳 uid={uid}，驗證後 uid={currentUserId}")
             
             if uid != currentUserId:
                 print("🚫 身份不符")
                 raise HTTPException(status_code=403, detail="Unauthorized access")
             
-            db_session: Session = self.db.get_session()
-            user_db = UserDB(db_session)
+            user_db = UserDB(db)
             user = user_db.get_by_uid(uid)
 
             if not user:
@@ -49,12 +49,15 @@ class AuthRouter:
 
 
         @self.router.post("/api/auth/login")
-        async def login_user(user: UserLoginSchema, uid_verified: str = Depends(verify_firebase_token)) -> UserCreateMinimalResponse:
+        async def login_user(
+            user: UserLoginSchema, 
+            uid_verified: str = Depends(verify_firebase_token),
+            db: Session = Depends(get_db_session)
+        ) -> UserCreateMinimalResponse:
             """Create user"""
             try:
                 uid = uid_verified
-                db_session: Session = self.db.get_session()
-                user_db = UserDB(db_session)
+                user_db = UserDB(db)
 
                 existing_user = user_db.get_by_uid(uid)
                 if not existing_user:
@@ -74,18 +77,28 @@ class AuthRouter:
                 raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")
         
         @self.router.delete("/api/auth/deleteUser")
-        def delete_user(uid: str, uid_verified: str = Depends(verify_firebase_token)):
+        def delete_user(
+            uid: str, 
+            uid_verified: str = Depends(verify_firebase_token),
+            db: Session = Depends(get_db_session)
+        ):
             """Delete user by uid, only allow self-delete"""
             if uid != uid_verified:
                 raise HTTPException(status_code=403, detail="Unauthorized")
             
-            db_session: Session = self.db.get_session()
-            user_db = UserDB(db_session)
+            user_db = UserDB(db)
             user = user_db.get_by_uid(uid)
+
             if not user:
                 raise HTTPException(status_code=404, detail="User not found")
 
-            self.db.delete(user)
-            return {"status": "success", "message": f"User {uid} deleted"}
+            # 移到 user_db 中做
+            try:
+                db.delete(user)
+                db.commit()
+                return {"status": "success", "message": f"User {uid} deleted"}
+            except Exception as e:
+                db.rollback()
+                raise HTTPException(status_code=500, detail=f"Delete failed: {str(e)}")
 
 

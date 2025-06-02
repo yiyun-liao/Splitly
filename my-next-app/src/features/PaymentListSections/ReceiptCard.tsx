@@ -16,7 +16,7 @@ interface ReceiptCardProps {
     currentUserId: string;
     userList: UserData[];
     categoryId: number | string;
-    categoryList: Category[];
+    categoryList: Category[] | undefined;
 }
 
 const getPayerText = (
@@ -77,7 +77,9 @@ const getCategoryImg = (
     categoryId: number | string,
     categoryList: Category[]
     ) => {
-    const matched = (categoryList ?? []).find((cat) => cat.id === categoryId);
+    const matched = Array.isArray(categoryList)
+        ? categoryList.find((cat) => cat.id === categoryId)
+        : undefined;
     return {
         imgURL: matched?.imgURL ?? "",
         name_en: matched?.name_en ?? "",
@@ -97,7 +99,7 @@ export default function ReceiptCard({
     categoryList,
     }: ReceiptCardProps) {
     const payer_text = getPayerText(payer_map, amount, currentUserId, userList);
-    const category = getCategoryImg(categoryId, categoryList);
+    const category = getCategoryImg(categoryId, categoryList ?? []);
     const borrowed = isBorrowed(account_type, record_mode ,payer_map, split_map, currentUserId);
     const displayAmount = getMyText(account_type,record_mode, payer_map, split_map, currentUserId)
 

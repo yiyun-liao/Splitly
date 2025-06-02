@@ -19,17 +19,17 @@ export default function MemberHeader(){
 
     const router = useRouter();
     const { projectId } = useParams();
-    const { userData, projectData, isReady:myDataLoading } = useAuth();
-    const {currentPaymentList, currentProjectData, currentProjectUsers, isReady:usersLoading} = useCurrentProjectData();
+    const { userData, projectData } = useAuth();
+    const {currentPaymentList, currentProjectData, currentProjectUsers} = useCurrentProjectData();
     console.log("who am i", userData)
     console.log("what project i involved", projectData)
     console.log("what i get currentProjectData",currentProjectData)
     console.log("what i get currentProjectUsers",currentProjectUsers)
     console.log("what i get currentPaymentList", currentPaymentList)
-    if ( !myDataLoading || !usersLoading) return <p>Loading...</p>;
+    // if ( myDataLoading || usersLoading) return <p>Loading...</p>;
 
     if (!currentProjectData) {
-        console.error("沒有拿到 currentProjectData", projectId);
+        console.log("沒有拿到 currentProjectData", projectId);
         if (projectData.length > 0) {
             router.push(`/${projectData[0].id}/dashboard`);
         }

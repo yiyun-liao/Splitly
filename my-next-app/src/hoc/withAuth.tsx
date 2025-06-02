@@ -12,15 +12,14 @@ export function withAuth<P extends { userData: UserData }>(
     return function ProtectedComponent(props: Omit<P, "userData">) {
       const { firebaseUser, userData, isReady } = useAuth();
       const router = useRouter();
-  
+      
       useEffect(() => {
+        if (!isReady) return;
         if (!firebaseUser || !userData) {
           router.push("/");
         }
       }, [firebaseUser, userData, isReady, router]);
-  
-      if (!isReady) return <p>Loading...</p>;
-  
+    
       return firebaseUser && userData ? (
         <Component {...(props as P)} userData={userData} />
       ) : null;

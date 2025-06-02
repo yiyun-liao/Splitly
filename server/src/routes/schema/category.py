@@ -13,18 +13,27 @@ class CategorySchema(BaseModel):
     }
 
 
-# 為了支援自己引用自己
-CategoryOutSchema = ForwardRef("CategoryOutSchema")
+# # 為了支援自己引用自己
+# CategoryOutSchema = ForwardRef("CategoryOutSchema")
 
-class CategoryOutSchema(CategorySchema):
-    """Response schema with ID and nested children"""
+# class CategoryOutSchema(CategorySchema):
+#     """Response schema with ID and nested children"""
+#     id: int
+#     children: Optional[List["CategoryOutSchema"]] = None  # 支援巢狀回傳
+
+#     model_config = {
+#         "from_attributes": True
+#     }
+
+
+# # 解決 ForwardRef 的遞迴引用
+# CategoryOutSchema.model_rebuild()
+
+class CategoryOutSchema(BaseModel):
     id: int
-    children: Optional[List["CategoryOutSchema"]] = None  # 支援巢狀回傳
+    name_en: str
+    name_zh: str
+    parent_id: int | None
 
-    model_config = {
-        "from_attributes": True
-    }
-
-
-# 解決 ForwardRef 的遞迴引用
-CategoryOutSchema.model_rebuild()
+    class Config:
+        orm_mode = True 
