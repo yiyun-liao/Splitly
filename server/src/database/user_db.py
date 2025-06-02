@@ -1,10 +1,10 @@
 #server/src/database/user_db.py
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from src.database.models.user import UserModel
 from src.database.models.project import ProjectModel, ProjectEditorRelation, ProjectMemberRelation
 from src.database.models.base import Base
-from sqlalchemy.orm import joinedload
+from src.database.relational_db import Database
 
 
 
@@ -36,7 +36,7 @@ class UserDB:
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Get user by uid failed: {str(e)}")
-        
+    
     def get_users_by_pid(self, pid) -> list[UserModel]:
         try:
             project = (

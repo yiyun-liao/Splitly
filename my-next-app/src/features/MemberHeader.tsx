@@ -26,7 +26,7 @@ export default function MemberHeader(){
     console.log("what i get currentProjectData",currentProjectData)
     console.log("what i get currentProjectUsers",currentProjectUsers)
     console.log("what i get currentPaymentList", currentPaymentList)
-    if ( !myDataLoading || !usersLoading) return <p>Loading...</p>;
+    // if ( !myDataLoading || !usersLoading) return <p>Loading...</p>;
 
     if (!currentProjectData) {
         console.error("沒有拿到 currentProjectData", projectId);

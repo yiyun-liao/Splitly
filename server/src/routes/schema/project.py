@@ -42,8 +42,14 @@ class UpdateProjectSchema(BaseModel):
     desc: Optional[str]  = None
     member_budgets: Optional[Dict[str, Optional[int]]]  = None
 
+
+
+# response
 class ProjectCreateMinimalResponse(BaseModel):
     success: bool
     project: Optional[GetProjectSchema] = None
     project_name: Optional[str]  = None
     member: Optional[List[str]]  = None
+    message: Optional[str] = None
+
+

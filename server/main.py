@@ -52,13 +52,11 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL not found in .env")
 
-db = Database(db_url=DATABASE_URL, echo=True) 
-
-auth_router_instance = AuthRouter(db=db)
-user_router_instance = UserRouter(db=db)
-category_router_instance = CategoryRouter(db=db)
-project_router_instance = ProjectRouter(db=db)
-payment_router_instance = PaymentRouter(db=db)
+auth_router_instance = AuthRouter()
+user_router_instance = UserRouter()
+category_router_instance = CategoryRouter()
+project_router_instance = ProjectRouter()
+payment_router_instance = PaymentRouter()
 
 
 app.include_router(auth_router_instance.router)
