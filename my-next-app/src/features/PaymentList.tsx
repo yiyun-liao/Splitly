@@ -10,11 +10,11 @@ import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
 
 export default function PaymentList(){
     const [isCreatePayment, setIsCreatePayment] = useState(false)
-
-    const categoryList = useCategoryOptions();
+    
     const {userData} = useGlobalProjectData();
     const {currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
-
+    const { categoryOptions } = useCategoryOptions();
+    
     const currentUserId = userData?.uid || "";
     const userList = currentProjectUsers || [];
 
@@ -82,7 +82,7 @@ export default function PaymentList(){
                                     currentUserId={currentUserId}
                                     userList={userList}
                                     categoryId={payment.category_id ?? ""}
-                                    categoryList={categoryList}
+                                    categoryList={categoryOptions || []}
                                 />
                                 {index !== payments.length - 1 && (
                                     <div className="w-full h-0.25 bg-sp-green-200"></div>
