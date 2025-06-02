@@ -29,7 +29,7 @@ export default function MemberHeader(){
     // if ( !myDataLoading || !usersLoading) return <p>Loading...</p>;
 
     if (!currentProjectData) {
-        console.error("沒有拿到 currentProjectData", projectId);
+        console.log("沒有拿到 currentProjectData", projectId);
         if (projectData.length > 0) {
             router.push(`/${projectData[0].id}/dashboard`);
         }
