@@ -16,7 +16,7 @@ interface ReceiptCardProps {
     currentUserId: string;
     userList: UserData[];
     categoryId: number | string;
-    categoryList: Category[];
+    categoryList: Category[] | undefined;
 }
 
 const getPayerText = (

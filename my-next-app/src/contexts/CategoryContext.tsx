@@ -5,7 +5,7 @@ import { Category } from '@/types/category';
 import { buildCatUrl } from '@/utils/category';
 
 type CategoryType = {
-    categoryOptions?:Category[] | undefined; 
+    categoryOptions?:Category[]; 
     isReady: boolean;
 };
 
@@ -62,7 +62,7 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
                 setIsReady(true);
             } catch (error) {
                 console.error("取得分類失敗", error);
-                setCategoryOptions(undefined);
+                setCategoryOptions([]);
                 setIsReady(true);
             }
         }
