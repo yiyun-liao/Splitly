@@ -77,7 +77,9 @@ const getCategoryImg = (
     categoryId: number | string,
     categoryList: Category[]
     ) => {
-    const matched = (categoryList ?? []).find((cat) => cat.id === categoryId);
+    const matched = Array.isArray(categoryList)
+        ? categoryList.find((cat) => cat.id === categoryId)
+        : undefined;
     return {
         imgURL: matched?.imgURL ?? "",
         name_en: matched?.name_en ?? "",

@@ -42,8 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
     const [userData, setUserData] = useState<UserData | null>(null);
     const [projectData, setProjectData] = useState<GetProjectData[]>([]);
-    const [loading, setLoading] = useState(true);
-    const isReady = !!firebaseUser && !!userData && !loading;
+    const [isReady, setIsReady] = useState(false);
 
     const addProject = (newProject: GetProjectData) => {
         setProjectData(prev => [...prev, newProject]);
@@ -51,50 +50,74 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
-        setFirebaseUser(userAuth);
-        setLoading(true);
-        console.log("✅ running onAuthStateChanged fetcher"); 
-
-        if (userAuth) {
-            try {
-                const token = await userAuth.getIdToken();
-                const userData = await fetchCurrentUser(token, userAuth.uid);
-                const projectData: GetProjectData[] = await fetchProjectsByUser(token, userAuth.uid);
-        
-                const fullUserData: UserData = {
-                    uid: userData.uid,
-                    email: userData.email,
-                    name: userData.name,
-                    uid_in_auth: userData.uid_in_auth,
-                    avatar: userData.avatar,
-                    avatarURL: buildAvatarUrl(userData.avatar),
-                };
-
-                const fullProjectList: GetProjectData[] = projectData.map((project) => ({
-                    ...project,
-                    imgURL: buildProjectCoverUrl(project.img),
-                  }));
-
-
-                console.log("what i get userData",fullUserData)
-                console.log("what i get projectData",fullProjectList)
-
-                setUserData(fullUserData);
-                setProjectData(fullProjectList);
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-                setUserData(null);
-                setProjectData([])
-            }
-        } else {
+          setFirebaseUser(userAuth);
+          setIsReady(false); // 🔄 新使用者載入 → 重新準備
+          if (!userAuth) {
             setUserData(null);
-        }
+            setProjectData([]);
+            setIsReady(true); // ✅ 已確認無登入
+            return;
+          }
     
-        setLoading(false);
+          const uid = userAuth.uid;
+          const myKey = `👀 myData:${uid}`;
+          const projectKey = `👀 myProjectList:${uid}`;
+          const myMetaKey = `👀 cacheMyMeta:${uid}`;
+          const CACHE_TTL = 1000 * 60 * 30;
+    
+          const cachedMyData = localStorage.getItem(myKey);
+          const cachedProjects = localStorage.getItem(projectKey);
+          const cachedMeta = localStorage.getItem(myMetaKey);
+          const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
+    
+          if (cachedMyData && cachedProjects && !isCacheExpired) {
+            try {
+              setUserData(JSON.parse(cachedMyData));
+              setProjectData(JSON.parse(cachedProjects));
+              setIsReady(true); // ✅ 快取完成
+              return;
+            } catch (error) {
+              console.warn("❌ Failed to parse cache, clearing...", error);
+              localStorage.removeItem(myKey);
+              localStorage.removeItem(projectKey);
+              localStorage.removeItem(myMetaKey);
+            }
+          }
+    
+          setIsReady(false);
+          try {
+            const token = await userAuth.getIdToken();
+            const rawUser = await fetchCurrentUser(token, uid);
+            const rawProjects = await fetchProjectsByUser(token, uid);
+    
+            const fullUser: UserData = {
+              ...rawUser,
+              avatarURL: buildAvatarUrl(rawUser.avatar),
+            };
+    
+            const fullProjects: GetProjectData[] = rawProjects.map((project:GetProjectData) => ({
+              ...project,
+              imgURL: buildProjectCoverUrl(project.img),
+            }));
+    
+            setUserData(fullUser);
+            setProjectData(fullProjects);
+    
+            localStorage.setItem(myKey, JSON.stringify(fullUser));
+            localStorage.setItem(projectKey, JSON.stringify(fullProjects));
+            localStorage.setItem(myMetaKey, JSON.stringify({ timestamp: Date.now() }));
+    
+            setIsReady(true); // ✅ fetch 成功
+          } catch (error) {
+            console.error("🔴 Error fetching user data:", error);
+            setUserData(null);
+            setProjectData([]);
+            setIsReady(true); // ✅ 即使失敗，也標記完成（避免卡住）
+          } 
         });
     
         return () => unsubscribe();
-    }, []);
+      }, []);
     
     return (
         <AuthContext.Provider
