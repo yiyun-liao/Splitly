@@ -7,7 +7,7 @@ import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
 import { RecordMode, CreatePaymentPayload } from "@/types/payment";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
-import { useCreatePayment } from "./hooks";
+import { useCreatePayment } from "./hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 interface CreatePaymentProps {
