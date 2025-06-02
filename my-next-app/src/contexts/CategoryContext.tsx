@@ -5,7 +5,7 @@ import { Category } from '@/types/category';
 import { buildCatUrl } from '@/utils/category';
 
 type CategoryType = {
-    categoryOptions?:Category[]; 
+    categoryOptions:Category[] | undefined; 
     isReady: boolean;
 };
 
@@ -13,7 +13,7 @@ type CategoryType = {
 const CategoryContext = createContext<CategoryType | undefined>(undefined);
 
 export const CategoryProvider = ({ children }: { children: React.ReactNode }) => {
-    const [categoryOptions, setCategoryOptions] = useState<Category[]>();
+    const [categoryOptions, setCategoryOptions] = useState<Category[] | undefined>(undefined);
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
@@ -39,7 +39,7 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
                 return;
             } catch (error) {
                 console.warn("❌ 快取解析失敗，清除...", error);
-                localStorage.removeItem(cachedCats);
+                localStorage.removeItem(catKey);
                 localStorage.removeItem(cachedMeta);
             }
         }

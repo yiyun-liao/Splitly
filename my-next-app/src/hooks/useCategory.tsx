@@ -10,57 +10,34 @@ interface SelectOption {
     disabled: boolean;
   }
 
-// export function useCategorySelectOptions() {
-//     const categories = useCategoryOptions(); // 取自全域 context
-//     const [selectedValue, setSelectedValue] = useState<string | null>(null);
-
-//     const options: SelectOption[] = useMemo(() => {
-//         return categories.map((cat) => ({
-//           label: cat.name_zh,
-//           value: String(cat.id),
-//           disabled: cat.parent_id === null,
-//         }));
-//       }, [categories]);
-      
-//       useEffect(() => {
-//         if (!selectedValue) {
-//           const firstEnabled = options.find((opt) => !opt.disabled);
-//           if (firstEnabled) {
-//             setSelectedValue(firstEnabled.value);
-//           }
-//         }
-//       }, [options, selectedValue]);
-
-//     return {options,selectedValue,setSelectedValue};
-// }
-export function useCategorySelectOptions() {
-  const { categoryOptions } = useCategoryOptions();
-
-
-  const options: SelectOption[] = useMemo(() => {
-    if (!categoryOptions) return [];
-
-    return categoryOptions.map((cat:Category) => ({
+export function useCategorySelectOptions(): {
+    options: SelectOption[];
+    selectedValue: string | null;
+    setSelectedValue: (v: string | null) => void;
+  } {
+    const { categoryOptions } = useCategoryOptions();
+  
+    const options: SelectOption[] = useMemo(() => {
+      if (!categoryOptions) return [];
+      return categoryOptions.map((cat: Category) => ({
         label: cat.name_zh,
         value: String(cat.id),
         disabled: cat.parent_id === null,
-    }));
-  }, [categoryOptions]);
-
-  // ✅ Lazy initialize：只在第一次執行時設定
-  const [selectedValue, setSelectedValue] = useState<string | null>(() => {
-    const firstEnabled = options.find((opt: SelectOption) => !opt.disabled);
-    return firstEnabled?.value ?? null;
-  });
-
-  return { options, selectedValue, setSelectedValue };
+      }));
+    }, [categoryOptions]);
+  
+    const [selectedValue, setSelectedValue] = useState<string | null>(() => {
+      const firstEnabled = options.find((opt: SelectOption) => !opt.disabled);
+      return firstEnabled?.value ?? null;
+    });
+  
+    return { options, selectedValue, setSelectedValue };
 }
+  
 
-export function useCategoryParent() {
+export function useCategoryParent(): { categoryParents: Category[] } {
     const { categoryOptions } = useCategoryOptions();
-    if (!categoryOptions) return [];
-    const categoryParents = categoryOptions?.filter(
-        (opt: Category) => !opt.parent_id
-    ) ?? [];
-    return {categoryParents};
+    const categoryParents: Category[] =
+        categoryOptions?.filter((opt: Category) => !opt.parent_id) ?? [];
+    return { categoryParents };
 }
