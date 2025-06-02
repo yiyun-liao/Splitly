@@ -20,9 +20,9 @@ export default function ProjectOverview(){
     const [isWiseSpiltDialogOpen, setIsWiseSpiltDialogOpen] = useState(false)
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false)
     
-    const { categoryOptions } = useCategoryOptions();
     const {userData} = useGlobalProjectData();
     const {currentProjectData:data, currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
+    const { categoryOptions } = useCategoryOptions();
     
     // 判斷顯示支出或是圖表
     const currentUserId = userData?.uid || "";

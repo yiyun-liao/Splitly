@@ -1,6 +1,7 @@
 // my-next-app/src/hooks/category.tsx
 import { useState, useMemo } from "react";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
+import { Category } from "@/types/category";
 
 
 interface SelectOption {
@@ -39,7 +40,7 @@ export function useCategorySelectOptions() {
   const options: SelectOption[] = useMemo(() => {
     if (!categoryOptions) return [];
 
-    return categoryOptions.map((cat) => ({
+    return categoryOptions.map((cat:Category) => ({
         label: cat.name_zh,
         value: String(cat.id),
         disabled: cat.parent_id === null,
@@ -48,7 +49,7 @@ export function useCategorySelectOptions() {
 
   // ✅ Lazy initialize：只在第一次執行時設定
   const [selectedValue, setSelectedValue] = useState<string | null>(() => {
-    const firstEnabled = options.find((opt) => !opt.disabled);
+    const firstEnabled = options.find((opt: SelectOption) => !opt.disabled);
     return firstEnabled?.value ?? null;
   });
 
@@ -58,8 +59,8 @@ export function useCategorySelectOptions() {
 export function useCategoryParent() {
     const { categoryOptions } = useCategoryOptions();
     if (!categoryOptions) return [];
-
-    const categoryParents = categoryOptions.filter((opt) => !opt.parent_id); 
-
+    const categoryParents = categoryOptions?.filter(
+        (opt: Category) => !opt.parent_id
+    ) ?? [];
     return {categoryParents};
 }
