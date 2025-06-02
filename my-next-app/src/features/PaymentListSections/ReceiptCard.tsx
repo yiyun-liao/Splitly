@@ -99,7 +99,7 @@ export default function ReceiptCard({
     categoryList,
     }: ReceiptCardProps) {
     const payer_text = getPayerText(payer_map, amount, currentUserId, userList);
-    const category = getCategoryImg(categoryId, categoryList);
+    const category = getCategoryImg(categoryId, categoryList ?? []);
     const borrowed = isBorrowed(account_type, record_mode ,payer_map, split_map, currentUserId);
     const displayAmount = getMyText(account_type,record_mode, payer_map, split_map, currentUserId)
 
