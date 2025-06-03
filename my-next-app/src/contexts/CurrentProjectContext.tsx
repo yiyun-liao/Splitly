@@ -74,8 +74,8 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
                 console.log("🙃 fetch current data")
                 const rawUsers = await fetchUserByProject(pureProjectId);
                 const users: UserData[] = rawUsers.map((user:UserData) => ({
-                ...user,
-                avatarURL: buildAvatarUrl(Number(user.avatar) || 1),
+                    ...user,
+                    avatarURL: buildAvatarUrl(Number(user.avatar) || 1),
                 }));
 
                 const rawPayments = await fetchPaymentsByProject(pureProjectId);

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { UserData } from '@/types/user';
 import { SplitMap } from '@/types/payment';
 import { sanitizeDecimalInput } from '@/utils/parseAmount';
@@ -15,29 +15,84 @@ export function useSplitAdjustedMap({
     inputAmountValue,
     initialMap = {},
 }: UseSplitMapProps) {
-    const [localMap, setLocalMap] = useState<SplitMap>(() => {
-        const totalAmount = parseFloat(inputAmountValue || '0');
-        const fixedSum = Object.values(initialMap).reduce((sum, entry) => sum + (entry.fixed || 0), 0);
-        const remaining = totalAmount - fixedSum;
+    const [localMap, setLocalMap] = useState<SplitMap>({});
+    const [rawInputMap, setRawInputMap] = useState<Record<string, string>>({});
+    
+    useEffect(() => {
+        const isInitialMapEmpty = Object.keys(initialMap).length === 0;
 
-        return Object.fromEntries(
-            currentProjectUsers.map(user => {
-                const fixed = initialMap[user.uid]?.fixed || 0;
-                const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
-                const total = fixed + parseFloat(formatNumberForData(remaining * percent));
-                return [user.uid, { fixed, percent, total }];
-            })
-        );
-    });
+        const amount = parseFloat(inputAmountValue || "0");
+        const count = currentProjectUsers.length;
+        const percent = parseFloat(formatNumberForData(1 / count));
+        const share = parseFloat(formatNumberForData(amount / count));
 
-    const [rawInputMap, setRawInputMap] = useState<Record<string, string>>(() => {
-        return Object.fromEntries(
-            currentProjectUsers.map(user => {
-                const fixed = initialMap[user.uid]?.fixed || 0;
-                return [user.uid, formatNumber(fixed)];
-            })
-        );
-    });
+        if (share > 0 && isInitialMapEmpty && amount > 0) {
+            const newMap: SplitMap = Object.fromEntries(
+                currentProjectUsers.map(user => [ user.uid, { fixed: 0, percent, total: share } ])
+            );
+            setLocalMap(newMap);
+
+            const newRawMap = Object.fromEntries(
+              currentProjectUsers.map(user => [user.uid, "0"])
+            );
+        
+            setRawInputMap(newRawMap);
+        };
+
+        if (share > 0 && !isInitialMapEmpty && amount > 0) {
+            const fixedSum = Object.values(initialMap).reduce((sum, entry) => sum + (entry.fixed || 0), 0);
+
+            const newMap: SplitMap = Object.fromEntries(
+                currentProjectUsers.map(user => {
+                    const fixed = initialMap[user.uid]?.fixed || 0;
+                    const remaining = amount - fixedSum;
+                    const total = fixed + parseFloat(formatNumberForData(remaining * percent));
+                    return [ user.uid, { fixed, percent, total }]
+                })
+            );
+            setLocalMap(newMap);
+
+            const newRawMap = Object.fromEntries(
+                currentProjectUsers.map(user => {
+                    const fixed = initialMap[user.uid]?.fixed || 0;
+                    return [user.uid, formatNumber(fixed)];
+                })
+            );
+        
+            setRawInputMap(newRawMap);
+        };
+
+        console.log("[adjust]", isInitialMapEmpty, initialMap)
+  
+    }, [inputAmountValue, currentProjectUsers]);
+
+    useEffect(() => {
+        console.log("[adjust localMap updated]", localMap);
+      }, [localMap]);
+
+    // const [localMap, setLocalMap] = useState<SplitMap>(() => {
+    //     const totalAmount = parseFloat(inputAmountValue || '0');
+    //     const fixedSum = Object.values(initialMap).reduce((sum, entry) => sum + (entry.fixed || 0), 0);
+    //     const remaining = totalAmount - fixedSum;
+
+    //     return Object.fromEntries(
+    //         currentProjectUsers.map(user => {
+    //             const fixed = initialMap[user.uid]?.fixed || 0;
+    //             const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
+    //             const total = fixed + parseFloat(formatNumberForData(remaining * percent));
+    //             return [user.uid, { fixed, percent, total }];
+    //         })
+    //     );
+    // });
+
+    // const [rawInputMap, setRawInputMap] = useState<Record<string, string>>(() => {
+    //     return Object.fromEntries(
+    //         currentProjectUsers.map(user => {
+    //             const fixed = initialMap[user.uid]?.fixed || 0;
+    //             return [user.uid, formatNumber(fixed)];
+    //         })
+    //     );
+    // });
 
     const handleChange = (uid: string, value: string) => {
         const raw = sanitizeDecimalInput(value);
@@ -86,7 +141,7 @@ export function useSplitAdjustedMap({
             isComplete,
             infoText: `剩餘 ${formatNumber(remaining)} 元將均分`,
         };
-    }, [localMap, inputAmountValue]);
+    }, [inputAmountValue, localMap]);
 
     const generateFinalMap = () => {
         return Object.fromEntries(

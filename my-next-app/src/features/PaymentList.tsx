@@ -68,7 +68,7 @@ export default function PaymentList(){
                     </>
                 )}
                 {Object.entries(groupedPayments).map(([date, payments]) => (
-                    <div key={date} className="w-full pb-4">
+                    <div key={date} className="w-full pb-4 mb-4">
                         <p className="text-sm pb-2 w-full font-semibold">{date}</p>
                         {payments.map((payment, index) => (
                             <div key={payment.id}>

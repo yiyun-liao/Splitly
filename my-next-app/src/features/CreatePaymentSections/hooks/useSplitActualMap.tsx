@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { UserData } from '@/types/user';
 import { SplitMap } from '@/types/payment';
 import { sanitizeDecimalInput } from '@/utils/parseAmount';
@@ -15,23 +15,71 @@ export function useSplitActualMap({
     inputAmountValue,
     initialMap = {},
 }: UseSplitMapProps) {
-    const [localMap, setLocalMap] = useState<SplitMap>(() => {
-        return Object.fromEntries(
-            currentProjectUsers.map(user => {
-                const total = initialMap[user.uid]?.total || 0;
-                return [user.uid, { fixed: total, percent: 0, total }];
-            })
-        );
-    });
 
-    const [rawInputMap, setRawInputMap] = useState<Record<string, string>>(() => {
-        return Object.fromEntries(
-            currentProjectUsers.map(user => {
-                const total = initialMap[user.uid]?.total || 0;
-                return [user.uid, formatNumber(total)];
-            })
-        );
-    });
+    const [localMap, setLocalMap] = useState<SplitMap>({});
+    const [rawInputMap, setRawInputMap] = useState<Record<string, string>>({});  
+  
+    useEffect(() => {
+        const isInitialMapEmpty = Object.keys(initialMap).length === 0;
+
+        const amount = parseFloat(inputAmountValue || "0");
+        const count = currentProjectUsers.length;
+    
+        if (count > 0 && isInitialMapEmpty && amount > 0) {
+            const share = parseFloat(formatNumberForData(amount / count));
+    
+            const map: SplitMap = Object.fromEntries(
+                currentProjectUsers.map((user) => [user.uid, { fixed: share, percent: 0, total: share }])
+            );
+            setLocalMap(map);
+    
+            setRawInputMap(
+                Object.fromEntries(
+                    currentProjectUsers.map((user) => [user.uid, formatNumber(share)])
+                )
+            );
+        }
+        if (count > 0 && !isInitialMapEmpty && amount > 0) {
+            const map: SplitMap = Object.fromEntries(
+                currentProjectUsers.map((user) => {
+                    const fixed = initialMap[user.uid]?.total || 0;
+                    return [user.uid, { fixed: fixed, percent: 0, total: fixed }]
+            }));
+            setLocalMap(map);
+
+            const newRawMap = Object.fromEntries(
+                currentProjectUsers.map(user => {
+                    const total = initialMap[user.uid]?.total || 0;
+                    return [user.uid, formatNumber(total)];
+                })
+            )
+            setRawInputMap(newRawMap);
+        }
+        console.log("[actual]", isInitialMapEmpty, initialMap)
+
+    }, [inputAmountValue, currentProjectUsers]);
+
+    useEffect(() => {
+        console.log("[actual localMap updated]", localMap);
+      }, [localMap]);
+
+    // const [localMap, setLocalMap] = useState<SplitMap>(() => {
+    //     return Object.fromEntries(
+    //         currentProjectUsers.map(user => {
+    //             const total = initialMap[user.uid]?.total || 0;
+    //             return [user.uid, { fixed: total, percent: 0, total }];
+    //         })
+    //     );
+    // });
+
+    // const [rawInputMap, setRawInputMap] = useState<Record<string, string>>(() => {
+    //     return Object.fromEntries(
+    //         currentProjectUsers.map(user => {
+    //             const total = initialMap[user.uid]?.total || 0;
+    //             return [user.uid, formatNumber(total)];
+    //         })
+    //     );
+    // });
 
     const handleChange = (uid: string, value: string) => {
         const raw = sanitizeDecimalInput(value);

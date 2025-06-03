@@ -68,6 +68,8 @@ export default function CreatePayment({
         },
     });
       
+    console.log("[final]payment list", JSON.stringify(payload, null, 2));
+
     return(
         <Sheet open={open} onClose={onClose}>
             {(onClose) => (
