@@ -17,7 +17,7 @@ export default function JoinProjectPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (isReady) return;
+    if (!isReady) return;
 
     if (!firebaseUser || !userData) {
       const redirect = `/join?pid=${projectId}`;

@@ -1,22 +1,21 @@
 'use client';
 import { useAuth } from "@/contexts/AuthContext";
 import ProjectForm from "@/features/CreateProjectSections/ProjectForm";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function CreateFirstProject() {
-    const { projectId } = useParams();
-    const { firebaseUser, userData, isReady } = useAuth();
+    const { userData, projectData, isReady } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (isReady) return;
+        if (!isReady) return;
 
-        if (!firebaseUser || !userData) {
-            const redirect = `/join?pid=${projectId}`;
-            router.push(`/?redirect=${encodeURIComponent(redirect)}`);
+        if (projectData && projectData.length > 0) {
+            console.log("你已經有專案了")
+            router.push(`/${projectData[0].id}/dashboard`);
         }
-    }, [isReady, firebaseUser, userData, projectId, router]);
+    }, [isReady, router, projectData]);
 
     if (!userData) return null;
 

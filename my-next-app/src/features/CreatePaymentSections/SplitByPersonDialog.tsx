@@ -2,15 +2,14 @@ import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
-import { useState, useEffect, useMemo } from "react";
+import { useState} from "react";
 import { SplitMap, SplitMethod,SplitWay } from "@/types/payment";
-import { formatNumber,parsePercentToInt,parsePercentToDecimal, formatNumberForData, formatPercent } from "@/utils/parseNumber";
-import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import clsx from "clsx";
 import { UserData } from "@/types/user";
 import { useSplitPercentageMap } from "./hooks/useSplitPercentageMap";
 import { useSplitActualMap } from "./hooks/useSplitActualMap";
 import { useSplitAdjustedMap } from "./hooks/useSplitAdjustMap";
+import { formatPercent } from "@/utils/parseNumber";
 
 interface SplitByPersonProps {
     isSplitByPersonOpen: boolean;
@@ -158,7 +157,7 @@ export default function SplitByPerson({
                                     </p>
                                 </div>
                                 <p className="shrink-0 w-full mt-[-24px] text-sm flex justify-end text-zinc-500">
-                                    = {entry.total.toFixed(2)} 元
+                                   {localChooseSplitByPerson === 'adjusted' ? `+ ${formatPercent(1/currentProjectUsers.length)} = ${entry.total.toFixed(2)} 元`  : `= ${entry.total.toFixed(2)} 元`}
                                 </p>
                             </div>
                         </div>
