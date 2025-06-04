@@ -1,45 +1,76 @@
-import ImageButton from "@/components/ui/ImageButton"
-import IconButton from "@/components/ui/IconButton"
 import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import clsx from "clsx";
+
+import ImageButton from "@/components/ui/ImageButton"
+import IconButton from "@/components/ui/IconButton"
 import CreateProject from "./CreateProjectSections/CreateProject-main";
 import { logOutUser } from "@/lib/auth";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 
+interface MemberNavProps {
+    setNavWidth:(width: number) => void; 
+}
 
-
-export default function MemberNav() {
+export default function MemberNav({setNavWidth}:MemberNavProps) {
     const router = useRouter();
     const pathname = usePathname();
     const { projectId } = useParams();
     const {projectData, userData} = useGlobalProjectData();
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")
-    const [activePath, setActivePath] = useState(pathname); // 對應當前功能頁面渲染按鈕
+    const [activePath, setActivePath] = useState<"dashboard" | "expense">();
     const [isCreateProject, setIsCreateProject]= useState(false);
   
     useEffect(() => {
-      setActivePath(pathname);
+        setNavWidth(navStyle === "expansion" ? 200 : 72);
+    }, [navStyle, setNavWidth]);
+
+    useEffect(() => {
+        if (pathname.includes("/dashboard")) setActivePath("dashboard");
+        else if (pathname.includes("/expense")) setActivePath("expense");
     }, [pathname]);
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-    const navDivClass = clsx(
-        "w-full flex flex-col items-center justify-start py-2 gap-2 px-2",
+    const navStyleClass = clsx("h-screen box-border py-4 flex flex-col justify-start gap-2 bg-sp-white-40",
+        "transition-all duration-300 ease-in-out",
         {
-            "": navStyle === 'contraction',
-            "": navStyle === 'expansion'
+            "min-w-18 items-center": navStyle === 'contraction',
+            "w-[200px] items-start": navStyle === 'expansion',            
+        }
+    )
+    const labelClass = clsx("w-full font-medium truncate", 
+        "transition-opacity duration-300",
+        {
+            "opacity-0": navStyle === 'contraction',
+            "opacity-100": navStyle === 'expansion',
+        }
+    )
+    const itemClass= clsx("w-full flex gap-2 items-center rounded-xl hover:text-sp-blue-600 hover:bg-zinc-900/10 active:text-sp-blue-800 active:bg-zinc-900/40 cursor-pointer")
+    const navDivClass = clsx(
+        "w-full flex flex-col justify-start gap-2 py-3 px-3",
+        {
+            "items-center": navStyle === 'contraction',
+            "items-start": navStyle === 'expansion'
         }
     ) 
+    const navFunctionDivClass = clsx("w-full flex flex-col items-start justify-start gap-2 py-2 px-2") 
+    const navFunctionClass = clsx("w-full flex flex-col items-start justify-start p-1 gap-2 rounded-xl",
+        {
+            "bg-sp-white-60 shadow": navStyle === 'contraction',
+            "bg-sp-white-60": navStyle === 'expansion'            
+        }
+    )
 
     async function handleLogout() {
         await logOutUser();
         console.log('Logged out!');
         router.push('/');    
     }
+
     return(
-        <div className="w-fit box-border">
+        <div className="w-fit box-border text-zinc-700">
             <>
                 {isCreateProject && userData && (
                     <CreateProject
@@ -49,7 +80,7 @@ export default function MemberNav() {
                 )}
             </>
             {navStyle === 'contraction' && (
-                <nav className="min-w-18 h-screen box-border py-4 flex flex-col items-center justify-start gap-2 bg-sp-white-40">
+                <nav className={navStyleClass}>
                     <div id="nav-brand-logo" className={navDivClass}>
                         <ImageButton
                             image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
@@ -58,11 +89,11 @@ export default function MemberNav() {
                         />
                     </div>
                     <div id="nav-function" className={`${navDivClass} flex-1 `}>
-                        <div className="flex flex-col items-start justify-start p-1 gap-2 rounded-xl bg-sp-white-80 shadow">
+                        <div className={navFunctionClass}>
                             <IconButton
                                 icon='solar:widget-2-bold'
                                 size='md'
-                                variant={activePath === `/${projectId}/dashboard` ? 'solid' : 'outline'}
+                                variant={activePath === 'dashboard' ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
                                 onClick={() => router.push(`/${projectId}/dashboard`)} 
@@ -70,7 +101,7 @@ export default function MemberNav() {
                             <IconButton
                                 icon='solar:reorder-bold'
                                 size='md'
-                                variant={activePath === `/${projectId}/expense` ? 'solid' : 'outline'}
+                                variant={activePath === 'expense' ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
                                 onClick={() => router.push(`/${projectId}/expense`)} 
@@ -78,7 +109,7 @@ export default function MemberNav() {
                         </div>
                     </div>
                     <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
-                        {projectData?.map(project => {
+                        {projectData?.slice(0, 3).map(project => {
                             return(
                                 <ImageButton
                                     key={project.id}
@@ -117,20 +148,114 @@ export default function MemberNav() {
                             onClick={()=>{setNavStyle('expansion')}} 
                             >
                         </IconButton> 
-                        <IconButton
-                            icon='solar:multiple-forward-left-bold'
-                            size='md'
-                            variant='text-button'
-                            color='primary'
-                            type= 'button'
-                            onClick={handleLogout} 
-                            >
-                        </IconButton> 
                     </div>
                 </nav>
             )}
             {navStyle === 'expansion' && (
-                <p>none</p>
+                <nav className={navStyleClass}>
+                    <div id="nav-brand-logo" className={navDivClass}>
+                        <ImageButton
+                            image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
+                            size='md'
+                            imageName= "Splitly"
+                        />
+                    </div>
+                    <div id="nav-function" className={`${navFunctionDivClass} flex-1 `}>
+                        <div className={navFunctionClass}>
+                            <div 
+                                onClick={() => router.push(`/${projectId}/dashboard`)}
+                                className={itemClass}
+                            >
+                                <IconButton
+                                    icon='solar:widget-2-bold'
+                                    size='md'
+                                    variant={activePath === 'dashboard' ? 'solid' : 'outline'}
+                                    color='primary'
+                                    type= 'button'
+                                    onClick={() => router.push(`/${projectId}/dashboard`)} 
+                                />
+                                <p className={`${labelClass} ${activePath === 'dashboard' && "text-sp-blue-500"}`}>專案檢視</p>
+                            </div>
+                            <div 
+                                onClick={() => router.push(`/${projectId}/expense`)} 
+                                className={itemClass}
+                            >
+                                <IconButton
+                                    icon='solar:reorder-bold'
+                                    size='md'
+                                    variant={activePath === 'expense' ? 'solid' : 'outline'}
+                                    color='primary'
+                                    type= 'button'
+                                    onClick={() => router.push(`/${projectId}/expense`)} 
+                                />
+                                <p className={`${labelClass} ${activePath === 'expense' && "text-sp-blue-500"}`}>收支紀錄</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
+                        <div
+                            className={itemClass}
+                            onClick={() => setIsCreateProject(true)}
+                        >
+                            <IconButton
+                                icon='solar:add-circle-bold'
+                                size='md'
+                                variant='text-button'
+                                color='primary'
+                                type= 'button'
+                                onClick={() => setIsCreateProject(true)}
+                            />
+                            <p className={`${labelClass}`}>新增專案</p>
+                        </div>
+                        {projectData?.map(project => {
+                            return(
+                                <div 
+                                    key={project.id} 
+                                    onClick={() => router.push(`/${project.id}/dashboard`)}
+                                    className={`${itemClass} ${projectId === project.id && 'bg-sp-blue-200'}`}
+                                >
+                                    <ImageButton
+                                        key={project.id}
+                                        image={project.imgURL}
+                                        size='md'
+                                        imageName= {project.project_name}
+                                        onClick={() => router.push(`/${project.id}/dashboard`)}
+                                    />
+                                    <p className={`${labelClass} ${projectId === project.id && "text-sp-blue-500"}`}>{project.project_name}</p>
+                                </div>
+                            )}
+                        )}
+                    </div>
+                    <div id="nav-setting" className={`w-full flex justify-start items-start gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
+                            <IconButton
+                                icon='solar:user-bold'
+                                size='md'
+                                variant='text-button'
+                                color='primary'
+                                type= 'button'
+                                //onClick={handleClick} 
+                                >
+                            </IconButton> 
+                            <IconButton
+                                icon='solar:multiple-forward-left-bold'
+                                size='md'
+                                variant='text-button'
+                                color='primary'
+                                type= 'button'
+                                onClick={handleLogout} 
+                                >
+                            </IconButton>                        
+                            <IconButton
+                                icon='solar:square-double-alt-arrow-left-outline'
+                                size='md'
+                                variant='text-button'
+                                color='primary'
+                                type= 'button'
+                                onClick={()=>{setNavStyle('contraction')}} 
+                                >
+                            </IconButton> 
+                    </div>
+                </nav>
             )}
         </div>
     )
