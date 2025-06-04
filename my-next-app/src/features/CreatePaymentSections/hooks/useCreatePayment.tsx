@@ -29,7 +29,7 @@ export function useCreatePayment(options?: UseCreatePaymentOptions) {
 
             if (payment) {
                 if (setCurrentPaymentList) {
-                    setCurrentPaymentList((prev) => [...(prev ?? []), payment]);
+                    setCurrentPaymentList((prev) => [payment, ...(prev ?? [])]);
                 }
                 options?.onSuccess?.(payment);
         } else {

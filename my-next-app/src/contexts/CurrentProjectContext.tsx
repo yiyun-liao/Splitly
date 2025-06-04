@@ -48,7 +48,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const userKey = `projectUsers | ${pureProjectId}`;
         const paymentKey = `paymentList | ${pureProjectId}`;
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
-        const CACHE_TTL = 1000 * 60 * 30;
+        const CACHE_TTL = 1000 * 60 * 60;
 
         const cachedUsers = localStorage.getItem(userKey);
         const cachedPayments = localStorage.getItem(paymentKey);
@@ -71,10 +71,11 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
         const fetchProjectData = async () => {
             try {
+                console.log("🙃 fetch current data")
                 const rawUsers = await fetchUserByProject(pureProjectId);
                 const users: UserData[] = rawUsers.map((user:UserData) => ({
-                ...user,
-                avatarURL: buildAvatarUrl(Number(user.avatar) || 1),
+                    ...user,
+                    avatarURL: buildAvatarUrl(Number(user.avatar) || 1),
                 }));
 
                 const rawPayments = await fetchPaymentsByProject(pureProjectId);

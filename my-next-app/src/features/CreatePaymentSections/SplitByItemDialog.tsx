@@ -5,7 +5,7 @@ import IconButton from "@/components/ui/IconButton";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 import { SplitWay, SplitMap, CreateItemPayload } from "@/types/payment";
-import { formatNumber } from "@/utils/parseNumber";
+import { formatNumber, formatNumberForData } from "@/utils/parseNumber";
 import SplitByItemEdit from "./SplitByItemEditDialog";
 import { UserData } from "@/types/user";
 
@@ -72,18 +72,15 @@ export default function SplitByItem({
     // get data
     const updateSplitByItemMapFromItemList = () => {
         const tempMap: SplitMap = Object.fromEntries(
-            currentProjectUsers.map(user => [
-            user.uid,
-            { fixed: 0, percent: 0, total: 0 }
-            ])
+            currentProjectUsers.map(user => [ user.uid, { fixed: 0, percent: 0, total: 0 }])
         );      
         // 累加每筆 item 的付款資訊
         itemList.forEach(item => {
             Object.entries(item.split_map ?? {}).forEach(([uid, entry]) => {
                     
             // 每個人累加自己的金額（覆寫而非疊加）
-            tempMap[uid].fixed = (tempMap[uid].fixed || 0) + (entry.total|| 0);
-            tempMap[uid].total = (tempMap[uid].total || 0) + (entry.total || 0);
+            tempMap[uid].fixed = parseFloat(formatNumberForData((tempMap[uid].fixed || 0) + (entry.total|| 0)));
+            tempMap[uid].total = parseFloat(formatNumberForData((tempMap[uid].total || 0) + (entry.total || 0)));
             });
         });
       

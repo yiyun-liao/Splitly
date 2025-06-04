@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           const myKey = `👀 myData:${uid}`;
           const projectKey = `👀 myProjectList:${uid}`;
           const myMetaKey = `👀 cacheMyMeta:${uid}`;
-          const CACHE_TTL = 1000 * 60 * 30;
+          const CACHE_TTL = 1000 * 60 * 60;
     
           const cachedMyData = localStorage.getItem(myKey);
           const cachedProjects = localStorage.getItem(projectKey);
@@ -86,6 +86,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
           setIsReady(false);
           try {
+            console.log("🙃 fetch my data")
             const token = await userAuth.getIdToken();
             const rawUser = await fetchCurrentUser(token, uid);
             const rawProjects = await fetchProjectsByUser(token, uid);

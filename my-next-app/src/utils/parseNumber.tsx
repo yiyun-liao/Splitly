@@ -20,10 +20,10 @@ export function formatNumber(p: number): string {
 export function formatNumberForData(p: number): string {
     return `${p.toFixed(6)}`;
 }
-// 33.3333333333 -> 33.3333
+// 33.3333333333 -> 33.333333
 
 export function parsePercentToDecimal(p: number): number {
     return parseFloat((p / 100).toFixed(6));
   }
 
-// 33.33 -> 0.3333
+// 33.33 -> 0.333333
