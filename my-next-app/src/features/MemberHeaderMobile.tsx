@@ -5,7 +5,6 @@ import clsx from "clsx";
 
 import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
-import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import ProjectMemberList from "./ProjectOverviewSections/ProjectMemberListDialog";
 import { useAuth } from "@/contexts/AuthContext"; 

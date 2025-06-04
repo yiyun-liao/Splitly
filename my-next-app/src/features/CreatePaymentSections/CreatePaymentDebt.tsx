@@ -12,6 +12,7 @@ import { getNowDatetimeLocal } from "@/utils/time";
 import {  CreatePaymentPayload} from "@/types/payment"
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { UserData } from "@/types/user";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 
 interface CreatePaymentDebtProps {
@@ -28,6 +29,7 @@ export default function CreatePaymentDebt({
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
         const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";   
+        const isMobile = useIsMobile();
 
         // receipt-debt
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
@@ -121,8 +123,8 @@ export default function CreatePaymentDebt({
                         />
                     }
                 </div>
-                <section id="receipt-debt"  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                    <div id="receipt-form-frame" className="max-w-xl w-full grid grid-cols-3 gap-2 px-1">
+                <section  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
+                    <div className={`w-full grid grid-cols-3 gap-2 px-1 ${!isMobile && "max-w-xl"}`}>
                         <div className={`pb-5 ${formSpan3CLass}`}>
                             <div className="w-full flex items-center justify-start gap-2">
                                 <span className={labelClass}>匯款人</span>

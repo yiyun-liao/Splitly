@@ -16,6 +16,8 @@ import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPa
 import { formatPercent, formatNumber, formatNumberForData } from "@/utils/parseNumber";
 import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
+import { useIsMobile } from "@/hooks/useIsMobile";
+
 
 interface CreatePaymentSplitProps {
     currentProjectUsers: UserData[];
@@ -32,6 +34,7 @@ export default function CreatePaymentSplit({
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
         const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";    
+        const isMobile = useIsMobile();
 
         // receipt-split
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
@@ -82,14 +85,18 @@ export default function CreatePaymentSplit({
                 total: 0
             }]));
         });
+        
+        // 項目細節設定
+        const [localItemPayloadList, setLocalItemPayloadList] = useState<CreateItemPayload[]>([]);
 
-       // 個人帳目還款人設定
+        // 個人帳目還款人設定
        const [personalSplitMap, setPersonalSplitMap] = useState<SplitMap>(() => {
             return { [currentUid]: { fixed: 0,percent: 0,total: 0}};
         });
+        const toggleAccountType = () => {
+            setAccountType(prev => (prev === "group" ? "personal" : "group"));
+          };
 
-        // 項目細節設定
-        const [localItemPayloadList, setLocalItemPayloadList] = useState<CreateItemPayload[]>([]);
 
         // 價格改變就重設 
         useEffect(() => {
@@ -246,271 +253,194 @@ export default function CreatePaymentSplit({
                         />
                     }
                 </div>
-                {accountType === 'personal' && (
-                    <section className={`w-full px-1 h-full  pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                        <div className="max-w-xl w-full grid grid-cols-3 gap-2">
-                            <div className='col-span-3 flex flex-col gap-2 items-end justify-end'>
-                                <div
-                                    className={`px-2 py-2 flex items-center justify-center gap-2 rounded-xl bg-sp-white-20 hover:bg-sp-green-100 active:bg-sp-green-200 cursor-pointer }`}
-                                    onClick={() => {
-                                        setAccountType('group')
-                                    }}
-                                >
-                                    <p className="text-base ml-4">個人帳目</p>
-                                    <IconButton
-                                        icon="solar:unread-bold"
-                                        size="sm"
-                                        variant="text-button"
-                                        color="primary"
-                                        type="button"
-                                    />
-                                </div>
-                            </div>
-                            <div className={formSpan1CLass}>
-                                <span className={labelClass}>費用</span>
-                                <Select
-                                    value={selectCurrencyValue}
-                                    required={true}
-                                    placeholder="點擊選擇"
-                                    onChange={(e) => setSelectedCurrencyValue(e.target.value)}
-                                    flexDirection="row"
-                                    width="full"
-                                    disabled = {true}
-                                    options={[
-                                        { label: "TWD", value: "TWD" , disabled: true}
-                                    ]}
-                                />
-                            </div>
-                            <div className={formSpan2CLass}>
-                                <Input
-                                value={inputAmountValue}
-                                type="number"
-                                onChange={(e) => {handleSplitAmountChange(e.target.value)}}
-                                flexDirection="row"
-                                width="full"
-                                placeholder="點擊編輯"
-                                step="0.01"
-                                inputMode="decimal"                                          
-                                />
-                            </div>
-                            <div className={formSpan1CLass}>
-                                <span className={labelClass}>類別</span>
-                                <Select
-                                    value={selectedCategoryValue?? ""}
-                                    required = {true}
-                                    onChange={(e) => setSelectedCategoryValue(e.target.value)}
-                                    flexDirection= "row"
-                                    width= "full"
-                                    options={categoryOptions}
-                                />
-                            </div>
-                            <div className={formSpan2CLass}>
-                                <span className={labelClass}>名稱</span>
-                                <Input
-                                    value={inputPaymentValue}
-                                    type="text"
-                                    onChange={(e) => setInputPaymentValue(e.target.value)}
-                                    flexDirection="row"
-                                    width="full"
-                                    placeholder="點擊編輯"
-                                />
-                            </div>
-                            <div className={`pb-5 ${formSpan3CLass}`}>
-                                <div className="w-full flex items-center justify-start gap-2">
-                                    <span className={labelClass}>付款人</span>
-                                </div>
-                                <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
-                                        <div className="px-3 py-3 flex items-center justify-start gap-2">
-                                            <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                                            <div className="shrink-0 flex items-center justify-center">
-                                                <Avatar
-                                                size="md"
-                                                img={userData?.avatarURL}
-                                                userName={userData?.name}
-                                                />
-                                            </div>
-                                            <p className="text-base truncate">{userData?.name}</p>
-                                            </div>
-                                            <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
-                                            <p className="shrink-0 text-xl font-lg">${formatNumber(Number(inputAmountValue))}</p>
-                                            </div>
-                                        </div>
-                                </div>
-                            </div>
-                            <div className={formSpan3CLass}>
-                                <span className={labelClass}>時間</span>
-                                <Input
-                                    value={inputTimeValue}
-                                    type="datetime-local"
-                                    onChange={(e) => setInputTimeValue(e.target.value)}
-                                    flexDirection="row"
-                                    width="full"
-                                    placeholder="點擊選擇"
-                                />
-                            </div>
-                            <div className={formSpan3CLass}>
-                                <span className={labelClass}>備忘錄</span>
-                                <TextArea
-                                    value={inputDescValue}
-                                    rows={2}
-                                    maxRows={4}
-                                    required={true}
-                                    onChange={(e) => setInputDescValue(e.target.value)}
-                                    flexDirection="row"
-                                    width="full"
-                                    placeholder="點擊編輯"
+                <section className={`w-full px-1 h-full pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
+                    <div className={`w-full ${!isMobile && "max-w-xl"}`}>
+                        <div className='w-full flex flex-col gap-2 items-end justify-end'>
+                            <div
+                                className={`px-2 py-2 flex items-center justify-center gap-2 rounded-xl bg-sp-white-20 hover:bg-sp-green-100 active:bg-sp-green-200 cursor-pointer }`}
+                                onClick={() => { toggleAccountType()}}
+                            >
+                                <p className="text-base ml-4">個人帳目</p>
+                                <IconButton
+                                    icon={accountType === 'personal' ? "solar:check-square-bold" : "solar:stop-outline" }
+                                    size="sm"
+                                    variant="text-button"
+                                    color="primary"
+                                    type="button"
                                 />
                             </div>
                         </div>
-                    </section>                
-                )}
-                {accountType === 'group' && (
-                    <section className={`w-full px-1 h-full  pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                        <div className="max-w-xl w-full grid grid-cols-3 gap-2">
-                            <div className='col-span-3 flex flex-col gap-2 items-end justify-end'>
-                                <div
-                                    className={`px-2 py-2 flex items-center justify-center gap-2 rounded-xl bg-sp-white-20 hover:bg-sp-green-100 active:bg-sp-green-200 cursor-pointer }`}
-                                    onClick={() => {
-                                        setAccountType('personal')
-                                    }}
-                                >
-                                    <p className="text-base ml-4">個人帳目</p>
-                                    <IconButton
-                                        icon="solar:stop-line-duotone"
-                                        size="sm"
-                                        variant="text-button"
-                                        color="primary"
-                                        type="button"
+                        {accountType === 'personal' && (
+                            <div className="w-full grid grid-cols-3 gap-2">
+                                <div className={formSpan1CLass}>
+                                    <span className={labelClass}>費用</span>
+                                    <Select
+                                        value={selectCurrencyValue}
+                                        required={true}
+                                        placeholder="點擊選擇"
+                                        onChange={(e) => setSelectedCurrencyValue(e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        disabled = {true}
+                                        options={[
+                                            { label: "TWD", value: "TWD" , disabled: true}
+                                        ]}
                                     />
                                 </div>
-                            </div>                                                      
-                            <div className={formSpan1CLass}>
-                                <span className={labelClass}>費用</span>
-                                <Select
-                                    value={selectCurrencyValue}
-                                    required={true}
-                                    placeholder="點擊選擇"
-                                    onChange={(e) => setSelectedCurrencyValue(e.target.value)}
-                                    flexDirection="row"
-                                    width="full"
-                                    disabled = {true}
-                                    options={[
-                                        { label: "TWD", value: "TWD" , disabled: true}
-                                    ]}
-                                />
-                            </div>
-                            <div className={formSpan2CLass}>
-                                <Input
-                                value={inputAmountValue}
-                                type="number"
-                                onChange={(e) => {handleSplitAmountChange(e.target.value)}}
-                                flexDirection="row"
-                                width="full"
-                                placeholder="點擊編輯"
-                                step="0.01"
-                                inputMode="decimal"                                          
-                                />
-                            </div>
-                            <div className={formSpan1CLass}>
-                                <span className={labelClass}>類別</span>
-                                <Select
-                                    value={selectedCategoryValue??""}
-                                    required = {true}
-                                    onChange={(e) => setSelectedCategoryValue(e.target.value)}
-                                    flexDirection= "row"
-                                    width= "full"
-                                    options={categoryOptions}
-                                />
-                            </div>
-                            <div className={formSpan2CLass}>
-                                <span className={labelClass}>名稱</span>
-                                <Input
-                                    value={inputPaymentValue}
-                                    type="text"
-                                    onChange={(e) => setInputPaymentValue(e.target.value)}
+                                <div className={formSpan2CLass}>
+                                    <Input
+                                    value={inputAmountValue}
+                                    type="number"
+                                    onChange={(e) => {handleSplitAmountChange(e.target.value)}}
                                     flexDirection="row"
                                     width="full"
                                     placeholder="點擊編輯"
-                                />
-                            </div>
-                            <div className={`pb-5 ${formSpan3CLass}`}>
-                                <div className="w-full flex items-center justify-start gap-2">
-                                    <span className={labelClass}>付款人</span>
-                                    <Button
-                                        size='sm'
-                                        width='fit'
-                                        variant='text-button'
-                                        color='primary'
-                                        onClick={() => setIsSplitPayerOpen(true)}
-                                        >
-                                            多位付款人
-                                    </Button>
+                                    step="0.01"
+                                    inputMode="decimal"                                          
+                                    />
                                 </div>
-                                <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
-                                    {Object.entries(splitPayerMap).map(([uid, amount]) => {
-                                        const user = currentProjectUsers.find(user => user.uid === uid);
-                                        if (!user) return null;
-                                        return (
-                                        <div key={uid} className="px-3 py-3 flex items-center justify-start gap-2">
-                                            <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                                            <div className="shrink-0 flex items-center justify-center">
-                                                <Avatar
-                                                size="md"
-                                                img={user.avatarURL}
-                                                userName={user.name}
-                                                />
-                                            </div>
-                                            <p className="text-base truncate">{user.name}</p>
-                                            </div>
-                                            <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
-                                            <p className="shrink-0 text-xl font-lg">${formatNumber(amount)}</p>
-                                            </div>
-                                        </div>
-                                        );
-                                    })}
+                                <div className={formSpan1CLass}>
+                                    <span className={labelClass}>類別</span>
+                                    <Select
+                                        value={selectedCategoryValue?? ""}
+                                        required = {true}
+                                        onChange={(e) => setSelectedCategoryValue(e.target.value)}
+                                        flexDirection= "row"
+                                        width= "full"
+                                        options={categoryOptions}
+                                    />
                                 </div>
-                            </div>
-                            <div className={`pb-5 ${formSpan3CLass}`}>
-                                <div className="w-full flex items-center justify-start gap-2">
-                                    <span className={labelClass}>分帳方式</span>
-                                    <div id="receipt-way" className="w-full my-4 flex max-w-xl bg-sp-white-20 rounded-xl">
-                                        <Button
-                                            size='sm'
-                                            width='full'
-                                            variant= {splitWay == 'item' ? 'solid' : 'text-button'}
-                                            color= 'primary'
-                                            onClick={() => {
-                                                setIsSplitByItemOpen(true)
-                                            }}
-                                            >
-                                                項目分帳
-                                        </Button>
-                                        <Button
-                                            size='sm'
-                                            width='full'
-                                            variant={splitWay == 'person' ? 'solid' : 'text-button'}
-                                            color='primary'
-                                            onClick={() => {
-                                                setIsSplitByPersonOpen(true)
-                                            }}
-                                            >
-                                                成員分帳
-                                        </Button>
+                                <div className={formSpan2CLass}>
+                                    <span className={labelClass}>名稱</span>
+                                    <Input
+                                        value={inputPaymentValue}
+                                        type="text"
+                                        onChange={(e) => setInputPaymentValue(e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        placeholder="點擊編輯"
+                                    />
+                                </div>
+                                <div className={`pb-5 ${formSpan3CLass}`}>
+                                    <div className="w-full flex items-center justify-start gap-2">
+                                        <span className={labelClass}>付款人</span>
+                                    </div>
+                                    <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
+                                            <div className="px-3 py-3 flex items-center justify-start gap-2">
+                                                <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
+                                                <div className="shrink-0 flex items-center justify-center">
+                                                    <Avatar
+                                                    size="md"
+                                                    img={userData?.avatarURL}
+                                                    userName={userData?.name}
+                                                    />
+                                                </div>
+                                                <p className="text-base truncate">{userData?.name}</p>
+                                                </div>
+                                                <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
+                                                <p className="shrink-0 text-xl font-lg">${formatNumber(Number(inputAmountValue))}</p>
+                                                </div>
+                                            </div>
                                     </div>
                                 </div>
-                                <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
-                                    {currentProjectUsers
-                                        .filter(user => {
-                                            const map = splitWay === 'item' ? splitByItemMap : splitByPersonMap;
-                                            return !!map[user.uid];
-                                        })
-                                        .map(user => {
-                                            const map = splitWay === 'item' ? splitByItemMap : splitByPersonMap;
-                                            const entry = map[user.uid];
-
-                                        return(<div key={user.uid} className="px-3 py-3 flex items-center justify-start gap-2">
-                                            <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                                                <div className="shrink-0  flex items-center justify-center ">
+                                <div className={formSpan3CLass}>
+                                    <span className={labelClass}>時間</span>
+                                    <Input
+                                        value={inputTimeValue}
+                                        type="datetime-local"
+                                        onChange={(e) => setInputTimeValue(e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        placeholder="點擊選擇"
+                                    />
+                                </div>
+                                <div className={formSpan3CLass}>
+                                    <span className={labelClass}>備忘錄</span>
+                                    <TextArea
+                                        value={inputDescValue}
+                                        rows={2}
+                                        maxRows={4}
+                                        required={true}
+                                        onChange={(e) => setInputDescValue(e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        placeholder="點擊編輯"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {accountType === 'group' && (
+                            <div className="w-full grid grid-cols-3 gap-2">                                                    
+                                <div className={formSpan1CLass}>
+                                    <span className={labelClass}>費用</span>
+                                    <Select
+                                        value={selectCurrencyValue}
+                                        required={true}
+                                        placeholder="點擊選擇"
+                                        onChange={(e) => setSelectedCurrencyValue(e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        disabled = {true}
+                                        options={[
+                                            { label: "TWD", value: "TWD" , disabled: true}
+                                        ]}
+                                    />
+                                </div>
+                                <div className={formSpan2CLass}>
+                                    <Input
+                                    value={inputAmountValue}
+                                    type="number"
+                                    onChange={(e) => {handleSplitAmountChange(e.target.value)}}
+                                    flexDirection="row"
+                                    width="full"
+                                    placeholder="點擊編輯"
+                                    step="0.01"
+                                    inputMode="decimal"                                          
+                                    />
+                                </div>
+                                <div className={formSpan1CLass}>
+                                    <span className={labelClass}>類別</span>
+                                    <Select
+                                        value={selectedCategoryValue??""}
+                                        required = {true}
+                                        onChange={(e) => setSelectedCategoryValue(e.target.value)}
+                                        flexDirection= "row"
+                                        width= "full"
+                                        options={categoryOptions}
+                                    />
+                                </div>
+                                <div className={formSpan2CLass}>
+                                    <span className={labelClass}>名稱</span>
+                                    <Input
+                                        value={inputPaymentValue}
+                                        type="text"
+                                        onChange={(e) => setInputPaymentValue(e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        placeholder="點擊編輯"
+                                    />
+                                </div>
+                                <div className={`pb-5 ${formSpan3CLass}`}>
+                                    <div className="w-full flex items-center justify-start gap-2">
+                                        <span className={labelClass}>付款人</span>
+                                        <Button
+                                            size='sm'
+                                            width='fit'
+                                            variant='text-button'
+                                            color='primary'
+                                            onClick={() => setIsSplitPayerOpen(true)}
+                                            >
+                                                多位付款人
+                                        </Button>
+                                    </div>
+                                    <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
+                                        {Object.entries(splitPayerMap).map(([uid, amount]) => {
+                                            const user = currentProjectUsers.find(user => user.uid === uid);
+                                            if (!user) return null;
+                                            return (
+                                            <div key={uid} className="px-3 py-3 flex items-center justify-start gap-2">
+                                                <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
+                                                <div className="shrink-0 flex items-center justify-center">
                                                     <Avatar
                                                     size="md"
                                                     img={user.avatarURL}
@@ -518,44 +448,102 @@ export default function CreatePaymentSplit({
                                                     />
                                                 </div>
                                                 <p className="text-base truncate">{user.name}</p>
+                                                </div>
+                                                <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
+                                                <p className="shrink-0 text-xl font-lg">${formatNumber(amount)}</p>
+                                                </div>
                                             </div>
-                                            <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
-                                                <p className="shrink-0 text-xl font-lg">
-                                                    ${formatNumber(entry.total) || '0.00'}
-                                                </p>
-                                                <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">{getTagDesc(splitWay, chooseSplitByPerson, entry, splitFinalMap)}</div>
-                                            </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                                <div className={`pb-5 ${formSpan3CLass}`}>
+                                    <div className="w-full flex items-center justify-start gap-2">
+                                        <span className={labelClass}>分帳方式</span>
+                                        <div id="receipt-way" className="w-full my-4 flex bg-sp-white-20 rounded-xl">
+                                            <Button
+                                                size='sm'
+                                                width='full'
+                                                variant= {splitWay == 'item' ? 'solid' : 'text-button'}
+                                                color= 'primary'
+                                                onClick={() => {
+                                                    setIsSplitByItemOpen(true)
+                                                }}
+                                                >
+                                                    項目分帳
+                                            </Button>
+                                            <Button
+                                                size='sm'
+                                                width='full'
+                                                variant={splitWay == 'person' ? 'solid' : 'text-button'}
+                                                color='primary'
+                                                onClick={() => {
+                                                    setIsSplitByPersonOpen(true)
+                                                }}
+                                                >
+                                                    成員分帳
+                                            </Button>
                                         </div>
-                                    )})}                                                                                                                            
+                                    </div>
+                                    <div className={`w-full h-fit max-h-60 rounded-2xl bg-sp-white-20 overflow-hidden ${scrollClass}`}>
+                                        {currentProjectUsers
+                                            .filter(user => {
+                                                const map = splitWay === 'item' ? splitByItemMap : splitByPersonMap;
+                                                return !!map[user.uid];
+                                            })
+                                            .map(user => {
+                                                const map = splitWay === 'item' ? splitByItemMap : splitByPersonMap;
+                                                const entry = map[user.uid];
+
+                                            return(<div key={user.uid} className="px-3 py-3 flex items-center justify-start gap-2">
+                                                <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
+                                                    <div className="shrink-0  flex items-center justify-center ">
+                                                        <Avatar
+                                                        size="md"
+                                                        img={user.avatarURL}
+                                                        userName={user.name}
+                                                        />
+                                                    </div>
+                                                    <p className="text-base truncate">{user.name}</p>
+                                                </div>
+                                                <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
+                                                    <p className="shrink-0 text-xl font-lg">
+                                                        ${formatNumber(entry.total) || '0.00'}
+                                                    </p>
+                                                    <div className="p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">{getTagDesc(splitWay, chooseSplitByPerson, entry, splitFinalMap)}</div>
+                                                </div>
+                                            </div>
+                                        )})}                                                                                                                            
+                                    </div>
+                                </div>
+                                <div className={formSpan3CLass}>
+                                    <span className={labelClass}>時間</span>
+                                    <Input
+                                        value={inputTimeValue}
+                                        type="datetime-local"
+                                        onChange={(e) => setInputTimeValue(e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        placeholder="點擊選擇"
+                                    />
+                                </div>
+                                <div className={formSpan3CLass}>
+                                    <span className={labelClass}>備忘錄</span>
+                                    <TextArea
+                                        value={inputDescValue}
+                                        rows={2}
+                                        maxRows={4}
+                                        required={true}
+                                        onChange={(e) => setInputDescValue(e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        placeholder="點擊編輯"
+                                    />
                                 </div>
                             </div>
-                            <div className={formSpan3CLass}>
-                                <span className={labelClass}>時間</span>
-                                <Input
-                                    value={inputTimeValue}
-                                    type="datetime-local"
-                                    onChange={(e) => setInputTimeValue(e.target.value)}
-                                    flexDirection="row"
-                                    width="full"
-                                    placeholder="點擊選擇"
-                                />
-                            </div>
-                            <div className={formSpan3CLass}>
-                                <span className={labelClass}>備忘錄</span>
-                                <TextArea
-                                    value={inputDescValue}
-                                    rows={2}
-                                    maxRows={4}
-                                    required={true}
-                                    onChange={(e) => setInputDescValue(e.target.value)}
-                                    flexDirection="row"
-                                    width="full"
-                                    placeholder="點擊編輯"
-                                />
-                            </div>
-                        </div>
-                    </section>
-                )}
+                         )}
+                    </div>
+                </section>                
             </div>
         )
 }

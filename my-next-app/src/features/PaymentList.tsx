@@ -117,6 +117,9 @@ export default function PaymentList(){
                     </div>
                 ))}
             </div>
+            {isMobile && (
+                    <div className="shrink-0 w-full pb-3" />
+            )}
         </div>
     )
 }
