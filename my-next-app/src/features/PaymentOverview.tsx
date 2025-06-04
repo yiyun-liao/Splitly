@@ -1,8 +1,11 @@
+import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
+
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
-import { useState } from "react";
 import { useCategoryParent } from "@/hooks/useCategory";
-import clsx from "clsx";
+import { useIsMobile } from "@/hooks/useIsMobile";
+
 
 
 export default function PaymentOverview(){
@@ -10,12 +13,35 @@ export default function PaymentOverview(){
     const [viewExpenseWay, setViewExpenseWay] = useState<"shared" | "personal">("shared");
     const {categoryParents} = useCategoryParent();
 
-
+    // css
+    const isMobile = useIsMobile();
+    const [isScrolled, setIsScrolled] = useState(false);
+    const scrollRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const scrollEl = scrollRef.current;
+        if (!scrollEl) return;
+    
+        const handleScroll = () => {
+           setIsScrolled(scrollEl.scrollTop > 0);
+        };
+    
+        scrollEl.addEventListener("scroll", handleScroll);
+        return () => scrollEl.removeEventListener("scroll", handleScroll);
+    }, []);
+    const isMobileClass = clsx("shrink-0 h-full box-border overflow-hidden text-zinc-700",
+        {
+            "w-full ": isMobile === true,
+            "w-xl": isMobile === false,  
+        }
+    )
+    const headerClass = clsx("w-full mb-4 flex shrink-0 bg-sp-blue-300 rounded-xl transition-opacity duration-200",
+        {"opacity-0 pointer-events-none h-0": isMobile && isScrolled }
+    )
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
 
     return(
-        <div id="project-analysis" className="shrink-0 w-xl pb-3 h-full box-border overflow-hidden">
-            <div id="Expense-splitting" className="w-full mb-4 flex shrink-0 bg-sp-blue-300 rounded-xl">
+        <div id="project-analysis" className={isMobileClass}>
+            <div id="Expense-splitting" className={headerClass}>
                 <Button
                     size='sm'
                     width='full'
@@ -42,7 +68,7 @@ export default function PaymentOverview(){
                 </Button>
             </div>
             {viewExpenseWay === "shared" && (
-                <div className={`h-full ${scrollClass}`}>
+                <div ref={scrollRef} className={`h-full ${scrollClass}`}>
                     <div id="project-analysis-chart" className="px-3 py-3 mb-4 rounded-2xl h-100 overflow-hidden bg-sp-blue-300 ">
                         <div id="project-analysis-chart"  className="py-2 px-4 w-full overflow-hidden">
                             <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 開銷總覽</p>
@@ -81,7 +107,7 @@ export default function PaymentOverview(){
                 </div>
             )}
             {viewExpenseWay === "personal" && (
-                <div className={`h-full ${scrollClass}`}>
+                <div ref={scrollRef} className={`h-full ${scrollClass}`}>
                     <div id="project-analysis-chart" className="px-3 py-3 mb-4 rounded-2xl h-100 overflow-hidden bg-sp-blue-300 ">
                         <div id="project-analysis-chart"  className="py-2 px-4 w-full overflow-hidden">
                             <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 開銷總覽</p>
