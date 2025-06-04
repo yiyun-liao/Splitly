@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton"
-import CreateProject from "./CreateProjectSections/CreateProject-main";
+import CreateProject from "../CreateProjectSections/CreateProject-main";
 import { logOutUser } from "@/lib/auth";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 

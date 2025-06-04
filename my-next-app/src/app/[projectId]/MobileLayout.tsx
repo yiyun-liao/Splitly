@@ -6,8 +6,8 @@ import clsx from "clsx";
 import { GlobalProjectProvider } from "@/contexts/GlobalProjectContext";
 import { CurrentProjectProvider } from "@/contexts/CurrentProjectContext";
 import { CategoryProvider } from "@/contexts/CategoryContext";
-import MemberNavMobile from "@/features/MemberNavMobile";
-import MemberHeaderMobile from "@/features/MemberHeaderMobile";
+import MemberNavMobile from "@/features/BasicLayout/MemberNavMobile";
+import MemberHeaderMobile from "@/features/BasicLayout/MemberHeaderMobile";
 
 export default function MobileLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();

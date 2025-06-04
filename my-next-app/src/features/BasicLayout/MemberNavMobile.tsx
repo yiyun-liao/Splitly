@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 
 import IconButton from "@/components/ui/IconButton";
-import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
+import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 

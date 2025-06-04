@@ -6,8 +6,8 @@ import { GlobalProjectProvider } from "@/contexts/GlobalProjectContext";
 import { CurrentProjectProvider } from "@/contexts/CurrentProjectContext";
 import { CategoryProvider } from "@/contexts/CategoryContext";
 
-import MemberHeader from "@/features/MemberHeader";
-import MemberNav from "@/features/MemberNav";
+import MemberHeader from "@/features/BasicLayout/MemberHeader";
+import MemberNav from "@/features/BasicLayout/MemberNav";
 
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {  
