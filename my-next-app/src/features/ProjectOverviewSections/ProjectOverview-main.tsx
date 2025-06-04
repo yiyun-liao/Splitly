@@ -11,9 +11,12 @@ import ProjectDetail from "./ProjectDetailDialog";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { getBudgetStatus } from "@/utils/budgetHint";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
+import { getBudgetStatus } from "@/utils/budgetHint";
 import { formatNumber } from "@/utils/parseNumber";
+import { useIsMobile } from "@/hooks/useIsMobile";
+
+
 
 export default function ProjectOverview(){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
@@ -50,11 +53,19 @@ export default function ProjectOverview(){
     const budgetStatus = getBudgetStatus( projectTotal, data?.budget);
 
     // css
-    const overviewBubbleClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-white-40 overflow-hidden hover:bg-sp-blue-200 hover:shadow")
-    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
+    const isMobile = useIsMobile();
     
+    const overviewBubbleClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-white-40 overflow-hidden hover:bg-sp-blue-200 hover:shadow")
+    const overviewBubbleChildrenClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-white-40 overflow-hidden hover:bg-sp-blue-200 hover:shadow")
+    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
+    const isMobileClass = clsx("w-full box-border flex flex-col xl:flex-row h-full items-start justify-start gap-6 ",
+        {
+            "px-0": isMobile === true,
+        }
+    )
+
     return(
-        <div className={`${scrollClass} w-full box-border h-full  text-zinc-700`}>
+        <div className={`w-full box-border h-full  text-zinc-700 ${scrollClass}`}>
             <div>
                 {userData && data && (
                     <ProjectDetail
@@ -76,13 +87,13 @@ export default function ProjectOverview(){
                     userData={userData} 
                 />
             </div>
-            <div id="expense-overview" className="w-full box-border h-full px-3 hidden md:flex flex-col items-start justify-start gap-6">
+            <div id="expense-overview" className="w-full box-border h-fit flex flex-col items-start justify-start gap-6">
                 <div id="overview-bubble-budget" className={`w-full shrink-0 px-3 py-3 rounded-2xl text-center ${budgetStatus.bgColor} ${budgetStatus.textColor} overflow-hidden`}>
                     <Icon icon={budgetStatus.icon} size="xl" />
                     <p className="text-xl font-semibold pt-2">{budgetStatus.text}</p>
                 </div>
-                <div className="shrink-0 w-full flex flex-col xl:flex-row justify-start gap-3 items-stretch">
-                    <div className="w-full xl:w-1/2 flex flex-col items-start justify-start gap-3">
+                <div className={isMobileClass}>
+                    <div className="w-full 2xl:w-1/2 h-fit flex flex-col items-start justify-start gap-3">
                         <div id="overview-bubble-quick-view" className={`${overviewBubbleClass}`}>
                             <div className="pl-3 flex items-center justify-start gap-2">
                                 <p className="text-base w-full">專案</p>
@@ -120,21 +131,23 @@ export default function ProjectOverview(){
                                 )}
                             </div>
                         </div>
-                        <div id="overview-bubble-expense" className={`${overviewBubbleClass}`}>
-                            <div className="px-3 py-3">
-                                <p className="text-base">整體支出</p>
-                                <p className="text-2xl font-bold">${formatNumber(projectTotal)}</p>
+                        <div id="overview-bubble-expense" className="w-full flex flex-row md:flex-col gap-3">
+                            <div className={`${overviewBubbleChildrenClass}`}>
+                                <div className="px-3 py-3">
+                                    <p className="text-base">整體支出</p>
+                                    <p className="text-2xl font-bold">${formatNumber(projectTotal)}</p>
+                                </div>
                             </div>
+                            <div className={`${overviewBubbleChildrenClass}`}>
+                                <div className="px-3 py-3">
+                                    <p className="text-base">你的支出</p>
+                                    <p className="text-2xl font-bold">${formatNumber(myTotal)}</p>
+                                </div>
+                            </div>                        
                         </div>
-                        <div id="overview-bubble-expense-self" className={`${overviewBubbleClass}`}>
-                            <div className="px-3 py-3">
-                                <p className="text-base">你的支出</p>
-                                <p className="text-2xl font-bold">${formatNumber(myTotal)}</p>
-                            </div>
-                        </div>                        
                     </div>
-                    <div className="w-full xl:w-1/2 flex flex-col items-start justify-start gap-3">
-                        <div id="overview-bubble-spilt-self" className={`${overviewBubbleClass}`}>
+                    <div className="w-full 2xl:w-1/2 h-full flex flex-col items-start justify-start gap-3 ">
+                        <div id="overview-bubble-spilt-self" className={`shrink-0 ${overviewBubbleClass}`}>
                             <div className="pl-3 pb-3 flex items-center justify-start gap-2">
                                 <p className="text-base w-full">你在專案中借出(這裡還沒做)</p>
                                 <div className="shrink-0 ">
@@ -164,7 +177,7 @@ export default function ProjectOverview(){
                                 <p className="shrink-0 text-xl font-semibold">$359.00</p>
                             </div>
                         </div>
-                        <div id="overview-bubble-spilt" className={`${overviewBubbleClass} flex-1`}>
+                        <div id="overview-bubble-spilt" className={`flex-1 h-full ${overviewBubbleClass} `}>
                             <div className="pl-3 pb-3 flex items-center justify-start gap-2">
                                 <p className="text-base w-full">分帳(這裡還沒做)</p>
                                 <div className="shrink-0 ">
@@ -182,7 +195,7 @@ export default function ProjectOverview(){
                                 </div>
                             </div>
                             <div className="w-full flex flex-col items-center justify-start gap-2">
-                                <div id="overview-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-2">
+                                <div className="w-full px-3 flex items-center justify-start gap-2">
                                     <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                         <Avatar
                                             size="md"
@@ -214,7 +227,7 @@ export default function ProjectOverview(){
                                         <p className="text-xs w-fll  truncate">Yun</p>
                                     </div>                                       
                                 </div>
-                                <div id="overview-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-2">
+                                <div className="w-full px-3 flex items-center justify-start gap-2">
                                     <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                         <Avatar
                                             size="md"
@@ -246,7 +259,7 @@ export default function ProjectOverview(){
                                         <p className="text-xs w-fll  truncate">Yun</p>
                                     </div>                                       
                                 </div>
-                                <div id="overview-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-2">
+                                <div className="w-full px-3 flex items-center justify-start gap-2">
                                     <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
                                         <Avatar
                                             size="md"
@@ -282,6 +295,9 @@ export default function ProjectOverview(){
                         </div>
                     </div>
                 </div>
+                {isMobile && (
+                    <div className="shrink-0 w-full pb-3" />
+                )}
                 {currentPage === `/${projectId}/expense` &&(
                     <div id="overview-bubble-expense-chart" className={`${overviewBubbleClass} h-100 shrink-0 text-center`}>
                         chart

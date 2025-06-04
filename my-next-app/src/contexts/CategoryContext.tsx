@@ -32,7 +32,7 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
         const cachedMeta = localStorage.getItem(metaCatKey);
         const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
 
-        if (cachedCats &&  !isCacheExpired) {
+        if (cachedCats && cachedCats.length !== 0 &&  !isCacheExpired) {
             try {
                 setCategoryOptions(JSON.parse(cachedCats));
                 setIsReady(true); // ✅ 快取成功也標記 ready

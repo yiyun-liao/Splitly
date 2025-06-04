@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
 import Button from "@/components/ui/Button";
-import ProjectMemberList from "./ProjectOverviewSections/ProjectMemberListDialog";
-import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
+import ProjectMemberList from "../ProjectOverviewSections/ProjectMemberListDialog";
+import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
 import { useAuth } from "@/contexts/AuthContext"; 
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 

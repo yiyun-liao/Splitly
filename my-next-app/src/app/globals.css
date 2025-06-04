@@ -68,6 +68,11 @@ body {
   background-color: var(--color-sp-blue-100);
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 ul, ol{
   list-style: none;
   margin: 0;
