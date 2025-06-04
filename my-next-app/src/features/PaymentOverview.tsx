@@ -15,7 +15,7 @@ export default function PaymentOverview(){
 
     return(
         <div id="project-analysis" className="shrink-0 w-xl pb-3 h-full box-border overflow-hidden">
-            <div id="Expense-splitting" className="w-full mb-4 flex =shrink-0 bg-sp-blue-300 rounded-xl">
+            <div id="Expense-splitting" className="w-full mb-4 flex shrink-0 bg-sp-blue-300 rounded-xl">
                 <Button
                     size='sm'
                     width='full'

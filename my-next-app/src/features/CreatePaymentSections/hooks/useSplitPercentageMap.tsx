@@ -59,34 +59,13 @@ export function useSplitPercentageMap({
             setRawInputMap(newRawMap)
         }
 
-        console.log("[percentage]", isInitialMapEmpty, initialMap)
+        // console.log("[percentage]", isInitialMapEmpty, initialMap)
         
     }, [inputAmountValue, currentProjectUsers]);
 
-    useEffect(() => {
-        console.log("[percentage localMap updated]", localMap);
-      }, [localMap]);
-
-    // const [localMap, setLocalMap] = useState<SplitMap>(() => {
-    //     return Object.fromEntries(
-    //         currentProjectUsers.map(user => {
-    //             const { percent = 0 } = initialMap[user.uid] || {};
-    //             const totalAmount = parseFloat(inputAmountValue || '0');
-    //             const fixed = 0;
-    //             const total = parseFloat(formatNumberForData(percent * totalAmount)) || 0;
-    //             return [user.uid, { fixed, percent, total }];
-    //     })
-    //     );
-    // });
-
-    // const [rawInputMap, setRawInputMap] = useState<Record<string, string>>(() => {
-    //     return Object.fromEntries(
-    //         currentProjectUsers.map(user => {
-    //             const { percent = 0 } = initialMap[user.uid] || {};
-    //             return [user.uid, parsePercentToInt(percent)];
-    //         })
-    //     );
-    // });
+    // useEffect(() => {
+    //     console.log("[percentage localMap updated]", localMap);
+    //   }, [localMap]);
 
     const handleChange = (uid: string, percentInput: string) => {
         const raw = sanitizeDecimalInput(percentInput);

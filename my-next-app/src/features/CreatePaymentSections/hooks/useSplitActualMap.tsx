@@ -55,31 +55,13 @@ export function useSplitActualMap({
             )
             setRawInputMap(newRawMap);
         }
-        console.log("[actual]", isInitialMapEmpty, initialMap)
+        // console.log("[actual]", isInitialMapEmpty, initialMap)
 
     }, [inputAmountValue, currentProjectUsers]);
 
-    useEffect(() => {
-        console.log("[actual localMap updated]", localMap);
-      }, [localMap]);
-
-    // const [localMap, setLocalMap] = useState<SplitMap>(() => {
-    //     return Object.fromEntries(
-    //         currentProjectUsers.map(user => {
-    //             const total = initialMap[user.uid]?.total || 0;
-    //             return [user.uid, { fixed: total, percent: 0, total }];
-    //         })
-    //     );
-    // });
-
-    // const [rawInputMap, setRawInputMap] = useState<Record<string, string>>(() => {
-    //     return Object.fromEntries(
-    //         currentProjectUsers.map(user => {
-    //             const total = initialMap[user.uid]?.total || 0;
-    //             return [user.uid, formatNumber(total)];
-    //         })
-    //     );
-    // });
+    // useEffect(() => {
+    //     console.log("[actual localMap updated]", localMap);
+    //   }, [localMap]);
 
     const handleChange = (uid: string, value: string) => {
         const raw = sanitizeDecimalInput(value);

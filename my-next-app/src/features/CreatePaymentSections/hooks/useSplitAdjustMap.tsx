@@ -62,37 +62,13 @@ export function useSplitAdjustedMap({
             setRawInputMap(newRawMap);
         };
 
-        console.log("[adjust]", isInitialMapEmpty, initialMap)
+        // console.log("[adjust]", isInitialMapEmpty, initialMap)
   
     }, [inputAmountValue, currentProjectUsers]);
 
-    useEffect(() => {
-        console.log("[adjust localMap updated]", localMap);
-      }, [localMap]);
-
-    // const [localMap, setLocalMap] = useState<SplitMap>(() => {
-    //     const totalAmount = parseFloat(inputAmountValue || '0');
-    //     const fixedSum = Object.values(initialMap).reduce((sum, entry) => sum + (entry.fixed || 0), 0);
-    //     const remaining = totalAmount - fixedSum;
-
-    //     return Object.fromEntries(
-    //         currentProjectUsers.map(user => {
-    //             const fixed = initialMap[user.uid]?.fixed || 0;
-    //             const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
-    //             const total = fixed + parseFloat(formatNumberForData(remaining * percent));
-    //             return [user.uid, { fixed, percent, total }];
-    //         })
-    //     );
-    // });
-
-    // const [rawInputMap, setRawInputMap] = useState<Record<string, string>>(() => {
-    //     return Object.fromEntries(
-    //         currentProjectUsers.map(user => {
-    //             const fixed = initialMap[user.uid]?.fixed || 0;
-    //             return [user.uid, formatNumber(fixed)];
-    //         })
-    //     );
-    // });
+    // useEffect(() => {
+    //     console.log("[adjust localMap updated]", localMap);
+    //   }, [localMap]);
 
     const handleChange = (uid: string, value: string) => {
         const raw = sanitizeDecimalInput(value);

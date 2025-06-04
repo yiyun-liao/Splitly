@@ -1,24 +1,26 @@
 import { groupBy } from "lodash";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
+
 import ReceiptCard from "./PaymentListSections/ReceiptCard";
 import Button from "@/components/ui/Button";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export default function PaymentList(){
     const [isCreatePayment, setIsCreatePayment] = useState(false)
     
-    const {userData} = useGlobalProjectData();
-    const {currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
-    const { categoryOptions } = useCategoryOptions();
-    
-    const currentUserId = userData?.uid || "";
-    const userList = currentProjectUsers || [];
-
     // 處理卡片需要資料
+    const { categoryOptions } = useCategoryOptions();
+
+    const {userData} = useGlobalProjectData();
+    const currentUserId = userData?.uid || "";
+
+    const {currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
+    const userList = currentProjectUsers || [];
     const groupedPayments = groupBy(list, (payment) => {
         return new Date(payment.time).toLocaleDateString("zh-TW", {
             month: "2-digit",
@@ -27,11 +29,34 @@ export default function PaymentList(){
         });
     });
     
+    // css
+    const isMobile = useIsMobile();
+    const [isScrolled, setIsScrolled] = useState(false);
+    const scrollRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const scrollEl = scrollRef.current;
+        if (!scrollEl) return;
+    
+        const handleScroll = () => {
+           setIsScrolled(scrollEl.scrollTop > 0);
+        };
+    
+        scrollEl.addEventListener("scroll", handleScroll);
+        return () => scrollEl.removeEventListener("scroll", handleScroll);
+    }, []);
+      
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-
+    const isMobileClass = clsx("shrink-0 rounded-2xl box-border h-full overflow-hidden bg-sp-green-300",
+        {"w-full px-0 py-0": isMobile === true,
+          "w-xl px-3 py-3": isMobile === false,  
+        }
+    )
+    const headerClass = clsx("py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden transition-opacity duration-200",
+        {"opacity-0 pointer-events-none h-0": isMobile && isScrolled }
+    )
     
     return(
-        <div id="receipt-list" className="shrink-0 w-xl px-3 py-3 rounded-2xl box-border h-full overflow-hidden bg-sp-green-300">
+        <div id="receipt-list" className={isMobileClass}>
             <div>
                 {isCreatePayment && currentProjectUsers && (
                     <CreatePayment 
@@ -39,10 +64,10 @@ export default function PaymentList(){
                     />
                 )}
             </div>
-            <div id="receipt-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
+            <div id="receipt-list-header"  className={headerClass}>
                 <p className="text-xl font-medium whitespace-nowrap truncate min-w-0 max-w-100"> 收支紀錄</p>
             </div>
-            <div id="receipt-list-frame" className={`py-2 px-4 h-full ${scrollClass}`}>
+            <div id="receipt-list-frame" ref={scrollRef} className={`py-2 px-4 h-full ${scrollClass}`}>
                 {list && (list?.length < 1 ) && (
                     <>
                         <div 

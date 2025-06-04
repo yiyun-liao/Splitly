@@ -11,9 +11,10 @@ import ProjectDetail from "./ProjectDetailDialog";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { getBudgetStatus } from "@/utils/budgetHint";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
+import { getBudgetStatus } from "@/utils/budgetHint";
 import { formatNumber } from "@/utils/parseNumber";
+
 
 export default function ProjectOverview(){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
@@ -51,10 +52,11 @@ export default function ProjectOverview(){
 
     // css
     const overviewBubbleClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-white-40 overflow-hidden hover:bg-sp-blue-200 hover:shadow")
+    const overviewBubbleChildrenClass = clsx("w-full px-3 py-3 rounded-2xl bg-sp-white-40 overflow-hidden hover:bg-sp-blue-200 hover:shadow")
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-    
+
     return(
-        <div className={`${scrollClass} w-full box-border h-full  text-zinc-700`}>
+        <div className={`w-full box-border h-full  text-zinc-700 ${scrollClass}`}>
             <div>
                 {userData && data && (
                     <ProjectDetail
@@ -76,7 +78,7 @@ export default function ProjectOverview(){
                     userData={userData} 
                 />
             </div>
-            <div id="expense-overview" className="w-full box-border h-full px-3 hidden md:flex flex-col items-start justify-start gap-6">
+            <div id="expense-overview" className="w-full box-border h-full px-3 flex flex-col items-start justify-start gap-6">
                 <div id="overview-bubble-budget" className={`w-full shrink-0 px-3 py-3 rounded-2xl text-center ${budgetStatus.bgColor} ${budgetStatus.textColor} overflow-hidden`}>
                     <Icon icon={budgetStatus.icon} size="xl" />
                     <p className="text-xl font-semibold pt-2">{budgetStatus.text}</p>
@@ -120,18 +122,20 @@ export default function ProjectOverview(){
                                 )}
                             </div>
                         </div>
-                        <div id="overview-bubble-expense" className={`${overviewBubbleClass}`}>
-                            <div className="px-3 py-3">
-                                <p className="text-base">整體支出</p>
-                                <p className="text-2xl font-bold">${formatNumber(projectTotal)}</p>
+                        <div id="overview-bubble-expense" className="w-full flex flex-row md:flex-col gap-3">
+                            <div className={`${overviewBubbleChildrenClass}`}>
+                                <div className="px-3 py-3">
+                                    <p className="text-base">整體支出</p>
+                                    <p className="text-2xl font-bold">${formatNumber(projectTotal)}</p>
+                                </div>
                             </div>
+                            <div className={`${overviewBubbleChildrenClass}`}>
+                                <div className="px-3 py-3">
+                                    <p className="text-base">你的支出</p>
+                                    <p className="text-2xl font-bold">${formatNumber(myTotal)}</p>
+                                </div>
+                            </div>                        
                         </div>
-                        <div id="overview-bubble-expense-self" className={`${overviewBubbleClass}`}>
-                            <div className="px-3 py-3">
-                                <p className="text-base">你的支出</p>
-                                <p className="text-2xl font-bold">${formatNumber(myTotal)}</p>
-                            </div>
-                        </div>                        
                     </div>
                     <div className="w-full xl:w-1/2 flex flex-col items-start justify-start gap-3">
                         <div id="overview-bubble-spilt-self" className={`${overviewBubbleClass}`}>
