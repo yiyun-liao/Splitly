@@ -35,7 +35,7 @@ export default function MobileLayout({ children }: { children: ReactNode }) {
             <CurrentProjectProvider>
             <div className={isMobileClass}>
                 <MemberHeaderMobile/>
-                <main className="flex-1 overflow-y-auto overscroll-none py-13 px-6">{children}</main>
+                <main className="flex-1 h-full overscroll-none py-13 px-6">{children}</main>
                 <MemberNavMobile /> 
             </div>
             </CurrentProjectProvider>

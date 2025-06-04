@@ -46,9 +46,9 @@ export default function PaymentList(){
     }, []);
       
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-    const isMobileClass = clsx("shrink-0 rounded-2xl box-border h-full overflow-hidden bg-sp-green-300",
+    const isMobileClass = clsx("shrink-0  box-border h-full overflow-hidden bg-sp-green-300 text-zinc-700",
         {"w-full px-0 py-0": isMobile === true,
-          "w-xl px-3 py-3": isMobile === false,  
+          "w-xl px-3 py-3 rounded-2xl": isMobile === false,  
         }
     )
     const headerClass = clsx("py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden transition-opacity duration-200",
