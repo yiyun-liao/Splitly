@@ -17,11 +17,13 @@ import { formatPercent, formatNumber, formatNumberForData } from "@/utils/parseN
 import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { GetProjectData } from "@/types/project";
 
 
 interface CreatePaymentSplitProps {
     currentProjectUsers: UserData[];
     userData: UserData;
+    projectData: GetProjectData[];
     setPayload : (map: CreatePaymentPayload) => void;
 }
 
@@ -29,11 +31,13 @@ interface CreatePaymentSplitProps {
 export default function CreatePaymentSplit({
     currentProjectUsers,
     userData,
+    projectData,
     setPayload,
     }:CreatePaymentSplitProps){
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
-        const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";    
+        const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";   
+        const projectName = projectData.find((project) => project.id === projectId)?.project_name;
         const isMobile = useIsMobile();
 
         // receipt-split
@@ -255,12 +259,16 @@ export default function CreatePaymentSplit({
                 </div>
                 <section className={`w-full px-1 h-full pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
                     <div className={`w-full ${!isMobile && "max-w-xl"}`}>
-                        <div className='w-full flex flex-col gap-2 items-end justify-end'>
+                        <div className='w-full flex gap-2 items-center justify-end'>
+                            <div className="w-full flex items-center justify-start gap-2">
+                                <span className="font-medium truncate">專案</span>
+                                <span className="font-medium truncate text-sp-blue-500">{projectName}</span>
+                            </div>
                             <div
-                                className={`px-2 py-2 flex items-center justify-center gap-2 rounded-xl bg-sp-white-20 hover:bg-sp-green-100 active:bg-sp-green-200 cursor-pointer }`}
+                                className={`shrink-0 px-2 py-2 flex items-center justify-center gap-2 rounded-xl bg-sp-white-20 hover:bg-sp-green-100 active:bg-sp-green-200 cursor-pointer }`}
                                 onClick={() => { toggleAccountType()}}
                             >
-                                <p className="text-base ml-4">個人帳目</p>
+                                <p className="text-base ml-4 shrink-0">個人帳目</p>
                                 <IconButton
                                     icon={accountType === 'personal' ? "solar:check-square-bold" : "solar:stop-outline" }
                                     size="sm"

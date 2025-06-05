@@ -5,12 +5,18 @@ import { usePathname } from 'next/navigation';
 import IconButton from "@/components/ui/IconButton";
 import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+import { useGlobalProjectData } from '@/contexts/GlobalProjectContext';
+import { getLastVisitedProjectId } from "@/utils/cache";
+
 
 
 export default function MemberNavMobile() {
     const router = useRouter();
     const pathname = usePathname();
     const { projectId } = useParams();
+    const { projectData } = useGlobalProjectData();
+    const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
+    // console.log("i would like to go ",lastPath)
 
     const { currentProjectUsers} = useCurrentProjectData();
 
@@ -25,6 +31,7 @@ export default function MemberNavMobile() {
             <div>
                 {isCreatePayment && currentProjectUsers && (
                     <CreatePayment 
+                        open = {true}
                         onClose={() => setIsCreatePayment(false)}
                     />
                 )}
@@ -36,7 +43,7 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/${projectId}/dashboard` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${projectId}/dashboard`)}  
+                    onClick={() => router.push(`/${lastPath}/dashboard`)}  
                 />
                 <IconButton
                     icon='solar:reorder-bold'
@@ -44,7 +51,7 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/${projectId}/expense` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${projectId}/expense`)} 
+                    onClick={() => router.push(`/${lastPath}/expense`)} 
                 />
                 <IconButton
                     icon='solar:clipboard-add-linear'
@@ -52,7 +59,13 @@ export default function MemberNavMobile() {
                     variant= 'solid'
                     color= 'primary'
                     type= 'button'
-                    onClick={() => setIsCreatePayment(true)}
+                    onClick={() => {
+                        if (pathname === "/setting") {
+                            router.push(`${lastPath}/expense?openCreate=true`);
+                        } else {
+                            setIsCreatePayment(true);
+                        }
+                    }}
                 />
                 <IconButton
                     icon='solar:chart-bold'
@@ -60,15 +73,15 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/${projectId}/overview` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${projectId}/overview`)} 
+                    onClick={() => router.push(`/${lastPath}/overview`)} 
                 />
                 <IconButton
                     icon='solar:user-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/${projectId}/setting` ? 'primary' : 'zinc'}
+                    color= {activePath === `/setting` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${projectId}/setting`)}
+                    onClick={() => router.push(`/setting`)}
                 />
             </div>
         </div>

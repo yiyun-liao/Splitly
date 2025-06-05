@@ -1,8 +1,10 @@
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
+import ModalPortal from "@/components/ui/ModalPortal";
 import { useState } from "react";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+
 
 
 interface ProjectMemberListProps {
@@ -115,42 +117,44 @@ export default function ProjectMemberList({
     }
     //console.log('dialog state', isMemberListOpen)
     return(
-        <Dialog
-                header="成員"
-                open={isMemberListOpen}
-                onClose={ () => {
-                    setStep("list");
-                    onClose();
-                }} 
-                footerClassName= "items-center justify-end"
-                leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
-                closeOnBackdropClick = {true}
-                onLeftIconClick={handleBack}
-                footer={
-                    step === "list" ? (
-                        <>
-                            <Button
-                                variant="outline"
-                                color="primary"
-                                width = 'full'
-                                // disabled = {true}
-                                onClick={() => alert('建立虛擬成員')}
-                            >
-                                建立虛擬成員(還沒做)
-                            </Button>
-                            <Button
-                                variant="outline"
-                                color="primary"
-                                width = 'full'
-                                onClick={() => setStep("add")}
-                            >
-                                新增成員
-                            </Button>
-                        </>
-                    ) : ("")
-                }
-            >
-                {renderBody()}
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                    header="成員"
+                    open={isMemberListOpen}
+                    onClose={ () => {
+                        setStep("list");
+                        onClose();
+                    }} 
+                    footerClassName= "items-center justify-end"
+                    leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
+                    closeOnBackdropClick = {true}
+                    onLeftIconClick={handleBack}
+                    footer={
+                        step === "list" ? (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    color="primary"
+                                    width = 'full'
+                                    // disabled = {true}
+                                    onClick={() => alert('建立虛擬成員')}
+                                >
+                                    建立虛擬成員(還沒做)
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    color="primary"
+                                    width = 'full'
+                                    onClick={() => setStep("add")}
+                                >
+                                    新增成員
+                                </Button>
+                            </>
+                        ) : ("")
+                    }
+                >
+                    {renderBody()}
+            </Dialog>
+        </ModalPortal>
     )
 }

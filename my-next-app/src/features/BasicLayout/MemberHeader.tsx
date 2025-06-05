@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { useParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
 
 import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
@@ -16,9 +14,6 @@ export default function MemberHeader(){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreatePayment, setIsCreatePayment] = useState(false)
 
-
-    const router = useRouter();
-    const { projectId } = useParams();
     const { userData, projectData } = useAuth();
     const {currentPaymentList, currentProjectData, currentProjectUsers} = useCurrentProjectData();
     console.log("who am i", userData)
@@ -27,14 +22,6 @@ export default function MemberHeader(){
     console.log("what i get currentProjectUsers",currentProjectUsers)
     console.log("what i get currentPaymentList", currentPaymentList)
     // if ( myDataLoading || usersLoading) return <p>Loading...</p>;
-
-    if (!currentProjectData) {
-        console.log("沒有拿到 currentProjectData", projectId);
-        if (projectData.length > 0) {
-            router.push(`/${projectData[0].id}/dashboard`);
-        }
-        return null;
-    }
 
     if (!userData) {
         console.error("userData is null");

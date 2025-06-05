@@ -13,23 +13,29 @@ import {  CreatePaymentPayload} from "@/types/payment"
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { UserData } from "@/types/user";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { GetProjectData } from "@/types/project";
+
 
 
 interface CreatePaymentDebtProps {
     currentProjectUsers: UserData[];
     userData: UserData;
+    projectData: GetProjectData[];
     setPayload : (map: CreatePaymentPayload) => void
 }
 
 export default function CreatePaymentDebt({
     currentProjectUsers,
     userData,
+    projectData,
     setPayload
     }:CreatePaymentDebtProps){
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
         const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";   
+        const projectName = projectData.find((project) => project.id === projectId)?.project_name;
         const isMobile = useIsMobile();
+
 
         // receipt-debt
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
@@ -64,7 +70,7 @@ export default function CreatePaymentDebt({
             }
         }), [selectedReceiverUid, inputDebtAmountValue]);
 
-        // 假資料
+        // 欠款人
         const selectedDebtPayer = currentProjectUsers.find((user) => user.uid === selectedPayerUid);
         const selectedDebtReceiver = currentProjectUsers.find((user) => user.uid === selectedReceiverUid);
 
@@ -125,6 +131,12 @@ export default function CreatePaymentDebt({
                 </div>
                 <section  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
                     <div className={`w-full grid grid-cols-3 gap-2 px-1 ${!isMobile && "max-w-xl"}`}>
+                        <div className={`pb-5 ${formSpan3CLass}`}>
+                            <div className="w-full flex items-center justify-start gap-2">
+                                <span className="font-medium truncate">專案</span>
+                                <span className="font-medium truncate text-sp-blue-500">{projectName}</span>
+                            </div>
+                        </div>
                         <div className={`pb-5 ${formSpan3CLass}`}>
                             <div className="w-full flex items-center justify-start gap-2">
                                 <span className={labelClass}>匯款人</span>

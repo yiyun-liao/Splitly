@@ -1,8 +1,9 @@
 'use client';
 import { ReactNode } from "react";
 import { useState } from "react";
-import MemberHeader from "@/features/BasicLayout/MemberHeader";
+
 import MemberNav from "@/features/BasicLayout/MemberNav";
+import SettingMemberHeader from "@/features/BasicLayout/SettingMemberHeader";
 
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {  
@@ -16,7 +17,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 className="py-4 h-full box-border flex flex-col items-center justify-start gap-2"
                 style={{ width: `calc(100vw - ${navWidth}px)`, maxWidth: 2080 }}
             >
-                <MemberHeader/>
+                <SettingMemberHeader/>
                 <div className="flex items-start justify-start box-border px-6 gap-6 w-full h-full overflow-hidden text-zinc-700">
                     {children}
                 </div>

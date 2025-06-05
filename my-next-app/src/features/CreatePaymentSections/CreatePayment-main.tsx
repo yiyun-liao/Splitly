@@ -12,7 +12,6 @@ import { useCreatePayment } from "./hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
-
 interface CreatePaymentProps {
     open?: boolean;
     onClose: () => void;
@@ -23,7 +22,7 @@ export default function CreatePayment({
     onClose,
     }:CreatePaymentProps){
     const isMobile = useIsMobile();
-    const {userData} = useGlobalProjectData();
+    const {userData, projectData} = useGlobalProjectData();
     const {currentProjectUsers} = useCurrentProjectData();
     const currentUid = userData?.uid;
     const rawProjectId = useParams()?.projectId;
@@ -119,6 +118,7 @@ export default function CreatePayment({
                         <CreatePaymentSplit
                             currentProjectUsers={currentProjectUsers}
                             userData={userData}
+                            projectData={projectData}
                             setPayload = {setPayload}
                         />
                     )}
@@ -126,6 +126,7 @@ export default function CreatePayment({
                         <CreatePaymentDebt
                             currentProjectUsers={currentProjectUsers}
                             userData={userData}
+                            projectData={projectData}
                             setPayload = {setPayload}
                         />
                     )}

@@ -6,7 +6,7 @@ import Input from "@/components/ui/Input";
 import clsx from "clsx";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { UserData } from "@/types/user";
-import { SplitMethod, SplitWay,  CreateItemPayload } from "@/types/payment";
+import { SplitMethod,  CreateItemPayload } from "@/types/payment";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { formatPercent } from "@/utils/parseNumber";
 import { useSplitPercentageMap } from "./hooks/useSplitPercentageMap";
@@ -31,7 +31,6 @@ export default function SplitByItemEdit({
     const [inputItemValue, setInputItemValue] = useState("");
     const [inputItemAmountValue, setInputItemAmountValue] = useState("");
     const [chooseSplitByItem, setChooseSplitByItem] = useState<SplitMethod>("percentage");
-    const splitWay: SplitWay = "item";
     
     console.log("預設產品分帳資料", initialPayload)
 

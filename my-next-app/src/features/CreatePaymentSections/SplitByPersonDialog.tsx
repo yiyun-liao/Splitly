@@ -1,10 +1,13 @@
+import { useState} from "react";
+import { SplitMap, SplitMethod,SplitWay } from "@/types/payment";
+import clsx from "clsx";
+
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
-import { useState} from "react";
-import { SplitMap, SplitMethod,SplitWay } from "@/types/payment";
-import clsx from "clsx";
+import ModalPortal from "@/components/ui/ModalPortal";
+
 import { UserData } from "@/types/user";
 import { useSplitPercentageMap } from "./hooks/useSplitPercentageMap";
 import { useSplitActualMap } from "./hooks/useSplitActualMap";
@@ -171,17 +174,19 @@ export default function SplitByPerson({
     }
 
     return(
-        <Dialog
-                header="成員分帳"
-                open={isSplitByPersonOpen} 
-                onClose={ () => {
-                    onClose();
-                }}
-                bodyClassName= "overflow-hidden"
-                footerClassName= "items-center justify-end"
-                footer= {renderFooter()}
-            >
-                {renderBody()}
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                    header="成員分帳"
+                    open={isSplitByPersonOpen} 
+                    onClose={ () => {
+                        onClose();
+                    }}
+                    bodyClassName= "overflow-hidden"
+                    footerClassName= "items-center justify-end"
+                    footer= {renderFooter()}
+                >
+                    {renderBody()}
+            </Dialog>
+        </ModalPortal>
     )
 }

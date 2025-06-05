@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import clsx from "clsx";
 import MemberNavMobile from "@/features/BasicLayout/MemberNavMobile";
-import MemberHeaderMobile from "@/features/BasicLayout/MemberHeaderMobile";
+import SettingMemberHeader from "@/features/BasicLayout/SettingMemberHeader";
+
 
 export default function MobileLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
@@ -15,17 +16,12 @@ export default function MobileLayout({ children }: { children: ReactNode }) {
     useEffect(() => {
     setActivePath(pathname);
     }, [pathname]);
+    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
 
-    const isMobileClass = clsx("flex flex-col h-screen overflow-hidden overscroll-none",
-        {
-            "bg-sp-green-300": pathname === `/${projectId}/expense`,
-            "bg-sp-blue-100 ": pathname !== `/${projectId}/expense`
-        }
-    )
     return (
-        <div className={isMobileClass}>
-            <MemberHeaderMobile/>
-            <main className="flex-1 h-full overscroll-none py-13 px-6">{children}</main>
+        <div className="flex flex-col h-screen overflow-hidden overscroll-none">
+            <SettingMemberHeader/>
+            <main className={`flex-1 h-full overscroll-none pt-3 px-6 pb-19 ${scrollClass}`}>{children}</main>
             <MemberNavMobile /> 
         </div>
     );

@@ -9,6 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { fetchUserByProject } from "@/lib/projectApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
 import { buildAvatarUrl } from "@/utils/avatar";
+import { getLastVisitedProjectId } from "@/utils/cache";
+
 
 type CurrentProjectContextType = {
 currentProjectData?: GetProjectData;
@@ -25,6 +27,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const router = useRouter();
     const { projectId } = useParams();
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
+    const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
 
     const currentProjectData = useMemo(() => {
         if (!myDataReady || !pureProjectId) return undefined;
@@ -48,7 +51,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const userKey = `projectUsers | ${pureProjectId}`;
         const paymentKey = `paymentList | ${pureProjectId}`;
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
-        const CACHE_TTL = 1000 * 60 * 60;
+        const CACHE_TTL = 1000 * 60 * 180;
 
         const cachedUsers = localStorage.getItem(userKey);
         const cachedPayments = localStorage.getItem(paymentKey);
@@ -72,6 +75,10 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const fetchProjectData = async () => {
             try {
                 console.log("🙃 fetch current data")
+                if (!pureProjectId) {
+                    console.warn("🚫 無效的 projectId，跳過 fetch");
+                    return;
+                }
                 const rawUsers = await fetchUserByProject(pureProjectId);
                 const users: UserData[] = rawUsers.map((user:UserData) => ({
                     ...user,
@@ -102,11 +109,12 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
     // ✅ 若找不到專案，自動跳轉
     useEffect(() => {
+        if (!pureProjectId) return;
         if (!myDataReady || !projectData.length) return;
         if (!currentProjectData) {
-        router.push(`/${projectData[0].id}/dashboard`);
+            router.push(`/${lastPath}/dashboard`);
         }
-    }, [myDataReady, currentProjectData, projectData, router]);
+    }, [myDataReady, currentProjectData, projectData, router, pureProjectId, lastPath]);
 
     return (
         <CurrentProjectContext.Provider
@@ -124,9 +132,9 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 };
 
 export const useCurrentProjectData = () => {
-const context = useContext(CurrentProjectContext);
-if (!context) {
-    throw new Error("useCurrentProjectData 必須在 CurrentProjectProvider 內使用");
-}
-return context;
+    const context = useContext(CurrentProjectContext);
+    if (!context) {
+        throw new Error("useCurrentProjectData 必須在 CurrentProjectProvider 內使用");
+    }
+    return context;
 };

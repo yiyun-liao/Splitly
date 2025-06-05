@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           const myKey = `👀 myData:${uid}`;
           const projectKey = `👀 myProjectList:${uid}`;
           const myMetaKey = `👀 cacheMyMeta:${uid}`;
-          const CACHE_TTL = 1000 * 60 * 60;
+          const CACHE_TTL = 1000 * 60 * 180;
     
           const cachedMyData = localStorage.getItem(myKey);
           const cachedProjects = localStorage.getItem(projectKey);

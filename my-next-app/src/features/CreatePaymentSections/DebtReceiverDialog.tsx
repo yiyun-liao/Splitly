@@ -1,6 +1,8 @@
 import Dialog from "@/components/ui/Dialog";
 import Avatar from "@/components/ui/Avatar";
 import IconButton from "@/components/ui/IconButton";
+import ModalPortal from "@/components/ui/ModalPortal";
+
 import { UserData } from "@/types/user";
 
 
@@ -60,15 +62,17 @@ export default function DebtReceiver({
     }
 
     return(
-        <Dialog
-                header="匯款人"
-                open={isDebtReceiverOpen} 
-                onClose={ () => {
-                    onClose();
-                }}
-                closeOnBackdropClick = {true}
-            >
-                {renderBody()}
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                    header="匯款人"
+                    open={isDebtReceiverOpen} 
+                    onClose={ () => {
+                        onClose();
+                    }}
+                    closeOnBackdropClick = {true}
+                >
+                    {renderBody()}
+            </Dialog>
+        </ModalPortal>
     )
 }

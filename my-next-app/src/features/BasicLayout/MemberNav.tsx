@@ -6,8 +6,9 @@ import clsx from "clsx";
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton"
 import CreateProject from "../CreateProjectSections/CreateProject-main";
-import { logOutUser } from "@/lib/auth";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { getLastVisitedProjectId } from "@/utils/cache";
+
 
 interface MemberNavProps {
     setNavWidth:(width: number) => void; 
@@ -18,6 +19,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
     const pathname = usePathname();
     const { projectId } = useParams();
     const {projectData, userData} = useGlobalProjectData();
+    const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")
     const [activePath, setActivePath] = useState<"dashboard" | "expense">();
@@ -31,6 +33,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
         if (pathname.includes("/dashboard")) setActivePath("dashboard");
         else if (pathname.includes("/expense")) setActivePath("expense");
     }, [pathname]);
+
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const navStyleClass = clsx("h-screen box-border py-4 flex flex-col justify-start gap-2 bg-sp-white-40",
@@ -63,11 +66,28 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
         }
     )
 
-    async function handleLogout() {
-        await logOutUser();
-        console.log('Logged out!');
-        router.push('/');    
-    }
+    const navSetting = () => (
+        <>
+            <div id="nav-setting" className={`${navStyle == 'expansion' ? "flex-row items-start justify-between": "flex-col items-center justify-start"} w-full flex gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
+                <IconButton
+                    icon='solar:user-bold'
+                    size='md'
+                    variant='text-button'
+                    color='primary'
+                    type= 'button'
+                    onClick={() => router.push(`/setting`)}
+                />            
+                <IconButton
+                    icon={navStyle === 'contraction' ? 'solar:square-double-alt-arrow-right-outline' : "solar:square-double-alt-arrow-left-outline"}
+                    size='md'
+                    variant='text-button'
+                    color='primary'
+                    type= 'button'
+                    onClick={()=>{setNavStyle(navStyle === "expansion" ? "contraction" : "expansion")}} 
+                />               
+            </div>
+        </>
+    )
 
     return(
         <div className="w-fit box-border text-zinc-700">
@@ -96,16 +116,16 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                 variant={activePath === 'dashboard' ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${projectId}/dashboard`)} 
-                            />
+                                onClick={() => router.push(`/${lastPath}/dashboard`)}  
+                                />
                             <IconButton
                                 icon='solar:reorder-bold'
                                 size='md'
                                 variant={activePath === 'expense' ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${projectId}/expense`)} 
-                            />
+                                onClick={() => router.push(`/${lastPath}/expense`)} 
+                                />
                         </div>
                     </div>
                     <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
@@ -129,26 +149,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                             onClick={() => setIsCreateProject(true)}
                         />
                     </div>
-                    <div id="nav-setting" className={`${navDivClass} border-t-1 border-sp-blue-400`}>
-                        <IconButton
-                            icon='solar:user-bold'
-                            size='md'
-                            variant='text-button'
-                            color='primary'
-                            type= 'button'
-                            //onClick={handleClick} 
-                            >
-                        </IconButton> 
-                        <IconButton
-                            icon='solar:square-double-alt-arrow-right-outline'
-                            size='md'
-                            variant='text-button'
-                            color='primary'
-                            type= 'button'
-                            onClick={()=>{setNavStyle('expansion')}} 
-                            >
-                        </IconButton> 
-                    </div>
+                    {navSetting() }
                 </nav>
             )}
             {navStyle === 'expansion' && (
@@ -163,7 +164,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                     <div id="nav-function" className={`${navFunctionDivClass} flex-1 `}>
                         <div className={navFunctionClass}>
                             <div 
-                                onClick={() => router.push(`/${projectId}/dashboard`)}
+                                onClick={() => router.push(`/${lastPath}/dashboard`)}  
                                 className={itemClass}
                             >
                                 <IconButton
@@ -172,12 +173,12 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                     variant={activePath === 'dashboard' ? 'solid' : 'outline'}
                                     color='primary'
                                     type= 'button'
-                                    onClick={() => router.push(`/${projectId}/dashboard`)} 
+                                    onClick={() => {}} 
                                 />
                                 <p className={`${labelClass} ${activePath === 'dashboard' && "text-sp-blue-500"}`}>專案檢視</p>
                             </div>
                             <div 
-                                onClick={() => router.push(`/${projectId}/expense`)} 
+                                onClick={() => router.push(`/${lastPath}/expense`)} 
                                 className={itemClass}
                             >
                                 <IconButton
@@ -186,27 +187,13 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                     variant={activePath === 'expense' ? 'solid' : 'outline'}
                                     color='primary'
                                     type= 'button'
-                                    onClick={() => router.push(`/${projectId}/expense`)} 
+                                    onClick={() => {}} 
                                 />
                                 <p className={`${labelClass} ${activePath === 'expense' && "text-sp-blue-500"}`}>收支紀錄</p>
                             </div>
                         </div>
                     </div>
                     <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
-                        <div
-                            className={itemClass}
-                            onClick={() => setIsCreateProject(true)}
-                        >
-                            <IconButton
-                                icon='solar:add-circle-bold'
-                                size='md'
-                                variant='text-button'
-                                color='primary'
-                                type= 'button'
-                                onClick={() => setIsCreateProject(true)}
-                            />
-                            <p className={`${labelClass}`}>新增專案</p>
-                        </div>
                         {projectData?.map(project => {
                             return(
                                 <div 
@@ -219,42 +206,28 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                         image={project.imgURL}
                                         size='md'
                                         imageName= {project.project_name}
-                                        onClick={() => router.push(`/${project.id}/dashboard`)}
+                                        onClick={() => {}}
                                     />
                                     <p className={`${labelClass} ${projectId === project.id && "text-sp-blue-500"}`}>{project.project_name}</p>
                                 </div>
                             )}
                         )}
+                        <div
+                            className={itemClass}
+                            onClick={() => setIsCreateProject(true)}
+                        >
+                            <IconButton
+                                icon='solar:add-circle-bold'
+                                size='md'
+                                variant='text-button'
+                                color='primary'
+                                type= 'button'
+                                onClick={() => {}}
+                            />
+                            <p className={`${labelClass}`}>新增專案</p>
+                        </div>
                     </div>
-                    <div id="nav-setting" className={`w-full flex justify-start items-start gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
-                            <IconButton
-                                icon='solar:user-bold'
-                                size='md'
-                                variant='text-button'
-                                color='primary'
-                                type= 'button'
-                                //onClick={handleClick} 
-                                >
-                            </IconButton> 
-                            <IconButton
-                                icon='solar:multiple-forward-left-bold'
-                                size='md'
-                                variant='text-button'
-                                color='primary'
-                                type= 'button'
-                                onClick={handleLogout} 
-                                >
-                            </IconButton>                        
-                            <IconButton
-                                icon='solar:square-double-alt-arrow-left-outline'
-                                size='md'
-                                variant='text-button'
-                                color='primary'
-                                type= 'button'
-                                onClick={()=>{setNavStyle('contraction')}} 
-                                >
-                            </IconButton> 
-                    </div>
+                    {navSetting() }
                 </nav>
             )}
         </div>

@@ -1,5 +1,7 @@
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
+import ModalPortal from "@/components/ui/ModalPortal";
+
 import { UserData } from "@/types/user";
 import { GetProjectData } from "@/types/project";
 
@@ -39,22 +41,24 @@ export default function ProjectDetail({
         )
     }
     return(
-        <Dialog
-                header={`${currentProjectData.project_name || ""} 專案`}
-                open={isProjectDialogOpen} // 從某處打開
-                onClose={ () => {
-                    onClose();
-                }} // 點擊哪裡關閉
-                //headerClassName= {step === "add" ? undefined : "ml-11"}
-                // bodyClassName= string // 看需求
-                footerClassName= "items-center justify-end"
-                //leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
-                //hideCloseIcon = false
-                //closeOnBackdropClick = false
-                //onLeftIconClick={handleBack}
-                // footer= React.ReactNode
-            >
-                {renderBody()}
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                    header={`${currentProjectData.project_name || ""} 專案`}
+                    open={isProjectDialogOpen} // 從某處打開
+                    onClose={ () => {
+                        onClose();
+                    }} // 點擊哪裡關閉
+                    //headerClassName= {step === "add" ? undefined : "ml-11"}
+                    // bodyClassName= string // 看需求
+                    footerClassName= "items-center justify-end"
+                    //leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
+                    //hideCloseIcon = false
+                    //closeOnBackdropClick = false
+                    //onLeftIconClick={handleBack}
+                    // footer= React.ReactNode
+                >
+                    {renderBody()}
+            </Dialog>
+        </ModalPortal>
     )
 }
