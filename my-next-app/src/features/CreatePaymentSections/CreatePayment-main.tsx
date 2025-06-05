@@ -11,6 +11,7 @@ import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCreatePayment } from "./hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { getLastVisitedProjectId } from "@/utils/cache";
 
 
 interface CreatePaymentProps {
@@ -23,11 +24,12 @@ export default function CreatePayment({
     onClose,
     }:CreatePaymentProps){
     const isMobile = useIsMobile();
-    const {userData} = useGlobalProjectData();
+    const {userData, projectData} = useGlobalProjectData();
     const {currentProjectUsers} = useCurrentProjectData();
     const currentUid = userData?.uid;
+    const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
     const rawProjectId = useParams()?.projectId;
-    const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
+    const projectId = typeof rawProjectId === 'string' ? rawProjectId : lastPath;
 
     // receipt-way
     const [recordMode, setRecordMode] = useState<RecordMode>("split");
@@ -119,6 +121,7 @@ export default function CreatePayment({
                         <CreatePaymentSplit
                             currentProjectUsers={currentProjectUsers}
                             userData={userData}
+                            projectData={projectData}
                             setPayload = {setPayload}
                         />
                     )}
@@ -126,6 +129,7 @@ export default function CreatePayment({
                         <CreatePaymentDebt
                             currentProjectUsers={currentProjectUsers}
                             userData={userData}
+                            projectData={projectData}
                             setPayload = {setPayload}
                         />
                     )}

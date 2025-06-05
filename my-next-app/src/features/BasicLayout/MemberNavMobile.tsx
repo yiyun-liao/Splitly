@@ -31,6 +31,7 @@ export default function MemberNavMobile() {
             <div>
                 {isCreatePayment && currentProjectUsers && (
                     <CreatePayment 
+                        open = {true}
                         onClose={() => setIsCreatePayment(false)}
                     />
                 )}
@@ -58,7 +59,13 @@ export default function MemberNavMobile() {
                     variant= 'solid'
                     color= 'primary'
                     type= 'button'
-                    onClick={() => setIsCreatePayment(true)}
+                    onClick={() => {
+                        if (pathname === "/setting") {
+                            router.push(`${lastPath}/expense?openCreate=true`);
+                        } else {
+                            setIsCreatePayment(true);
+                        }
+                    }}
                 />
                 <IconButton
                     icon='solar:chart-bold'

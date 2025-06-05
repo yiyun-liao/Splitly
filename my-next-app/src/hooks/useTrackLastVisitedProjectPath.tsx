@@ -10,9 +10,10 @@ export function useTrackLastVisitedProjectPath() {
     const { userData } = useAuth();
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
     const key = "lastVisitedProjectPath"
-    const lastPath = localStorage.getItem("lastVisitedProjectPat");
-
+    
     useEffect(() => {
+        const lastPath = localStorage.getItem(key);
+
         if (!projectId) return;
         const isValidProjectPath = /^\/[^\/]+\/(dashboard|expense|overview)$/.test(pathname);
         if ( projectId && isValidProjectPath && projectId !== lastPath ){
@@ -23,5 +24,5 @@ export function useTrackLastVisitedProjectPath() {
                 userId: userData?.uid,
               }));
         }
-    }, [projectId, pathname, lastPath, pureProjectId, userData]);
+    }, [projectId, pathname, pureProjectId, userData]);
 }
