@@ -4,8 +4,6 @@ import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 
 export default function SettingMemberHeader(){
     const { userData,} = useGlobalProjectData();
-    console.log("who am i", userData)
-
     
     return(
         <div id="dashboard-header"  className="min-h-13 md:min-h-18 flex items-center gap-2 w-full box-border justify-between px-6 py-2">

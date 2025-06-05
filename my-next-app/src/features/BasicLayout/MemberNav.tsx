@@ -6,7 +6,6 @@ import clsx from "clsx";
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton"
 import CreateProject from "../CreateProjectSections/CreateProject-main";
-import { logOutUser } from "@/lib/auth";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { getLastVisitedProjectId } from "@/utils/cache";
 
@@ -67,15 +66,9 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
         }
     )
 
-    async function handleLogout() {
-        await logOutUser();
-        console.log('Logged out!');
-        router.push('/');    
-    }
-
     const navSetting = () => (
         <>
-            <div id="nav-setting" className={`${navStyle == 'expansion' ? "flex-row items-start": "flex-col items-center"} w-full flex justify-start gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
+            <div id="nav-setting" className={`${navStyle == 'expansion' ? "flex-row items-start justify-between": "flex-col items-center justify-start"} w-full flex gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
                 <IconButton
                     icon='solar:user-bold'
                     size='md'
@@ -83,17 +76,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                     color='primary'
                     type= 'button'
                     onClick={() => router.push(`/setting`)}
-                /> 
-                {navStyle === 'expansion' && (
-                    <IconButton
-                        icon='solar:multiple-forward-left-bold'
-                        size='md'
-                        variant='text-button'
-                        color='primary'
-                        type= 'button'
-                        onClick={handleLogout} 
-                    />
-                )}             
+                />            
                 <IconButton
                     icon={navStyle === 'contraction' ? 'solar:square-double-alt-arrow-right-outline' : "solar:square-double-alt-arrow-left-outline"}
                     size='md'
@@ -211,20 +194,6 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                         </div>
                     </div>
                     <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
-                        <div
-                            className={itemClass}
-                            onClick={() => setIsCreateProject(true)}
-                        >
-                            <IconButton
-                                icon='solar:add-circle-bold'
-                                size='md'
-                                variant='text-button'
-                                color='primary'
-                                type= 'button'
-                                onClick={() => {}}
-                            />
-                            <p className={`${labelClass}`}>新增專案</p>
-                        </div>
                         {projectData?.map(project => {
                             return(
                                 <div 
@@ -243,6 +212,20 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                 </div>
                             )}
                         )}
+                        <div
+                            className={itemClass}
+                            onClick={() => setIsCreateProject(true)}
+                        >
+                            <IconButton
+                                icon='solar:add-circle-bold'
+                                size='md'
+                                variant='text-button'
+                                color='primary'
+                                type= 'button'
+                                onClick={() => {}}
+                            />
+                            <p className={`${labelClass}`}>新增專案</p>
+                        </div>
                     </div>
                     {navSetting() }
                 </nav>

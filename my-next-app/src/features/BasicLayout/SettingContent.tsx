@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import Button from "@/components/ui/Button";
 import ImageButton from "@/components/ui/ImageButton";
@@ -11,7 +11,6 @@ import { clearUserCache } from "@/utils/cache";
 export default function SettingContent(){
     const router = useRouter();
     const { userData,projectData} = useGlobalProjectData();
-    console.log("who am i", userData)
     const isMobile = useIsMobile();
 
     async function handleLogout() {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import clsx from "clsx";
 
@@ -18,17 +18,10 @@ export default function MemberHeaderMobile(){
     const [isProjectNavOpen, setIsProjectNavOpen] = useState(false)
 
 
-    const router = useRouter();
     const pathname = usePathname();
     const { projectId } = useParams();
-    const { userData, projectData } = useAuth();
-    const {currentPaymentList, currentProjectData, currentProjectUsers} = useCurrentProjectData();
-    console.log("who am i", userData)
-    console.log("what project i involved", projectData)
-    console.log("what i get currentProjectData",currentProjectData)
-    console.log("what i get currentProjectUsers",currentProjectUsers)
-    // console.log("what i get currentPaymentList", currentPaymentList)
-    // if ( myDataLoading || usersLoading) return <p>Loading...</p>;
+    const { userData } = useAuth();
+    const { currentProjectData, currentProjectUsers} = useCurrentProjectData();
 
 
     if (!userData) {
