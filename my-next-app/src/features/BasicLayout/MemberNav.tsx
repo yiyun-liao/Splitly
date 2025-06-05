@@ -32,6 +32,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
         else if (pathname.includes("/expense")) setActivePath("expense");
     }, [pathname]);
 
+
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const navStyleClass = clsx("h-screen box-border py-4 flex flex-col justify-start gap-2 bg-sp-white-40",
         "transition-all duration-300 ease-in-out",
@@ -68,6 +69,39 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
         console.log('Logged out!');
         router.push('/');    
     }
+
+    const navSetting = () => (
+        <>
+            <div id="nav-setting" className={`${navStyle == 'expansion' ? "flex-row items-start": "flex-col items-center"} w-full flex justify-start gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
+                <IconButton
+                    icon='solar:user-bold'
+                    size='md'
+                    variant='text-button'
+                    color='primary'
+                    type= 'button'
+                    onClick={() => router.push(`/setting`)}
+                /> 
+                {navStyle === 'expansion' && (
+                    <IconButton
+                        icon='solar:multiple-forward-left-bold'
+                        size='md'
+                        variant='text-button'
+                        color='primary'
+                        type= 'button'
+                        onClick={handleLogout} 
+                    />
+                )}             
+                <IconButton
+                    icon='solar:square-double-alt-arrow-right-outline'
+                    size='md'
+                    variant='text-button'
+                    color='primary'
+                    type= 'button'
+                    onClick={()=>{setNavStyle('expansion')}} 
+                />               
+            </div>
+        </>
+    )
 
     return(
         <div className="w-fit box-border text-zinc-700">
@@ -129,26 +163,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                             onClick={() => setIsCreateProject(true)}
                         />
                     </div>
-                    <div id="nav-setting" className={`${navDivClass} border-t-1 border-sp-blue-400`}>
-                        <IconButton
-                            icon='solar:user-bold'
-                            size='md'
-                            variant='text-button'
-                            color='primary'
-                            type= 'button'
-                            //onClick={handleClick} 
-                            >
-                        </IconButton> 
-                        <IconButton
-                            icon='solar:square-double-alt-arrow-right-outline'
-                            size='md'
-                            variant='text-button'
-                            color='primary'
-                            type= 'button'
-                            onClick={()=>{setNavStyle('expansion')}} 
-                            >
-                        </IconButton> 
-                    </div>
+                    {navSetting() }
                 </nav>
             )}
             {navStyle === 'expansion' && (
@@ -226,35 +241,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                             )}
                         )}
                     </div>
-                    <div id="nav-setting" className={`w-full flex justify-start items-start gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
-                            <IconButton
-                                icon='solar:user-bold'
-                                size='md'
-                                variant='text-button'
-                                color='primary'
-                                type= 'button'
-                                //onClick={handleClick} 
-                                >
-                            </IconButton> 
-                            <IconButton
-                                icon='solar:multiple-forward-left-bold'
-                                size='md'
-                                variant='text-button'
-                                color='primary'
-                                type= 'button'
-                                onClick={handleLogout} 
-                                >
-                            </IconButton>                        
-                            <IconButton
-                                icon='solar:square-double-alt-arrow-left-outline'
-                                size='md'
-                                variant='text-button'
-                                color='primary'
-                                type= 'button'
-                                onClick={()=>{setNavStyle('contraction')}} 
-                                >
-                            </IconButton> 
-                    </div>
+                    {navSetting() }
                 </nav>
             )}
         </div>

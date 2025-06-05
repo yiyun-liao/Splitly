@@ -32,11 +32,17 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
         const cachedMeta = localStorage.getItem(metaCatKey);
         const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
 
-        if (cachedCats && cachedCats.length !== 0 &&  !isCacheExpired) {
+        if (cachedCats  &&  !isCacheExpired) {
             try {
-                setCategoryOptions(JSON.parse(cachedCats));
-                setIsReady(true); // ✅ 快取成功也標記 ready
-                return;
+                const parsed = JSON.parse(cachedCats);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    setCategoryOptions(parsed);
+                    setIsReady(true);
+                    return;
+                } else {
+                    localStorage.removeItem(catKey);
+                    localStorage.removeItem(metaCatKey);
+                }        
             } catch (error) {
                 console.warn("❌ 快取解析失敗，清除...", error);
                 localStorage.removeItem(catKey);
