@@ -66,9 +66,9 @@ export default function MemberNavMobile() {
                     icon='solar:user-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/${projectId}/setting` ? 'primary' : 'zinc'}
+                    color= {activePath === `/setting` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${projectId}/setting`)}
+                    onClick={() => router.push(`/setting`)}
                 />
             </div>
         </div>

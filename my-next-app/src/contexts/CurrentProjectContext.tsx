@@ -102,11 +102,12 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
     // ✅ 若找不到專案，自動跳轉
     useEffect(() => {
+        if (!pureProjectId) return;
         if (!myDataReady || !projectData.length) return;
         if (!currentProjectData) {
         router.push(`/${projectData[0].id}/dashboard`);
         }
-    }, [myDataReady, currentProjectData, projectData, router]);
+    }, [myDataReady, currentProjectData, projectData, router, pureProjectId]);
 
     return (
         <CurrentProjectContext.Provider
@@ -124,9 +125,9 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 };
 
 export const useCurrentProjectData = () => {
-const context = useContext(CurrentProjectContext);
-if (!context) {
-    throw new Error("useCurrentProjectData 必須在 CurrentProjectProvider 內使用");
-}
-return context;
+    const context = useContext(CurrentProjectContext);
+    if (!context) {
+        throw new Error("useCurrentProjectData 必須在 CurrentProjectProvider 內使用");
+    }
+    return context;
 };

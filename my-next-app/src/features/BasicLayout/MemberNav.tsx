@@ -92,12 +92,12 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                     />
                 )}             
                 <IconButton
-                    icon='solar:square-double-alt-arrow-right-outline'
+                    icon={navStyle === 'contraction' ? 'solar:square-double-alt-arrow-right-outline' : "solar:square-double-alt-arrow-left-outline"}
                     size='md'
                     variant='text-button'
                     color='primary'
                     type= 'button'
-                    onClick={()=>{setNavStyle('expansion')}} 
+                    onClick={()=>{setNavStyle(navStyle === "expansion" ? "contraction" : "expansion")}} 
                 />               
             </div>
         </>

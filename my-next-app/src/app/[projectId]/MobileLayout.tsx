@@ -3,9 +3,6 @@ import { useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import clsx from "clsx";
-import { GlobalProjectProvider } from "@/contexts/GlobalProjectContext";
-import { CurrentProjectProvider } from "@/contexts/CurrentProjectContext";
-import { CategoryProvider } from "@/contexts/CategoryContext";
 import MemberNavMobile from "@/features/BasicLayout/MemberNavMobile";
 import MemberHeaderMobile from "@/features/BasicLayout/MemberHeaderMobile";
 
@@ -26,16 +23,10 @@ export default function MobileLayout({ children }: { children: ReactNode }) {
         }
     )
     return (
-        <GlobalProjectProvider>
-        <CategoryProvider>
-            <CurrentProjectProvider>
-            <div className={isMobileClass}>
-                <MemberHeaderMobile/>
-                <main className="flex-1 h-full overscroll-none py-13 px-6">{children}</main>
-                <MemberNavMobile /> 
-            </div>
-            </CurrentProjectProvider>
-        </CategoryProvider>
-        </GlobalProjectProvider>
+        <div className={isMobileClass}>
+            <MemberHeaderMobile/>
+            <main className="flex-1 h-full overscroll-none py-13 px-6">{children}</main>
+            <MemberNavMobile /> 
+        </div>
     );
 }
