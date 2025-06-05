@@ -61,6 +61,16 @@
   box-sizing: border-box;
 }
 
+:root {
+  --vh: 100%;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --vh: calc(100vh - env(safe-area-inset-bottom));
+  }
+}
+
 body {
   padding: 0;
   margin: 0;
