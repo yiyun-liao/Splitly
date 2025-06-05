@@ -8,6 +8,8 @@ import IconButton from "@/components/ui/IconButton"
 import CreateProject from "../CreateProjectSections/CreateProject-main";
 import { logOutUser } from "@/lib/auth";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { getLastVisitedProjectId } from "@/utils/cache";
+
 
 interface MemberNavProps {
     setNavWidth:(width: number) => void; 
@@ -18,7 +20,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
     const pathname = usePathname();
     const { projectId } = useParams();
     const {projectData, userData} = useGlobalProjectData();
-    const lastPath = localStorage.getItem("lastVisitedProjectPath");
+    const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")
     const [activePath, setActivePath] = useState<"dashboard" | "expense">();
@@ -131,7 +133,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                 variant={activePath === 'dashboard' ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${lastPath}/dashboard` || `/${projectData[0].id}/dashboard`)}  
+                                onClick={() => router.push(`/${lastPath}/dashboard`)}  
                                 />
                             <IconButton
                                 icon='solar:reorder-bold'
@@ -139,7 +141,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                 variant={activePath === 'expense' ? 'solid' : 'outline'}
                                 color='primary'
                                 type= 'button'
-                                onClick={() => router.push(`/${lastPath}/expense` || `/${projectData[0].id}/expense`)} 
+                                onClick={() => router.push(`/${lastPath}/expense`)} 
                                 />
                         </div>
                     </div>
@@ -179,7 +181,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                     <div id="nav-function" className={`${navFunctionDivClass} flex-1 `}>
                         <div className={navFunctionClass}>
                             <div 
-                                onClick={() => router.push(`/${lastPath}/dashboard` || `/${projectData[0].id}/dashboard`)}  
+                                onClick={() => router.push(`/${lastPath}/dashboard`)}  
                                 className={itemClass}
                             >
                                 <IconButton
@@ -193,7 +195,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                 <p className={`${labelClass} ${activePath === 'dashboard' && "text-sp-blue-500"}`}>專案檢視</p>
                             </div>
                             <div 
-                                onClick={() => router.push(`/${lastPath}/expense` || `/${projectData[0].id}/expense`)} 
+                                onClick={() => router.push(`/${lastPath}/expense`)} 
                                 className={itemClass}
                             >
                                 <IconButton

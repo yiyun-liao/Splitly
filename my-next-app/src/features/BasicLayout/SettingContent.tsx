@@ -6,7 +6,7 @@ import ImageButton from "@/components/ui/ImageButton";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { logOutUser } from "@/lib/auth";
-
+import { clearUserCache } from "@/utils/cache";
 
 export default function SettingContent(){
     const router = useRouter();
@@ -15,9 +15,12 @@ export default function SettingContent(){
     const isMobile = useIsMobile();
 
     async function handleLogout() {
-        await logOutUser();
-        console.log('Logged out!');
-        router.push('/');    
+        const success = await logOutUser();
+        if (success){
+            clearUserCache();
+            console.log('Logged out!');
+            router.push('/');    
+        }
     }
     
     const labelClass = clsx("w-30 font-medium truncate")

@@ -6,12 +6,12 @@ import { logInUser } from '@/lib/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+
 export default function LandingClient() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { projectData, isReady } = useAuth();
+    const { projectData, isReady, userData } = useAuth();
     const [isLoginTriggered, setIsLoginTriggered] = useState(false); 
-    const lastPath = localStorage.getItem("lastVisitedProjectPath");
 
     const handleLogin = async () => {
         const isLogin = await logInUser();
@@ -22,16 +22,34 @@ export default function LandingClient() {
 
     useEffect(() => {
         if (!isLoginTriggered || !isReady) return;
+        const raw = localStorage.getItem("lastVisitedProjectPath");
+        let parsed: { path?: string; userId?: string } | null = null;
+
+        try {
+            parsed = raw ? JSON.parse(raw) : null;
+        } catch (err) {
+            console.warn("⚠️ 無法解析 lastVisitedProjectPath:", err);
+        }
 
         const redirectUrl = searchParams.get("redirect");
+        console.log("我要去哪", redirectUrl , "OR", parsed?.path)
+
         if (redirectUrl) {
             router.push(redirectUrl);
-        } else if (projectData.length > 0) {
-            router.push(`/${lastPath}/dashboard` || `/${projectData[0].id}/dashboard`);
+            console.log("i have redirect", redirectUrl)
+        }else if (parsed?.userId === userData?.uid){
+            router.push(`/${parsed?.path}/dashboard`);
+            console.log("i have last path", parsed?.path)
+        }else if (projectData.length > 0 && parsed?.userId !== userData?.uid) {
+            router.push(`/${projectData[0].id}/dashboard`);
+            localStorage.removeItem("lastVisitedProjectPath");
+            console.log("i have project")
         } else {
             router.push(`/create`);
+            localStorage.removeItem("lastVisitedProjectPath");
+            console.log("i have nothing")
         }
-    }, [isReady, isLoginTriggered, searchParams, router, projectData, lastPath]);
+    }, [isReady, isLoginTriggered, searchParams, router, projectData, userData]);
 
     return (
         <main>
