@@ -7,6 +7,7 @@ import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
 import IconButton from "@/components/ui/IconButton";
 import ProjectMemberList from "../ProjectOverviewSections/ProjectMemberListDialog";
+import ProjectListNavMobile from "./ProjectListNavMobile";
 import { useAuth } from "@/contexts/AuthContext"; 
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
@@ -14,6 +15,8 @@ import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 export default function MemberHeaderMobile(){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
+    const [isProjectNavOpen, setIsProjectNavOpen] = useState(false)
+
 
     const router = useRouter();
     const pathname = usePathname();
@@ -24,16 +27,9 @@ export default function MemberHeaderMobile(){
     console.log("what project i involved", projectData)
     console.log("what i get currentProjectData",currentProjectData)
     console.log("what i get currentProjectUsers",currentProjectUsers)
-    console.log("what i get currentPaymentList", currentPaymentList)
+    // console.log("what i get currentPaymentList", currentPaymentList)
     // if ( myDataLoading || usersLoading) return <p>Loading...</p>;
 
-    if (!currentProjectData) {
-        console.log("沒有拿到 currentProjectData", projectId);
-        if (projectData.length > 0) {
-            router.push(`/${projectData[0].id}/dashboard`);
-        }
-        return null;
-    }
 
     if (!userData) {
         console.error("userData is null");
@@ -51,6 +47,12 @@ export default function MemberHeaderMobile(){
     return(
         <div id="dashboard-header"  className={isMobileClass}>
             <div>
+                {isProjectNavOpen && (
+                    <ProjectListNavMobile
+                        isProjectNavOpen={isProjectNavOpen}
+                        onClose = {() => setIsProjectNavOpen(false)}  
+                    />
+                )}
                 {isMemberDialogOpen  && currentProjectUsers && (
                     <ProjectMemberList 
                         isMemberListOpen={isMemberDialogOpen}
@@ -65,7 +67,7 @@ export default function MemberHeaderMobile(){
                     variant='text-button'
                     color='zinc'
                     type= 'button'
-                    onClick={() => {}} 
+                    onClick={() => setIsProjectNavOpen(true)} 
                 />
             </div>
             <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
@@ -73,8 +75,7 @@ export default function MemberHeaderMobile(){
                     image={currentProjectData?.imgURL}
                     size='sm'
                     imageName= {currentProjectData?.project_name || ""}
-                    >
-                </ImageButton>
+                />
                 <p className="text-xl font-medium text-zinc-700 whitespace-nowrap truncate min-w-0 max-w-100">{currentProjectData?.project_name || ""}</p>
             </div>
             <div className="shrink-0 flex items-center justify-start gap-2"> 

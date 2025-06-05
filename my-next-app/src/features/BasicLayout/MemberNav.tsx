@@ -172,7 +172,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                     variant={activePath === 'dashboard' ? 'solid' : 'outline'}
                                     color='primary'
                                     type= 'button'
-                                    onClick={() => router.push(`/${projectId}/dashboard`)} 
+                                    onClick={() => {}} 
                                 />
                                 <p className={`${labelClass} ${activePath === 'dashboard' && "text-sp-blue-500"}`}>專案檢視</p>
                             </div>
@@ -186,7 +186,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                     variant={activePath === 'expense' ? 'solid' : 'outline'}
                                     color='primary'
                                     type= 'button'
-                                    onClick={() => router.push(`/${projectId}/expense`)} 
+                                    onClick={() => {}} 
                                 />
                                 <p className={`${labelClass} ${activePath === 'expense' && "text-sp-blue-500"}`}>收支紀錄</p>
                             </div>
@@ -203,7 +203,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                 variant='text-button'
                                 color='primary'
                                 type= 'button'
-                                onClick={() => setIsCreateProject(true)}
+                                onClick={() => {}}
                             />
                             <p className={`${labelClass}`}>新增專案</p>
                         </div>
@@ -219,7 +219,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                         image={project.imgURL}
                                         size='md'
                                         imageName= {project.project_name}
-                                        onClick={() => router.push(`/${project.id}/dashboard`)}
+                                        onClick={() => {}}
                                     />
                                     <p className={`${labelClass} ${projectId === project.id && "text-sp-blue-500"}`}>{project.project_name}</p>
                                 </div>
