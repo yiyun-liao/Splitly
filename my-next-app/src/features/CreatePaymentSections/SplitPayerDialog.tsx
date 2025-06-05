@@ -1,9 +1,11 @@
+import { useState, useEffect, useMemo } from "react";
+import clsx from "clsx";
+
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
-import { useState, useEffect, useMemo } from "react";
-import clsx from "clsx";
+import ModalPortal from "@/components/ui/ModalPortal";
 import { PayerMap} from "@/types/payment";
 import { UserData } from "@/types/user";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
@@ -126,16 +128,18 @@ export default function SplitPayer({
     }
 
     return(
-        <Dialog
-                header="付款人"
-                open={isSplitPayerOpen}
-                onClose={ () => {
-                    onClose();
-                }} 
-                footerClassName= "items-center justify-end"
-                footer= {renderFooter()}
-            >
-                {renderBody()}
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                    header="付款人"
+                    open={isSplitPayerOpen}
+                    onClose={ () => {
+                        onClose();
+                    }} 
+                    footerClassName= "items-center justify-end"
+                    footer= {renderFooter()}
+                >
+                    {renderBody()}
+            </Dialog>
+        </ModalPortal>
     )
 }

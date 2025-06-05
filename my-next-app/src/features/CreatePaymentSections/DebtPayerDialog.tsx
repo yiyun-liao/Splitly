@@ -1,6 +1,8 @@
 import Dialog from "@/components/ui/Dialog";
 import Avatar from "@/components/ui/Avatar";
 import IconButton from "@/components/ui/IconButton";
+import ModalPortal from "@/components/ui/ModalPortal";
+
 import { UserData } from "@/types/user";
 
 
@@ -59,15 +61,17 @@ export default function DebtPayer({
     }
 
     return(
-        <Dialog
-                header="匯款人"
-                open={isDebtPayerOpen} // 從某處打開
-                onClose={ () => {
-                    onClose();
-                }} // 點擊哪裡關閉
-                closeOnBackdropClick = {true}
-            >
-                {renderBody()}
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                    header="匯款人"
+                    open={isDebtPayerOpen} // 從某處打開
+                    onClose={ () => {
+                        onClose();
+                    }} // 點擊哪裡關閉
+                    closeOnBackdropClick = {true}
+                >
+                    {renderBody()}
+            </Dialog>
+        </ModalPortal>
     )
 }

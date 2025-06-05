@@ -48,7 +48,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const userKey = `projectUsers | ${pureProjectId}`;
         const paymentKey = `paymentList | ${pureProjectId}`;
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
-        const CACHE_TTL = 1000 * 60 * 60;
+        const CACHE_TTL = 1000 * 60 * 180;
 
         const cachedUsers = localStorage.getItem(userKey);
         const cachedPayments = localStorage.getItem(paymentKey);

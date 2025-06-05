@@ -1,9 +1,11 @@
+import { useState, useEffect, useMemo } from "react";
+import clsx from "clsx";
+
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
 import IconButton from "@/components/ui/IconButton";
-import { useState, useEffect, useMemo } from "react";
-import clsx from "clsx";
+import ModalPortal from "@/components/ui/ModalPortal";
 import { SplitWay, SplitMap, CreateItemPayload } from "@/types/payment";
 import { formatNumber, formatNumberForData } from "@/utils/parseNumber";
 import SplitByItemEdit from "./SplitByItemEditDialog";
@@ -277,20 +279,22 @@ export default function SplitByItem({
     }
 
     return(
-        <Dialog
-                header="項目分帳"
-                open={isSplitByItemOpen} 
-                onClose={ () => {
-                    onClose();
-                }} 
-                bodyClassName= "overflow-hidden"
-                leftIcon={step === "singleItem" ? "solar:arrow-left-line-duotone" : undefined}
-                onLeftIconClick={()=> {
-                    setEditItemIndex(null); 
-                    setStep('list');
-                }}
-            >
-                {renderBody()}
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                    header="項目分帳"
+                    open={isSplitByItemOpen} 
+                    onClose={ () => {
+                        onClose();
+                    }} 
+                    bodyClassName= "overflow-hidden"
+                    leftIcon={step === "singleItem" ? "solar:arrow-left-line-duotone" : undefined}
+                    onLeftIconClick={()=> {
+                        setEditItemIndex(null); 
+                        setStep('list');
+                    }}
+                >
+                    {renderBody()}
+            </Dialog>
+        </ModalPortal>
     )
 }

@@ -26,7 +26,7 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
 
         const catKey = `🐱 cat`;
         const metaCatKey = `🐱 cacheCatMeta`;
-        const CACHE_TTL = 1000 * 60 * 300;
+        const CACHE_TTL = 1000 * 60 * 1440;
 
         const cachedCats = localStorage.getItem(catKey);
         const cachedMeta = localStorage.getItem(metaCatKey);

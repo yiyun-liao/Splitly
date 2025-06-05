@@ -2,6 +2,8 @@ import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Icon from "@/components/ui/Icon";
+import ModalPortal from "@/components/ui/ModalPortal";
+
 import { UserData } from "@/types/user";
 
 interface ProjectWiseSpiltProps {
@@ -165,22 +167,24 @@ export default function ProjectWiseSpilt({
 }
     //console.log('wise spilt dialog state', isProjectWiseSpiltOpen)
     return(
-        <Dialog
-                header="快速分帳"
-                open={isProjectWiseSpiltOpen} // 從某處打開
-                onClose={ () => {
-                    onClose();
-                }} // 點擊哪裡關閉
-                //headerClassName= {step === "add" ? undefined : "ml-11"}
-                // bodyClassName= string // 看需求
-                footerClassName= "items-center justify-end"
-                //leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
-                //hideCloseIcon = false
-                //closeOnBackdropClick = false
-                //onLeftIconClick={handleBack}
-                // footer= React.ReactNode
-            >
-                {renderBody()}
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                    header="快速分帳"
+                    open={isProjectWiseSpiltOpen} // 從某處打開
+                    onClose={ () => {
+                        onClose();
+                    }} // 點擊哪裡關閉
+                    //headerClassName= {step === "add" ? undefined : "ml-11"}
+                    // bodyClassName= string // 看需求
+                    footerClassName= "items-center justify-end"
+                    //leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
+                    //hideCloseIcon = false
+                    //closeOnBackdropClick = false
+                    //onLeftIconClick={handleBack}
+                    // footer= React.ReactNode
+                >
+                    {renderBody()}
+            </Dialog>
+        </ModalPortal>
     )
 }

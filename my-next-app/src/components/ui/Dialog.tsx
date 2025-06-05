@@ -52,9 +52,9 @@ export default function Dialog({
     };
     
     return(
-        <div className="fixed inset-0 z-101 flex items-center justify-center bg-black/50" onClick={handleBackdropClick}>
+        <div className="fixed inset-0 z-150 flex items-center justify-center bg-black/50 transition-opacity duration-300" onClick={handleBackdropClick}>
             <div className="w-fit h-fit p-4" onClick={(e) => e.stopPropagation()}>
-                <div className="w-lg h-140 max-h-[90vh] bg-zinc-50 rounded-xl overflow-hidden shadow-md flex flex-col items-start justify-start">
+                <div className="w-lg h-140 max-h-[90vh] bg-zinc-50 rounded-xl overflow-hidden shadow-md flex flex-col items-start justify-start transition-all duration-300 scale-100">
                     <div className={headerClass}>
                         {leftIcon && <IconButton icon={leftIcon} size="sm" variant="text-button" color="zinc" type="button" onClick={onLeftIconClick} />}
                         {header && <div className="w-full whitespace-nowrap truncate align-middle text-xl font-medium text-zinc-700" >{header}</div>}

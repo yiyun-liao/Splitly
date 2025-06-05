@@ -1,5 +1,7 @@
 import Dialog from "@/components/ui/Dialog";
 import Avatar from "@/components/ui/Avatar";
+import ModalPortal from "@/components/ui/ModalPortal";
+
 import { UserData } from "@/types/user";
 
 interface ProjectDebtDetailProps {
@@ -55,15 +57,17 @@ export default function ProjectDebtDetail({
         )
 }
     return(
-        <Dialog
-                header="您在專案中"
-                open={isSelfExpenseOpen} // 從某處打開
-                onClose={ () => {
-                    onClose();
-                }} // 點擊哪裡關閉
-                footerClassName= "items-center justify-end"
-            >
-                {renderBody()}
-        </Dialog>
+        <ModalPortal>
+            <Dialog
+                    header="您在專案中"
+                    open={isSelfExpenseOpen} // 從某處打開
+                    onClose={ () => {
+                        onClose();
+                    }} // 點擊哪裡關閉
+                    footerClassName= "items-center justify-end"
+                >
+                    {renderBody()}
+            </Dialog>
+        </ModalPortal>
     )
 }
