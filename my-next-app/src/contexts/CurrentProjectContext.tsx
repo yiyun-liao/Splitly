@@ -25,6 +25,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const router = useRouter();
     const { projectId } = useParams();
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
+    const lastPath = localStorage.getItem("lastVisitedProjectPath");
 
     const currentProjectData = useMemo(() => {
         if (!myDataReady || !pureProjectId) return undefined;
@@ -72,6 +73,10 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const fetchProjectData = async () => {
             try {
                 console.log("🙃 fetch current data")
+                if (!pureProjectId) {
+                    console.warn("🚫 無效的 projectId，跳過 fetch");
+                    return;
+                }
                 const rawUsers = await fetchUserByProject(pureProjectId);
                 const users: UserData[] = rawUsers.map((user:UserData) => ({
                     ...user,
@@ -105,9 +110,9 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         if (!pureProjectId) return;
         if (!myDataReady || !projectData.length) return;
         if (!currentProjectData) {
-        router.push(`/${projectData[0].id}/dashboard`);
+            router.push(`/${lastPath}/dashboard` || `/${projectData[0].id}/dashboard`);
         }
-    }, [myDataReady, currentProjectData, projectData, router, pureProjectId]);
+    }, [myDataReady, currentProjectData, projectData, router, pureProjectId, lastPath]);
 
     return (
         <CurrentProjectContext.Provider

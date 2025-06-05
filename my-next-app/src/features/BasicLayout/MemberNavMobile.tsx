@@ -5,13 +5,17 @@ import { usePathname } from 'next/navigation';
 import IconButton from "@/components/ui/IconButton";
 import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+import { useGlobalProjectData } from '@/contexts/GlobalProjectContext';
 
 
 export default function MemberNavMobile() {
     const router = useRouter();
     const pathname = usePathname();
     const { projectId } = useParams();
+    const lastPath = localStorage.getItem("lastVisitedProjectPath");
+    // console.log("i would like to go ",lastPath)
 
+    const { projectData } = useGlobalProjectData();
     const { currentProjectUsers} = useCurrentProjectData();
 
     const [isCreatePayment, setIsCreatePayment] = useState(false)
@@ -36,7 +40,7 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/${projectId}/dashboard` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${projectId}/dashboard`)}  
+                    onClick={() => router.push(`/${lastPath}/dashboard` || `/${projectData[0].id}/dashboard`)}  
                 />
                 <IconButton
                     icon='solar:reorder-bold'
@@ -44,7 +48,7 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/${projectId}/expense` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${projectId}/expense`)} 
+                    onClick={() => router.push(`/${lastPath}/expense` || `/${projectData[0].id}/expense`)} 
                 />
                 <IconButton
                     icon='solar:clipboard-add-linear'
@@ -60,7 +64,7 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/${projectId}/overview` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${projectId}/overview`)} 
+                    onClick={() => router.push(`/${lastPath}/overview` || `/${projectData[0].id}/overview`)} 
                 />
                 <IconButton
                     icon='solar:user-bold'

@@ -85,7 +85,7 @@ export default function ProjectListNavMobile({
                                         image={project.imgURL}
                                         size='md'
                                         imageName= {project.project_name}
-                                        onClick={() => router.push(`/${project.id}/dashboard`)}
+                                        onClick={() => {}}
                                     />
                                     <p className={`${labelClass} ${projectId === project.id && "text-sp-blue-500"}`}>{project.project_name}</p>
                                 </div>

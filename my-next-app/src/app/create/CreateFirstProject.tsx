@@ -7,15 +7,17 @@ import { useEffect } from "react";
 export default function CreateFirstProject() {
     const { userData, projectData, isReady } = useAuth();
     const router = useRouter();
+    const lastPath = localStorage.getItem("lastVisitedProjectPath");
+
 
     useEffect(() => {
         if (!isReady) return;
 
         if (projectData && projectData.length > 0) {
             console.log("你已經有專案了")
-            router.push(`/${projectData[0].id}/dashboard`);
+            router.push(`/${lastPath}/dashboard` || `/${projectData[0].id}/dashboard`);
         }
-    }, [isReady, router, projectData]);
+    }, [isReady, router, projectData, lastPath]);
 
     if (!userData) return null;
 

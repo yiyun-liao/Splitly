@@ -11,6 +11,7 @@ export default function LandingClient() {
     const searchParams = useSearchParams();
     const { projectData, isReady } = useAuth();
     const [isLoginTriggered, setIsLoginTriggered] = useState(false); 
+    const lastPath = localStorage.getItem("lastVisitedProjectPath");
 
     const handleLogin = async () => {
         const isLogin = await logInUser();
@@ -26,11 +27,11 @@ export default function LandingClient() {
         if (redirectUrl) {
             router.push(redirectUrl);
         } else if (projectData.length > 0) {
-            router.push(`/${projectData[0].id}/dashboard`);
+            router.push(`/${lastPath}/dashboard` || `/${projectData[0].id}/dashboard`);
         } else {
             router.push(`/create`);
         }
-    }, [isReady, isLoginTriggered, searchParams, router, projectData]);
+    }, [isReady, isLoginTriggered, searchParams, router, projectData, lastPath]);
 
     return (
         <main>

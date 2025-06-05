@@ -6,8 +6,11 @@ import { CurrentProjectProvider } from "@/contexts/CurrentProjectContext";
 import { CategoryProvider } from "@/contexts/CategoryContext";
 import MobileLayout from "./MobileLayout"; 
 import DesktopLayout from "./DesktopLayout"; 
+import { useTrackLastVisitedProjectPath } from "@/hooks/useTrackLastVisitedProjectPath";
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {    
+export default function DashboardLayout({ children }: { children: ReactNode }) {   
+    useTrackLastVisitedProjectPath();
+ 
     return (
         <GlobalProjectProvider>
             <CategoryProvider>
