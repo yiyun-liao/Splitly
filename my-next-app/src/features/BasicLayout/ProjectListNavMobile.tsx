@@ -72,7 +72,21 @@ export default function ProjectListNavMobile({
                                 onClick={() => onClose()}
                             />
                     </div>
-                    <div className={`flex-1 flex flex-col gap-2 ${scrollClass}`}>
+                    <div
+                        className={`shrink-0 ${itemClass}`}
+                        onClick={() => setIsCreateProject(true)}
+                    >
+                        <IconButton
+                            icon='solar:add-circle-bold'
+                            size='md'
+                            variant='text-button'
+                            color='primary'
+                            type= 'button'
+                            onClick={() => setIsCreateProject(true)}
+                        />
+                        <p className={`${labelClass}`}>新增專案</p>
+                    </div>
+                    <div className={`flex-1 flex flex-col gap-2 pb-13 ${scrollClass}`}>
                         {projectData?.map(project => {
                             return(
                                 <div 
@@ -91,20 +105,6 @@ export default function ProjectListNavMobile({
                                 </div>
                             )}
                         )}
-                    </div>
-                    <div
-                        className={`shrink-0 ${itemClass}`}
-                        onClick={() => setIsCreateProject(true)}
-                    >
-                        <IconButton
-                            icon='solar:add-circle-bold'
-                            size='md'
-                            variant='text-button'
-                            color='primary'
-                            type= 'button'
-                            onClick={() => setIsCreateProject(true)}
-                        />
-                        <p className={`${labelClass}`}>新增專案</p>
                     </div>
                 </div>
             </div>
