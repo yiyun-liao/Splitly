@@ -39,10 +39,10 @@ export default function Dialog({
     const bodyClass = clsx("py-4 px-4 w-full flex-1 overflow-y-auto overflow-x-none", bodyClassName)
     const footerClass = clsx("min-h-13 py-2 px-4 w-full flex gap-1", footerClassName) //items-center justify-end
     const isMobile = useIsMobile();
-    const dialogStyleClass = clsx("bg-zinc-50 rounded-xl overflow-hidden shadow-md flex flex-col items-start justify-start transition-all duration-300 scale-100",
+    const dialogStyleClass = clsx("bg-zinc-50  overflow-hidden shadow-md flex flex-col items-start justify-start transition-all duration-300 scale-100",
         {
-            "w-screen h-[80vh] fixed bottom-0 right-0": isMobile === true,
-            "w-lg h-140 max-h-[90vh] ": isMobile === false
+            "w-screen h-[80vh] fixed bottom-0 right-0 rounded-t-xl": isMobile === true,
+            "w-lg h-140 max-h-[90vh] rounded-xl": isMobile === false
         }
     )
 

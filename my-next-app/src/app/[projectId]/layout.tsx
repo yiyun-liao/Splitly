@@ -15,8 +15,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <GlobalProjectProvider>
             <CategoryProvider>
                 <CurrentProjectProvider>
-                    <div className="block md:hidden"><MobileLayout>{children}</MobileLayout></div>
-                    <div className="hidden md:block"><DesktopLayout>{children}</DesktopLayout></div>
+                    <div className="block md:hidden" style={{ height: "var(--vh)" }}><MobileLayout>{children}</MobileLayout></div>
+                    <div className="hidden md:block" style={{ height: "var(--vh)" }}><DesktopLayout>{children}</DesktopLayout></div>
                 </CurrentProjectProvider>
             </CategoryProvider>
         </GlobalProjectProvider>
