@@ -139,7 +139,7 @@ export default function SplitByItemEdit({
                     </div>
                 </div>
 
-                <div className="w-full pb-4 bg-zinc-50 sticky -top-2 z-20">
+                <div className="w-full pb-4 bg-zinc-50 sticky -top-2 z-12">
                     <div className="w-full flex max-w-xl bg-sp-blue-200 rounded-xl">
                         {["percentage", "actual", "adjusted"].map(method => (
                             <Button
