@@ -11,8 +11,6 @@ import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCreatePayment } from "./hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { getLastVisitedProjectId } from "@/utils/cache";
-
 
 interface CreatePaymentProps {
     open?: boolean;
@@ -27,9 +25,8 @@ export default function CreatePayment({
     const {userData, projectData} = useGlobalProjectData();
     const {currentProjectUsers} = useCurrentProjectData();
     const currentUid = userData?.uid;
-    const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
     const rawProjectId = useParams()?.projectId;
-    const projectId = typeof rawProjectId === 'string' ? rawProjectId : lastPath;
+    const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
 
     // receipt-way
     const [recordMode, setRecordMode] = useState<RecordMode>("split");

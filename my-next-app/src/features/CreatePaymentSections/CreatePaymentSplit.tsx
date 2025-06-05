@@ -17,7 +17,6 @@ import { formatPercent, formatNumber, formatNumberForData } from "@/utils/parseN
 import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { getLastVisitedProjectId } from "@/utils/cache";
 import { GetProjectData } from "@/types/project";
 
 
@@ -37,8 +36,7 @@ export default function CreatePaymentSplit({
     }:CreatePaymentSplitProps){
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
-        const lastPath = getLastVisitedProjectId() || "";
-        const projectId = typeof rawProjectId === 'string' ? rawProjectId : lastPath;   
+        const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";   
         const projectName = projectData.find((project) => project.id === projectId)?.project_name;
         const isMobile = useIsMobile();
 
