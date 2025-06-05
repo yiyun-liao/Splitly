@@ -27,7 +27,7 @@ export default function MemberNavMobile() {
     }, [pathname]);
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-white z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-white z-25">
             <div>
                 {isCreatePayment && currentProjectUsers && (
                     <CreatePayment 

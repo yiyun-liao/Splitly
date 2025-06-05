@@ -104,7 +104,7 @@ export default function Dialog({
     };
     
     return(
-        <div className="fixed inset-0 z-150 flex items-center justify-center bg-black/50 transition-opacity duration-300" onClick={handleBackdropClick}>
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 transition-opacity duration-300" onClick={handleBackdropClick}>
             <div className="w-fit h-fit p-4" onClick={(e) => e.stopPropagation()}>
                 <div 
                     className={dialogStyleClass}
