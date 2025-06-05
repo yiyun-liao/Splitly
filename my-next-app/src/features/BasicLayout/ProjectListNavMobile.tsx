@@ -39,11 +39,11 @@ export default function ProjectListNavMobile({
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const navWrapperClass = clsx(
-        "fixed inset-0 z-100 flex items-start justify-start backdrop-blur-sm bg-black/20", 
+        "fixed inset-0 z-55 flex items-start justify-start backdrop-blur-sm bg-black/20", 
       );
       
     const navStyleClass = clsx(
-        "h-screen min-w-[200px] w-[60%] max-w-[480px] bg-sp-white-100 shadow-xl box-border py-4 px-4 flex flex-col justify-start gap-2 rounded-r-xl text-zinc-700",
+        "h-screen min-w-[200px] w-[60%] max-w-[480px] bottom-[env(safe-area-inset-bottom,16px)] bg-sp-white-100 shadow-xl box-border py-4 px-4 flex flex-col justify-start gap-2 rounded-r-xl text-zinc-700",
         "transition-all duration-300 ease-in-out"
     );
     const labelClass = clsx("w-full font-medium truncate", "transition-opacity duration-300",)
