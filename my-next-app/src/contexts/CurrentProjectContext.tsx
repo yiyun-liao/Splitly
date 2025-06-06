@@ -4,17 +4,12 @@ import { useParams, useRouter } from "next/navigation";
 import { GetProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
 import { GetPaymentData } from "@/types/payment";
-import { ParentCategoryStat, GroupedByParent } from "@/types/calculation";
-
 
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchUserByProject } from "@/lib/projectApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
 import { buildAvatarUrl } from "@/utils/getAvatar";
 import { getLastVisitedProjectId } from "@/utils/cache";
-import { getGroupedPaymentsByParentCategory, getProjectCategoryStats, getUserCategoryStats } from "@/utils/calculatePayment";
-import { useCategoryParent } from "@/hooks/useCategory";
-import { useCategoryOptions } from "@/contexts/CategoryContext";
 
 type CurrentProjectContextType = {
     currentProjectData?: GetProjectData;
@@ -22,17 +17,12 @@ type CurrentProjectContextType = {
     currentPaymentList?: GetPaymentData[];
     setCurrentPaymentList?: React.Dispatch<React.SetStateAction<GetPaymentData[] | undefined>>;
     isReady: boolean;
-    projectStats?: { stats: ParentCategoryStat[]; grandTotal: number };
-    userStats?:{ stats: ParentCategoryStat[]; grandTotal: number };
-    groupedByParentCategory?: GroupedByParent[];
 };
 
 const CurrentProjectContext = createContext<CurrentProjectContextType | undefined>(undefined);
 
 export const CurrentProjectProvider = ({ children }: { children: React.ReactNode }) => {
-    const { projectData, userData, isReady: myDataReady } = useAuth();
-    const { categoryOptions } = useCategoryOptions();
-    const { categoryParents } = useCategoryParent();
+    const { projectData, isReady: myDataReady } = useAuth();
 
     const router = useRouter();
     const { projectId } = useParams();
@@ -71,7 +61,10 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const cachedMeta = localStorage.getItem(metaKey);
         const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
 
-        if (cachedUsers && cachedPayments && !isCacheExpired) {
+        const isPageReload = typeof window !== 'undefined' &&
+             (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
+
+        if (cachedUsers && cachedPayments && !isCacheExpired && !isPageReload) {
             try {
                 setCurrentProjectUsers(JSON.parse(cachedUsers));
                 setCurrentPaymentList(JSON.parse(cachedPayments));
@@ -120,27 +113,6 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         fetchProjectData();
     }, [pureProjectId]);
 
-    // --- 同步統計資訊 ---
-    const groupedByParentCategory = useMemo(() => {
-        if (!currentPaymentList || !categoryOptions || !categoryParents) return undefined;
-        return getGroupedPaymentsByParentCategory(currentPaymentList, categoryOptions, categoryParents);
-    }, [currentPaymentList, categoryOptions, categoryParents]);
-    
-    const projectStats = useMemo(() => {
-        if (!groupedByParentCategory) return undefined;
-        const stats = getProjectCategoryStats(groupedByParentCategory);
-        const grandTotal = stats.reduce((sum, stat) => sum + stat.totalAmount, 0);
-        return { stats, grandTotal };
-    }, [groupedByParentCategory]);
-
-    const userStats = useMemo(() => {
-        if (!groupedByParentCategory) return undefined;
-        const userId = userData?.uid || "" ;
-        const stats = getUserCategoryStats(groupedByParentCategory, userId);
-        const grandTotal = stats.reduce((sum, stat) => sum + stat.totalAmount, 0);
-        return { stats, grandTotal };
-    }, [groupedByParentCategory, userData]);
-
     // --- 找不到專案自動跳轉 ---
     useEffect(() => {
         if (!pureProjectId) return;
@@ -158,9 +130,6 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
             currentPaymentList,
             setCurrentPaymentList,
             isReady,
-            projectStats,
-            groupedByParentCategory,
-            userStats
         }}
         >
         {children}

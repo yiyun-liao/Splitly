@@ -15,7 +15,7 @@ import { useCategoryOptions } from "@/contexts/CategoryContext";
 import { getBudgetStatus } from "@/utils/renderBudgetHint";
 import { formatNumber } from "@/utils/parseNumber";
 import { useIsMobile } from "@/hooks/useIsMobile";
-
+import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
 
 
 export default function ProjectOverview(){
@@ -24,8 +24,12 @@ export default function ProjectOverview(){
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false)
     
     const {userData} = useGlobalProjectData();
-    const {currentProjectData:data, currentPaymentList:list, currentProjectUsers, projectStats, userStats} = useCurrentProjectData();
+    const {currentProjectData:data, currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
     const { categoryOptions } = useCategoryOptions();
+
+    const projectStats = useProjectStats();
+    const userId = userData?.uid || ""
+    const userStats = useUserStats(userId)
     
     // 判斷顯示支出或是圖表
     const currentUserId = userData?.uid || "";

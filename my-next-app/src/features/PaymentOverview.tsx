@@ -5,8 +5,9 @@ import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { formatNumber, formatPercent } from "@/utils/parseNumber";
+import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 export default function PaymentOverview(){
@@ -15,9 +16,11 @@ export default function PaymentOverview(){
     const [openChart, setOpenChart] = useState(true);
 
     // get group and personal data
-    const { projectStats, userStats } = useCurrentProjectData();
-
-    console.log(projectStats, userStats)
+    const {userData} = useAuth()
+    const projectStats = useProjectStats();
+    const userId = userData?.uid || ""
+    const userStats = useUserStats(userId)
+    // console.log(projectStats, userStats)
 
     // css
     const isMobile = useIsMobile();

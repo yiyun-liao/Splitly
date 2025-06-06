@@ -115,9 +115,19 @@ export default function ReceiptCard({
 
     const cardClass = clsx("flex items-center justify-start p-2 gap-2 h-16 rounded-lg cursor-pointer hover:bg-sp-white-60 active:bg-sp-white-80",
         {
-            "bg-sp-white-40 " : record_mode === 'debt',
             "bg-sp-white-20 " : account_type === 'personal',
-            "" : record_mode !== 'debt' && account_type !== 'personal',
+        }
+    )
+
+    const paymentNameClass = clsx("text-base font-semibold whitespace-nowrap truncate",
+        {
+            "text-sp-blue-500" : record_mode === 'debt',
+        }
+    )
+
+    const payerTextClass = clsx("text-sm whitespace-nowrap truncate",
+        {
+            "text-sp-blue-500" : record_mode === 'debt',
         }
     )
 
@@ -127,11 +137,11 @@ export default function ReceiptCard({
             <ImageButton image={category.imgURL} size="md" imageName={category.name_en} />
         </div>
         <div className="flex-1 overflow-hidden">
-            <p className="text-base font-semibold whitespace-nowrap truncate">{payment_name}</p>
-            <p className="text-sm whitespace-nowrap truncate">{payer_text}</p>
+            <p className={paymentNameClass}>{payment_name}</p>
+            <p className={payerTextClass}>{payer_text}</p>
         </div>
         <div className="shrink-0 text-right overflow-hidden">
-            {displayAmount !== 0 && (
+            {Number(displayAmount) !== 0 && (
                 <>
                     <p className={borrowText}>{record_mode === 'debt' ? "還款" : account_type === 'personal' ? "個人" : borrowed ? "借出" : "借用"}</p>
                     <p className="text-base font-semibold whitespace-nowrap truncate">${displayAmount}</p>
