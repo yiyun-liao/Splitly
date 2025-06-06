@@ -1,13 +1,11 @@
 import { useMemo } from "react";
 import { Category } from "@/types/category";
 import { GetPaymentData } from "@/types/payment";
+import { GroupedByParent } from "@/types/calculation";
 import { useCategoryParent } from "@/hooks/useCategory";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
 
-type GroupedByParent = {
-    parent: Category;
-    payments: GetPaymentData[];
-};
+
 
 export function useGroupedPaymentsByParentCategory(
     payments: GetPaymentData[],
@@ -15,8 +13,10 @@ export function useGroupedPaymentsByParentCategory(
 
     const { categoryOptions: rawCategories } = useCategoryOptions();
     const { categoryParents } = useCategoryParent();
+
     
     return useMemo(() => {
+        if (payments.length == 0) return [];
         const categoryMap = new Map<number, Category>();
 
         const categories = rawCategories ?? [];

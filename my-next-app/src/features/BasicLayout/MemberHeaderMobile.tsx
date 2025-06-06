@@ -20,8 +20,9 @@ export default function MemberHeaderMobile(){
 
     const pathname = usePathname();
     const { projectId } = useParams();
-    const { userData } = useAuth();
-    const { currentProjectData, currentProjectUsers} = useCurrentProjectData();
+    const { userData, isReady:myDataLoading } = useAuth();
+    const { currentProjectData, currentProjectUsers, isReady:usersLoading} = useCurrentProjectData();
+    // if ( myDataLoading || usersLoading) return <p>Loading...</p>;
 
 
     if (!userData) {

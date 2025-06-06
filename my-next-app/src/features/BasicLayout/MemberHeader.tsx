@@ -14,8 +14,8 @@ export default function MemberHeader(){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreatePayment, setIsCreatePayment] = useState(false)
 
-    const { userData, projectData } = useAuth();
-    const {currentPaymentList, currentProjectData, currentProjectUsers} = useCurrentProjectData();
+    const { userData, projectData, isReady:myDataLoading } = useAuth();
+    const {currentPaymentList, currentProjectData, currentProjectUsers, isReady:usersLoading} = useCurrentProjectData();
     console.log("who am i", userData)
     console.log("what project i involved", projectData)
     console.log("what i get currentProjectData",currentProjectData)
