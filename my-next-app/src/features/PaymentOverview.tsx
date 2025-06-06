@@ -6,9 +6,7 @@ import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton";
 import { useCategoryParent } from "@/hooks/useCategory";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { useGroupedPaymentsByParentCategory } from "@/hooks/useGroupedPaymentsByParentCategory";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { getProjectParentCategoryStats } from "@/utils/calculatePayment";
 import { formatNumber, formatPercent } from "@/utils/parseNumber";
 
 
@@ -18,14 +16,12 @@ export default function PaymentOverview(){
     const [openChart, setOpenChart] = useState(true);
 
     // get group data
-    const {currentPaymentList} = useCurrentProjectData();
-    const rawPaymentList = currentPaymentList || [];
+    const { projectStats} = useCurrentProjectData();
+
+    console.log(projectStats)
 
     const {categoryParents} = useCategoryParent();
-    const rawGrouped = useGroupedPaymentsByParentCategory(rawPaymentList);
-    const groupGrouped = getProjectParentCategoryStats(rawGrouped);
 
-    console.log("grouped", rawGrouped, groupGrouped)
 
     // css
     const isMobile = useIsMobile();
@@ -104,12 +100,11 @@ export default function PaymentOverview(){
                 </div>
                 <div id="expense-list" className="px-3 py-3 mb-6 rounded-2xl h-fit bg-sp-blue-200">
                     <div id="expense-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
-                        <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視（這裡還沒做）</p>
+                        <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視</p>
                     </div>
                     {viewExpenseWay === "shared" && ( 
                         <div className="py-2 px-4">
-                            {groupGrouped  && (groupGrouped.map(cat => {
-                                
+                            {projectStats  && (projectStats.stats.map(cat => {
                                 return(
                                     <div key={cat.id} className="w-full">
                                         <div id="expense-list-token" className="flex items-center justify-start p-2 gap-2 h-16 rounded-lg hover:bg-sp-white-20 active:bg-sp-white-40 cursor-pointer">

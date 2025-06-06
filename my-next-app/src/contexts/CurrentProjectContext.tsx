@@ -4,26 +4,35 @@ import { useParams, useRouter } from "next/navigation";
 import { GetProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
 import { GetPaymentData } from "@/types/payment";
+import { ParentCategoryStat, GroupedByParent } from "@/types/calculation";
+
 
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchUserByProject } from "@/lib/projectApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
 import { buildAvatarUrl } from "@/utils/getAvatar";
 import { getLastVisitedProjectId } from "@/utils/cache";
-
+import { getGroupedPaymentsByParentCategory, getProjectCategoryStats } from "@/utils/calculatePayment";
+import { useCategoryParent } from "@/hooks/useCategory";
+import { useCategoryOptions } from "@/contexts/CategoryContext";
 
 type CurrentProjectContextType = {
-currentProjectData?: GetProjectData;
-currentProjectUsers?: UserData[];
-currentPaymentList?: GetPaymentData[];
-setCurrentPaymentList?: React.Dispatch<React.SetStateAction<GetPaymentData[] | undefined>>;
-isReady: boolean;
+    currentProjectData?: GetProjectData;
+    currentProjectUsers?: UserData[];
+    currentPaymentList?: GetPaymentData[];
+    setCurrentPaymentList?: React.Dispatch<React.SetStateAction<GetPaymentData[] | undefined>>;
+    isReady: boolean;
+    projectStats?: { stats: ParentCategoryStat[]; grandTotal: number };
+    groupedByParentCategory?: GroupedByParent[];
 };
 
 const CurrentProjectContext = createContext<CurrentProjectContextType | undefined>(undefined);
 
 export const CurrentProjectProvider = ({ children }: { children: React.ReactNode }) => {
     const { projectData, isReady: myDataReady } = useAuth();
+    const { categoryOptions } = useCategoryOptions();
+    const { categoryParents } = useCategoryParent();
+
     const router = useRouter();
     const { projectId } = useParams();
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
@@ -36,15 +45,18 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
     const [currentProjectUsers, setCurrentProjectUsers] = useState<UserData[]>();
     const [currentPaymentList, setCurrentPaymentList] = useState<GetPaymentData[]>();
-    const [isReady, setIsReady] = useState(false); // ✅ 明確控制資料就緒
+  
 
-    // ✅ 檢查資料齊全後再設 isReady
+    const [isReady, setIsReady] = useState(false); // 控制資料就緒
+
+    // --- 設定 ready 狀態 ---
     useEffect(() => {
         if (currentProjectUsers && currentPaymentList) {
         setIsReady(true);
         }
     }, [currentProjectUsers, currentPaymentList]);
 
+    // --- 快取 / API 載入 ---
     useEffect(() => {
         if (!pureProjectId) return;
 
@@ -107,7 +119,20 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         fetchProjectData();
     }, [pureProjectId]);
 
-    // ✅ 若找不到專案，自動跳轉
+    // --- 同步統計資訊 ---
+    const groupedByParentCategory = useMemo(() => {
+        if (!currentPaymentList || !categoryOptions || !categoryParents) return undefined;
+        return getGroupedPaymentsByParentCategory(currentPaymentList, categoryOptions, categoryParents);
+    }, [currentPaymentList, categoryOptions, categoryParents]);
+    
+    const projectStats = useMemo(() => {
+        if (!groupedByParentCategory) return undefined;
+        const stats = getProjectCategoryStats(groupedByParentCategory);
+        const grandTotal = stats.reduce((sum, stat) => sum + stat.totalAmount, 0);
+        return { stats, grandTotal };
+    }, [groupedByParentCategory]);
+
+    // --- 找不到專案自動跳轉 ---
     useEffect(() => {
         if (!pureProjectId) return;
         if (!myDataReady || !projectData.length) return;
@@ -124,6 +149,8 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
             currentPaymentList,
             setCurrentPaymentList,
             isReady,
+            projectStats,
+            groupedByParentCategory,
         }}
         >
         {children}

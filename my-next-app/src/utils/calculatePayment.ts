@@ -1,10 +1,41 @@
-// my-next-app/src/hooks/useGroupedPaymentsByParentCategory.tsx 合用，分別計算群組跟個人
+// my-next-app/src/hooks/usePaymentStats 合用，分別計算群組跟個人
 import { GroupedByParent, ParentCategoryStat } from "@/types/calculation";
 import { formatNumberForData } from "./parseNumber";
+import { Category } from "@/types/category";
+import { GetPaymentData } from "@/types/payment";
 
 
-// 專案的分類支出
-export function getProjectParentCategoryStats(groupedData: GroupedByParent[]): ParentCategoryStat[] {
+
+
+// 收支以類別做分類
+export function getGroupedPaymentsByParentCategory(payments:GetPaymentData[] , categories:Category[], categoryParents:Category[]){
+    const categoryMap = new Map<number, Category>();
+
+    categories.forEach((cat) => categoryMap.set(cat.id, cat));
+
+    const grouped: GroupedByParent[] = categoryParents.map((parent) => ({
+        parent,
+        payments: [],
+    }));
+
+    payments.forEach((payment) => {
+        const categoryId = typeof payment.category_id === 'string' ? parseInt(payment.category_id) : payment.category_id;
+        if (!categoryId) return;
+
+        const cat = categoryMap.get(categoryId);
+        if (!cat) return;
+        const parentId = cat.parent_id ?? cat.id;
+        const parentGroup = grouped.find((g) => g.parent.id === parentId);
+        if (parentGroup) {
+            parentGroup.payments.push(payment);
+        }
+    });
+
+    return grouped;
+}
+
+// 專案的各分類總額
+export function getProjectCategoryStats(groupedData: GroupedByParent[]): ParentCategoryStat[] {
     // 所有 payments 的總和
     const filteredGroups = groupedData.filter(group => group.parent.id !== 101);
 
