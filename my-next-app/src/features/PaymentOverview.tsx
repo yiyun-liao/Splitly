@@ -6,15 +6,22 @@ import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton";
 import { useCategoryParent } from "@/hooks/useCategory";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useGroupedPaymentsByParentCategory } from "@/hooks/useGroupedPaymentsByParentCategory";
+import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 
 
 export default function PaymentOverview(){
     // receipt-way
     const [viewExpenseWay, setViewExpenseWay] = useState<"shared" | "personal">("shared");
-    const {categoryParents} = useCategoryParent();
     const [openChart, setOpenChart] = useState(true);
 
+    const {currentPaymentList} = useCurrentProjectData();
+    const rawPaymentList = currentPaymentList || [];
+    
+    const {categoryParents} = useCategoryParent();
+    const grouped = useGroupedPaymentsByParentCategory(rawPaymentList);
+    console.log("grouped", grouped)
 
     // css
     const isMobile = useIsMobile();
