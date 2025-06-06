@@ -65,6 +65,7 @@ export default function ProjectDebtDetail({
                         onClose();
                     }} // 點擊哪裡關閉
                     footerClassName= "items-center justify-end"
+                    footer= {<div> </div>}
                 >
                     {renderBody()}
             </Dialog>

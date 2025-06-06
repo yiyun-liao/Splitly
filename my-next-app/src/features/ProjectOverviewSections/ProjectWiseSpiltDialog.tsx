@@ -181,7 +181,7 @@ export default function ProjectWiseSpilt({
                     //hideCloseIcon = false
                     //closeOnBackdropClick = false
                     //onLeftIconClick={handleBack}
-                    // footer= React.ReactNode
+                    footer= {<div> </div>}
                 >
                     {renderBody()}
             </Dialog>

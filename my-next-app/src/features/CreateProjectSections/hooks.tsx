@@ -1,6 +1,6 @@
 import { createProject } from "@/lib/projectApi";
 import { ProjectData,GetProjectData } from "@/types/project";
-import { buildProjectCoverUrl } from "@/utils/projectCover";
+import { buildProjectCoverUrl } from "@/utils/getProjectCover";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 

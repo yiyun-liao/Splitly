@@ -12,7 +12,7 @@ import TextArea from "@/components/ui/textArea";
 import { ProjectStyle, MemberBudgetMap, ProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
 import { getNowDateLocal } from "@/utils/time";
-import { getRandomProjectCoverIndex } from "@/utils/projectCover";
+import { getRandomProjectCoverIndex } from "@/utils/getProjectCover";
 import { useCreateProject } from "@/features/CreateProjectSections/hooks";
 import { useIsMobile } from "@/hooks/useIsMobile";
 

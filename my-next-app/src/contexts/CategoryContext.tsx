@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getCategories } from '@/lib/categoryApi';
 import { Category } from '@/types/category';
-import { buildCatUrl } from '@/utils/category';
+import { buildCatUrl } from '@/utils/getCategory';
 
 type CategoryType = {
     categoryOptions:Category[] | undefined; 

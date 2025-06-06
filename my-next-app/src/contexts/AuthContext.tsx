@@ -7,11 +7,11 @@ import { logInUser, logOutUser } from "@/lib/auth";
 
 import { fetchCurrentUser } from "@/lib/userApi";
 import { UserData } from "@/types/user.js";
-import { buildAvatarUrl } from "@/utils/avatar";
+import { buildAvatarUrl } from "@/utils/getAvatar";
 
 import { fetchProjectsByUser } from "@/lib/projectApi";
 import { GetProjectData } from "@/types/project";
-import { buildProjectCoverUrl } from "@/utils/projectCover";
+import { buildProjectCoverUrl } from "@/utils/getProjectCover";
 
 type AuthContextType = {
     firebaseUser: User | null;     // Firebase 原始 user

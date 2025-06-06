@@ -8,7 +8,7 @@ import { GetPaymentData } from "@/types/payment";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchUserByProject } from "@/lib/projectApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
-import { buildAvatarUrl } from "@/utils/avatar";
+import { buildAvatarUrl } from "@/utils/getAvatar";
 import { getLastVisitedProjectId } from "@/utils/cache";
 
 

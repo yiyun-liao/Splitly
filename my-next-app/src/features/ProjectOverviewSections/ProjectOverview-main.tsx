@@ -12,7 +12,7 @@ import ReceiptCard from "../PaymentListSections/ReceiptCard";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
-import { getBudgetStatus } from "@/utils/budgetHint";
+import { getBudgetStatus } from "@/utils/renderBudgetHint";
 import { formatNumber } from "@/utils/parseNumber";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
@@ -66,7 +66,7 @@ export default function ProjectOverview(){
 
     return(
         <div className={`w-full box-border h-full  text-zinc-700 ${scrollClass}`}>
-            <div>
+            <>
                 {userData && data && (
                     <ProjectDetail
                         isProjectDialogOpen={isProjectDialogOpen}
@@ -86,7 +86,7 @@ export default function ProjectOverview(){
                     onClose = {() => setIsWiseSpiltDialogOpen(false)}   
                     userData={userData} 
                 />
-            </div>
+            </>
             <div id="expense-overview" className="w-full box-border h-fit flex flex-col items-start justify-start gap-6">
                 <div id="overview-bubble-budget" className={`w-full shrink-0 px-3 py-3 rounded-2xl text-center ${budgetStatus.bgColor} ${budgetStatus.textColor} overflow-hidden`}>
                     <Icon icon={budgetStatus.icon} size="xl" />
