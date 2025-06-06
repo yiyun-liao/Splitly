@@ -19,7 +19,7 @@ export default function MemberHeaderMobile(){
 
 
     const pathname = usePathname();
-    const { projectId } = useParams();
+    const { projectId, userId } = useParams();
     const { userData, isReady:myDataLoading } = useAuth();
     const { currentProjectData, currentProjectUsers, isReady:usersLoading} = useCurrentProjectData();
     // if ( myDataLoading || usersLoading) return <p>Loading...</p>;
@@ -33,8 +33,8 @@ export default function MemberHeaderMobile(){
     // css
     const isMobileClass = clsx("z-20 fixed top-0 flex items-center gap-2 w-full box-border justify-start px-6 py-2",
         {
-            "bg-sp-green-300": pathname === `/${projectId}/expense`,
-            "bg-sp-blue-100": pathname !== `/${projectId}/expense`
+            "bg-sp-green-300": pathname === `${userId}/${projectId}/expense`,
+            "bg-sp-blue-100": pathname !== `${userId}/${projectId}/expense`
         }
     )
     

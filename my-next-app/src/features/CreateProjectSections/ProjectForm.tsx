@@ -89,7 +89,7 @@ export default function ProjectForm({
         onSuccess: (project) => {
             console.log("✅ 成功建立專案：", project);
             if (onSuccessRedirect) {
-                router.push(`/${project.id}/dashboard`);
+                router.push(`/${currentUid}/${project.id}/dashboard`);
             }
             onClose();
             },

@@ -38,10 +38,10 @@ export default function LandingClient() {
             router.push(redirectUrl);
             console.log("i have redirect", redirectUrl)
         }else if (parsed?.userId === userData?.uid){
-            router.push(`/${parsed?.path}/dashboard`);
+            router.push(`/${userData?.uid}/${parsed?.path}/dashboard`);
             console.log("i have last path", parsed?.path)
         }else if (projectData.length > 0 && parsed?.userId !== userData?.uid) {
-            router.push(`/${projectData[0].id}/dashboard`);
+            router.push(`/${userData?.uid}/${projectData[0].id}/dashboard`);
             localStorage.removeItem("lastVisitedProjectPath");
             console.log("i have project")
         } else {

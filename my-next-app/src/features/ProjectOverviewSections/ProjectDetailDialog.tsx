@@ -29,7 +29,6 @@ export default function ProjectDetail({
 
     const titleClass = clsx("text-xl pb-4 font-medium whitespace-nowrap truncate min-w-0 max-w-100")
     const itemClass= clsx("w-full flex gap-1 p-1 items-center rounded-xl hover:text-sp-blue-600 hover:bg-zinc-900/10 active:text-sp-blue-800 active:bg-zinc-900/40 ")
-    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const projectClass = clsx("shrink-0 w-full px-0 py-3 box-border h-fit overflow-hidden ")
     const memberClass = clsx("w-full shrink-0 flex flex-col gap-2 box-border px-3 py-3 rounded-2xl h-fit min-h-40 bg-sp-green-200",)
     const listClass = clsx("flex gap-2 justify-start items-start")

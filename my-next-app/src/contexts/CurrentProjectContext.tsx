@@ -29,11 +29,6 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
     const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
 
-    const lastVisitedRaw = localStorage.getItem("lastVisitedProjectPath");
-    const lastVisited = lastVisitedRaw ? JSON.parse(lastVisitedRaw) : null;
-    
-    const isSameProject =  lastVisited &&  lastVisited.path === pureProjectId &&  lastVisited.userId === userData?.uid;
-
     const currentProjectData = useMemo(() => {
         if (!myDataReady || !pureProjectId) return undefined;
         return projectData.find(project => project.id === pureProjectId);
@@ -64,26 +59,26 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const isPageReload = typeof window !== 'undefined' &&
              (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
         
-        if (isSameProject && !isPageReload) {
-            const cachedUsers = localStorage.getItem(userKey);
-            const cachedPayments = localStorage.getItem(paymentKey);
-            const cachedMeta = localStorage.getItem(metaKey);
-            const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
+    
+        const cachedUsers = localStorage.getItem(userKey);
+        const cachedPayments = localStorage.getItem(paymentKey);
+        const cachedMeta = localStorage.getItem(metaKey);
+        const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
 
 
-            if (cachedUsers && cachedPayments && !isCacheExpired && !isPageReload) {
-                try {
-                    setCurrentProjectUsers(JSON.parse(cachedUsers));
-                    setCurrentPaymentList(JSON.parse(cachedPayments));
-                    setIsReady(true); // ✅ 快取成功也標記 ready
-                    return;
-                } catch (error) {
-                    console.warn("❌ 快取解析失敗，清除...", error);
-                    localStorage.removeItem(userKey);
-                    localStorage.removeItem(paymentKey);
-                    localStorage.removeItem(metaKey);
-                }
+        if (cachedUsers && cachedPayments && !isCacheExpired && !isPageReload) {
+            try {
+                setCurrentProjectUsers(JSON.parse(cachedUsers));
+                setCurrentPaymentList(JSON.parse(cachedPayments));
+                setIsReady(true); // ✅ 快取成功也標記 ready
+                return;
+            } catch (error) {
+                console.warn("❌ 快取解析失敗，清除...", error);
+                localStorage.removeItem(userKey);
+                localStorage.removeItem(paymentKey);
+                localStorage.removeItem(metaKey);
             }
+            
         }
 
         const fetchProjectData = async () => {
@@ -126,9 +121,9 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         if (!pureProjectId) return;
         if (!myDataReady || !projectData.length) return;
         if (!currentProjectData) {
-            router.push(`/${lastPath}/dashboard`);
+            router.push(`/${userData?.uid}/${lastPath}/dashboard`);
         }
-    }, [myDataReady, currentProjectData, projectData, router, pureProjectId, lastPath]);
+    }, [myDataReady, currentProjectData, projectData, router, pureProjectId, lastPath,userData]);
 
     return (
         <CurrentProjectContext.Provider

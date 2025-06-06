@@ -13,7 +13,7 @@ import { getLastVisitedProjectId } from "@/utils/cache";
 export default function MemberNavMobile() {
     const router = useRouter();
     const pathname = usePathname();
-    const { projectId } = useParams();
+    const { projectId, userId } = useParams();
     const { projectData } = useGlobalProjectData();
     const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
     // console.log("i would like to go ",lastPath)
@@ -43,7 +43,7 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/${projectId}/dashboard` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${lastPath}/dashboard`)}  
+                    onClick={() => router.push(`/${userId}/${lastPath}/dashboard`)}  
                 />
                 <IconButton
                     icon='solar:reorder-bold'
@@ -51,7 +51,7 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/${projectId}/expense` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${lastPath}/expense`)} 
+                    onClick={() => router.push(`/${userId}/${lastPath}/expense`)} 
                 />
                 <IconButton
                     icon='solar:clipboard-add-linear'
@@ -61,7 +61,7 @@ export default function MemberNavMobile() {
                     type= 'button'
                     onClick={() => {
                         if (pathname === "/setting") {
-                            router.push(`${lastPath}/expense?openCreate=true`);
+                            router.push(`/${userId}${lastPath}/expense?openCreate=true`);
                         } else {
                             setIsCreatePayment(true);
                         }
@@ -73,7 +73,7 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/${projectId}/overview` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${lastPath}/overview`)} 
+                    onClick={() => router.push(`/${userId}/${lastPath}/overview`)} 
                 />
                 <IconButton
                     icon='solar:user-bold'
@@ -81,7 +81,7 @@ export default function MemberNavMobile() {
                     variant= 'text-button'
                     color= {activePath === `/setting` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/setting`)}
+                    onClick={() => router.push(`/${userId}/setting`)}
                 />
             </div>
         </div>

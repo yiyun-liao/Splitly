@@ -45,9 +45,13 @@ export default function ProjectOverview(){
     // ProjectSettleDetail
     const settleDetail = useAllSettlements();
     const settleSimpleDetail = useMergedSettlements(settleDetail);
-    const quickViewSettle = settleSimpleDetail.find(item => item.from === currentUserId ) || settleSimpleDetail[0]
-    const quickViewDebtor = userList.find(user => user.uid === quickViewSettle.from )
-    const quickViewCreditor = userList.find(user => user.uid === quickViewSettle.to )
+    const quickViewSettle = settleSimpleDetail?.find(item => item.from === currentUserId);
+    const fallbackSettle = settleSimpleDetail?.length ? settleSimpleDetail[0] : undefined;
+    const settleToUse = quickViewSettle || fallbackSettle;
+
+    const quickViewDebtor = settleToUse ? userList.find(user => user.uid === settleToUse.from) : undefined;
+    const quickViewCreditor = settleToUse ? userList.find(user => user.uid === settleToUse.to) : undefined;
+
 
 
 
@@ -175,7 +179,7 @@ export default function ProjectOverview(){
                                 </div>
                             </div>
                             <div className="px-3 py-3 flex items-center justify-start gap-2">
-                                {quickViewSettle && (
+                                {quickViewSettle && quickViewDebtor && quickViewCreditor && (
                                     <>
                                         <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
                                             <Avatar
@@ -331,7 +335,7 @@ export default function ProjectOverview(){
                                     color='primary'
                                     //disabled={isdisabled} 
                                     //isLoading={isLoading}
-                                    onClick={()=> router.push(`/${projectId}/expense`)} 
+                                    onClick={()=> router.push(`/${currentUserId}/${projectId}/expense`)} 
                                     >
                                         查看全部
                                 </Button>

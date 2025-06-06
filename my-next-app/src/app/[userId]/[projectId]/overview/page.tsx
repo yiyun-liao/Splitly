@@ -12,12 +12,11 @@ import { getLastVisitedProjectId } from "@/utils/cache";
 function ExpensePage(){
     const isMobile = useIsMobile();  
     const router = useRouter();
-    const { projectData } =useGlobalProjectData();
+    const { projectData, userData } =useGlobalProjectData();
     const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
 
 
-    console.log("isMobile", isMobile)
-    if (!isMobile) router.push(`/${lastPath}/dashboard`);
+    if (!isMobile) router.push(`/${userData?.uid}/${lastPath}/dashboard`);
 
     return( isMobile &&
         (<>

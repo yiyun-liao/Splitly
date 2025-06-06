@@ -17,9 +17,9 @@ export default function CreateFirstProject() {
 
         if (projectData && projectData.length > 0) {
             console.log("你已經有專案了")
-            router.push(`/${lastPath}/dashboard`);
+            router.push(`/${userData?.uid}/${lastPath}/dashboard`);
         }
-    }, [isReady, router, projectData, lastPath]);
+    }, [isReady, router, projectData, lastPath, userData]);
 
     if (!userData) return null;
 
