@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton";
-import { useCategoryParent } from "@/hooks/useCategory";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { formatNumber, formatPercent } from "@/utils/parseNumber";
@@ -15,13 +14,10 @@ export default function PaymentOverview(){
     const [viewExpenseWay, setViewExpenseWay] = useState<"shared" | "personal">("shared");
     const [openChart, setOpenChart] = useState(true);
 
-    // get group data
-    const { projectStats} = useCurrentProjectData();
+    // get group and personal data
+    const { projectStats, userStats } = useCurrentProjectData();
 
-    console.log(projectStats)
-
-    const {categoryParents} = useCategoryParent();
-
+    console.log(projectStats, userStats)
 
     // css
     const isMobile = useIsMobile();
@@ -130,7 +126,7 @@ export default function PaymentOverview(){
                     )}
                     {viewExpenseWay === "personal" && ( 
                         <div className="py-2 px-4">
-                            {!!categoryParents && (categoryParents.map(cat => {
+                            {userStats  && (userStats.stats.map(cat => {
                                 return(
                                     <div key={cat.id} className="w-full">
                                         <div id="expense-list-token" className="flex items-center justify-start p-2 gap-2 h-16 rounded-lg hover:bg-sp-white-20 active:bg-sp-white-40 cursor-pointer">
@@ -144,8 +140,8 @@ export default function PaymentOverview(){
                                                 <p className="text-base font-semibold truncate">{cat.name_zh}</p>
                                             </div>
                                             <div className="shrink-0 text-right overflow-hidden ">
-                                                <p className="text-base font-semibold  truncate">$2453.00</p>
-                                                <p className="text-sm truncate">32.4%</p>
+                                                <p className="text-base font-semibold  truncate">${formatNumber(cat.totalAmount)}</p>
+                                                <p className="text-sm truncate">{formatPercent(cat.percent)}</p>
                                             </div>
                                         </div>
                                         <div className="w-full h-0.25 bg-sp-blue-300"></div>

@@ -12,7 +12,7 @@ import { fetchUserByProject } from "@/lib/projectApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
 import { buildAvatarUrl } from "@/utils/getAvatar";
 import { getLastVisitedProjectId } from "@/utils/cache";
-import { getGroupedPaymentsByParentCategory, getProjectCategoryStats } from "@/utils/calculatePayment";
+import { getGroupedPaymentsByParentCategory, getProjectCategoryStats, getUserCategoryStats } from "@/utils/calculatePayment";
 import { useCategoryParent } from "@/hooks/useCategory";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
 
@@ -23,13 +23,14 @@ type CurrentProjectContextType = {
     setCurrentPaymentList?: React.Dispatch<React.SetStateAction<GetPaymentData[] | undefined>>;
     isReady: boolean;
     projectStats?: { stats: ParentCategoryStat[]; grandTotal: number };
+    userStats?:{ stats: ParentCategoryStat[]; grandTotal: number };
     groupedByParentCategory?: GroupedByParent[];
 };
 
 const CurrentProjectContext = createContext<CurrentProjectContextType | undefined>(undefined);
 
 export const CurrentProjectProvider = ({ children }: { children: React.ReactNode }) => {
-    const { projectData, isReady: myDataReady } = useAuth();
+    const { projectData, userData, isReady: myDataReady } = useAuth();
     const { categoryOptions } = useCategoryOptions();
     const { categoryParents } = useCategoryParent();
 
@@ -132,6 +133,14 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         return { stats, grandTotal };
     }, [groupedByParentCategory]);
 
+    const userStats = useMemo(() => {
+        if (!groupedByParentCategory) return undefined;
+        const userId = userData?.uid || "" ;
+        const stats = getUserCategoryStats(groupedByParentCategory, userId);
+        const grandTotal = stats.reduce((sum, stat) => sum + stat.totalAmount, 0);
+        return { stats, grandTotal };
+    }, [groupedByParentCategory, userData]);
+
     // --- 找不到專案自動跳轉 ---
     useEffect(() => {
         if (!pureProjectId) return;
@@ -151,6 +160,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
             isReady,
             projectStats,
             groupedByParentCategory,
+            userStats
         }}
         >
         {children}

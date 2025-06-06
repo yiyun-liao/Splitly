@@ -55,9 +55,47 @@ export function getProjectCategoryStats(groupedData: GroupedByParent[]): ParentC
             id: group.parent.id,
             name_en: group.parent.name_en,
             totalAmount,
-            percent: percent,
+            percent,
             name_zh: group.parent.name_zh,
             imgURL: group.parent.imgURL || "",
         };
+    });
+}
+
+// 自己的各分類總額
+export function getUserCategoryStats(
+    groupedData: GroupedByParent[],
+    userId: string
+  ): ParentCategoryStat[] {
+    const filteredGroups = groupedData.filter(group => group.parent.id !== 101);
+  
+    // 所有使用者有參與的 payment（非 101 類別）
+    const allUserPayments = filteredGroups.flatMap(group =>
+      group.payments.filter(p => userId in (p.split_map || {}))
+    );
+  
+    const grandTotal = allUserPayments.reduce((sum, p) => {
+      const amount = p.split_map?.[userId]?.total || 0;
+      return sum + amount;
+    }, 0);
+  
+    return filteredGroups.map(group => {
+      const userPayments = group.payments.filter(p => userId in (p.split_map || {}));
+  
+      const totalAmount = userPayments.reduce((sum, p) => {
+        const amount = p.split_map?.[userId]?.total || 0;
+        return sum + amount;
+      }, 0);
+  
+      const percent = grandTotal > 0 ? parseFloat(formatNumberForData(totalAmount / grandTotal)): 0;
+  
+      return {
+        id: group.parent.id,
+        name_en: group.parent.name_en,
+        totalAmount,
+        percent,
+        name_zh: group.parent.name_zh,
+        imgURL: group.parent.imgURL || "",
+      };
     });
 }
