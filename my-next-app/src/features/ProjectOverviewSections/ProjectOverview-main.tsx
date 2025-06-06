@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
-import ProjectDebtDetail from "./ProjectDebtDetailDialog";
+import ProjectSettleDetail from "./ProjectSettleDetailDialog";
 import ProjectWiseSpilt from "./ProjectWiseSpiltDialog";
 import ProjectDetail from "./ProjectDetailDialog";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
@@ -16,6 +16,7 @@ import { getBudgetStatus } from "@/utils/renderBudgetHint";
 import { formatNumber } from "@/utils/parseNumber";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
+import { useAllSettlements,useMergedSettlements } from "@/hooks/useSettleDebts";
 
 
 export default function ProjectOverview(){
@@ -24,17 +25,16 @@ export default function ProjectOverview(){
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false)
     
     const {userData} = useGlobalProjectData();
+    const currentUserId = userData?.uid || "";
     const {currentProjectData:data, currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
+    const userList = currentProjectUsers || [];
+    const projectId = data?.id;
     const { categoryOptions } = useCategoryOptions();
 
     const projectStats = useProjectStats();
-    const userId = userData?.uid || ""
-    const userStats = useUserStats(userId)
+    const userStats = useUserStats(currentUserId)
     
     // 判斷顯示支出或是圖表
-    const currentUserId = userData?.uid || "";
-    const userList = currentProjectUsers || [];
-    const projectId = data?.id;
     const [currentPage, setCurrentPage] = useState("");
     const router = useRouter();
     const pathname = usePathname();
@@ -42,6 +42,16 @@ export default function ProjectOverview(){
         setCurrentPage(pathname);
     }, [pathname]);
 
+    // ProjectSettleDetail
+    const settleDetail = useAllSettlements();
+    const settleSimpleDetail = useMergedSettlements(settleDetail);
+    const quickViewSettle = settleSimpleDetail.find(item => item.from === currentUserId ) || settleSimpleDetail[0]
+    const quickViewDebtor = userList.find(user => user.uid === quickViewSettle.from )
+    const quickViewCreditor = userList.find(user => user.uid === quickViewSettle.to )
+
+
+
+    console.log("測試會長怎樣",settleDetail, settleSimpleDetail);
 
     // render data 
     let privateBudget: number | undefined;
@@ -76,7 +86,7 @@ export default function ProjectOverview(){
                         currentProjectUsers = {userList}
                     />
                 )}
-                <ProjectDebtDetail
+                <ProjectSettleDetail
                     isSelfExpenseOpen={isSelfExpenseDialogOpen}
                     onClose = {() => setIsSelfExpenseDialogOpen(false)}   
                     userData={userData} 
@@ -149,7 +159,7 @@ export default function ProjectOverview(){
                     <div className="w-full 2xl:w-1/2 h-full flex flex-col items-start justify-start gap-3 ">
                         <div id="overview-bubble-spilt-self" className={`shrink-0 ${overviewBubbleClass}`}>
                             <div className="pl-3 pb-3 flex items-center justify-start gap-2">
-                                <p className="text-base w-full">你在專案中借出(這裡還沒做)</p>
+                                <p className="text-base w-full">還款細節</p>
                                 <div className="shrink-0 ">
                                     <Button
                                         size='sm'
@@ -165,16 +175,21 @@ export default function ProjectOverview(){
                                 </div>
                             </div>
                             <div className="px-3 py-3 flex items-center justify-start gap-2">
-                                <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                                    <Avatar
-                                        size="md"
-                                        img={userData?.avatarURL}
-                                        userName = {userData?.name}
-                                        //onAvatarClick={() => console.log('Clicked!')}
-                                    />
-                                    <p className="text-base w-fll  truncate">Yun</p>
-                                </div>
-                                <p className="shrink-0 text-xl font-semibold">$359.00</p>
+                                {quickViewSettle && (
+                                    <>
+                                        <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
+                                            <Avatar
+                                                size="md"
+                                                img={quickViewDebtor?.avatarURL}
+                                                userName = {quickViewDebtor?.name}
+                                                //onAvatarClick={() => console.log('Clicked!')}
+                                            />
+                                            <p className="text-base w-fll  truncate">{quickViewDebtor?.name === userData?.name ? "你" : quickViewDebtor?.name}</p>
+                                        </div>
+                                        <p className="shrink-0 text-base font-base">須還款給 {quickViewCreditor?.name}</p>
+                                        <p className="shrink-0 text-xl font-semibold"> ${quickViewSettle.amount}</p>
+                                    </>
+                                )}
                             </div>
                         </div>
                         <div id="overview-bubble-spilt" className={`flex-1 h-full ${overviewBubbleClass} `}>

@@ -4,17 +4,17 @@ import ModalPortal from "@/components/ui/ModalPortal";
 
 import { UserData } from "@/types/user";
 
-interface ProjectDebtDetailProps {
+interface ProjectSettleDetailProps {
     isSelfExpenseOpen: boolean;
     onClose: () => void;
     userData: UserData | null;
 }
 
-export default function ProjectDebtDetail({
+export default function ProjectSettleDetail({
     isSelfExpenseOpen = false,
     onClose,
     userData
-}:ProjectDebtDetailProps){
+}:ProjectSettleDetailProps){
 
     const renderBody = () => {
         return(

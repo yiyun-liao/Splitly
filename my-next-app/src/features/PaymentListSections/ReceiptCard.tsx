@@ -99,10 +99,6 @@ export default function ReceiptCard({
     categoryList,
     }: ReceiptCardProps) {
 
-    // if (account_type === 'personal' && !(currentUserId in payer_map)) {
-    //     return null;
-    // }
-
     const payer_text = getPayerText(payer_map, amount, currentUserId, userList);
     const category = getCategoryImg(categoryId, categoryList ?? []);
     const borrowed = isBorrowed(account_type, record_mode ,payer_map, split_map, currentUserId);
