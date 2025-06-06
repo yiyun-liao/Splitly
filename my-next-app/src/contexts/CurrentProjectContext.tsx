@@ -22,12 +22,17 @@ type CurrentProjectContextType = {
 const CurrentProjectContext = createContext<CurrentProjectContextType | undefined>(undefined);
 
 export const CurrentProjectProvider = ({ children }: { children: React.ReactNode }) => {
-    const { projectData, isReady: myDataReady } = useAuth();
+    const { projectData, userData, isReady: myDataReady } = useAuth();
 
     const router = useRouter();
     const { projectId } = useParams();
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
     const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
+
+    const lastVisitedRaw = localStorage.getItem("lastVisitedProjectPath");
+    const lastVisited = lastVisitedRaw ? JSON.parse(lastVisitedRaw) : null;
+    
+    const isSameProject =  lastVisited &&  lastVisited.path === pureProjectId &&  lastVisited.userId === userData?.uid;
 
     const currentProjectData = useMemo(() => {
         if (!myDataReady || !pureProjectId) return undefined;
@@ -55,26 +60,29 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const paymentKey = `paymentList | ${pureProjectId}`;
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
         const CACHE_TTL = 1000 * 60 * 180;
-
-        const cachedUsers = localStorage.getItem(userKey);
-        const cachedPayments = localStorage.getItem(paymentKey);
-        const cachedMeta = localStorage.getItem(metaKey);
-        const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
-
+        
         const isPageReload = typeof window !== 'undefined' &&
              (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
+        
+        if (isSameProject && !isPageReload) {
+            const cachedUsers = localStorage.getItem(userKey);
+            const cachedPayments = localStorage.getItem(paymentKey);
+            const cachedMeta = localStorage.getItem(metaKey);
+            const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
 
-        if (cachedUsers && cachedPayments && !isCacheExpired && !isPageReload) {
-            try {
-                setCurrentProjectUsers(JSON.parse(cachedUsers));
-                setCurrentPaymentList(JSON.parse(cachedPayments));
-                setIsReady(true); // ✅ 快取成功也標記 ready
-                return;
-            } catch (error) {
-                console.warn("❌ 快取解析失敗，清除...", error);
-                localStorage.removeItem(userKey);
-                localStorage.removeItem(paymentKey);
-                localStorage.removeItem(metaKey);
+
+            if (cachedUsers && cachedPayments && !isCacheExpired && !isPageReload) {
+                try {
+                    setCurrentProjectUsers(JSON.parse(cachedUsers));
+                    setCurrentPaymentList(JSON.parse(cachedPayments));
+                    setIsReady(true); // ✅ 快取成功也標記 ready
+                    return;
+                } catch (error) {
+                    console.warn("❌ 快取解析失敗，清除...", error);
+                    localStorage.removeItem(userKey);
+                    localStorage.removeItem(paymentKey);
+                    localStorage.removeItem(metaKey);
+                }
             }
         }
 
@@ -111,7 +119,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         };
 
         fetchProjectData();
-    }, [pureProjectId]);
+    }, []);
 
     // --- 找不到專案自動跳轉 ---
     useEffect(() => {
