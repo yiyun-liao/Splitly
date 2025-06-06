@@ -24,7 +24,7 @@ export default function ProjectOverview(){
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false)
     
     const {userData} = useGlobalProjectData();
-    const {currentProjectData:data, currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
+    const {currentProjectData:data, currentPaymentList:list, currentProjectUsers, projectStats, userStats} = useCurrentProjectData();
     const { categoryOptions } = useCategoryOptions();
     
     // 判斷顯示支出或是圖表
@@ -45,11 +45,7 @@ export default function ProjectOverview(){
     if (userData?.uid) {
       privateBudget = data?.member_budgets?.[userData.uid];
     }
-    const projectTotal = list?.reduce((sum, item) => sum + item.amount, 0) || 0;
-    const myTotal = list?.reduce((sum, item) => {
-        const total = item.split_map?.[currentUserId]?.total ?? 0;
-        return sum + total;
-      }, 0) || 0;
+    const projectTotal = projectStats?.grandTotal || 0
     const budgetStatus = getBudgetStatus( projectTotal, data?.budget);
 
     // css
@@ -116,15 +112,15 @@ export default function ProjectOverview(){
                                     <p className="text-base font-semibold">{data?.start_time ?? "過去某天"} - {data?.end_time ?? "至今"} </p>
                                 </div>
                             )}
-                            <div className="flex gap-2 flex-wrap justify-between w-full">
+                            <div className="flex gap-2 flex-wrap justify-start w-full">
                                 {(!!data?.budget) && (
-                                    <div className="px-3 py-3 w-fit">
+                                    <div className="px-3 py-3 w-[calc(50%-0.25rem)] min-w-40">
                                         <p className="text-base">專案預算規劃</p>
                                         <p className="text-2xl  font-semibold">${data.budget}</p>
                                     </div>
                                 )}
                                 {(!!privateBudget) && (
-                                    <div className="px-3 py-3 w-fit">
+                                    <div className="py-3 px-3 w-[calc(50%-0.25rem)] min-w-40">
                                         <p className="text-base">個人預算規劃</p>
                                         <p className="text-2xl  font-semibold">${privateBudget}</p>
                                     </div>
@@ -135,13 +131,13 @@ export default function ProjectOverview(){
                             <div className={`${overviewBubbleChildrenClass}`}>
                                 <div className="px-3 py-3">
                                     <p className="text-base">整體支出</p>
-                                    <p className="text-2xl font-bold">${formatNumber(projectTotal)}</p>
+                                    <p className="text-2xl font-bold">${formatNumber(projectStats?.grandTotal || 0)}</p>
                                 </div>
                             </div>
                             <div className={`${overviewBubbleChildrenClass}`}>
                                 <div className="px-3 py-3">
                                     <p className="text-base">你的支出</p>
-                                    <p className="text-2xl font-bold">${formatNumber(myTotal)}</p>
+                                    <p className="text-2xl font-bold">${formatNumber(userStats?.grandTotal || 0)}</p>
                                 </div>
                             </div>                        
                         </div>

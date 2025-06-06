@@ -99,9 +99,9 @@ export default function ReceiptCard({
     categoryList,
     }: ReceiptCardProps) {
 
-    if (account_type === 'personal' && !(currentUserId in payer_map)) {
-        return null;
-    }
+    // if (account_type === 'personal' && !(currentUserId in payer_map)) {
+    //     return null;
+    // }
 
     const payer_text = getPayerText(payer_map, amount, currentUserId, userList);
     const category = getCategoryImg(categoryId, categoryList ?? []);
@@ -113,8 +113,16 @@ export default function ReceiptCard({
         "text-sp-green-400": !borrowed,
     });
 
+    const cardClass = clsx("flex items-center justify-start p-2 gap-2 h-16 rounded-lg cursor-pointer hover:bg-sp-white-60 active:bg-sp-white-80",
+        {
+            "bg-sp-white-40 " : record_mode === 'debt',
+            "bg-sp-white-20 " : account_type === 'personal',
+            "" : record_mode !== 'debt' && account_type !== 'personal',
+        }
+    )
+
     return (
-        <div className="flex items-center justify-start p-2 gap-2 h-16 rounded-lg hover:bg-sp-white-20 active:bg-sp-white-40 cursor-pointer">
+        <div className={cardClass}>
         <div className="h-full">
             <ImageButton image={category.imgURL} size="md" imageName={category.name_en} />
         </div>
@@ -123,8 +131,12 @@ export default function ReceiptCard({
             <p className="text-sm whitespace-nowrap truncate">{payer_text}</p>
         </div>
         <div className="shrink-0 text-right overflow-hidden">
-            <p className={borrowText}>{record_mode === 'debt' ? "還款" : account_type === 'personal' ? "個人" : borrowed ? "借出" : "借用"}</p>
-            <p className="text-base font-semibold whitespace-nowrap truncate">${displayAmount}</p>
+            {displayAmount !== 0 && (
+                <>
+                    <p className={borrowText}>{record_mode === 'debt' ? "還款" : account_type === 'personal' ? "個人" : borrowed ? "借出" : "借用"}</p>
+                    <p className="text-base font-semibold whitespace-nowrap truncate">${displayAmount}</p>
+                </>
+            )}
         </div>
         </div>
     );

@@ -54,8 +54,6 @@ export default function PaymentOverview(){
                     leftIcon='solar:waterdrops-bold'
                     variant= {viewExpenseWay == 'shared' ? 'solid' : 'text-button'}
                     color= 'primary'
-                    //disabled={isdisabled} 
-                    //isLoading={isLoading}
                     onClick={() => setViewExpenseWay("shared")}
                     >
                         專案支出
@@ -66,8 +64,6 @@ export default function PaymentOverview(){
                     leftIcon='solar:waterdrop-bold'
                     variant={viewExpenseWay == 'personal' ? 'solid' : 'text-button'}
                     color='primary'
-                    //disabled={isdisabled} 
-                    //isLoading={isLoading}
                     onClick={() => setViewExpenseWay("personal")}
                     >
                         個人支出

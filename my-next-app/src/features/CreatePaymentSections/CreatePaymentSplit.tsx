@@ -50,7 +50,7 @@ export default function CreatePaymentSplit({
         const [inputTimeValue, setInputTimeValue] = useState(getNowDatetimeLocal());
         const [inputDescValue, setInputDescValue] = useState("");
 
-        const [accountType, setAccountType] = useState<AccountType>("group")
+        const [accountType, setAccountType] = useState<AccountType>("group");
         const [splitWay, setSplitWay] = useState<SplitWay>("person");
         const [chooseSplitByPerson, setChooseSplitByPerson] = useState<SplitMethod>("percentage");
 
