@@ -17,16 +17,13 @@ export function useTrackLastVisitedProjectPath() {
     }, [projectId, pureProjectId]);
 }
 
-
-export function getLocalStorageItem<T = string>(key: string): T | null {
-    if (typeof window === 'undefined') return null;
   
-    try {
-      const value = localStorage.getItem(key);
-      return value ? (JSON.parse(value) as T) : null;
-    } catch (e) {
+export function getLocalStorageItem(key: string): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+      return localStorage.getItem(key);
+  } catch (e) {
       console.warn("❗localStorage 讀取失敗", e);
       return null;
-    }
   }
-  
+}

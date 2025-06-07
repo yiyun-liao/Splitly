@@ -77,49 +77,62 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         
             if (cachedMyData && cachedProjects && !isCacheExpired && !isPageReload) {
                 try {
-                setUserData(JSON.parse(cachedMyData));
-                setProjectData(JSON.parse(cachedProjects));
-                setIsReady(true); // ✅ 快取完成
-                return;
+                    setUserData(JSON.parse(cachedMyData));
+                    setProjectData(JSON.parse(cachedProjects));
+                    setIsReady(true); // ✅ 快取完成
+                    return;
                 } catch (error) {
-                console.warn("❌ Failed to parse cache, clearing...", error);
-                localStorage.removeItem(myKey);
-                localStorage.removeItem(projectKey);
-                localStorage.removeItem(myMetaKey);
+                    console.warn("❌ Failed to parse cache, clearing...", error);
+                    localStorage.removeItem(myKey);
+                    localStorage.removeItem(projectKey);
+                    localStorage.removeItem(myMetaKey);
                 }
             }
     
-        setIsReady(false);
-        try {
-            console.log("🙃 fetch my data")
-            const token = await userAuth.getIdToken();
-            const rawUser = await fetchCurrentUser(token, uid);
-            const rawProjects = await fetchProjectsByUser(token, uid);
+            setIsReady(false);
+
+            const fetchAndSetUser = async (retry = false) => {
+                try {
+                    console.log("🙃 fetch my data")
+                    const token = await userAuth.getIdToken();
+                    const rawUser = await fetchCurrentUser(token, uid); // ⛔ 可能在這邊 fail
+                    const rawProjects = await fetchProjectsByUser(token, uid);
     
-            const fullUser: UserData = {
-                ...rawUser,
-                avatarURL: buildAvatarUrl(rawUser.avatar),
+                    const fullUser: UserData = {
+                        ...rawUser,
+                        avatarURL: buildAvatarUrl(rawUser.avatar),
+                    };
+    
+                    const fullProjects: GetProjectData[] = rawProjects.map((project: GetProjectData) => ({
+                        ...project,
+                        imgURL: buildProjectCoverUrl(project.img),
+                    }));
+    
+                    setUserData(fullUser);
+                    setProjectData(fullProjects);
+    
+                    // cache
+                    localStorage.setItem(`👀 myData:${uid}`, JSON.stringify(fullUser));
+                    localStorage.setItem(`👀 myProjectList:${uid}`, JSON.stringify(fullProjects));
+                    localStorage.setItem(`👀 cacheMyMeta:${uid}`, JSON.stringify({ timestamp: Date.now() }));
+    
+                    setIsReady(true);
+                } catch (error) {
+                    console.error("🔴 Error fetching user data:", error);
+                    if (!retry) {
+                        console.log("⏳ Token might be too early, retrying in 1s...");
+                        setTimeout(() => fetchAndSetUser(true), 1000); // retry once
+                    } else {
+                        console.warn("🛑 Retry failed, fallback to null");
+                        setUserData(null);
+                        setProjectData([]);
+                        setIsReady(true);
+                    }
+                }
             };
     
-            const fullProjects: GetProjectData[] = rawProjects.map((project:GetProjectData) => ({
-                ...project,
-                imgURL: buildProjectCoverUrl(project.img),
-            }));
-    
-            setUserData(fullUser);
-            setProjectData(fullProjects);
-    
-            localStorage.setItem(myKey, JSON.stringify(fullUser));
-            localStorage.setItem(projectKey, JSON.stringify(fullProjects));
-            localStorage.setItem(myMetaKey, JSON.stringify({ timestamp: Date.now() }));
-    
-            setIsReady(true); // ✅ fetch 成功
-        } catch (error) {
-            console.error("🔴 Error fetching user data:", error);
-            setUserData(null);
-            setProjectData([]);
-            setIsReady(true); // ✅ 即使失敗，也標記完成（避免卡住）
-        } 
+            // 👉 啟動 fetch
+            fetchAndSetUser();
         });
     
         return () => unsubscribe();
