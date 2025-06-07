@@ -4,6 +4,7 @@ import ModalPortal from "@/components/ui/ModalPortal";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
 import { useParams, useRouter } from 'next/navigation';
+import { useMemo } from "react";
 
 import { UserData } from "@/types/user";
 import { Settlement } from "@/types/calculation";
@@ -13,25 +14,27 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useGroupedByParentCategory } from "@/hooks/usePaymentStats";
 import { useCreatePayment } from "../CreatePaymentSections/hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+import { useAllSettlements,useMergedSettlements } from "@/hooks/useSettleDebts";
+
 
 interface ProjectSettleDetailProps {
     isSelfExpenseOpen: boolean;
     onClose: () => void;
     currentProjectUsers: UserData[];
-    settleSimpleDetail:Settlement[];
 }
 
 export default function ProjectSettleDetail({
     isSelfExpenseOpen = false,
     onClose,
     currentProjectUsers,
-    settleSimpleDetail
 }:ProjectSettleDetailProps){
     // 須還款的金額
-    const {userData} = useGlobalProjectData()
-    const paymentListGroupedByParentCategory = useGroupedByParentCategory()
+    const settleDetail = useAllSettlements();
+    const settleSimpleDetail = useMergedSettlements(settleDetail);
+    const {userData} = useGlobalProjectData();
     
     // 還款紀錄
+    const paymentListGroupedByParentCategory = useGroupedByParentCategory()
     const debtList = paymentListGroupedByParentCategory.filter(group => group.parent.id === 101);
 
     // for create payment
@@ -41,6 +44,11 @@ export default function ProjectSettleDetail({
     const currentUserId = typeof userId === 'string' ? userId : "";  
     const isMobile = useIsMobile();
     const router = useRouter();
+
+    // update ui
+    const visibleSettlements = useMemo(() => {
+        return settleSimpleDetail.filter((s) => s.amount > 0);
+      }, [settleSimpleDetail]);
 
 
     const { handleCreatePayment, isLoading } = useCreatePayment({
@@ -67,13 +75,13 @@ export default function ProjectSettleDetail({
                 <div className="w-full px-3 py-3 box-border h-fit  ">
                     <p className="text-lg pb-4 font-medium truncate min-w-0 max-w-100">尚須還款</p>
                     <div className="w-full bg-sp-green-200 rounded-2xl p-2 flex flex-col gap-2">
-                        {settleSimpleDetail.map((settle, index) => {
+                        {visibleSettlements.map((settle, index) => {
                             const debtor = currentProjectUsers?.find(user => user.uid === settle?.from);
                             const creditor = currentProjectUsers?.find(user => user.uid === settle?.to);
 
                             return (
-                                <>
-                                    <div key={index} className="px-3 py-3 flex items-center justify-start gap-2 rounded-2xl hover:bg-sp-white-40">
+                                <div key={index} className="w-full h-fit">
+                                    <div className="px-3 py-3 flex items-center justify-start gap-2 rounded-2xl hover:bg-sp-white-40">
                                         <div className="w-full flex items-center justify-start flex-wrap gap-2 overflow-hidden">
                                             <div className="shrink-0 w-50 flex items-center gap-2">
                                                 <div  className="shrink-0 flex items-center">
@@ -141,10 +149,10 @@ export default function ProjectSettleDetail({
                                             </div>
                                         </div>
                                     </div>
-                                    {index !== settleSimpleDetail.length - 1 && (
+                                    {index !== visibleSettlements.length - 1 && (
                                         <div className="w-full h-0.25 bg-sp-white-40"></div>
                                     )}
-                                </>
+                                </div>
                             );
                         })}
                     </div>
@@ -159,8 +167,8 @@ export default function ProjectSettleDetail({
                             const creditor = currentProjectUsers?.find(user => user.uid === creditorUid);
 
                             return (
-                                <>
-                                    <div key={index} className="px-3 py-3 flex items-end justify-start gap-2">
+                                <div key={index} className="w-full h-fit">
+                                    <div className="px-3 py-3 flex items-end justify-start gap-2">
                                         <div className="w-full overflow-hidden">
                                             <div className="shrink-0 w-full flex items-center gap-2">
                                                 <div  className="shrink-0 flex items-center">
@@ -197,7 +205,7 @@ export default function ProjectSettleDetail({
                                     {index !== settleSimpleDetail.length - 1 && (
                                         <div className="w-full h-0.25 bg-sp-green-200"></div>
                                     )}
-                                </>
+                                </div>
                             );
                         })}
                     </div>

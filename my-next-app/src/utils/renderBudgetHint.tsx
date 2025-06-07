@@ -10,7 +10,7 @@ type BudgetStatus = {
       return {
         text: "未設定預算",
         icon: "solar:info-square-bold",
-        bgColor: "bg-sf-green-200",
+        bgColor: "bg-sp-green-200",
         textColor: "text-gray-700",
       };
     }

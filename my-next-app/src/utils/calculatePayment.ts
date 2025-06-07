@@ -1,4 +1,3 @@
-// my-next-app/src/hooks/usePaymentStats 合用，分別計算群組跟個人
 import { GroupedByParent, ParentCategoryStat } from "@/types/calculation";
 import { formatNumberForData } from "./parseNumber";
 import { Category } from "@/types/category";
@@ -7,6 +6,7 @@ import { GetPaymentData } from "@/types/payment";
 
 
 
+// my-next-app/src/hooks/usePaymentStats 合用，分別計算群組跟個人
 // 收支以類別做分類
 export function getGroupedPaymentsByParentCategory(payments:GetPaymentData[] , categories:Category[], categoryParents:Category[]){
     const categoryMap = new Map<number, Category>();

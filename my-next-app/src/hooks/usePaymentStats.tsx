@@ -6,6 +6,7 @@ import { useCategoryOptions } from "@/contexts/CategoryContext";
 import { getGroupedPaymentsByParentCategory, getProjectCategoryStats, getUserCategoryStats } from "@/utils/calculatePayment"; 
 import { ParentCategoryStat } from "@/types/calculation";
 
+// my-next-app/src/utils/calculatePayment.ts 合用
 // 所有收支依類別區分
 export function useGroupedByParentCategory(): GroupedByParent[] {
 

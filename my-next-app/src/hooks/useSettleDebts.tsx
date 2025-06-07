@@ -66,8 +66,10 @@ export function useAllSettlements(): Settlement[] {
 //     { from: "B", to: "C", amount: 50 },
 //   ]
 
+// 計算分帳細節（a -> b, b->c, c-> a ）
 export function useMergedSettlements(settlements: Settlement[]) {
     const mergedMap: Record<string, number> = {};
+    console.log("重新跑計算")
   
     settlements.forEach(({ from, to, amount }) => {
         const forwardKey = `${from}->${to}`;
@@ -101,4 +103,7 @@ export function useMergedSettlements(settlements: Settlement[]) {
     );
   
     return mergedSettlements;
-  }
+}
+
+
+// 超簡化分帳細節（a -> b, b->c, c-> a => b -> a ）

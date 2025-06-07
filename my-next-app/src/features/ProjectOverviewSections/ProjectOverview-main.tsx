@@ -47,10 +47,14 @@ export default function ProjectOverview(){
     const [isSettleReady, setIsSettleReady] = useState(false);
     console.log(settleSimpleDetail);
 
+    const visibleSettlements = useMemo(() => {
+        return settleSimpleDetail.filter((s) => s.amount > 0);
+      }, [settleSimpleDetail]);
+
     const quickViewSettle = useMemo(() => {
-        if (!settleSimpleDetail || settleSimpleDetail.length === 0) return null;
-        return settleSimpleDetail.find(item => item.from === currentUserId) || settleSimpleDetail[0];
-    }, [settleSimpleDetail, currentUserId]);
+        if (!visibleSettlements || visibleSettlements.length === 0) return null;
+        return visibleSettlements.find(item => item.from === currentUserId) || visibleSettlements[0];
+    }, [visibleSettlements, currentUserId]);
 
     const quickViewDebtor = useMemo(() => {
         return userList?.find(user => user.uid === quickViewSettle?.from);
@@ -61,10 +65,10 @@ export default function ProjectOverview(){
     }, [userList, quickViewSettle]);
 
     useEffect(() => {
-        if (settleSimpleDetail !== undefined) {
+        if (visibleSettlements !== undefined) {
             setIsSettleReady(true);
         }
-    }, [settleSimpleDetail]);
+    }, [visibleSettlements]);
 
 
 
@@ -75,7 +79,10 @@ export default function ProjectOverview(){
       privateBudget = data?.member_budgets?.[userData.uid];
     }
     const projectTotal = projectStats?.grandTotal || 0
-    const budgetStatus = getBudgetStatus( projectTotal, data?.budget);
+    const personalTotal = userStats.grandTotal || 0
+    const projectBudgetStatus = getBudgetStatus( projectTotal, data?.budget);
+    const personalBudgetStatus = getBudgetStatus( personalTotal, privateBudget);
+
 
     // css
     const isMobile = useIsMobile();
@@ -103,7 +110,6 @@ export default function ProjectOverview(){
                 )}
                 <ProjectSettleDetail
                     isSelfExpenseOpen={isSelfExpenseDialogOpen}
-                    settleSimpleDetail = {settleSimpleDetail}
                     currentProjectUsers = {userList || []}
                     onClose = {() => setIsSelfExpenseDialogOpen(false)}   
                 />
@@ -114,9 +120,15 @@ export default function ProjectOverview(){
                 />
             </>
             <div id="expense-overview" className="w-full box-border h-fit flex flex-col items-start justify-start gap-6">
-                <div id="overview-bubble-budget" className={`w-full shrink-0 px-3 py-3 rounded-2xl text-center ${budgetStatus.bgColor} ${budgetStatus.textColor} overflow-hidden`}>
-                    <Icon icon={budgetStatus.icon} size="xl" />
-                    <p className="text-xl font-semibold pt-2">{budgetStatus.text}</p>
+                <div className="w-full box-border flex flex-col xl:flex-row h-full items-start justify-start rounded-2xl overflow-hidden">
+                    <div className={`w-full 2xl:w-1/2 px-3 py-3 text-center ${projectBudgetStatus.bgColor} ${projectBudgetStatus.textColor} overflow-hidden`}>
+                        <Icon icon={projectBudgetStatus.icon} size="xl" />
+                        <p className="text-xl font-semibold pt-2">（專案）{projectBudgetStatus.text}</p>
+                    </div>
+                    <div className={`w-full 2xl:w-1/2 px-3 py-3 text-center ${personalBudgetStatus.bgColor} ${personalBudgetStatus.textColor} overflow-hidden`}>
+                        <Icon icon={personalBudgetStatus.icon} size="xl" />
+                        <p className="text-xl font-semibold pt-2">（你）{personalBudgetStatus.text}</p>
+                    </div>
                 </div>
                 <div className={isMobileClass}>
                     <div className="w-full 2xl:w-1/2 h-fit flex flex-col items-start justify-start gap-3">
@@ -165,6 +177,7 @@ export default function ProjectOverview(){
                             <div className={`${overviewBubbleChildrenClass}`}>
                                 <div className="px-3 py-3">
                                     <p className="text-base">你的支出</p>
+                                    <p className="text-sm text-zinc-500">包含尚未還款金額</p>
                                     <p className="text-2xl font-bold">${formatNumber(userStats?.grandTotal || 0)}</p>
                                 </div>
                             </div>                        
