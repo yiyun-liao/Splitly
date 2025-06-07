@@ -44,6 +44,8 @@ export default function ProjectOverview(){
     // ProjectSettleDetail
     const settleDetail = useAllSettlements();
     const settleSimpleDetail = useMergedSettlements(settleDetail);
+    const [isSettleReady, setIsSettleReady] = useState(false);
+    console.log(settleSimpleDetail);
 
     const quickViewSettle = useMemo(() => {
         if (!settleSimpleDetail || settleSimpleDetail.length === 0) return null;
@@ -57,6 +59,12 @@ export default function ProjectOverview(){
     const quickViewCreditor = useMemo(() => {
         return userList?.find(user => user.uid === quickViewSettle?.to);
     }, [userList, quickViewSettle]);
+
+    useEffect(() => {
+        if (settleSimpleDetail !== undefined) {
+            setIsSettleReady(true);
+        }
+    }, [settleSimpleDetail]);
 
 
 
@@ -95,8 +103,9 @@ export default function ProjectOverview(){
                 )}
                 <ProjectSettleDetail
                     isSelfExpenseOpen={isSelfExpenseDialogOpen}
+                    settleSimpleDetail = {settleSimpleDetail}
+                    currentProjectUsers = {userList || []}
                     onClose = {() => setIsSelfExpenseDialogOpen(false)}   
-                    userData={userData} 
                 />
                 <ProjectWiseSpilt
                     isProjectWiseSpiltOpen={isWiseSpiltDialogOpen}
@@ -120,8 +129,6 @@ export default function ProjectOverview(){
                                         width='fit'
                                         variant='text-button'
                                         color='primary'
-                                        //disabled={isdisabled} 
-                                        //isLoading={isLoading}
                                         onClick={()=> setIsProjectDialogOpen(true)}
                                         >
                                             查看專案
@@ -174,7 +181,7 @@ export default function ProjectOverview(){
                                         variant='text-button'
                                         color='primary'
                                         //disabled={isdisabled} 
-                                        //isLoading={isLoading}
+                                        isLoading={!isSettleReady}
                                         onClick={()=> setIsSelfExpenseDialogOpen(true)}
                                         >
                                             查看全部
@@ -186,15 +193,19 @@ export default function ProjectOverview(){
                                     <p className="shrink-0 text-xl font-semibold">專案已結清🎉</p>
                                 ) : (
                                     <>
-                                        <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
-                                            <Avatar
-                                                size="md"
-                                                img={quickViewDebtor?.avatarURL}
-                                                userName={quickViewDebtor?.name}
-                                            />
-                                            <p className="text-base w-full truncate">{quickViewDebtor?.name === userData?.name ? "你" : quickViewDebtor?.name}</p>
+                                        <div className="w-full flex  flex-wrap items-center justify-start gap-2 overflow-hidden">
+                                            <div className="shrink-0 flex items-center justify-start gap-2">
+                                                <div className="shrink-0 flex items-center ">
+                                                    <Avatar
+                                                        size="md"
+                                                        img={quickViewDebtor?.avatarURL}
+                                                        userName={quickViewDebtor?.name}
+                                                    />
+                                                </div>
+                                                <p className="text-base truncate">{quickViewDebtor?.name === userData?.name ? "你" : quickViewDebtor?.name}</p>
+                                            </div>
+                                            <p className="pl-2 text-base font-base text-zinc-500">須還款給 {quickViewCreditor?.name}</p>
                                         </div>
-                                        <p className="shrink-0 text-base font-base">須還款給 {quickViewCreditor?.name}</p>
                                         <p className="shrink-0 text-xl font-semibold"> ${quickViewSettle.amount}</p>
                                     </>
                                 )}

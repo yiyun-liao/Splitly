@@ -65,9 +65,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const myMetaKey = `👀 cacheMyMeta:${uid}`;
             const CACHE_TTL = 1000 * 60 * 180;
 
-            const isPageReload = typeof window !== 'undefined' &&
-                (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
-       
+            // const isPageReload = typeof window !== 'undefined' &&
+            //     (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
+            const isPageReload = false;
+
         
             const cachedMyData = localStorage.getItem(myKey);
             const cachedProjects = localStorage.getItem(projectKey);

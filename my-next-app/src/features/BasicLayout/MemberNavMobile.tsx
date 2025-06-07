@@ -71,7 +71,7 @@ export default function MemberNavMobile() {
                     type= 'button'
                     onClick={() => {
                         if (pathname === `/${userId}/setting`) {
-                            router.push(`/${userId}${lastPath}/expense?openCreate=true`);
+                            router.push(`/${userId}/${lastPath}/expense?openCreate=true`);
                         } else {
                             setIsCreatePayment(true);
                         }

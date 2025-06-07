@@ -55,9 +55,9 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
         const CACHE_TTL = 1000 * 60 * 180;
         
-        const isPageReload = typeof window !== 'undefined' &&
-             (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
-        
+        // const isPageReload = typeof window !== 'undefined' &&
+        //      (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
+        const isPageReload = false;
     
         const cachedUsers = localStorage.getItem(userKey);
         const cachedPayments = localStorage.getItem(paymentKey);
@@ -67,6 +67,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
         if (cachedUsers && cachedPayments && !isCacheExpired && !isPageReload) {
             try {
+                console.log("✅ get data")
                 setCurrentProjectUsers(JSON.parse(cachedUsers));
                 setCurrentPaymentList(JSON.parse(cachedPayments));
                 setIsReady(true); // ✅ 快取成功也標記 ready
@@ -113,7 +114,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         };
 
         fetchProjectData();
-    }, []);
+    }, [pureProjectId]);
 
     // --- 找不到專案自動跳轉 ---
     useEffect(() => {
