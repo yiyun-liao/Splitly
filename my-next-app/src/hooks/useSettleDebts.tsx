@@ -69,7 +69,6 @@ export function useAllSettlements(): Settlement[] {
 // 計算分帳細節（a -> b, b->c, c-> a ）
 export function useMergedSettlements(settlements: Settlement[]) {
     const mergedMap: Record<string, number> = {};
-    console.log("重新跑計算")
   
     settlements.forEach(({ from, to, amount }) => {
         const forwardKey = `${from}->${to}`;
@@ -107,3 +106,48 @@ export function useMergedSettlements(settlements: Settlement[]) {
 
 
 // 超簡化分帳細節（a -> b, b->c, c-> a => b -> a ）
+export function useSimplifiedSettlements(settlements: Settlement[]): Settlement[] {
+    const netBalance: Record<string, number> = {};
+
+    // 計算每個人的最終收支
+    settlements.forEach(({ from, to, amount }) => {
+        netBalance[from] = (netBalance[from] || 0) - amount;
+        netBalance[to] = (netBalance[to] || 0) + amount;
+    });
+
+    // 分出債務人（負）與債權人（正）
+    const debtors = Object.entries(netBalance)
+        .filter(([, balance]) => balance < 0)
+        .map(([uid, balance]) => ({ uid, amount: -balance }));
+
+    const creditors = Object.entries(netBalance)
+        .filter(([, balance]) => balance > 0)
+        .map(([uid, amount]) => ({ uid, amount }));
+
+
+    // 配對還款
+    const simplifiedSettlements: Settlement[] = [];
+
+    for (const debtor of debtors) {
+        let debt = debtor.amount;
+        for (const creditor of creditors) {
+            if (debt === 0) break;
+            if (creditor.amount === 0) continue;
+
+            const payAmount = Math.min(debt, creditor.amount);
+
+            simplifiedSettlements.push({
+                from: debtor.uid,
+                to: creditor.uid,
+                amount: parseFloat(formatNumberForData(payAmount)),
+            });
+
+            debt -= payAmount;
+            creditor.amount -= payAmount;
+        }
+    }
+
+    return simplifiedSettlements
+        .filter(s => s.amount > 0)
+        .map(s => ({ ...s, amount: parseFloat(formatNumber(s.amount)) }));
+}

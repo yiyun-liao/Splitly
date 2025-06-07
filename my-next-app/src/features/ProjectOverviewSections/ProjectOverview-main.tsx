@@ -16,7 +16,7 @@ import { getBudgetStatus } from "@/utils/renderBudgetHint";
 import { formatNumber } from "@/utils/parseNumber";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
-import { useAllSettlements,useMergedSettlements } from "@/hooks/useSettleDebts";
+import { useAllSettlements,useMergedSettlements, useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 
 
 export default function ProjectOverview(){
@@ -43,18 +43,17 @@ export default function ProjectOverview(){
 
     // ProjectSettleDetail
     const settleDetail = useAllSettlements();
-    const settleSimpleDetail = useMergedSettlements(settleDetail);
+    const settleAllDetail = useMergedSettlements(settleDetail);
     const [isSettleReady, setIsSettleReady] = useState(false);
-    console.log(settleSimpleDetail);
 
-    const visibleSettlements = useMemo(() => {
-        return settleSimpleDetail.filter((s) => s.amount > 0);
-      }, [settleSimpleDetail]);
+    const settleSimpleDetail = useMemo(() => {
+        return settleAllDetail.filter((s) => s.amount > 0);
+      }, [settleAllDetail]);
 
     const quickViewSettle = useMemo(() => {
-        if (!visibleSettlements || visibleSettlements.length === 0) return null;
-        return visibleSettlements.find(item => item.from === currentUserId) || visibleSettlements[0];
-    }, [visibleSettlements, currentUserId]);
+        if (!settleSimpleDetail || settleSimpleDetail.length === 0) return null;
+        return settleSimpleDetail.find(item => item.from === currentUserId) || settleSimpleDetail[0];
+    }, [settleSimpleDetail, currentUserId]);
 
     const quickViewDebtor = useMemo(() => {
         return userList?.find(user => user.uid === quickViewSettle?.from);
@@ -64,14 +63,23 @@ export default function ProjectOverview(){
         return userList?.find(user => user.uid === quickViewSettle?.to);
     }, [userList, quickViewSettle]);
 
+    
+    // ProjectMinSettleDetail
+    const settleMinDetail = useSimplifiedSettlements(settleSimpleDetail);
+
+    const settleWiseDetail = useMemo(() => {
+        return settleMinDetail.filter((s) => s.amount > 0);
+      }, [settleMinDetail]);
+
+
     useEffect(() => {
-        if (visibleSettlements !== undefined) {
+        if (settleSimpleDetail !== undefined && settleWiseDetail !== undefined) {
             setIsSettleReady(true);
         }
-    }, [visibleSettlements]);
+    }, [settleSimpleDetail, settleWiseDetail]);
 
 
-
+    
     // render data 
     let privateBudget: number | undefined;
 
@@ -120,7 +128,7 @@ export default function ProjectOverview(){
                 />
             </>
             <div id="expense-overview" className="w-full box-border h-fit flex flex-col items-start justify-start gap-6">
-                <div className="w-full box-border flex flex-col xl:flex-row h-full items-start justify-start rounded-2xl overflow-hidden">
+                <div className="w-full box-border flex flex-col xl:flex-row h-fit items-start justify-start rounded-2xl overflow-hidden">
                     <div className={`w-full 2xl:w-1/2 px-3 py-3 text-center ${projectBudgetStatus.bgColor} ${projectBudgetStatus.textColor} overflow-hidden`}>
                         <Icon icon={projectBudgetStatus.icon} size="xl" />
                         <p className="text-xl font-semibold pt-2">（專案）{projectBudgetStatus.text}</p>
@@ -131,8 +139,8 @@ export default function ProjectOverview(){
                     </div>
                 </div>
                 <div className={isMobileClass}>
-                    <div className="w-full 2xl:w-1/2 h-fit flex flex-col items-start justify-start gap-3">
-                        <div id="overview-bubble-quick-view" className={`${overviewBubbleClass}`}>
+                    <div className="w-full 2xl:w-1/2 self-stretch  flex flex-col items-start justify-start gap-3">
+                        <div id="overview-bubble-quick-view" className={`flex-1 self-stretch  ${overviewBubbleClass}`}>
                             <div className="pl-3 flex items-center justify-start gap-2">
                                 <p className="text-base w-full">專案</p>
                                 <div className="shrink-0 ">
@@ -171,6 +179,7 @@ export default function ProjectOverview(){
                             <div className={`${overviewBubbleChildrenClass}`}>
                                 <div className="px-3 py-3">
                                     <p className="text-base">整體支出</p>
+                                    <p className="text-sm text-zinc-500">不包含私人收支紀錄</p>
                                     <p className="text-2xl font-bold">${formatNumber(projectStats?.grandTotal || 0)}</p>
                                 </div>
                             </div>
@@ -183,7 +192,7 @@ export default function ProjectOverview(){
                             </div>                        
                         </div>
                     </div>
-                    <div className="w-full 2xl:w-1/2 h-full flex flex-col items-start justify-start gap-3 ">
+                    <div className="w-full 2xl:w-1/2 self-stretch flex flex-col items-start justify-start gap-3 ">
                         <div id="overview-bubble-spilt-self" className={`shrink-0 ${overviewBubbleClass}`}>
                             <div className="pl-3 pb-3 flex items-center justify-start gap-2">
                                 <p className="text-base w-full">還款細節</p>
@@ -193,7 +202,6 @@ export default function ProjectOverview(){
                                         width='fit'
                                         variant='text-button'
                                         color='primary'
-                                        //disabled={isdisabled} 
                                         isLoading={!isSettleReady}
                                         onClick={()=> setIsSelfExpenseDialogOpen(true)}
                                         >
@@ -202,7 +210,9 @@ export default function ProjectOverview(){
                                 </div>
                             </div>
                             <div className="px-3 py-3 flex items-center justify-start gap-2">
-                                {!quickViewSettle  ? (
+                                {!isSettleReady ? (
+                                    <p className="shrink-0 text-base font-semibold text-zinc-500">計算中...</p>
+                                ) : !quickViewSettle  ? (
                                     <p className="shrink-0 text-xl font-semibold">專案已結清🎉</p>
                                 ) : (
                                     <>
@@ -224,120 +234,67 @@ export default function ProjectOverview(){
                                 )}
                             </div>
                         </div>
-                        <div id="overview-bubble-spilt" className={`flex-1 h-full ${overviewBubbleClass} `}>
+                        <div id="overview-bubble-spilt" className={`flex-1 self-stretch  ${overviewBubbleClass} `}>
                             <div className="pl-3 pb-3 flex items-center justify-start gap-2">
-                                <p className="text-base w-full">分帳(這裡還沒做)</p>
+                                <p className="text-base w-full">簡易還款</p>
                                 <div className="shrink-0 ">
                                     <Button
                                         size='sm'
                                         width='fit'
                                         variant='text-button'
                                         color='primary'
-                                        //disabled={isdisabled} 
-                                        //isLoading={isLoading}
+                                        isLoading={!isSettleReady}
                                         onClick={() => setIsWiseSpiltDialogOpen(true)} 
                                         >
                                             查看全部
                                     </Button>
                                 </div>
                             </div>
-                            <div className="w-full flex flex-col items-center justify-start gap-2">
-                                <div className="w-full px-3 flex items-center justify-start gap-2">
-                                    <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                                        <Avatar
-                                            size="md"
-                                            img={userData?.avatarURL}
-                                            userName = {userData?.name}
-                                            //onAvatarClick={() => console.log('Clicked!')}
-                                        />
-                                        <p className="text-xs w-fll  truncate">Yun</p>
-                                    </div>
-                                    <div className="w-full text-center flex flex-col items-center justify-start overflow-hidden -space-y-3">
-                                        <p className="text-sm whitespace-nowrap truncate">須還款</p>
-                                        <div className="w-full flex items-center justify-start -space-x-4.5 text-sp-blue-500">
-                                            <div className="w-full flex-1 h-0.5 bg-sp-blue-500"></div>
-                                            <Icon 
-                                                icon='solar:alt-arrow-right-outline'
-                                                size='xl'
-                                            />
+                            <div className="px-3 py-3 flex flex-col items-center justify-start gap-8">
+                                {!isSettleReady ? (
+                                    <p className="shrink-0 text-base font-semibold text-zinc-500">計算中...</p>
+                                ) : settleWiseDetail.length === 0  ? (
+                                    <p className="shrink-0 text-xl font-semibold">專案已結清🎉</p>
+                                ) : (settleWiseDetail.slice(0,3).map((settle, index) => {
+                                    const debtor = userList?.find(user => user.uid === settle?.from);
+                                    const creditor = userList?.find(user => user.uid === settle?.to);    
+                                    return(
+                                        <div key={index} className="w-full flex items-center justify-start gap-2">
+                                            <div className="shrink-0 w-24 flex flex-col items-start justify-start gap-0 overflow-hidden">
+                                                <div className="shrink-0 pr-2">
+                                                    <Avatar
+                                                        size="md"
+                                                        img={debtor?.avatarURL}
+                                                        userName = {debtor?.name}
+                                                    />
+                                                </div>
+                                                <p className="text-xs w-fll  truncate">{debtor?.name}</p>
+                                            </div>
+                                            <div className="w-full text-center flex flex-col items-center justify-start overflow-hidden -space-y-3">
+                                                <p className="text-sm whitespace-nowrap truncate">須還款</p>
+                                                <div className="w-full flex items-center justify-start -space-x-4.5 text-sp-blue-500">
+                                                    <div className="w-full flex-1 h-0.5 bg-sp-blue-500"></div>
+                                                    <Icon 
+                                                        icon='solar:alt-arrow-right-outline'
+                                                        size='xl'
+                                                    />
+                                                </div>
+                                                <p className="text-sm font-semibold">${settle.amount}</p>
+                                                
+                                            </div>
+                                            <div className="shrink-0 w-24 flex flex-col items-end justify-start gap-0 overflow-hidden">
+                                                <div className="shrink-0 pl-2">
+                                                    <Avatar
+                                                        size="md"
+                                                        img={creditor?.avatarURL}
+                                                        userName = {creditor?.name}
+                                                    />
+                                                </div>
+                                                <p className="text-xs w-fll  truncate">{creditor?.name}</p>
+                                            </div>                                       
                                         </div>
-                                        <p className="text-sm font-semibold">$359.00</p>
-                                        
-                                    </div>
-                                    <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                                        <Avatar
-                                            size="md"
-                                            img={userData?.avatarURL}
-                                            userName = {userData?.name}
-                                            //onAvatarClick={() => console.log('Clicked!')}
-                                        />
-                                        <p className="text-xs w-fll  truncate">Yun</p>
-                                    </div>                                       
-                                </div>
-                                <div className="w-full px-3 flex items-center justify-start gap-2">
-                                    <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                                        <Avatar
-                                            size="md"
-                                            img={userData?.avatarURL}
-                                            userName = {userData?.name}
-                                            //onAvatarClick={() => console.log('Clicked!')}
-                                        />
-                                        <p className="text-xs w-fll  truncate">Yun</p>
-                                    </div>
-                                    <div className="w-full text-center flex flex-col items-center justify-start overflow-hidden -space-y-3">
-                                        <p className="text-sm whitespace-nowrap truncate">須還款</p>
-                                        <div className="w-full flex items-center justify-start -space-x-4.5 text-sp-blue-500">
-                                            <div className="w-full flex-1 h-0.5 bg-sp-blue-500"></div>
-                                            <Icon 
-                                                icon='solar:alt-arrow-right-outline'
-                                                size='xl'
-                                            />
-                                        </div>
-                                        <p className="text-sm font-semibold">$359.00</p>
-                                        
-                                    </div>
-                                    <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                                        <Avatar
-                                            size="md"
-                                            img={userData?.avatarURL}
-                                            userName = {userData?.name}
-                                            //onAvatarClick={() => console.log('Clicked!')}
-                                        />
-                                        <p className="text-xs w-fll  truncate">Yun</p>
-                                    </div>                                       
-                                </div>
-                                <div className="w-full px-3 flex items-center justify-start gap-2">
-                                    <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                                        <Avatar
-                                            size="md"
-                                            img={userData?.avatarURL}
-                                            userName = {userData?.name}
-                                            //onAvatarClick={() => console.log('Clicked!')}
-                                        />
-                                        <p className="text-xs w-fll  truncate">Yun</p>
-                                    </div>
-                                    <div className="w-full text-center flex flex-col items-center justify-start overflow-hidden -space-y-3">
-                                        <p className="text-sm whitespace-nowrap truncate">須還款</p>
-                                        <div className="w-full flex items-center justify-start -space-x-4.5 text-sp-blue-500">
-                                            <div className="w-full flex-1 h-0.5 bg-sp-blue-500"></div>
-                                            <Icon 
-                                                icon='solar:alt-arrow-right-outline'
-                                                size='xl'
-                                            />
-                                        </div>
-                                        <p className="text-sm font-semibold">$359.00</p>
-                                        
-                                    </div>
-                                    <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                                        <Avatar
-                                            size="md"
-                                            img={userData?.avatarURL}
-                                            userName = {userData?.name}
-                                            //onAvatarClick={() => console.log('Clicked!')}
-                                        />
-                                        <p className="text-xs w-fll  truncate">Yun</p>
-                                    </div>                                       
-                                </div>
+                                    )}
+                                ))}
                             </div>
                         </div>
                     </div>

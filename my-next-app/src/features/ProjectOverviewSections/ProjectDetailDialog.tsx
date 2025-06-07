@@ -153,13 +153,8 @@ export default function ProjectDetail({
                     onClose={ () => {
                         onClose();
                     }} // 點擊哪裡關閉
-                    //headerClassName= {step === "add" ? undefined : "ml-11"}
-                    // bodyClassName= string // 看需求
                     footerClassName= "items-center justify-end"
-                    //leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
-                    //hideCloseIcon = false
-                    //closeOnBackdropClick = false
-                    //onLeftIconClick={handleBack}
+                    closeOnBackdropClick = {true}
                     footer= {<div> </div>}
                 >
                     {renderBody()}
