@@ -22,8 +22,6 @@ export default function ProjectListNavMobile({
     const {projectData, userData} = useGlobalProjectData()
     const [isCreateProject, setIsCreateProject]= useState(false);
 
-    console.log("isProjectNavOpen", isProjectNavOpen);
-
     useEffect(() => {
         if (isProjectNavOpen) document.body.style.overflow = 'hidden';
         else document.body.style.overflow = 'auto';

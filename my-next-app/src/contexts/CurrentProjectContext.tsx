@@ -9,7 +9,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { fetchUserByProject } from "@/lib/projectApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
 import { buildAvatarUrl } from "@/utils/getAvatar";
-import { getLastVisitedProjectId } from "@/utils/cache";
 
 type CurrentProjectContextType = {
     currentProjectData?: GetProjectData;
@@ -27,7 +26,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const router = useRouter();
     const { projectId } = useParams();
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
-    const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
+    const lastPath = localStorage.getItem("lastVisitedProjectPath") || projectData?.[0]?.id; //for redirect
 
     const currentProjectData = useMemo(() => {
         if (!myDataReady || !pureProjectId) return undefined;
@@ -121,7 +120,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         if (!pureProjectId) return;
         if (!myDataReady || !projectData.length) return;
         if (!currentProjectData) {
-            router.push(`/${userData?.uid}/${lastPath}/dashboard`);
+            router.replace(`/${userData?.uid}/${lastPath}/dashboard`);
         }
     }, [myDataReady, currentProjectData, projectData, router, pureProjectId, lastPath,userData]);
 

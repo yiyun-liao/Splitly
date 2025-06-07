@@ -17,8 +17,6 @@ import { formatNumber } from "@/utils/parseNumber";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
 import { useAllSettlements,useMergedSettlements } from "@/hooks/useSettleDebts";
-import { Settlement } from "@/types/calculation";
-import { UserData } from "@/types/user";
 
 
 export default function ProjectOverview(){

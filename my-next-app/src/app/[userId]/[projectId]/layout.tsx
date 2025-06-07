@@ -6,7 +6,7 @@ import DesktopLayout from "./DesktopLayout";
 import { useTrackLastVisitedProjectPath } from "@/hooks/useTrackLastVisitedProjectPath";
 
 export default function ProjectLayout({ children }: { children: ReactNode }) {
-  useTrackLastVisitedProjectPath();
+    useTrackLastVisitedProjectPath();
 
     return (
         <>

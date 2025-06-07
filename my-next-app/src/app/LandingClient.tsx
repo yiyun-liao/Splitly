@@ -3,12 +3,13 @@
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import { logInUser } from '@/lib/auth';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 
 export default function LandingClient() {
     const router = useRouter();
+    const {userId} = useParams();
     const searchParams = useSearchParams();
     const { projectData, isReady, userData } = useAuth();
     const [isLoginTriggered, setIsLoginTriggered] = useState(false); 
@@ -19,28 +20,22 @@ export default function LandingClient() {
             setIsLoginTriggered(true); 
         }
     };
-
+    
     useEffect(() => {
         if (!isLoginTriggered || !isReady) return;
-        const raw = localStorage.getItem("lastVisitedProjectPath");
-        let parsed: { path?: string; userId?: string } | null = null;
-
-        try {
-            parsed = raw ? JSON.parse(raw) : null;
-        } catch (err) {
-            console.warn("⚠️ 無法解析 lastVisitedProjectPath:", err);
-        }
+        const lastPath = localStorage.getItem("lastVisitedProjectPath");
 
         const redirectUrl = searchParams.get("redirect");
-        console.log("我要去哪", redirectUrl , "OR", parsed?.path)
+        console.log("我要去哪", redirectUrl , "OR", lastPath)
 
         if (redirectUrl) {
             router.push(redirectUrl);
             console.log("i have redirect", redirectUrl)
-        }else if (parsed?.userId === userData?.uid){
-            router.push(`/${userData?.uid}/${parsed?.path}/dashboard`);
-            console.log("i have last path", parsed?.path)
-        }else if (projectData.length > 0 && parsed?.userId !== userData?.uid) {
+        }else if (lastPath) {
+            router.push(`/${userData?.uid}/${lastPath}/dashboard`);
+            console.log("i have last path", lastPath)
+            console.log("🧭 redirect to last visited project:", lastPath);
+        } else if (projectData.length > 0) {
             router.push(`/${userData?.uid}/${projectData[0].id}/dashboard`);
             localStorage.removeItem("lastVisitedProjectPath");
             console.log("i have project")

@@ -51,7 +51,7 @@ export default function JoinProjectPage() {
       {joined ? (
         <>
           <p className="text-sp-blue-500">✅ 加入成功！</p>
-          <Button onClick={() => router.push(`/${userData?.uid}/${projectId}/dashboard`)} color="primary">
+          <Button onClick={() => router.replace(`/${userData?.uid}/${projectId}/dashboard`)} color="primary">
             前往專案
           </Button>
         </>

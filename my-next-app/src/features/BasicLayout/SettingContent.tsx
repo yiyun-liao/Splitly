@@ -18,7 +18,7 @@ export default function SettingContent(){
         if (success){
             clearUserCache();
             console.log('Logged out!');
-            router.push('/');    
+            router.replace('/');    
         }
     }
     

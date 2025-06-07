@@ -64,13 +64,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const projectKey = `👀 myProjectList:${uid}`;
             const myMetaKey = `👀 cacheMyMeta:${uid}`;
             const CACHE_TTL = 1000 * 60 * 180;
+
+            const isPageReload = typeof window !== 'undefined' &&
+                (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
+       
         
             const cachedMyData = localStorage.getItem(myKey);
             const cachedProjects = localStorage.getItem(projectKey);
             const cachedMeta = localStorage.getItem(myMetaKey);
             const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
         
-            if (cachedMyData && cachedProjects && !isCacheExpired) {
+            if (cachedMyData && cachedProjects && !isCacheExpired && !isPageReload) {
                 try {
                 setUserData(JSON.parse(cachedMyData));
                 setProjectData(JSON.parse(cachedProjects));
