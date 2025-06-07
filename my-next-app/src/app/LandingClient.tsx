@@ -22,7 +22,7 @@ export default function LandingClient() {
     };
     
     useEffect(() => {
-        if (!isLoginTriggered || !isReady) return;
+        if (!isLoginTriggered || !isReady || !userData) return;
         const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath");
 
 
@@ -36,7 +36,7 @@ export default function LandingClient() {
             router.push(`/${userData?.uid}/${lastPath}/dashboard`);
             console.log("i have last path", lastPath)
             console.log("🧭 redirect to last visited project:", lastPath);
-        } else if (projectData?.[0]?.id) {
+        } else if (projectData?.length && projectData[0]?.id && userData?.uid) {
             router.push(`/${userData?.uid}/${projectData[0].id}/dashboard`);
             localStorage.removeItem("lastVisitedProjectPath");
             console.log("i have project")

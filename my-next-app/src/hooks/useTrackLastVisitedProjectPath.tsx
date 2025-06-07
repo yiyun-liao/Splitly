@@ -19,14 +19,13 @@ export function useTrackLastVisitedProjectPath() {
 
 
 export function getLocalStorageItem<T = string>(key: string): T | null {
-    if (typeof window === 'undefined') return null;
-  
-    try {
-      const value = localStorage.getItem(key);
-      return value ? (JSON.parse(value) as T) : null;
-    } catch (e) {
-      console.warn("❗localStorage 讀取失敗", e);
-      return null;
-    }
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const value = localStorage.getItem(key);
+    return value !== null ? (value as T) : null;
+  } catch (e) {
+    console.warn("❗localStorage 讀取失敗", e);
+    return null;
   }
-  
+}

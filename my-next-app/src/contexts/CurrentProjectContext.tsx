@@ -23,10 +23,13 @@ const CurrentProjectContext = createContext<CurrentProjectContextType | undefine
 
 export const CurrentProjectProvider = ({ children }: { children: React.ReactNode }) => {
     const { projectData, userData, isReady: myDataReady } = useAuth();
-
+    const rawParam = useParams()?.projectId;
+    const fallbackId = getLocalStorageItem<string>("lastVisitedProjectPath");
+    const pureProjectId = typeof rawParam === "string" ? rawParam : rawParam?.[0] || fallbackId || "";
+    
     const router = useRouter();
-    const { projectId } = useParams();
-    const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
+    // const { projectId } = useParams();
+    // const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
     const [lastPath, setLastPath] = useState<string | undefined>(projectData?.[0]?.id); // fallback
 
     const currentProjectData = useMemo(() => {
@@ -44,16 +47,20 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     useEffect(() => {
         if (currentProjectUsers && currentPaymentList) {
         setIsReady(true);
+        console.log("我有", currentProjectUsers, currentPaymentList)
         }
     }, [currentProjectUsers, currentPaymentList]);
 
 
     useEffect(() => {
-        const stored = getLocalStorageItem<string>("lastVisitedProjectPath")|| projectData[0].id;
-        if (stored) {
-          setLastPath(stored);
+        if (myDataReady && projectData && currentProjectData !== undefined){
+            const stored = getLocalStorageItem<string>("lastVisitedProjectPath") || (projectData?.length ? projectData[0].id : undefined);
+            console.log("1/我要去", stored)
+            if (stored) {
+            setLastPath(stored);
+            }
         }
-    }, [projectData, currentProjectData, currentProjectUsers, currentPaymentList]);
+    }, [projectData, currentProjectData, currentProjectUsers, currentPaymentList, myDataReady]);
     
 
     // --- 快取 / API 載入 ---
