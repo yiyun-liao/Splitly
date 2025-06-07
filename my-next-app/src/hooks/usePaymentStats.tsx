@@ -6,7 +6,7 @@ import { useCategoryOptions } from "@/contexts/CategoryContext";
 import { getGroupedPaymentsByParentCategory, getProjectCategoryStats, getUserCategoryStats } from "@/utils/calculatePayment"; 
 import { ParentCategoryStat } from "@/types/calculation";
 
-
+// 所有收支依類別區分
 export function useGroupedByParentCategory(): GroupedByParent[] {
 
     const { currentPaymentList } = useCurrentProjectData();
@@ -20,6 +20,9 @@ export function useGroupedByParentCategory(): GroupedByParent[] {
     }, [currentPaymentList, categoryOptions, categoryParents]);
 }
 
+
+
+// 群體的
 export function useProjectStats() :{ stats: ParentCategoryStat[]; grandTotal: number }  {
     const list = useGroupedByParentCategory();
   
@@ -32,6 +35,7 @@ export function useProjectStats() :{ stats: ParentCategoryStat[]; grandTotal: nu
     return projectStats
 }
 
+// 個人的
 export function useUserStats(userId:string) :{ stats: ParentCategoryStat[]; grandTotal: number }  {
     const list = useGroupedByParentCategory();
   
