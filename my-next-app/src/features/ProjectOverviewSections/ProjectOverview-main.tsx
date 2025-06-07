@@ -65,18 +65,18 @@ export default function ProjectOverview(){
 
     
     // ProjectMinSettleDetail
-    const settleMinDetail = useSimplifiedSettlements(settleSimpleDetail);
+    const settleWiseDetail = useSimplifiedSettlements(settleSimpleDetail);
 
-    const settleWiseDetail = useMemo(() => {
-        return settleMinDetail.filter((s) => s.amount > 0);
-      }, [settleMinDetail]);
+    const settleMiniDetail = useMemo(() => {
+        return settleWiseDetail.filter((s) => s.amount > 0);
+      }, [settleWiseDetail]);
 
 
     useEffect(() => {
-        if (settleSimpleDetail !== undefined && settleWiseDetail !== undefined) {
+        if (settleSimpleDetail !== undefined && settleMiniDetail !== undefined) {
             setIsSettleReady(true);
         }
-    }, [settleSimpleDetail, settleWiseDetail]);
+    }, [settleSimpleDetail, settleMiniDetail]);
 
 
     
@@ -124,7 +124,7 @@ export default function ProjectOverview(){
                 <ProjectWiseSpilt
                     isProjectWiseSpiltOpen={isWiseSpiltDialogOpen}
                     onClose = {() => setIsWiseSpiltDialogOpen(false)}   
-                    userData={userData} 
+                    currentProjectUsers = {userList || []}
                 />
             </>
             <div id="expense-overview" className="w-full box-border h-fit flex flex-col items-start justify-start gap-6">
@@ -253,9 +253,9 @@ export default function ProjectOverview(){
                             <div className="px-3 py-3 flex flex-col items-center justify-start gap-8">
                                 {!isSettleReady ? (
                                     <p className="shrink-0 text-base font-semibold text-zinc-500">計算中...</p>
-                                ) : settleWiseDetail.length === 0  ? (
+                                ) : settleMiniDetail.length === 0  ? (
                                     <p className="shrink-0 text-xl font-semibold">專案已結清🎉</p>
-                                ) : (settleWiseDetail.slice(0,3).map((settle, index) => {
+                                ) : (settleMiniDetail.slice(0,3).map((settle, index) => {
                                     const debtor = userList?.find(user => user.uid === settle?.from);
                                     const creditor = userList?.find(user => user.uid === settle?.to);    
                                     return(

@@ -3,184 +3,170 @@ import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Icon from "@/components/ui/Icon";
 import ModalPortal from "@/components/ui/ModalPortal";
+import { useParams, useRouter } from 'next/navigation';
+import { useMemo } from "react";
+import clsx from "clsx";
 
 import { UserData } from "@/types/user";
+import { CreatePaymentPayload } from "@/types/payment";
+import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useCreatePayment } from "../CreatePaymentSections/hooks/useCreatePayment";
+import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+import { useAllSettlements,useMergedSettlements,useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 
 interface ProjectWiseSpiltProps {
     isProjectWiseSpiltOpen: boolean;
     onClose: () => void;
-    userData: UserData | null;
+    currentProjectUsers: UserData[];
+
 }
 
 export default function ProjectWiseSpilt({
     isProjectWiseSpiltOpen = false,
     onClose,
-    userData
+    currentProjectUsers
 }:ProjectWiseSpiltProps){
+    // 須還款的金額
+    const settleDetail = useAllSettlements();
+    const settleSimpleDetail = useMergedSettlements(settleDetail);
+    const settleWiseDetail = useSimplifiedSettlements(settleSimpleDetail);
+    const {userData} = useGlobalProjectData();
+
+    // for create payment
+    const { currentProjectData } = useCurrentProjectData();
+    const {projectId, userId} = useParams();
+    const currentProjectId = typeof projectId === 'string' ? projectId : "";  
+    const currentUserId = typeof userId === 'string' ? userId : "";  
+    const isMobile = useIsMobile();
+    const router = useRouter();
+
+    // update ui
+
+    const settleMiniDetail = useMemo(() => {
+        return settleWiseDetail.filter((s) => s.amount > 0);
+      }, [settleWiseDetail]);
+    
+    const { handleCreatePayment, isLoading } = useCreatePayment({
+        onSuccess: (payment) => {
+            console.log("✅ 成功建立付款：", payment);
+            if (isMobile) {
+                router.push(`/${userId}/${currentProjectId}/overview`)
+            } else {
+                router.push(`/${userId}/${currentProjectId}/expense`)
+            }
+            
+            onClose();
+        },
+        onError: (err) => {
+            alert("建立付款失敗，請稍後再試");
+            console.log("付款建立錯誤", err);
+        },
+    });
+
 
     const renderBody = () => {
         return(
-            <div className="w-full flex flex-col items-center justify-start gap-6">
-                <div id="overview-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-4">
-                    <div className="w-full flex-1 flex items-center justify-start gap-2">
-                        <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                            <Avatar
-                                size="md"
-                                img={userData?.avatarURL}
-                                userName = {userData?.name}
-                                //onAvatarClick={() => console.log('Clicked!')}
-                            />
-                            <p className="text-xs w-fll  truncate">Yun</p>
-                        </div>
-                        <div className="w-full text-center flex flex-col items-center justify-start overflow-hidden -space-y-3">
-                            <p className="text-sm whitespace-nowrap truncate">須還款</p>
-                            <div className="w-full flex items-center justify-start -space-x-4.5 text-sp-blue-500">
-                                <div className="w-full flex-1 h-0.5 bg-sp-blue-500"></div>
-                                <Icon 
-                                    icon='solar:alt-arrow-right-outline'
-                                    size='xl'
-                                />
+            <div className="flex flex-col text-zinc-700 ">
+                <div className="pb-4">
+                    <p className="text-base w-full">最快速地還清債務！</p>
+                </div>                   
+                <div className="w-full flex flex-col box-border h-fit min-h-40 ">
+                    {settleMiniDetail.map((settle, index) => {
+                        const debtor = currentProjectUsers?.find(user => user.uid === settle?.from);
+                        const creditor = currentProjectUsers?.find(user => user.uid === settle?.to);
+                        const isLast = index === settleMiniDetail.length - 1;
+                        return (
+                            <div key={index} className={clsx( "w-full px-3 py-3 flex items-end justify-start gap-4 rounded-2xl hover:bg-sp-green-200", { "border-b border-sp-green-200": !isLast })}>
+                                <div className="w-full overflow-hidden">
+                                    <div className="shrink-0 w-full flex items-center gap-2">
+                                        <div  className="shrink-0 flex items-center">
+                                            <Avatar
+                                                size="md"
+                                                img={debtor?.avatarURL}
+                                                userName = {debtor?.name}
+                                            />
+                                        </div>
+                                        <p className="w-full text-base truncate">{debtor?.name  === userData?.name ? "你" : debtor?.name}</p>
+                                    </div>
+                                    <div className="flex items-center w-full pl-10">
+                                        <div className="w-full min-w-10 flex items-center justify-end -space-x-4.5 text-sp-green-300">
+                                            <div className="w-full flex-1 h-0.5 bg-sp-green-300"></div>
+                                                <Icon 
+                                                    icon='solar:alt-arrow-right-outline'
+                                                    size='xl'
+                                                />
+                                            </div>
+                                        <div className="shrink-0 max-w-40 flex gap-2 h-fit justify-end items-center">
+                                            <p className="text-base truncate text-zinc-500 text-end">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
+                                            <div className="shrink-0 flex items-center">
+                                                <Avatar
+                                                        size="sm"
+                                                        img={creditor?.avatarURL}
+                                                        userName = {creditor?.name}
+                                                    />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="w-fit min-w-22 flex flex-col justify-end items-end gap-2">
+                                    <p className="shrink-0 text-xl font-semibold">${settle.amount}</p>
+                                    <div className="shrink-0">
+                                        <Button
+                                            size='sm'
+                                            width='fit'
+                                            variant='outline'
+                                            color='primary'
+                                            disabled={!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId ||isLoading} 
+                                            isLoading={isLoading}
+                                            onClick={async()=>{
+                                                    if (!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId) return;
+
+                                                    const now = new Date().toISOString();
+                                                    const amount = settle.amount;
+                                                    const debtorUid = debtor.uid;
+                                                    const creditorUid = creditor.uid;
+                                                    const payer_map = {[debtorUid]: amount};
+                                                    const split_map = {[creditorUid]: { fixed: amount, percent: 0, total: amount}};
+
+                                                    const payload: CreatePaymentPayload = {
+                                                        project_id: currentProjectId,
+                                                        payment_name: "debt",
+                                                        account_type: "group",
+                                                        record_mode: "debt",
+                                                        owner: currentUserId, // 我是 owner
+                                                        currency: "TWD",
+                                                        amount: amount,
+                                                        category_id: "101", // 債務還款類別
+                                                        time: now,
+                                                        payer_map,
+                                                        split_map
+                                                    };
+
+                                                    await handleCreatePayment(payload);
+                                            }}
+                                            >
+                                                還款
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
-                            <p className="text-sm font-semibold">$359.00</p>
-                            
-                        </div>
-                        <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                            <Avatar
-                                size="md"
-                                img={userData?.avatarURL}
-                                userName = {userData?.name}
-                                //onAvatarClick={() => console.log('Clicked!')}
-                            />
-                            <p className="text-xs w-fll  truncate">Yun</p>
-                        </div>                                       
-                    </div>
-                    <div className="shrink-0 ">
-                        <Button
-                            size='sm'
-                            width='fit'
-                            variant='outline'
-                            color='primary'
-                            //disabled={isdisabled} 
-                            //isLoading={isLoading}
-                            // onClick={()=> setIsSelfExpenseDialogOpen(true)}
-                            >
-                                已還款
-                        </Button>
-                    </div>
-                </div>
-                <div id="overview-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-4">
-                    <div className="w-full flex-1 flex items-center justify-start gap-2">
-                        <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                            <Avatar
-                                size="md"
-                                img={userData?.avatarURL}
-                                userName = {userData?.name}
-                                //onAvatarClick={() => console.log('Clicked!')}
-                            />
-                            <p className="text-xs w-fll  truncate">Yun</p>
-                        </div>
-                        <div className="w-full text-center flex flex-col items-center justify-start overflow-hidden -space-y-3">
-                            <p className="text-sm whitespace-nowrap truncate">須還款</p>
-                            <div className="w-full flex items-center justify-start -space-x-4.5 text-sp-blue-500">
-                                <div className="w-full flex-1 h-0.5 bg-sp-blue-500"></div>
-                                <Icon 
-                                    icon='solar:alt-arrow-right-outline'
-                                    size='xl'
-                                />
-                            </div>
-                            <p className="text-sm font-semibold">$359.00</p>
-                            
-                        </div>
-                        <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                            <Avatar
-                                size="md"
-                                img={userData?.avatarURL}
-                                userName = {userData?.name}
-                                //onAvatarClick={() => console.log('Clicked!')}
-                            />
-                            <p className="text-xs w-fll  truncate">Yun</p>
-                        </div>                                       
-                    </div>
-                    <div className="shrink-0 ">
-                        <Button
-                            size='sm'
-                            width='fit'
-                            variant='outline'
-                            color='primary'
-                            //disabled={isdisabled} 
-                            //isLoading={isLoading}
-                            // onClick={()=> setIsSelfExpenseDialogOpen(true)}
-                            >
-                                已還款
-                        </Button>
-                    </div>
-                </div>
-                <div id="overview-bubble-spilt-token" className="w-full px-3 flex items-center justify-start gap-4">
-                    <div className="w-full flex-1 flex items-center justify-start gap-2">
-                        <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                            <Avatar
-                                size="md"
-                                img={userData?.avatarURL}
-                                userName = {userData?.name}
-                                //onAvatarClick={() => console.log('Clicked!')}
-                            />
-                            <p className="text-xs w-fll  truncate">Yun</p>
-                        </div>
-                        <div className="w-full text-center flex flex-col items-center justify-start overflow-hidden -space-y-3">
-                            <p className="text-sm whitespace-nowrap truncate">須還款</p>
-                            <div className="w-full flex items-center justify-start -space-x-4.5 text-sp-blue-500">
-                                <div className="w-full flex-1 h-0.5 bg-sp-blue-500"></div>
-                                <Icon 
-                                    icon='solar:alt-arrow-right-outline'
-                                    size='xl'
-                                />
-                            </div>
-                            <p className="text-sm font-semibold">$359.00</p>
-                            
-                        </div>
-                        <div className="shrink-0 w-12 flex flex-col items-center justify-start gap-0 overflow-hidden">
-                            <Avatar
-                                size="md"
-                                img={userData?.avatarURL}
-                                userName = {userData?.name}
-                                //onAvatarClick={() => console.log('Clicked!')}
-                            />
-                            <p className="text-xs w-fll  truncate">Yun</p>
-                        </div>                                       
-                    </div>
-                    <div className="shrink-0 ">
-                        <Button
-                            size='sm'
-                            width='fit'
-                            variant='outline'
-                            color='primary'
-                            //disabled={isdisabled} 
-                            //isLoading={isLoading}
-                            // onClick={()=> setIsSelfExpenseDialogOpen(true)}
-                            >
-                                已還款
-                        </Button>
-                    </div>
+                        );
+                    })}
                 </div>
             </div>
         )
-}
-    //console.log('wise spilt dialog state', isProjectWiseSpiltOpen)
+    }
     return(
         <ModalPortal>
             <Dialog
-                    header="快速分帳"
+                    header="簡易還款"
                     open={isProjectWiseSpiltOpen} // 從某處打開
                     onClose={ () => {
                         onClose();
                     }} // 點擊哪裡關閉
-                    //headerClassName= {step === "add" ? undefined : "ml-11"}
-                    // bodyClassName= string // 看需求
                     footerClassName= "items-center justify-end"
-                    //leftIcon={step === "add" ? "solar:arrow-left-line-duotone" : undefined}
-                    //hideCloseIcon = false
-                    //closeOnBackdropClick = false
-                    //onLeftIconClick={handleBack}
+                    closeOnBackdropClick = {true}
                     footer= {<div> </div>}
                 >
                     {renderBody()}
