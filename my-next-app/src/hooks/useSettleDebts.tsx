@@ -1,19 +1,10 @@
 // hooks/useSettleDebts.ts
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { GetPaymentData } from "@/types/payment";
 import { formatNumberForData, formatNumber } from "@/utils/parseNumber";
 import { useMemo } from "react";
+import { DebtMap, Settlement } from "@/types/calculation";
 
 
-interface DebtMap {
-  [uid: string]: number;
-}
-
-interface Settlement {
-  from: string;
-  to: string;
-  amount: number;
-}
 
   
 // 所有分帳狀況

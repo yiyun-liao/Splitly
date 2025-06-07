@@ -16,3 +16,14 @@ export type ParentCategoryStat = {
     totalAmount: number;
     percent: number;
 };
+
+// for my-next-app/src/hooks/useSettleDebts.tsx
+export interface DebtMap {
+  [uid: string]: number;
+}
+
+export interface Settlement {
+  from: string;
+  to: string;
+  amount: number;
+}

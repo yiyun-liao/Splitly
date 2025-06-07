@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
@@ -17,6 +17,8 @@ import { formatNumber } from "@/utils/parseNumber";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
 import { useAllSettlements,useMergedSettlements } from "@/hooks/useSettleDebts";
+import { Settlement } from "@/types/calculation";
+import { UserData } from "@/types/user";
 
 
 export default function ProjectOverview(){
@@ -26,8 +28,7 @@ export default function ProjectOverview(){
     
     const {userData} = useGlobalProjectData();
     const currentUserId = userData?.uid || "";
-    const {currentProjectData:data, currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();
-    const userList = currentProjectUsers || [];
+    const {currentProjectData:data, currentPaymentList:list, currentProjectUsers:userList} = useCurrentProjectData();
     const projectId = data?.id;
     const { categoryOptions } = useCategoryOptions();
 
@@ -45,17 +46,21 @@ export default function ProjectOverview(){
     // ProjectSettleDetail
     const settleDetail = useAllSettlements();
     const settleSimpleDetail = useMergedSettlements(settleDetail);
-    const quickViewSettle = settleSimpleDetail?.find(item => item.from === currentUserId);
-    const fallbackSettle = settleSimpleDetail?.length ? settleSimpleDetail[0] : undefined;
-    const settleToUse = quickViewSettle || fallbackSettle;
 
-    const quickViewDebtor = settleToUse ? userList.find(user => user.uid === settleToUse.from) : undefined;
-    const quickViewCreditor = settleToUse ? userList.find(user => user.uid === settleToUse.to) : undefined;
+    const quickViewSettle = useMemo(() => {
+        if (!settleSimpleDetail || settleSimpleDetail.length === 0) return null;
+        return settleSimpleDetail.find(item => item.from === currentUserId) || settleSimpleDetail[0];
+    }, [settleSimpleDetail, currentUserId]);
+
+    const quickViewDebtor = useMemo(() => {
+        return userList?.find(user => user.uid === quickViewSettle?.from);
+    }, [userList, quickViewSettle]);
+
+    const quickViewCreditor = useMemo(() => {
+        return userList?.find(user => user.uid === quickViewSettle?.to);
+    }, [userList, quickViewSettle]);
 
 
-
-
-    console.log("測試會長怎樣",settleDetail, settleSimpleDetail);
 
     // render data 
     let privateBudget: number | undefined;
@@ -87,7 +92,7 @@ export default function ProjectOverview(){
                         onClose = {() => setIsProjectDialogOpen(false)}   
                         userData={userData} 
                         currentProjectData = {data}
-                        currentProjectUsers = {userList}
+                        currentProjectUsers = {userList || []}
                     />
                 )}
                 <ProjectSettleDetail
@@ -179,16 +184,17 @@ export default function ProjectOverview(){
                                 </div>
                             </div>
                             <div className="px-3 py-3 flex items-center justify-start gap-2">
-                                {quickViewSettle && quickViewDebtor && quickViewCreditor && (
+                                {!quickViewSettle  ? (
+                                    <p className="shrink-0 text-xl font-semibold">專案已結清🎉</p>
+                                ) : (
                                     <>
                                         <div className="w-full flex items-center justify-start gap-2 overflow-hidden">
                                             <Avatar
                                                 size="md"
                                                 img={quickViewDebtor?.avatarURL}
-                                                userName = {quickViewDebtor?.name}
-                                                //onAvatarClick={() => console.log('Clicked!')}
+                                                userName={quickViewDebtor?.name}
                                             />
-                                            <p className="text-base w-fll  truncate">{quickViewDebtor?.name === userData?.name ? "你" : quickViewDebtor?.name}</p>
+                                            <p className="text-base w-full truncate">{quickViewDebtor?.name === userData?.name ? "你" : quickViewDebtor?.name}</p>
                                         </div>
                                         <p className="shrink-0 text-base font-base">須還款給 {quickViewCreditor?.name}</p>
                                         <p className="shrink-0 text-xl font-semibold"> ${quickViewSettle.amount}</p>
@@ -352,7 +358,7 @@ export default function ProjectOverview(){
                                         payer_map={payment.payer_map}
                                         split_map={payment.split_map}
                                         currentUserId={currentUserId}
-                                        userList={userList}
+                                        userList={userList || []}
                                         categoryId={payment.category_id ?? ""}
                                         categoryList={categoryOptions || []}
                                     />
