@@ -8,7 +8,6 @@ import Avatar from "@/components/ui/Avatar"
 import IconButton from "@/components/ui/IconButton";
 import ProjectMemberList from "../ProjectOverviewSections/ProjectMemberListDialog";
 import ProjectListNavMobile from "./ProjectListNavMobile";
-import { useAuth } from "@/contexts/AuthContext"; 
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 
@@ -17,18 +16,10 @@ export default function MemberHeaderMobile(){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isProjectNavOpen, setIsProjectNavOpen] = useState(false)
 
-
     const pathname = usePathname();
     const { projectId, userId } = useParams();
-    const { userData, isReady:myDataLoading } = useAuth();
-    const { currentProjectData, currentProjectUsers, isReady:usersLoading} = useCurrentProjectData();
-    // if ( myDataLoading || usersLoading) return <p>Loading...</p>;
+    const { currentProjectData, currentProjectUsers } = useCurrentProjectData();
 
-
-    if (!userData) {
-        console.error("userData is null");
-        return <p>無法取得使用者資料</p>; // 或 return null
-    }
 
     // css
     const isMobileClass = clsx("z-20 fixed top-0 flex items-center gap-2 w-full box-border justify-start px-6 py-2",

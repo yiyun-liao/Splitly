@@ -14,20 +14,13 @@ export default function MemberHeader(){
     const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
     const [isCreatePayment, setIsCreatePayment] = useState(false)
 
-    const { userData, projectData, isReady:myDataLoading } = useAuth();
-    const {currentPaymentList, currentProjectData, currentProjectUsers, isReady:usersLoading} = useCurrentProjectData();
+    const { userData, projectData } = useAuth();
+    const {currentPaymentList, currentProjectData, currentProjectUsers} = useCurrentProjectData();
     console.log("who am i", userData)
     console.log("what project i involved", projectData)
     console.log("what i get currentProjectData",currentProjectData)
     console.log("what i get currentProjectUsers",currentProjectUsers)
     console.log("what i get currentPaymentList", currentPaymentList)
-    // if ( myDataLoading || usersLoading) return <p>Loading...</p>;
-
-    if (!userData) {
-        console.error("userData is null");
-        return <p>無法取得使用者資料</p>; // 或 return null
-    }
-
     
     return(
         <div id="dashboard-header"  className="flex items-center gap-2 w-full box-border justify-between px-6 py-2">

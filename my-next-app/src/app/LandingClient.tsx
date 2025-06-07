@@ -3,13 +3,12 @@
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import { logInUser } from '@/lib/auth';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 
 export default function LandingClient() {
     const router = useRouter();
-    const {userId} = useParams();
     const searchParams = useSearchParams();
     const { projectData, isReady, userData } = useAuth();
     const [isLoginTriggered, setIsLoginTriggered] = useState(false); 
