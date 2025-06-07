@@ -129,7 +129,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                         </div>
                     </div>
                     <div id="nav-project-list" className={`${navDivClass} ${scrollClass}`}>
-                        {projectData?.slice(0, 3).map(project => {
+                        {projectData?.map(project => {
                             return(
                                 <ImageButton
                                     key={project.id}
@@ -140,14 +140,6 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                                 />
                             )}
                         )}
-                        <IconButton
-                            icon='solar:add-circle-bold'
-                            size='md'
-                            variant='text-button'
-                            color='primary'
-                            type= 'button'
-                            onClick={() => setIsCreateProject(true)}
-                        />
                     </div>
                     {navSetting() }
                 </nav>

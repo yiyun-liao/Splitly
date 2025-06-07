@@ -41,7 +41,7 @@ export default function MemberNavMobile() {
                     icon='solar:widget-2-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/${projectId}/dashboard` ? 'primary' : 'zinc'}
+                    color= {activePath === `/${userId}/${projectId}/dashboard` ? 'primary' : 'zinc'}
                     type= 'button'
                     onClick={() => router.push(`/${userId}/${lastPath}/dashboard`)}  
                 />
@@ -49,7 +49,7 @@ export default function MemberNavMobile() {
                     icon='solar:reorder-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/${projectId}/expense` ? 'primary' : 'zinc'}
+                    color= {activePath === `/${userId}/${projectId}/expense` ? 'primary' : 'zinc'}
                     type= 'button'
                     onClick={() => router.push(`/${userId}/${lastPath}/expense`)} 
                 />
@@ -60,7 +60,7 @@ export default function MemberNavMobile() {
                     color= 'primary'
                     type= 'button'
                     onClick={() => {
-                        if (pathname === "/setting") {
+                        if (pathname === `/${userId}/setting`) {
                             router.push(`/${userId}${lastPath}/expense?openCreate=true`);
                         } else {
                             setIsCreatePayment(true);
@@ -71,7 +71,7 @@ export default function MemberNavMobile() {
                     icon='solar:chart-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/${projectId}/overview` ? 'primary' : 'zinc'}
+                    color= {activePath === `/${userId}/${projectId}/overview` ? 'primary' : 'zinc'}
                     type= 'button'
                     onClick={() => router.push(`/${userId}/${lastPath}/overview`)} 
                 />
@@ -79,7 +79,7 @@ export default function MemberNavMobile() {
                     icon='solar:user-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/setting` ? 'primary' : 'zinc'}
+                    color= {activePath === `/${userId}/setting` ? 'primary' : 'zinc'}
                     type= 'button'
                     onClick={() => router.push(`/${userId}/setting`)}
                 />

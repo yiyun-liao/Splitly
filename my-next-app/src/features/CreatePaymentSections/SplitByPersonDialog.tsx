@@ -118,7 +118,7 @@ export default function SplitByPerson({
         return(
             <div className="relative text-zinc-700">
                 <div className="w-full pb-4 bg-zinc-50 sticky -top-4 z-12">
-                    <div id="receipt-way" className=" w-full flex max-w-xl bg-sp-blue-200 rounded-xl">
+                    <div id="receipt-way" className=" w-full flex bg-sp-blue-200 rounded-xl">
                         {["percentage", "actual", "adjusted"].map(method => (
                             <Button
                                 key={method}

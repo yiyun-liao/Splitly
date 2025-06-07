@@ -37,7 +37,7 @@ export default function PaymentOverview(){
         scrollEl.addEventListener("scroll", handleScroll);
         return () => scrollEl.removeEventListener("scroll", handleScroll);
     }, []);
-    const isMobileClass = clsx("shrink-0 h-full box-border overflow-hidden text-zinc-700 ",
+    const isMobileClass = clsx("shrink-0 h-full flex flex-col box-border overflow-hidden text-zinc-700 ",
         {
             "w-full ": isMobile === true,
             "w-xl": isMobile === false,  
@@ -72,7 +72,7 @@ export default function PaymentOverview(){
                         個人支出
                 </Button>
             </div>
-            <div ref={scrollRef} className={`h-full ${scrollClass} `}>
+            <div ref={scrollRef} className={`flex-1 ${scrollClass} `}>
                 <div id="project-analysis-chart" className="px-3 py-3 mb-4 rounded-2xl h-fit overflow-hidden bg-sp-blue-300 ">
                     <div id="project-analysis-chart"  className="py-2 px-4 w-full overflow-hidden">
                         <div className="flex items-center justify-start gap-2">
@@ -93,7 +93,7 @@ export default function PaymentOverview(){
                         )}
                     </div>
                 </div>
-                <div id="expense-list" className="px-3 py-3 mb-6 rounded-2xl h-fit bg-sp-blue-200">
+                <div id="expense-list" className="px-3 py-3 rounded-2xl h-fit bg-sp-blue-200">
                     <div id="expense-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
                         <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視</p>
                     </div>

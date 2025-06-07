@@ -67,9 +67,10 @@ export default function PaymentList(){
     }, []);
       
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-    const isMobileClass = clsx("shrink-0  box-border h-full overflow-hidden bg-sp-green-300 text-zinc-700",
-        {"w-full px-0 py-0": isMobile === true,
-          "w-xl px-3 py-3 rounded-2xl": isMobile === false,  
+    const isMobileClass = clsx("shrink-0  box-border h-full flex flex-col overflow-hidden bg-sp-green-300 text-zinc-700",
+        {
+            "w-full px-0 py-0": isMobile === true,
+            "w-xl px-3 py-3 rounded-2xl": isMobile === false,  
         }
     )
     const headerClass = clsx("py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden transition-opacity duration-200",
@@ -101,7 +102,7 @@ export default function PaymentList(){
                     />
                 </div>
             </div>
-            <div id="receipt-list-frame" ref={scrollRef} className={`py-2 px-4 h-full ${scrollClass}`}>
+            <div id="receipt-list-frame" ref={scrollRef} className={`py-2 px-4 flex-1 ${scrollClass}`}>
                 {list && (list?.length < 1 ) && (
                     <>
                         <div 
