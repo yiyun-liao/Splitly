@@ -3,12 +3,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import ProjectForm from "@/features/CreateProjectSections/ProjectForm";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
 export default function CreateFirstProject() {
     const { userData, projectData, isReady } = useAuth();
     const router = useRouter();
-    const lastPath = localStorage.getItem("lastVisitedProjectPath") || projectData?.[0]?.id;;;
+    const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath") || projectData?.[0]?.id;;;
 
 
     useEffect(() => {

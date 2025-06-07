@@ -7,7 +7,7 @@ import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton"
 import CreateProject from "../CreateProjectSections/CreateProject-main";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
-
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
 interface MemberNavProps {
     setNavWidth:(width: number) => void; 
@@ -18,7 +18,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
     const pathname = usePathname();
     const { projectId, userId } = useParams();
     const {projectData, userData} = useGlobalProjectData();
-    const lastPath = localStorage.getItem("lastVisitedProjectPath") || projectData?.[0]?.id;
+    const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath") || projectData?.[0]?.id;
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")
     const [activePath, setActivePath] = useState<"dashboard" | "expense">();

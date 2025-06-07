@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { logInUser } from '@/lib/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
 
 export default function LandingClient() {
@@ -22,7 +23,8 @@ export default function LandingClient() {
     
     useEffect(() => {
         if (!isLoginTriggered || !isReady) return;
-        const lastPath = localStorage.getItem("lastVisitedProjectPath");
+        const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath");
+
 
         const redirectUrl = searchParams.get("redirect");
         console.log("我要去哪", redirectUrl , "OR", lastPath)

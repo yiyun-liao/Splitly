@@ -6,8 +6,7 @@ import IconButton from "@/components/ui/IconButton";
 import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useGlobalProjectData } from '@/contexts/GlobalProjectContext';
-
-
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
 export default function MemberNavMobile() {
     const router = useRouter();
@@ -28,7 +27,7 @@ export default function MemberNavMobile() {
     
     // 讀取 localStorage 中的 lastVisitedProjectPath
     useEffect(() => {
-        const stored = localStorage.getItem("lastVisitedProjectPath");
+        const stored = getLocalStorageItem<string>("lastVisitedProjectPath");
         setLastPath(stored || projectData?.[0]?.id || null);
     }, [projectData]);
 

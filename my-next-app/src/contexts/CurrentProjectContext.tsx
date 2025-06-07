@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { fetchUserByProject } from "@/lib/projectApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
 import { buildAvatarUrl } from "@/utils/getAvatar";
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
 type CurrentProjectContextType = {
     currentProjectData?: GetProjectData;
@@ -26,7 +27,6 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const router = useRouter();
     const { projectId } = useParams();
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
-    // const lastPath = localStorage.getItem("lastVisitedProjectPath") || projectData?.[0]?.id; //for redirect
     const [lastPath, setLastPath] = useState<string | undefined>(projectData?.[0]?.id); // fallback
 
     const currentProjectData = useMemo(() => {
@@ -40,15 +40,6 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
     const [isReady, setIsReady] = useState(false); // 控制資料就緒
 
-    useEffect(() => {
-      if (typeof window !== 'undefined') {
-        const stored = localStorage.getItem("lastVisitedProjectPath");
-        if (stored) {
-          setLastPath(stored);
-        }
-      }
-    }, [projectData]);
-
     // --- 設定 ready 狀態 ---
     useEffect(() => {
         if (currentProjectUsers && currentPaymentList) {
@@ -58,19 +49,11 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
 
     useEffect(() => {
-        if (!myDataReady || !projectData?.length) return;
-    
-        const storedPath =
-            typeof window !== 'undefined'
-                ? localStorage.getItem("lastVisitedProjectPath")
-                : null;
-    
-        const lastPath = storedPath || projectData[0].id;
-    
-        if (!currentProjectData) {
-            router.replace(`/${userData?.uid}/${lastPath}/dashboard`);
+        const stored = getLocalStorageItem<string>("lastVisitedProjectPath")|| projectData[0].id;
+        if (stored) {
+          setLastPath(stored);
         }
-    }, [myDataReady, currentProjectData, projectData, router, pureProjectId, userData]);
+    }, [projectData, currentProjectData, currentProjectUsers, currentPaymentList]);
     
 
     // --- 快取 / API 載入 ---
