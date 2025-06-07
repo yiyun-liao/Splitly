@@ -18,7 +18,7 @@ export default function SettingContent(){
         if (success){
             clearUserCache();
             console.log('Logged out!');
-            router.push('/');    
+            router.replace('/');    
         }
     }
     
@@ -65,7 +65,7 @@ export default function SettingContent(){
                         return(
                             <div 
                                 key={project.id} 
-                                onClick={() => router.push(`/${project.id}/dashboard`)}
+                                onClick={() => router.push(`/${userData?.uid}/${project.id}/dashboard`)}
                                 className={`${itemClass}`}
                             >
                                 <ImageButton

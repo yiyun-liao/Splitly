@@ -29,12 +29,26 @@ export function useCreatePayment(options?: UseCreatePaymentOptions) {
 
             if (payment) {
                 if (setCurrentPaymentList) {
-                    setCurrentPaymentList((prev) => [payment, ...(prev ?? [])]);
+                    setCurrentPaymentList((prev) => {
+                        const newList = [payment, ...(prev ?? [])];
+
+                        // 同步更新 localStorage 快取
+                        const paymentKey = `paymentList | ${projectId}`;
+                        const metaKey = `cacheProjectMeta | ${projectId}`;
+                        try {
+                            localStorage.setItem(paymentKey, JSON.stringify(newList));
+                            localStorage.setItem(metaKey, JSON.stringify({ timestamp: Date.now() }));
+                        } catch (e) {
+                            console.warn("⚠️ 快取更新失敗", e);
+                        }
+
+                        return newList;
+                    })
                 }
                 options?.onSuccess?.(payment);
-        } else {
-            console.error("⚠️ createPayment 回傳格式不符合預期", result);
-        }
+            } else {
+                console.error("⚠️ createPayment 回傳格式不符合預期", result);
+            }
         } catch (error) {
             console.error("Create payment failed:", error);
             options?.onError?.(error);

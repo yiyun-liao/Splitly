@@ -8,26 +8,26 @@ import { GetPaymentData } from "@/types/payment";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchUserByProject } from "@/lib/projectApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
-import { buildAvatarUrl } from "@/utils/avatar";
-import { getLastVisitedProjectId } from "@/utils/cache";
-
+import { buildAvatarUrl } from "@/utils/getAvatar";
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
 type CurrentProjectContextType = {
-currentProjectData?: GetProjectData;
-currentProjectUsers?: UserData[];
-currentPaymentList?: GetPaymentData[];
-setCurrentPaymentList?: React.Dispatch<React.SetStateAction<GetPaymentData[] | undefined>>;
-isReady: boolean;
+    currentProjectData?: GetProjectData;
+    currentProjectUsers?: UserData[];
+    currentPaymentList?: GetPaymentData[];
+    setCurrentPaymentList?: React.Dispatch<React.SetStateAction<GetPaymentData[] | undefined>>;
+    isReady: boolean;
 };
 
 const CurrentProjectContext = createContext<CurrentProjectContextType | undefined>(undefined);
 
 export const CurrentProjectProvider = ({ children }: { children: React.ReactNode }) => {
-    const { projectData, isReady: myDataReady } = useAuth();
+    const { projectData, userData, isReady: myDataReady } = useAuth();
+
     const router = useRouter();
     const { projectId } = useParams();
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
-    const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
+    const [lastPath, setLastPath] = useState<string | undefined>(projectData?.[0]?.id); // fallback
 
     const currentProjectData = useMemo(() => {
         if (!myDataReady || !pureProjectId) return undefined;
@@ -36,15 +36,27 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
     const [currentProjectUsers, setCurrentProjectUsers] = useState<UserData[]>();
     const [currentPaymentList, setCurrentPaymentList] = useState<GetPaymentData[]>();
-    const [isReady, setIsReady] = useState(false); // ✅ 明確控制資料就緒
+  
 
-    // ✅ 檢查資料齊全後再設 isReady
+    const [isReady, setIsReady] = useState(false); // 控制資料就緒
+
+    // --- 設定 ready 狀態 ---
     useEffect(() => {
         if (currentProjectUsers && currentPaymentList) {
         setIsReady(true);
         }
     }, [currentProjectUsers, currentPaymentList]);
 
+
+    useEffect(() => {
+        const stored = getLocalStorageItem<string>("lastVisitedProjectPath")|| projectData[0].id;
+        if (stored) {
+          setLastPath(stored);
+        }
+    }, [projectData, currentProjectData, currentProjectUsers, currentPaymentList]);
+    
+
+    // --- 快取 / API 載入 ---
     useEffect(() => {
         if (!pureProjectId) return;
 
@@ -52,14 +64,20 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const paymentKey = `paymentList | ${pureProjectId}`;
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
         const CACHE_TTL = 1000 * 60 * 180;
-
+        
+        const isPageReload = typeof window !== 'undefined' &&
+             (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
+        // const isPageReload = false;
+    
         const cachedUsers = localStorage.getItem(userKey);
         const cachedPayments = localStorage.getItem(paymentKey);
         const cachedMeta = localStorage.getItem(metaKey);
         const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
 
-        if (cachedUsers && cachedPayments && !isCacheExpired) {
+
+        if (cachedUsers && cachedPayments && !isCacheExpired && !isPageReload) {
             try {
+                console.log("✅ get data")
                 setCurrentProjectUsers(JSON.parse(cachedUsers));
                 setCurrentPaymentList(JSON.parse(cachedPayments));
                 setIsReady(true); // ✅ 快取成功也標記 ready
@@ -70,6 +88,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
                 localStorage.removeItem(paymentKey);
                 localStorage.removeItem(metaKey);
             }
+            
         }
 
         const fetchProjectData = async () => {
@@ -107,14 +126,14 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         fetchProjectData();
     }, [pureProjectId]);
 
-    // ✅ 若找不到專案，自動跳轉
+    // --- 找不到專案自動跳轉 ---
     useEffect(() => {
         if (!pureProjectId) return;
         if (!myDataReady || !projectData.length) return;
         if (!currentProjectData) {
-            router.push(`/${lastPath}/dashboard`);
+            router.replace(`/${userData?.uid}/${lastPath}/dashboard`);
         }
-    }, [myDataReady, currentProjectData, projectData, router, pureProjectId, lastPath]);
+    }, [myDataReady, currentProjectData, projectData, router, pureProjectId, lastPath,userData]);
 
     return (
         <CurrentProjectContext.Provider

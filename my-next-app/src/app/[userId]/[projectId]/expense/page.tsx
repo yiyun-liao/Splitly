@@ -9,9 +9,8 @@ import { useState } from "react";
 
 function ExpensePage(){
     const isMobile = useIsMobile();  
-    console.log("isMobile", isMobile)
     const searchParams = useSearchParams();
-    const shouldOpenCreate = searchParams.get("openCreate") === "true";
+    const shouldOpenCreate = searchParams.get("openCreate") === "true"; //mobile setting 頁面點擊增加收支時會先跳到此頁，再開啟 isCreatePayment
     const [isCreatePayment, setIsCreatePayment] = useState(shouldOpenCreate);
 
     return( isMobile ? 

@@ -1,7 +1,7 @@
 export interface Category {
-    id: number | string;
+    id: number;
     name_zh: string;
     name_en: string;
-    parent_id: number | string | null;
+    parent_id: number | null;
     imgURL?:string;
 }

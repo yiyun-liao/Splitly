@@ -16,7 +16,7 @@ export function withAuth<P extends { userData: UserData }>(
       useEffect(() => {
         if (!isReady) return;
         if (!firebaseUser || !userData) {
-          router.push("/");
+          router.replace("/");
         }
       }, [firebaseUser, userData, isReady, router]);
     

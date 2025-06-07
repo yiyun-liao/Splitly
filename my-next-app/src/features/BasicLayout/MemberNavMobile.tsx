@@ -6,25 +6,34 @@ import IconButton from "@/components/ui/IconButton";
 import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useGlobalProjectData } from '@/contexts/GlobalProjectContext';
-import { getLastVisitedProjectId } from "@/utils/cache";
-
-
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
 export default function MemberNavMobile() {
     const router = useRouter();
     const pathname = usePathname();
-    const { projectId } = useParams();
+    const { projectId, userId } = useParams();
+
     const { projectData } = useGlobalProjectData();
-    const lastPath = getLastVisitedProjectId() || projectData?.[0]?.id;
-    // console.log("i would like to go ",lastPath)
-
     const { currentProjectUsers} = useCurrentProjectData();
-
+    
     const [isCreatePayment, setIsCreatePayment] = useState(false)
     const [activePath, setActivePath] = useState(pathname); // 對應當前功能頁面渲染按鈕
+    const [lastPath, setLastPath] = useState<string | null>(null);
+    console.log("i would like to go ",lastPath)
+
     useEffect(() => {
         setActivePath(pathname);
     }, [pathname]);
+    
+    // 讀取 localStorage 中的 lastVisitedProjectPath
+    useEffect(() => {
+        const stored = getLocalStorageItem<string>("lastVisitedProjectPath");
+        setLastPath(stored || projectData?.[0]?.id || null);
+    }, [projectData]);
+
+
+    // 尚未有 lastPath 時不渲染
+    if (!lastPath || !userId) return null;
 
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-white z-25">
@@ -41,17 +50,17 @@ export default function MemberNavMobile() {
                     icon='solar:widget-2-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/${projectId}/dashboard` ? 'primary' : 'zinc'}
+                    color= {activePath === `/${userId}/${projectId}/dashboard` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${lastPath}/dashboard`)}  
+                    onClick={() => router.push(`/${userId}/${lastPath}/dashboard`)}  
                 />
                 <IconButton
                     icon='solar:reorder-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/${projectId}/expense` ? 'primary' : 'zinc'}
+                    color= {activePath === `/${userId}/${projectId}/expense` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${lastPath}/expense`)} 
+                    onClick={() => router.push(`/${userId}/${lastPath}/expense`)} 
                 />
                 <IconButton
                     icon='solar:clipboard-add-linear'
@@ -60,8 +69,8 @@ export default function MemberNavMobile() {
                     color= 'primary'
                     type= 'button'
                     onClick={() => {
-                        if (pathname === "/setting") {
-                            router.push(`${lastPath}/expense?openCreate=true`);
+                        if (pathname === `/${userId}/setting`) {
+                            router.push(`/${userId}/${lastPath}/expense?openCreate=true`);
                         } else {
                             setIsCreatePayment(true);
                         }
@@ -71,17 +80,17 @@ export default function MemberNavMobile() {
                     icon='solar:chart-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/${projectId}/overview` ? 'primary' : 'zinc'}
+                    color= {activePath === `/${userId}/${projectId}/overview` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/${lastPath}/overview`)} 
+                    onClick={() => router.push(`/${userId}/${lastPath}/overview`)} 
                 />
                 <IconButton
                     icon='solar:user-bold'
                     size='sm'
                     variant= 'text-button'
-                    color= {activePath === `/setting` ? 'primary' : 'zinc'}
+                    color= {activePath === `/${userId}/setting` ? 'primary' : 'zinc'}
                     type= 'button'
-                    onClick={() => router.push(`/setting`)}
+                    onClick={() => router.push(`/${userId}/setting`)}
                 />
             </div>
         </div>

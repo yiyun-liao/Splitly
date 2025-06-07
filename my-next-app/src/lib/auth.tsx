@@ -1,7 +1,7 @@
 // ---------- 登入 / 登出 ----------
 import { signInWithPopup, signOut, getAdditionalUserInfo } from "firebase/auth";
 import { auth, provider } from "../firebase.js";
-import { getRandomAvatarIndex } from "@/utils/avatar";
+import { getRandomAvatarIndex } from "@/utils/getAvatar";
 import { createNewUser } from "@/lib/userApi";
 
 export async function logInUser() {

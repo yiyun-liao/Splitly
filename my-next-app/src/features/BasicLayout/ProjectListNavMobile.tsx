@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from 'next/navigation';
-import { usePathname } from 'next/navigation';
 import clsx from "clsx";
 
 import ModalPortal from "@/components/ui/ModalPortal";
@@ -19,12 +18,9 @@ export default function ProjectListNavMobile({
     onClose,
 }:ProjectListNavMobileProps){
     const router = useRouter();
-    const pathname = usePathname();
-    const { projectId } = useParams();
+    const { projectId, userId } = useParams();
     const {projectData, userData} = useGlobalProjectData()
     const [isCreateProject, setIsCreateProject]= useState(false);
-
-    console.log("isProjectNavOpen", isProjectNavOpen);
 
     useEffect(() => {
         if (isProjectNavOpen) document.body.style.overflow = 'hidden';
@@ -91,7 +87,7 @@ export default function ProjectListNavMobile({
                             return(
                                 <div 
                                     key={project.id} 
-                                    onClick={() => router.push(`/${project.id}/dashboard`)}
+                                    onClick={() => router.push(`/${userId}/${project.id}/dashboard`)}
                                     className={`${itemClass} ${projectId === project.id && 'bg-sp-blue-200'}`}
                                 >
                                     <ImageButton

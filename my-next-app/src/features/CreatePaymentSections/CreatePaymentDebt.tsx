@@ -98,6 +98,7 @@ export default function CreatePaymentDebt({
                 record_mode: 'debt',   
                 currency: selectCurrencyValue,
                 amount:  parseFloat(inputDebtAmountValue || "0"),
+                category_id: "101", //debt 的 cat_id
                 time: inputTimeValue,
                 desc: inputDescValue || "",
                 payer_map: payerMap,
