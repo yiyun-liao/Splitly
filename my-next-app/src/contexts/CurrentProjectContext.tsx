@@ -26,7 +26,8 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const router = useRouter();
     const { projectId } = useParams();
     const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
-    const lastPath = localStorage.getItem("lastVisitedProjectPath") || projectData?.[0]?.id; //for redirect
+    // const lastPath = localStorage.getItem("lastVisitedProjectPath") || projectData?.[0]?.id; //for redirect
+    const [lastPath, setLastPath] = useState<string | undefined>(projectData?.[0]?.id); // fallback
 
     const currentProjectData = useMemo(() => {
         if (!myDataReady || !pureProjectId) return undefined;
@@ -39,12 +40,38 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
     const [isReady, setIsReady] = useState(false); // 控制資料就緒
 
+    useEffect(() => {
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem("lastVisitedProjectPath");
+        if (stored) {
+          setLastPath(stored);
+        }
+      }
+    }, [projectData]);
+
     // --- 設定 ready 狀態 ---
     useEffect(() => {
         if (currentProjectUsers && currentPaymentList) {
         setIsReady(true);
         }
     }, [currentProjectUsers, currentPaymentList]);
+
+
+    useEffect(() => {
+        if (!myDataReady || !projectData?.length) return;
+    
+        const storedPath =
+            typeof window !== 'undefined'
+                ? localStorage.getItem("lastVisitedProjectPath")
+                : null;
+    
+        const lastPath = storedPath || projectData[0].id;
+    
+        if (!currentProjectData) {
+            router.replace(`/${userData?.uid}/${lastPath}/dashboard`);
+        }
+    }, [myDataReady, currentProjectData, projectData, router, pureProjectId, userData]);
+    
 
     // --- 快取 / API 載入 ---
     useEffect(() => {
@@ -55,9 +82,9 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
         const CACHE_TTL = 1000 * 60 * 180;
         
-        // const isPageReload = typeof window !== 'undefined' &&
-        //      (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
-        const isPageReload = false;
+        const isPageReload = typeof window !== 'undefined' &&
+             (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
+        // const isPageReload = false;
     
         const cachedUsers = localStorage.getItem(userKey);
         const cachedPayments = localStorage.getItem(paymentKey);

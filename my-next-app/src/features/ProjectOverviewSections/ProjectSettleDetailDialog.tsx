@@ -3,16 +3,16 @@ import Avatar from "@/components/ui/Avatar";
 import ModalPortal from "@/components/ui/ModalPortal";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from 'next/navigation';
 
 import { UserData } from "@/types/user";
 import { Settlement } from "@/types/calculation";
 import { CreatePaymentPayload } from "@/types/payment";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { useGroupedByParentCategory } from "@/hooks/usePaymentStats";
 import { useCreatePayment } from "../CreatePaymentSections/hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface ProjectSettleDetailProps {
     isSelfExpenseOpen: boolean;
@@ -40,11 +40,18 @@ export default function ProjectSettleDetail({
     const currentProjectId = typeof projectId === 'string' ? projectId : "";  
     const currentUserId = typeof userId === 'string' ? userId : "";  
     const isMobile = useIsMobile();
+    const router = useRouter();
 
 
     const { handleCreatePayment, isLoading } = useCreatePayment({
         onSuccess: (payment) => {
             console.log("✅ 成功建立付款：", payment);
+            if (isMobile) {
+                router.push(`/${userId}/${currentProjectId}/overview`)
+            } else {
+                router.push(`/${userId}/${currentProjectId}/expense`)
+            }
+            
             onClose();
         },
         onError: (err) => {
