@@ -36,7 +36,7 @@ export default function LandingClient() {
             router.push(`/${userData?.uid}/${lastPath}/dashboard`);
             console.log("i have last path", lastPath)
             console.log("🧭 redirect to last visited project:", lastPath);
-        } else if (projectData.length > 0) {
+        } else if (projectData?.[0]?.id) {
             router.push(`/${userData?.uid}/${projectData[0].id}/dashboard`);
             localStorage.removeItem("lastVisitedProjectPath");
             console.log("i have project")
