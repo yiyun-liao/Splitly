@@ -1,7 +1,8 @@
 // my-next-app/src/lib/userApi.tsx
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { UserData } from "@/types/user";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function createNewUser(
     token: string,
@@ -47,6 +48,28 @@ export async function fetchCurrentUser(token: string, uid: string) {
         return data;
     } catch (error) {
         console.error("Error fetching user data from backend:", error);
+        throw error;
+    }
+}
+
+export async function updateUser(token: string, uid: string, data:UserData) {
+    try {
+        const res = await fetch(`${BASE_URL}/api/auth/getUser?uid=${uid}`, {
+            method: "POST",
+            headers: { 
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+             },
+            body: JSON.stringify(data),
+
+        });
+        
+        if (!res.ok) throw new Error("Failed to update user data");
+        const result = await res.json();
+        console.log("updateUser: ",result)
+        return result;
+    } catch (error) {
+        console.error("Error updating user data from backend:", error);
         throw error;
     }
 }

@@ -5,9 +5,9 @@ import Avatar from "@/components/ui/Avatar";
 import ModalPortal from "@/components/ui/ModalPortal";
 
 import { validateDisplayName } from "@/utils/validate";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { UserData } from "@/types/user";
-import { GetProjectData } from "@/types/project";
+import { useUpdateUser } from "./hooks/useUpdateUser";
 
 interface DataSettingDialogProps {
     isSettingDialogOpen: boolean;
@@ -33,8 +33,8 @@ export default function DataSettingDialog({
     },[isSettingDialogOpen,userData])
 
     const avoidInjectionTest = validateDisplayName(inputNameValue);
-
     const errorMessage = inputTest(inputNameValue);
+
     function inputTest(name: string): string | null {
         const trimmed = name.trim();
         if (trimmed.length < 1 || trimmed.length > 20) {
@@ -43,8 +43,29 @@ export default function DataSettingDialog({
         return null;
     }
 
-    const isModified = ( inputNameValue !== userData.name || chooseAvatarValue !== userData.avatar?.toString() );
-    const isSaveDisabled = !isModified || !!avoidInjectionTest || !!errorMessage;
+    // disable button
+    const { isSaveDisabled } = useMemo(() => {
+        let isSaveDisabled = true;
+        if (inputNameValue !== userData.name || chooseAvatarValue !== userData.avatar?.toString() ){     
+            isSaveDisabled = false;
+        }
+        if (!!avoidInjectionTest || !!errorMessage){
+            isSaveDisabled = true;
+        } 
+        return { isSaveDisabled };
+    }, [avoidInjectionTest, errorMessage, inputNameValue, chooseAvatarValue, userData ]);  
+
+    // submit
+    const { handleUpdateUser, isLoading:isUpdateLoading } = useUpdateUser({
+        onSuccess: (data) => {
+            console.log("✅ 成功建立紀錄：", data);
+            onClose();
+        },
+        onError: (err) => {
+            alert("建立紀錄失敗，請稍後再試");
+            console.log("紀錄建立錯誤", err);
+        },
+    });
 
 
     const renderBody = () => {
@@ -106,7 +127,6 @@ export default function DataSettingDialog({
                     width='full'
                     variant= 'text-button'
                     color= 'primary'
-                    // disabled={!computeFooterInfo.isComplete}
                     onClick={() => {
                         onClose();
                     }}
@@ -118,9 +138,18 @@ export default function DataSettingDialog({
                     width='full'
                     variant= 'solid'
                     color= 'primary'
-                    disabled={isSaveDisabled}
-                    onClick={() => {
-                        onClose()
+                    disabled={isSaveDisabled || isUpdateLoading}
+                    isLoading={isUpdateLoading}
+                    onClick={async()=>{
+                        if ( !userData) return;
+                        const data: UserData = {
+                            ...userData,
+                            name: inputNameValue,
+                            avatar: parseFloat(chooseAvatarValue),
+                            avatarURL: chooseAvatarURLValue
+                        };
+
+                        await handleUpdateUser(data)
                     }}
                     >
                         儲存

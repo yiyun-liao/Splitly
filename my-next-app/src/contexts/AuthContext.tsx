@@ -21,6 +21,7 @@ type AuthContextType = {
     logOutUser: () => Promise<boolean>;
     projectData: GetProjectData[];
     addProject: (project: GetProjectData) => void;
+    setUserData?: React.Dispatch<React.SetStateAction<UserData | null>>; 
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -30,7 +31,8 @@ export const AuthContext = createContext<AuthContextType>({
     isReady: false,
     logInUser: async () => false,
     logOutUser: async () => true,
-    addProject: () => {}
+    addProject: () => {},
+    setUserData: () => {},
 });
 
 
@@ -140,7 +142,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     return (
         <AuthContext.Provider
-            value={{ firebaseUser, projectData, userData, isReady, logInUser, logOutUser,addProject, }}
+            value={{ 
+                firebaseUser, 
+                projectData, 
+                userData, 
+                isReady, 
+                logInUser, 
+                logOutUser,
+                addProject, 
+                setUserData
+            }}
         >
         {children}
         </AuthContext.Provider>
