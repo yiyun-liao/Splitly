@@ -2,12 +2,14 @@ import clsx from "clsx";
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, useMemo } from "react";
+
 import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import ProjectSettleDetail from "./ProjectSettleDetailDialog";
 import ProjectWiseSpilt from "./ProjectWiseSpiltDialog";
 import ProjectDetail from "./ProjectDetailDialog";
+import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
@@ -17,12 +19,14 @@ import { formatNumber } from "@/utils/parseNumber";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
 import { useAllSettlements,useMergedSettlements, useSimplifiedSettlements } from "@/hooks/useSettleDebts";
+import { GetPaymentData } from "@/types/payment";
 
 
 export default function ProjectOverview(){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
     const [isWiseSpiltDialogOpen, setIsWiseSpiltDialogOpen] = useState(false)
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false)
+    const [editPayment, setEditPayment] = useState<GetPaymentData | null>(null); //開啟 payment list
     
     const {userData} = useGlobalProjectData();
     const currentUserId = userData?.uid || "";
@@ -126,6 +130,14 @@ export default function ProjectOverview(){
                     onClose = {() => setIsWiseSpiltDialogOpen(false)}   
                     currentProjectUsers = {userList || []}
                 />
+                {editPayment && userList && (
+                    <CreatePayment 
+                        onClose={() => {
+                            setEditPayment(null);
+                        }}
+                        initialPayload={editPayment || undefined} 
+                    />
+                )}
             </>
             <div id="expense-overview" className="w-full box-border h-fit flex flex-col items-start justify-start gap-6">
                 <div className="w-full box-border flex flex-col xl:flex-row h-fit items-start justify-start rounded-2xl overflow-hidden">
@@ -333,7 +345,7 @@ export default function ProjectOverview(){
                         </div>
                         <div id="expense-list-frame" className="w-full pb-4 px-3">
                             {(list || []).slice(0, 5).map((payment, index) => (
-                                <div key={payment.id}>
+                                <div key={payment.id} onClick={() => setEditPayment(payment)}>
                                     <ReceiptCard
                                         account_type={payment.account_type}
                                         record_mode={payment.record_mode}
