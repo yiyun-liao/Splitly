@@ -6,7 +6,7 @@ import Sheet from "@/components/ui/Sheet";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
-import { RecordMode, CreatePaymentPayload, GetPaymentData } from "@/types/payment";
+import { RecordMode, CreatePaymentPayload, UpdatePaymentData } from "@/types/payment";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCreatePayment } from "./hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
@@ -15,7 +15,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 interface CreatePaymentProps {
     open?: boolean;
     onClose: () => void;
-    initialPayload?: GetPaymentData; //for update
+    initialPayload?: UpdatePaymentData; //for update
 }
 
 export default function CreatePayment({
@@ -44,7 +44,7 @@ export default function CreatePayment({
         payer_map: {},
         split_map: {},
     });
-    const [updatePayload, setUpdatePayload] = useState<GetPaymentData>();
+    const [updatePayload, setUpdatePayload] = useState<UpdatePaymentData>();
     
     useEffect(() => {
         if (open) document.body.style.overflow = 'hidden';
@@ -95,6 +95,8 @@ export default function CreatePayment({
     });
       
     console.log("[final]payment list", JSON.stringify(payload, null, 2));
+    console.log("[final] update payment list", JSON.stringify(updatePayload, null, 2));
+
 
     return(
         <Sheet open={open} onClose={onClose}>
@@ -102,7 +104,7 @@ export default function CreatePayment({
                 <div className="w-full h-full overflow-hidden">
                     <div id="receipt-form-header"  className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden`}>
                         <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
-                        <p className="w-full text-xl font-medium truncate min-w-0"> {initialPayload ? '編輯' : '新增'}{recordMode == 'split' ? '支出' : '轉帳'}</p>
+                        <p className="w-full text-xl font-medium truncate min-w-0"> {initialPayload ? '更新' : '新增'}{recordMode == 'split' ? '支出' : '轉帳'}</p>
                         {initialPayload && (
                             <>
                                 <Button
@@ -154,13 +156,13 @@ export default function CreatePayment({
                             </Button>
                         )}
                     </div>
-                    <div id="receipt-way" className={`w-full my-4 px-1 flex ${!isMobile && "max-w-xl"} bg-sp-white-20 rounded-xl`}>
+                    <div id="receipt-way" className={`w-full my-4 flex ${!isMobile && "max-w-xl"} bg-sp-white-20 rounded-xl`}>
                         <Button
                             size='sm'
                             width='full'
                             variant= {recordMode == 'split' ? 'solid' : 'text-button'}
                             color= 'primary'
-                            disabled = {initialPayload && payload.record_mode === 'debt' && (true)}
+                            disabled = {!!initialPayload && payload.record_mode === 'debt'}
                             onClick={() => setRecordMode("split")}
                             >
                                 支出
@@ -170,7 +172,7 @@ export default function CreatePayment({
                             width='full'
                             variant={recordMode == 'debt' ? 'solid' : 'text-button'}
                             color='primary'
-                            disabled = {initialPayload && payload.record_mode === 'split' && (true)}
+                            disabled = {initialPayload && (payload.record_mode === 'split' || initialPayload?.account_type=== 'personal')}
                             onClick={() => setRecordMode("debt")}
                             >
                                 轉帳
@@ -182,6 +184,8 @@ export default function CreatePayment({
                             userData={userData}
                             projectData={projectData}
                             setPayload = {setPayload}
+                            initialPayload={initialPayload || undefined} 
+                            setUpdatePayload = {setUpdatePayload}
                         />
                     )}
                     {recordMode === "debt"  && userData && currentProjectUsers&& (

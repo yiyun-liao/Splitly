@@ -9,7 +9,7 @@ import Select from "@/components/ui/Select";
 import DebtPayer from "./DebtPayerDialog";
 import DebtReceiver from "./DebtReceiverDialog";
 import { getNowDatetimeLocal } from "@/utils/time";
-import {  CreatePaymentPayload, GetPaymentData} from "@/types/payment"
+import {  CreatePaymentPayload, GetPaymentData, UpdatePaymentData} from "@/types/payment"
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { UserData } from "@/types/user";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -23,8 +23,8 @@ interface CreatePaymentDebtProps {
     userData: UserData;
     projectData: GetProjectData[];
     setPayload : (map: CreatePaymentPayload) => void;
-    initialPayload?: GetPaymentData;
-    setUpdatePayload : (map: GetPaymentData) => void;
+    initialPayload?: UpdatePaymentData;
+    setUpdatePayload : (map: UpdatePaymentData) => void;
 }
 
 export default function CreatePaymentDebt({
@@ -50,25 +50,6 @@ export default function CreatePaymentDebt({
 
         const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
         const [isDebtReceiverOpen, setIsDebtReceiverOpen] = useState(false);
-
-        //update
-        useEffect(() => {
-            if (!initialPayload) return;
-            console.log(initialPayload)
-          
-            setSelectedCurrencyValue(initialPayload.currency || "TWD");
-            setInputTimeValue(formatToDatetimeLocal(initialPayload.time) || getNowDatetimeLocal());
-            setInputDescValue(initialPayload.desc || "");
-            setInputDebtAmountValue(initialPayload.amount.toString());
-          
-            // 付款人
-            const initialPayerUid = Object.keys(initialPayload.payer_map || {})[0];
-            if (initialPayerUid) setSelectedPayerUid(initialPayerUid);
-          
-            // 收款人
-            const initialReceiverUid = Object.keys(initialPayload.split_map || {})[0];
-            if (initialReceiverUid) setSelectedReceiverUid(initialReceiverUid);
-        }, [initialPayload]);
           
         // 付款人預設
         const [selectedPayerUid, setSelectedPayerUid] = useState(() => {
@@ -104,7 +85,27 @@ export default function CreatePaymentDebt({
             setInputDebtAmountValue(rawValue.toString())
 
         };
-  
+
+        
+        //update
+        useEffect(() => {
+            if (!initialPayload) return;
+            console.log(initialPayload)
+          
+            setSelectedCurrencyValue(initialPayload.currency || "TWD");
+            setInputTimeValue(formatToDatetimeLocal(initialPayload.time) || getNowDatetimeLocal());
+            setInputDescValue(initialPayload.desc || "");
+            setInputDebtAmountValue(initialPayload.amount.toString());
+          
+            // 付款人
+            const initialPayerUid = Object.keys(initialPayload.payer_map || {})[0];
+            if (initialPayerUid) setSelectedPayerUid(initialPayerUid);
+          
+            // 收款人
+            const initialReceiverUid = Object.keys(initialPayload.split_map || {})[0];
+            if (initialReceiverUid) setSelectedReceiverUid(initialReceiverUid);
+        }, [initialPayload]);
+
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
@@ -114,24 +115,19 @@ export default function CreatePaymentDebt({
         // get data
         useEffect(() => {
             if (initialPayload){
-                const payload : GetPaymentData = {
-                    project_id: initialPayload.project_id,
-                    id: initialPayload.id,  
-                    payment_name: initialPayload.payment_name,
-                    account_type: initialPayload.account_type,  
-                    record_mode: initialPayload.record_mode,   
+                const fullUpdate : UpdatePaymentData = {
+                    ...initialPayload, 
                     owner:currentUid,
                     currency: selectCurrencyValue,
                     amount:  parseFloat(inputDebtAmountValue || "0"),
-                    category_id: "101", //debt 的 cat_id
                     time: formatToDatetimeLocal(inputTimeValue),
                     desc: inputDescValue || "",
                     payer_map: payerMap,
                     split_map: splitMap,                    
                 };
-                setUpdatePayload(payload);
+                setUpdatePayload(fullUpdate);
             } else{
-                const payload: CreatePaymentPayload = { 
+                const fullPayload: CreatePaymentPayload = {
                     project_id:projectId,   
                     owner:currentUid,
                     payment_name: "debt",
@@ -145,7 +141,7 @@ export default function CreatePaymentDebt({
                     payer_map: payerMap,
                     split_map: splitMap,
                 };
-                setPayload(payload);               
+                setPayload(fullPayload);               
             }
         }, [projectId,currentUid,selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap, initialPayload, setUpdatePayload]);
 
