@@ -1,4 +1,4 @@
-import { GetPaymentData, CreatePaymentPayload } from "@/types/payment";
+import { GetPaymentData, CreatePaymentPayload, UpdatePaymentData } from "@/types/payment";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -66,7 +66,7 @@ export async function fetchPaymentsByProject(projectId: string) {
     }
 }
 // 更新支出
-export async function updatePayment(paymentId: string, payload: GetPaymentData) {
+export async function updatePayment(paymentId: string, payload: UpdatePaymentData) {
     try {
         const res = await fetch(`${BASE_URL}/api/payment/by-payment?paymentId=${paymentId}`, {
             method: "PUT",

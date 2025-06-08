@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { deletePayment } from "@/lib/paymentApi";
-import { GetPaymentData } from "@/types/payment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
 type UseDeletePaymentOptions = {

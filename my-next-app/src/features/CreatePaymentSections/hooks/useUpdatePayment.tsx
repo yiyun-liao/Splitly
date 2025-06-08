@@ -16,7 +16,7 @@ export function useUpdatePayment(options?: UseUpdatePaymentOptions) {
         try {
             console.log(payload)
             setIsLoading(true);
-            const result = await updatePayment(payload);
+            const result = await updatePayment(payload.id, payload);
             const payment = result?.payment;
 
             if (payment) {
