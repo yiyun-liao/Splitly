@@ -9,6 +9,7 @@ import Sheet from "@/components/ui/Sheet";
 import Select from "@/components/ui/Select";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
+import ImageButton from "@/components/ui/ImageButton";
 import { ProjectStyle, MemberBudgetMap, ProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
 import { getNowDateLocal } from "@/utils/time";
@@ -38,7 +39,8 @@ export default function ProjectForm({
     const router = useRouter();
     const isMobile = useIsMobile();
 
-
+    const [chooseCoverValue, setChooseCoverValue] = useState("");
+    const [chooseCoverURLValue, setChooseCoverURLValue] = useState("");
     const [inputProjectName, setInputProjectName] = useState("");
     const [inputStartTimeValue, setInputStartTimeValue] = useState(getNowDateLocal());
     const [inputEndTimeValue, setInputEndTimeValue] = useState("");
@@ -47,12 +49,13 @@ export default function ProjectForm({
     const [memberBudgetMap, setMemberBudgetMap] = useState<MemberBudgetMap>({ [currentUid]: undefined });
     const [inputDescValue, setInputDescValue] = useState("");
 
+    const [isCoverPageSectionOpen, setIsCoverPageSectionOpen] = useState(true);
+
     useEffect(() => {
         if (open) document.body.style.overflow = 'hidden';
         else document.body.style.overflow = 'auto';
         return () => { document.body.style.overflow = 'auto'; };
     }, [open]);
-
 
     // time setting    
     useEffect(() => {
@@ -72,13 +75,13 @@ export default function ProjectForm({
         member: undefined,
         member_budgets: memberBudgetMap || undefined,
         desc: inputDescValue || undefined,
-        img: getRandomProjectCoverIndex(),
-    }), [currentUid, inputProjectName, inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue, memberBudgetMap, inputDescValue]);
+        img: parseFloat(chooseCoverValue),
+    }), [currentUid, inputProjectName, inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue, memberBudgetMap, inputDescValue, chooseCoverValue]);
 
     //disable button 
     const {isComplete } = useMemo(() => {
         let isComplete = false;
-        if (!!projectPayload.project_name && !!projectPayload.owner){
+        if (!!projectPayload.project_name && !!projectPayload.owner && !!projectPayload.img){
             isComplete = true;
         }    
         return { isComplete };
@@ -100,7 +103,7 @@ export default function ProjectForm({
     });
 
     // css
-    const formSpan = (cols: number) => clsx(`col-span-${cols}`, "flex flex-col gap-2 items-start justify-end mt-2 min-w-0");
+    const formSpan = (cols: number) => clsx(`col-span-${cols}`, "shrink-0 flex flex-col gap-2 items-start justify-start mt-2 min-w-0");
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const labelClass = clsx("w-full font-medium truncate")
 
@@ -128,6 +131,38 @@ export default function ProjectForm({
                     </div>
                     <section className={`w-full px-1 h-full pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
                         <div className={`w-full grid grid-cols-6 gap-2 ${!isMobile && "max-w-xl"}`}>
+                            <div className={formSpan(6)}>
+                                <span className={labelClass}>專案封面</span>
+                                <div  className="shrink-0" onClick={()=> setIsCoverPageSectionOpen(prev => (!prev))}>
+                                    <ImageButton
+                                        image={chooseCoverURLValue}
+                                        size= 'md'
+                                        imageName= {inputProjectName} 
+                                    />
+                                </div>
+                            </div>
+                            {isCoverPageSectionOpen && (
+                                <div className={`col-span-6 p-8 flex flex-wrap gap-2  min-h-40 overflow-hidden rounded-r-2xl rounded-b-2xl bg-sp-white-40 cursor-pointer`}>
+                                    {Array.from({ length: 12 }, (_, index) => {
+                                        const imgUrl = `https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/${index + 1}.jpg`;
+                                        return (
+                                            <div key={index} className="shrink-0" 
+                                                onClick={() => {
+                                                    setChooseCoverURLValue(imgUrl)
+                                                    setChooseCoverValue((index+1).toString())
+                                                    setIsCoverPageSectionOpen(false)
+                                                }}
+                                            >
+                                                <ImageButton
+                                                    image={imgUrl}
+                                                    size='md'
+                                                    imageName= {inputProjectName} 
+                                                />                                            
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                             <div className={formSpan(3)}>
                                 <span className={labelClass}>專案名稱</span>
                                 <Input 
