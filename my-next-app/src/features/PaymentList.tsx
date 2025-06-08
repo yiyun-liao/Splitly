@@ -2,19 +2,21 @@ import { groupBy } from "lodash";
 import { useEffect, useRef, useState, useMemo } from "react";
 import clsx from "clsx";
 
-import ReceiptCard from "./PaymentListSections/ReceiptCard";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
-import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
 import { useIsMobile } from "@/hooks/useIsMobile";
-
+import { GetPaymentData } from "@/types/payment";
+import ReceiptCard from "./PaymentListSections/ReceiptCard";
+import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
 
 export default function PaymentList(){
     const [isCreatePayment, setIsCreatePayment] = useState(false)
-    const [showMyPayment, setShowMyPayment] = useState(false);
+    const [showMyPayment, setShowMyPayment] = useState(false); //顯示個人支出
+    const [editPayment, setEditPayment] = useState<GetPaymentData | null>(null); //開啟 payment list
+
     const toggleAccountType = () => {
         setShowMyPayment(prev => (!prev));
     };
@@ -80,9 +82,13 @@ export default function PaymentList(){
     return(
         <div id="receipt-list" className={isMobileClass}>
             <div>
-                {isCreatePayment && currentProjectUsers && (
+                {(isCreatePayment || editPayment) && currentProjectUsers && (
                     <CreatePayment 
-                        onClose={() => setIsCreatePayment(false)}
+                        onClose={() => {
+                            setIsCreatePayment(false)
+                            setEditPayment(null);
+                        }}
+                        initialPayload={editPayment || undefined} 
                     />
                 )}
             </div>
@@ -127,29 +133,31 @@ export default function PaymentList(){
                         </div>
                     </>
                 )}
-                {Object.entries(groupedPayments).map(([date, payments]) => (
-                    <div key={date} className="w-full pb-4 mb-4">
-                        <p className="text-sm pb-2 w-full font-semibold">{date}</p>
-                        {payments.map((payment, index) => (
-                            <div key={payment.id}>
-                                <ReceiptCard
-                                    record_mode={payment.record_mode}
-                                    account_type={payment.account_type}
-                                    payment_name={payment.payment_name}
-                                    amount={payment.amount}
-                                    payer_map={payment.payer_map}
-                                    split_map={payment.split_map}
-                                    currentUserId={currentUserId}
-                                    userList={userList}
-                                    categoryId={payment.category_id ?? ""}
-                                    categoryList={categoryOptions || []}
-                                />
-                                {index !== payments.length - 1 && (
-                                    <div className="w-full h-0.25 bg-sp-green-200"></div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
+                {list && (list?.length > 0 ) && (
+                    Object.entries(groupedPayments).map(([date, payments]) => (
+                        <div key={date} className="w-full pb-4 mb-4">
+                            <p className="text-sm pb-2 w-full font-semibold">{date}</p>
+                            {payments.map((payment, index) => (
+                                <div key={payment.id} onClick={() => setEditPayment(payment)}>
+                                    <ReceiptCard
+                                        record_mode={payment.record_mode}
+                                        account_type={payment.account_type}
+                                        payment_name={payment.payment_name}
+                                        amount={payment.amount}
+                                        payer_map={payment.payer_map}
+                                        split_map={payment.split_map}
+                                        currentUserId={currentUserId}
+                                        userList={userList}
+                                        categoryId={payment.category_id ?? ""}
+                                        categoryList={categoryOptions || []}
+                                    />
+                                    {index !== payments.length - 1 && (
+                                        <div className="w-full h-0.25 bg-sp-green-200"></div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )
                 ))}
             </div>
             {isMobile && (

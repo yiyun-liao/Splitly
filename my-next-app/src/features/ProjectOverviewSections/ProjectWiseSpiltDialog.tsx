@@ -1,19 +1,20 @@
+import { useParams, useRouter } from 'next/navigation';
+import { useMemo } from "react";
+import clsx from "clsx";
+
 import Dialog from "@/components/ui/Dialog";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Icon from "@/components/ui/Icon";
 import ModalPortal from "@/components/ui/ModalPortal";
-import { useParams, useRouter } from 'next/navigation';
-import { useMemo } from "react";
-import clsx from "clsx";
 
 import { UserData } from "@/types/user";
 import { CreatePaymentPayload } from "@/types/payment";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useAllSettlements,useMergedSettlements,useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 import { useCreatePayment } from "../CreatePaymentSections/hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { useAllSettlements,useMergedSettlements,useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 
 interface ProjectWiseSpiltProps {
     isProjectWiseSpiltOpen: boolean;

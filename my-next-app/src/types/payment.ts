@@ -125,3 +125,23 @@ export interface GetPaymentData {
     split_map: SplitMap; // "splitByPersonMap" | "splitByItemMap"
     items?: GetItemPayload[];
 }
+
+
+export interface UpdatePaymentData {
+    project_id:string;
+    id:string;
+    payment_name: string; 
+    account_type: AccountType; // "personal" | "group"
+    record_mode?: RecordMode ;    // "split" | "debt" 
+    split_way?: SplitWay ;  // "item" | "person" 
+    split_method?: SplitMethod ; // "percentage" | "actual" | "adjusted"
+    owner:string;
+    currency: string;
+    amount: number;
+    category_id?: string;
+    time: string;
+    desc?: string;
+    payer_map: PayerMap;
+    split_map: SplitMap; // "splitByPersonMap" | "splitByItemMap"
+    items?: CreateItemPayload[]; //這邊不同
+}

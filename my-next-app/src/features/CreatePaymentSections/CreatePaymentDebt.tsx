@@ -9,11 +9,12 @@ import Select from "@/components/ui/Select";
 import DebtPayer from "./DebtPayerDialog";
 import DebtReceiver from "./DebtReceiverDialog";
 import { getNowDatetimeLocal } from "@/utils/time";
-import {  CreatePaymentPayload} from "@/types/payment"
+import {  CreatePaymentPayload, GetPaymentData, UpdatePaymentData} from "@/types/payment"
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { UserData } from "@/types/user";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { GetProjectData } from "@/types/project";
+import { formatToDatetimeLocal } from "@/utils/formatTime";
 
 
 
@@ -21,14 +22,18 @@ interface CreatePaymentDebtProps {
     currentProjectUsers: UserData[];
     userData: UserData;
     projectData: GetProjectData[];
-    setPayload : (map: CreatePaymentPayload) => void
+    setPayload : (map: CreatePaymentPayload) => void;
+    initialPayload?: UpdatePaymentData;
+    setUpdatePayload : (map: UpdatePaymentData) => void;
 }
 
 export default function CreatePaymentDebt({
     currentProjectUsers,
     userData,
     projectData,
-    setPayload
+    setPayload,
+    initialPayload,
+    setUpdatePayload
     }:CreatePaymentDebtProps){
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
@@ -45,8 +50,7 @@ export default function CreatePaymentDebt({
 
         const [isDebtPayerOpen, setIsDebtPayerOpen] = useState(false);
         const [isDebtReceiverOpen, setIsDebtReceiverOpen] = useState(false);
-
-
+          
         // 付款人預設
         const [selectedPayerUid, setSelectedPayerUid] = useState(() => {
             return currentProjectUsers.find(user => user.uid === currentUid)?.uid || currentProjectUsers[0]?.uid ;
@@ -81,7 +85,27 @@ export default function CreatePaymentDebt({
             setInputDebtAmountValue(rawValue.toString())
 
         };
-  
+
+        
+        //update
+        useEffect(() => {
+            if (!initialPayload) return;
+            console.log(initialPayload)
+          
+            setSelectedCurrencyValue(initialPayload.currency || "TWD");
+            setInputTimeValue(formatToDatetimeLocal(initialPayload.time) || getNowDatetimeLocal());
+            setInputDescValue(initialPayload.desc || "");
+            setInputDebtAmountValue(initialPayload.amount.toString());
+          
+            // 付款人
+            const initialPayerUid = Object.keys(initialPayload.payer_map || {})[0];
+            if (initialPayerUid) setSelectedPayerUid(initialPayerUid);
+          
+            // 收款人
+            const initialReceiverUid = Object.keys(initialPayload.split_map || {})[0];
+            if (initialReceiverUid) setSelectedReceiverUid(initialReceiverUid);
+        }, [initialPayload]);
+
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
@@ -90,22 +114,36 @@ export default function CreatePaymentDebt({
 
         // get data
         useEffect(() => {
-            const payload: CreatePaymentPayload = { 
-                project_id:projectId,   
-                owner:currentUid,
-                payment_name: "debt",
-                account_type: "group",  
-                record_mode: 'debt',   
-                currency: selectCurrencyValue,
-                amount:  parseFloat(inputDebtAmountValue || "0"),
-                category_id: "101", //debt 的 cat_id
-                time: inputTimeValue,
-                desc: inputDescValue || "",
-                payer_map: payerMap,
-                split_map: splitMap,
-            };
-            setPayload(payload);
-        }, [projectId,currentUid,selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap]);
+            if (initialPayload){
+                const fullUpdate : UpdatePaymentData = {
+                    ...initialPayload, 
+                    owner:currentUid,
+                    currency: selectCurrencyValue,
+                    amount:  parseFloat(inputDebtAmountValue || "0"),
+                    time: formatToDatetimeLocal(inputTimeValue),
+                    desc: inputDescValue || "",
+                    payer_map: payerMap,
+                    split_map: splitMap,                    
+                };
+                setUpdatePayload(fullUpdate);
+            } else{
+                const fullPayload: CreatePaymentPayload = {
+                    project_id:projectId,   
+                    owner:currentUid,
+                    payment_name: "debt",
+                    account_type: "group",  
+                    record_mode: 'debt',   
+                    currency: selectCurrencyValue,
+                    amount:  parseFloat(inputDebtAmountValue || "0"),
+                    category_id: "101", //debt 的 cat_id
+                    time: formatToDatetimeLocal(inputTimeValue),
+                    desc: inputDescValue || "",
+                    payer_map: payerMap,
+                    split_map: splitMap,
+                };
+                setPayload(fullPayload);               
+            }
+        }, [projectId,currentUid,selectCurrencyValue, inputDebtAmountValue, inputTimeValue, inputDescValue,setPayload, payerMap, splitMap, initialPayload, setUpdatePayload]);
 
 
         return(

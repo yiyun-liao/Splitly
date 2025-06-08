@@ -31,14 +31,14 @@ function getDisabledStyles(variant: ButtonProps['variant'], color: ButtonProps['
     }
     if (variant === 'outline') {
         if (color === 'primary') {
-            return " text-sp-blue-200 bg-zinc-50 border-sp-blue-200";
+            return " text-zinc-400 bg-zinc-50 border-sp-blue-200";
         } else {
             return " text-zinc-200 bg-zinc-50 border-zinc-200";
         }
     }
     if (variant === 'text-button') {
         if (color === 'primary') {
-            return " text-sp-blue-200 bg-zinc-50/10 border-zinc-50/10";
+            return " text-zinc-400 bg-zinc-50/10 border-zinc-50/10";
         } else {
             return " text-zinc-200 bg-zinc-50/10 border-zinc-50/10";
         }

@@ -272,7 +272,7 @@ export default function ProjectOverview(){
                                     </Button>
                                 </div>
                             </div>
-                            <div className="px-3 py-3 flex flex-col items-start justify-start gap-2">
+                            <div className="px-3 py-3 flex items-start justify-start gap-2">
                                 {!isSettleReady ? (
                                     <p className="shrink-0 text-base font-semibold text-zinc-500">計算中...</p>
                                 ) : !quickViewSettle  ? (

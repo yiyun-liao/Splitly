@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useState, useEffect, useMemo} from "react";
+import { useState, useEffect, useMemo, useRef} from "react";
 import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
@@ -12,12 +12,14 @@ import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
 import { UserData } from "@/types/user";
-import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType} from "@/types/payment";
+import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType, GetPaymentData, UpdatePaymentData} from "@/types/payment";
 import { formatPercent, formatNumber, formatNumberForData } from "@/utils/parseNumber";
 import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { GetProjectData } from "@/types/project";
+import { formatToDatetimeLocal } from "@/utils/formatTime";
+
 
 
 interface CreatePaymentSplitProps {
@@ -25,6 +27,8 @@ interface CreatePaymentSplitProps {
     userData: UserData;
     projectData: GetProjectData[];
     setPayload : (map: CreatePaymentPayload) => void;
+    initialPayload?: UpdatePaymentData;
+    setUpdatePayload : (map: UpdatePaymentData) => void;
 }
 
 
@@ -33,6 +37,8 @@ export default function CreatePaymentSplit({
     userData,
     projectData,
     setPayload,
+    initialPayload,
+    setUpdatePayload
     }:CreatePaymentSplitProps){
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
@@ -63,7 +69,7 @@ export default function CreatePaymentSplit({
             const firstUid = currentProjectUsers.find(user => user.uid === currentUid)?.uid || currentProjectUsers[0]?.uid ;
             return { [firstUid]: 0 } ;
         });
-
+        console.log(splitPayerMap)
         // 個人帳目付款人設定
         const [personalPayerMap, setPersonalPayerMap] = useState<PayerMap>(() =>{
             return { [currentUid]: 0 }
@@ -99,11 +105,75 @@ export default function CreatePaymentSplit({
         });
         const toggleAccountType = () => {
             setAccountType(prev => (prev === "group" ? "personal" : "group"));
-          };
+        };
 
 
-        // 價格改變就重設 
+        // update
+        const isInitialLoadingRef = useRef(true);
+        
+        // 初次載入 initialPayload → 設定欄位（你原本的）
         useEffect(() => {
+            if (!initialPayload) return;
+            
+            isInitialLoadingRef.current = true;
+          
+            setSelectedCurrencyValue(initialPayload.currency || "TWD");
+            setInputAmountValue(initialPayload.amount.toString());
+            setInputPaymentValue(initialPayload.payment_name || "");
+            setInputTimeValue(formatToDatetimeLocal(formatToDatetimeLocal(initialPayload.time)));
+            setInputDescValue(initialPayload.desc || "");
+          
+            // 類別
+            if (initialPayload.category_id) {
+              setSelectedCategoryValue(String(initialPayload.category_id));
+            }
+          
+            // 帳目類型,分帳邏輯
+            setAccountType(initialPayload.account_type);
+            if (initialPayload.split_way) setSplitWay(initialPayload.split_way);
+            if (initialPayload.split_method) setChooseSplitByPerson(initialPayload.split_method);
+          
+            // 付款人
+            if (initialPayload.payer_map) {
+              setSplitPayerMap(initialPayload.payer_map);
+              setPersonalPayerMap(initialPayload.payer_map); // 個人帳也通用
+            }
+          
+            // 分帳人
+            if (initialPayload.split_map) {
+              if (initialPayload.account_type === "personal") {
+                setPersonalSplitMap(initialPayload.split_map);
+              } else if (initialPayload.split_way === "person") {
+                setSplitByPersonMap(initialPayload.split_map);
+              } else if (initialPayload.split_way === "item") {
+                setSplitByItemMap(initialPayload.split_map);
+              }
+            }
+          
+            // 分帳項目
+            if (initialPayload.items) {
+              setLocalItemPayloadList(initialPayload.items);
+            }
+        }, [initialPayload]);
+          
+
+
+        // 價格改變就重設
+        const didManuallyChangeAmountRef = useRef(false);
+
+        // 1. onChange handler 內設為 true（代表使用者手動輸入）
+        const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputAmountValue(e.target.value);
+        didManuallyChangeAmountRef.current = true;
+        };
+        useEffect(() => {
+            // 第一次因 initialPayload 設定 inputValue ➜ 跳過一次
+            if (isInitialLoadingRef.current) {
+                isInitialLoadingRef.current = false;
+                return;
+            }
+            if (!didManuallyChangeAmountRef.current) return;
+
             const amount = parseFloat(inputAmountValue || "0");
             const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
             const total = parseFloat(formatNumberForData(amount * percent))
@@ -116,14 +186,17 @@ export default function CreatePaymentSplit({
             );
             const personalMap: SplitMap = { [currentUid]: { fixed: amount, percent: 0, total: amount}}
 
+            setSplitWay('person');
             setChooseSplitByPerson("percentage");
             setSplitByPersonMap(groupMap);
             setSplitPayerMap({[currentUid]: amount });
+            setLocalItemPayloadList([]);
             // person
             setPersonalPayerMap({[currentUid]: amount })
             setPersonalSplitMap(personalMap);
+            didManuallyChangeAmountRef.current = false;
 
-        }, [inputAmountValue, currentProjectUsers, userData,currentUid]);
+        }, [inputAmountValue, currentProjectUsers, userData, currentUid, initialPayload]);
 
 
         // 金額輸入限制
@@ -187,29 +260,55 @@ export default function CreatePaymentSplit({
             return splitWay === "item"  ? localItemPayloadList : undefined;
         }, [localItemPayloadList, splitWay]);
 
-        const payload: CreatePaymentPayload = useMemo(() => {
+        const fullPayload: CreatePaymentPayload = useMemo(() => {
             return {
                 project_id:projectId,
                 owner:currentUid,
                 payment_name: inputPaymentValue,
                 account_type:accountType, // "personal" | "group"
-                record_mode: recordFinalWay,   // "split" | "debt" | "personal"
-                split_way: splitFinalWay,   // "item" | "person" | "personal"
-                split_method: splitFinalMethod,  // "percentage" | "actual" | "adjusted" | "item"  | "personal"
+                record_mode: recordFinalWay,   // "split" | "debt" 
+                split_way: splitFinalWay,   // "item" | "person" 
+                split_method: splitFinalMethod,  // "percentage" | "actual" | "adjusted" 
                 currency: selectCurrencyValue,
                 amount: finalAmount,
                 category_id: selectedCategoryValue|| undefined, 
-                time: inputTimeValue,
+                time: formatToDatetimeLocal(inputTimeValue),
                 desc: inputDescValue || undefined,
                 payer_map: payerFinalMap,
                 split_map: splitFinalMap,
                 items:itemsFinal,
             };
           }, [projectId,currentUid,inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap,itemsFinal]);
+
+        const fullUpdate: UpdatePaymentData = useMemo(() => {
+            if (!initialPayload) {
+                return {} as UpdatePaymentData; 
+            }
+            return {
+                ...initialPayload,
+                owner:currentUid,
+                payment_name: inputPaymentValue,
+                account_type:accountType, // "personal" | "group"
+                record_mode: recordFinalWay,   // "split" | "debt" 
+                split_way: splitFinalWay,   // "item" | "person" 
+                split_method: splitFinalMethod,  // "percentage" | "actual" | "adjusted" 
+                currency: selectCurrencyValue,
+                amount: finalAmount,
+                category_id: selectedCategoryValue|| undefined, 
+                time: formatToDatetimeLocal(inputTimeValue),
+                desc: inputDescValue || undefined,
+                payer_map: payerFinalMap,
+                split_map: splitFinalMap,
+                items:itemsFinal,
+            };
+          }, [initialPayload,currentUid,inputPaymentValue,accountType,recordFinalWay,splitFinalWay,splitFinalMethod,selectCurrencyValue,finalAmount,selectedCategoryValue,inputTimeValue,inputDescValue,payerFinalMap,splitFinalMap,itemsFinal]);
         
         useEffect(() => {
-            setPayload(payload);
-        }, [payload, setPayload]);
+            if (initialPayload){
+                setUpdatePayload(fullUpdate)
+            }
+            setPayload(fullPayload);
+        }, [fullPayload, setPayload, initialPayload, setUpdatePayload, fullUpdate]);
 
         // css
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
@@ -217,6 +316,12 @@ export default function CreatePaymentSplit({
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
         const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
         const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-end")
+        const toggleClass = clsx("shrink-0 px-2 py-2 flex items-center justify-center gap-2 rounded-xl bg-sp-white-20",
+            {
+                "text-zinc-400 cursor-not-allowed": initialPayload,
+                "hover:bg-sp-green-100 active:bg-sp-green-200 cursor-pointer": !initialPayload
+            }
+        )
 
         return(
             <div className="w-full h-full pb-20 mb-20">
@@ -265,8 +370,8 @@ export default function CreatePaymentSplit({
                                 <span className="font-medium truncate text-sp-blue-500">{projectName}</span>
                             </div>
                             <div
-                                className={`shrink-0 px-2 py-2 flex items-center justify-center gap-2 rounded-xl bg-sp-white-20 hover:bg-sp-green-100 active:bg-sp-green-200 cursor-pointer }`}
-                                onClick={() => { toggleAccountType()}}
+                                className={toggleClass}
+                                onClick={!initialPayload ? () => toggleAccountType() : undefined}
                             >
                                 <p className="text-base ml-4 shrink-0">個人帳目</p>
                                 <IconButton
@@ -275,6 +380,7 @@ export default function CreatePaymentSplit({
                                     variant="text-button"
                                     color="primary"
                                     type="button"
+                                    disabled={!!initialPayload}
                                 />
                             </div>
                         </div>
@@ -395,10 +501,11 @@ export default function CreatePaymentSplit({
                                     />
                                 </div>
                                 <div className={formSpan2CLass}>
+                                    <span className="w-full font-sm text-zinc-570 truncate">重設金額就會整個分帳重設</span>
                                     <Input
                                     value={inputAmountValue}
                                     type="number"
-                                    onChange={(e) => {handleSplitAmountChange(e.target.value)}}
+                                    onChange={(e) => {handleAmountChange(e)}}
                                     flexDirection="row"
                                     width="full"
                                     placeholder="點擊編輯"
