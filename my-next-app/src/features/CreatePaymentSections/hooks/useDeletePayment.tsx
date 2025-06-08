@@ -1,36 +1,26 @@
-// my-next-app/src/features/CreatePaymentSections/hooks.tsx
 import { useState } from "react";
-import { useParams } from "next/navigation";
-import { createPayment } from "@/lib/paymentApi";
-import { CreatePaymentPayload, GetPaymentData } from "@/types/payment";
+import { deletePayment } from "@/lib/paymentApi";
+import { GetPaymentData } from "@/types/payment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
-type UseCreatePaymentOptions = {
-    onSuccess?: (payment: GetPaymentData) => void;
+type UseDeletePaymentOptions = {
+    onSuccess?: (paymentId: string) => void;
     onError?: (error: unknown) => void;
 };
 
-export function useCreatePayment(options?: UseCreatePaymentOptions) {
+export function useDeletePayment(options?: UseDeletePaymentOptions) {
     const { setCurrentPaymentList } = useCurrentProjectData();
     const [isLoading, setIsLoading] = useState(false);
-    const rawProjectId = useParams()?.projectId;
-    const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
 
-    const handleCreatePayment = async (payload: CreatePaymentPayload) => {
-        const fullPayload: CreatePaymentPayload = {
-            ...payload, 
-            project_id: projectId || "", 
-        };
+    const handleDeletePayment = async (projectId: string, paymentId:string) => {
         try {
-            console.log(payload)
             setIsLoading(true);
-            const result = await createPayment(fullPayload);
-            const payment = result?.payment;
-
-            if (payment) {
+            const result = await deletePayment(paymentId);
+            // return: {"success":true}
+            if (result.success) {
                 if (setCurrentPaymentList) {
                     setCurrentPaymentList((prev) => {
-                        const newList = [payment, ...(prev ?? [])];
+                        const newList = (prev ?? []).filter(p => p.id !== paymentId);
 
                         // 同步更新 localStorage 快取
                         const paymentKey = `paymentList | ${projectId}`;
@@ -45,7 +35,7 @@ export function useCreatePayment(options?: UseCreatePaymentOptions) {
                         return newList;
                     })
                 }
-                options?.onSuccess?.(payment);
+                options?.onSuccess?.(paymentId);
             } else {
                 console.error("⚠️ createPayment 回傳格式不符合預期", result);
             }
@@ -57,5 +47,5 @@ export function useCreatePayment(options?: UseCreatePaymentOptions) {
         }
     };
 
-    return { handleCreatePayment, isLoading };
+    return { handleDeletePayment, isLoading };
 }

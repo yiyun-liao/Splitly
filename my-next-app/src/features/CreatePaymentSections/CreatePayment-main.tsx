@@ -83,7 +83,7 @@ export default function CreatePayment({
         return { isComplete };
     }, [payload, updatePayload, initialPayload]);  
 
-    const { handleCreatePayment, isLoading } = useCreatePayment({
+    const { handleCreatePayment, isLoading:isCreateLoading } = useCreatePayment({
         onSuccess: (payment) => {
             console.log("✅ 成功建立付款：", payment);
             onClose();
@@ -112,8 +112,8 @@ export default function CreatePayment({
                                     width='fit'
                                     variant= 'text-button'
                                     color='primary'
-                                    disabled={!isComplete || isLoading} 
-                                    isLoading={isLoading}
+                                    disabled={!isComplete || isCreateLoading} 
+                                    isLoading={isCreateLoading}
                                     onClick={async()=>{
                                         console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
                                         console.log("delete", payload)
@@ -127,11 +127,11 @@ export default function CreatePayment({
                                     width='fit'
                                     variant='solid'
                                     color='primary'
-                                    disabled={!isComplete || isLoading} 
-                                    isLoading={isLoading}
+                                    disabled={!isComplete || isCreateLoading} 
+                                    isLoading={isCreateLoading}
                                     onClick={async()=>{
-                                        console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
-                                        console.log("update", payload)
+                                        console.log("帳目", updatePayload?.account_type,"增加內容", updatePayload?.record_mode, "分帳方式", updatePayload?.split_way,"分錢方式", updatePayload?.split_method)
+                                        console.log("update", updatePayload)
                                         // await handleUpdatePayment(payload);
                                     }}
                                     >
@@ -145,8 +145,8 @@ export default function CreatePayment({
                                 width='fit'
                                 variant='solid'
                                 color='primary'
-                                disabled={!isComplete || isLoading} 
-                                isLoading={isLoading}
+                                disabled={!isComplete || isCreateLoading} 
+                                isLoading={isCreateLoading}
                                 onClick={async()=>{
                                     console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
                                     await handleCreatePayment(payload);

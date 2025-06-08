@@ -1,40 +1,34 @@
-// my-next-app/src/features/CreatePaymentSections/hooks.tsx
 import { useState } from "react";
-import { useParams } from "next/navigation";
-import { createPayment } from "@/lib/paymentApi";
-import { CreatePaymentPayload, GetPaymentData } from "@/types/payment";
+import { updatePayment } from "@/lib/paymentApi";
+import { GetPaymentData, UpdatePaymentData } from "@/types/payment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 
-type UseCreatePaymentOptions = {
+type UseUpdatePaymentOptions = {
     onSuccess?: (payment: GetPaymentData) => void;
     onError?: (error: unknown) => void;
 };
 
-export function useCreatePayment(options?: UseCreatePaymentOptions) {
+export function useUpdatePayment(options?: UseUpdatePaymentOptions) {
     const { setCurrentPaymentList } = useCurrentProjectData();
     const [isLoading, setIsLoading] = useState(false);
-    const rawProjectId = useParams()?.projectId;
-    const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
 
-    const handleCreatePayment = async (payload: CreatePaymentPayload) => {
-        const fullPayload: CreatePaymentPayload = {
-            ...payload, 
-            project_id: projectId || "", 
-        };
+    const handleUpdatePayment = async (payload: UpdatePaymentData) => {
         try {
             console.log(payload)
             setIsLoading(true);
-            const result = await createPayment(fullPayload);
+            const result = await updatePayment(payload);
             const payment = result?.payment;
 
             if (payment) {
                 if (setCurrentPaymentList) {
                     setCurrentPaymentList((prev) => {
-                        const newList = [payment, ...(prev ?? [])];
+                        const newList = (prev ?? []).map((p) =>
+                            p.id === payment.id ? payment : p
+                        );
 
                         // 同步更新 localStorage 快取
-                        const paymentKey = `paymentList | ${projectId}`;
-                        const metaKey = `cacheProjectMeta | ${projectId}`;
+                        const paymentKey = `paymentList | ${payment.project_id}`;
+                        const metaKey = `cacheProjectMeta | ${payment.project_id}`;
                         try {
                             localStorage.setItem(paymentKey, JSON.stringify(newList));
                             localStorage.setItem(metaKey, JSON.stringify({ timestamp: Date.now() }));
@@ -57,5 +51,5 @@ export function useCreatePayment(options?: UseCreatePaymentOptions) {
         }
     };
 
-    return { handleCreatePayment, isLoading };
+    return { handleUpdatePayment, isLoading };
 }
