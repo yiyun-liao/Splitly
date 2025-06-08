@@ -6,7 +6,7 @@ import Sheet from "@/components/ui/Sheet";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
-import { RecordMode, CreatePaymentPayload } from "@/types/payment";
+import { RecordMode, CreatePaymentPayload, GetPaymentData } from "@/types/payment";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCreatePayment } from "./hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
@@ -15,12 +15,15 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 interface CreatePaymentProps {
     open?: boolean;
     onClose: () => void;
+    initialPayload?: GetPaymentData; //for update
 }
 
 export default function CreatePayment({
     open = true,
     onClose,
+    initialPayload
     }:CreatePaymentProps){
+    
     const isMobile = useIsMobile();
     const {userData, projectData} = useGlobalProjectData();
     const {currentProjectUsers} = useCurrentProjectData();
@@ -41,6 +44,7 @@ export default function CreatePayment({
         payer_map: {},
         split_map: {},
     });
+    const [updatePayload, setUpdatePayload] = useState<GetPaymentData>();
     
     useEffect(() => {
         if (open) document.body.style.overflow = 'hidden';
@@ -50,14 +54,34 @@ export default function CreatePayment({
         };
     }, [open]);
 
+    // update  
+    useEffect(() => {
+        if (initialPayload) {
+            setPayload(initialPayload);
+            setUpdatePayload(initialPayload);
+            if (initialPayload.account_type === 'group' && initialPayload.record_mode === 'debt'){
+                setRecordMode('debt')
+            }else if (initialPayload.account_type === 'group' && initialPayload.record_mode === 'split'){
+                setRecordMode('split')
+            }else if (initialPayload.account_type === 'personal'){
+                setRecordMode('split')
+            }
+        }
+    }, [initialPayload]);
+
     // disable button
     const {isComplete } = useMemo(() => {
         let isComplete = false;
+        if (initialPayload){
+            if (!!updatePayload?.id &&!!updatePayload?.amount && !!updatePayload?.payer_map && !!updatePayload?.payment_name && !!updatePayload?.owner){
+                isComplete = true;
+            }                
+        }
         if (!!payload.amount && !!payload.payer_map && !!payload.payment_name && !!payload.owner){
             isComplete = true;
         }    
         return { isComplete };
-    }, [payload]);  
+    }, [payload, updatePayload, initialPayload]);  
 
     const { handleCreatePayment, isLoading } = useCreatePayment({
         onSuccess: (payment) => {
@@ -78,21 +102,57 @@ export default function CreatePayment({
                 <div className="w-full h-full overflow-hidden">
                     <div id="receipt-form-header"  className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden`}>
                         <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
-                        <p className="w-full text-xl font-medium truncate min-w-0"> 新增{recordMode == 'split' ? '支出' : '轉帳'}</p>
-                        <Button
-                            size='sm'
-                            width='fit'
-                            variant='solid'
-                            color='primary'
-                            disabled={!isComplete || isLoading} 
-                            isLoading={isLoading}
-                            onClick={async()=>{
-                                console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
-                                await handleCreatePayment(payload);
-                            }}
-                            >
-                                儲存
-                        </Button>
+                        <p className="w-full text-xl font-medium truncate min-w-0"> {initialPayload ? '編輯' : '新增'}{recordMode == 'split' ? '支出' : '轉帳'}</p>
+                        {initialPayload && (
+                            <>
+                                <Button
+                                    size='sm'
+                                    width='fit'
+                                    variant= 'text-button'
+                                    color='primary'
+                                    disabled={!isComplete || isLoading} 
+                                    isLoading={isLoading}
+                                    onClick={async()=>{
+                                        console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
+                                        console.log("delete", payload)
+                                        // await handleDeletePayment(payload);
+                                    }}
+                                    >
+                                        刪除
+                                </Button>
+                                <Button
+                                    size='sm'
+                                    width='fit'
+                                    variant='solid'
+                                    color='primary'
+                                    disabled={!isComplete || isLoading} 
+                                    isLoading={isLoading}
+                                    onClick={async()=>{
+                                        console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
+                                        console.log("update", payload)
+                                        // await handleUpdatePayment(payload);
+                                    }}
+                                    >
+                                        更新
+                                </Button>
+                            </>
+                        )}
+                        {!initialPayload && (
+                            <Button
+                                size='sm'
+                                width='fit'
+                                variant='solid'
+                                color='primary'
+                                disabled={!isComplete || isLoading} 
+                                isLoading={isLoading}
+                                onClick={async()=>{
+                                    console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
+                                    await handleCreatePayment(payload);
+                                }}
+                                >
+                                    儲存
+                            </Button>
+                        )}
                     </div>
                     <div id="receipt-way" className={`w-full my-4 px-1 flex ${!isMobile && "max-w-xl"} bg-sp-white-20 rounded-xl`}>
                         <Button
@@ -100,6 +160,7 @@ export default function CreatePayment({
                             width='full'
                             variant= {recordMode == 'split' ? 'solid' : 'text-button'}
                             color= 'primary'
+                            disabled = {initialPayload && payload.record_mode === 'debt' && (true)}
                             onClick={() => setRecordMode("split")}
                             >
                                 支出
@@ -109,6 +170,7 @@ export default function CreatePayment({
                             width='full'
                             variant={recordMode == 'debt' ? 'solid' : 'text-button'}
                             color='primary'
+                            disabled = {initialPayload && payload.record_mode === 'split' && (true)}
                             onClick={() => setRecordMode("debt")}
                             >
                                 轉帳
@@ -128,6 +190,8 @@ export default function CreatePayment({
                             userData={userData}
                             projectData={projectData}
                             setPayload = {setPayload}
+                            initialPayload={initialPayload || undefined} 
+                            setUpdatePayload = {setUpdatePayload}
                         />
                     )}
                 </div>

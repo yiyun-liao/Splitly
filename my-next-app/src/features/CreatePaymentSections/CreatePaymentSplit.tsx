@@ -18,6 +18,8 @@ import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { GetProjectData } from "@/types/project";
+import { formatToDatetimeLocal } from "@/utils/formatTime";
+
 
 
 interface CreatePaymentSplitProps {
@@ -199,7 +201,7 @@ export default function CreatePaymentSplit({
                 currency: selectCurrencyValue,
                 amount: finalAmount,
                 category_id: selectedCategoryValue|| undefined, 
-                time: inputTimeValue,
+                time: formatToDatetimeLocal(inputTimeValue),
                 desc: inputDescValue || undefined,
                 payer_map: payerFinalMap,
                 split_map: splitFinalMap,
