@@ -196,18 +196,20 @@ export default function ProjectOverview(){
                     <div id="overview-bubble-spilt" className={`flex-1 self-stretch  ${overviewBubbleClass} `}>
                         <div className="pl-3 pb-3 flex items-center justify-start gap-2">
                             <p className="text-base w-full">簡易還款</p>
-                            <div className="shrink-0 ">
-                                <Button
-                                    size='sm'
-                                    width='fit'
-                                    variant='text-button'
-                                    color='primary'
-                                    isLoading={!isSettleReady}
-                                    onClick={() => setIsWiseSpiltDialogOpen(true)} 
-                                    >
-                                        查看全部
-                                </Button>
-                            </div>
+                            {settleMiniDetail.length !== 0 && (
+                                <div className="shrink-0 ">
+                                    <Button
+                                        size='sm'
+                                        width='fit'
+                                        variant='text-button'
+                                        color='primary'
+                                        isLoading={!isSettleReady}
+                                        onClick={() => setIsWiseSpiltDialogOpen(true)} 
+                                        >
+                                            查看全部
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                         <div className="px-3 py-3 flex flex-col items-start justify-start gap-8">
                             {!isSettleReady ? (
@@ -275,8 +277,11 @@ export default function ProjectOverview(){
                             <div className="px-3 py-3 flex items-start justify-start gap-2">
                                 {!isSettleReady ? (
                                     <p className="shrink-0 text-base font-semibold text-zinc-500">計算中...</p>
-                                ) : !quickViewSettle  ? (
-                                    <p className="shrink-0 text-xl font-semibold">專案已結清🎉</p>
+                                ) : settleMiniDetail.length === 0  ? (
+                                    <div className="flex-col ">
+                                        <p className="shrink-0 text-xl font-semibold">專案已結清🎉</p>
+                                        <p className="shrink-0 text-sm text-zinc-500">詳細還款紀錄可點擊「查看全部」</p>
+                                    </div>
                                 ) : (
                                     <>
                                         <div className="w-full flex  flex-wrap items-center justify-start gap-2 overflow-hidden">

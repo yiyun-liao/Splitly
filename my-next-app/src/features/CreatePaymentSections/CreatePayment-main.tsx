@@ -117,8 +117,8 @@ export default function CreatePayment({
         },
     });
       
-    console.log("[final]payment list", JSON.stringify(payload, null, 2));
-    console.log("[final] update payment list", JSON.stringify(updatePayload, null, 2));
+    // console.log("[final]payment list", JSON.stringify(payload, null, 2));
+    // console.log("[final] update payment list", JSON.stringify(updatePayload, null, 2));
 
 
     return(
@@ -128,7 +128,7 @@ export default function CreatePayment({
                     <div id="receipt-form-header"  className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden`}>
                         <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
                         <p className="w-full text-xl font-medium truncate min-w-0"> {initialPayload ? '更新' : '新增'}{recordMode == 'split' ? '支出' : '轉帳'}</p>
-                        {initialPayload && (
+                        {initialPayload && updatePayload && (
                             <>
                                 <Button
                                     size='sm'
@@ -139,7 +139,7 @@ export default function CreatePayment({
                                     isLoading={isDeleteLoading}
                                     onClick={async()=>{
                                         console.log("delete", initialPayload.project_id, initialPayload.id)
-                                        // await handleDeletePayment(initialPayload.project_id, initialPayload.id);
+                                        await handleDeletePayment(initialPayload.project_id, initialPayload.id);
                                     }}
                                     >
                                         刪除
@@ -154,7 +154,7 @@ export default function CreatePayment({
                                     onClick={async()=>{
                                         console.log("帳目", updatePayload?.account_type,"增加內容", updatePayload?.record_mode, "分帳方式", updatePayload?.split_way,"分錢方式", updatePayload?.split_method)
                                         console.log("update", updatePayload)
-                                        // await handleUpdatePayment(updatePayload);
+                                        await handleUpdatePayment(updatePayload);
                                     }}
                                     >
                                         更新

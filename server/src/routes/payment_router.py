@@ -43,8 +43,10 @@ class PaymentRouter:
                     body.id = paymentId
                 payment_db = PaymentDB(db)
                 new_payment = payment_db.update_payment(body)
-                if new_payment == True:
-                    return {"success": True, "payment_name": paymentId}
+                if not new_payment:
+                    raise HTTPException(status_code=404, detail="Payment not found or update failed")
+
+                return {"success": True, "payment": new_payment}
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Update payment failed: {str(e)}")
 
@@ -55,6 +57,6 @@ class PaymentRouter:
                 payment_db = PaymentDB(db)
                 delete_success = payment_db.delete_payment(paymentId)
                 if delete_success == True:
-                    return {"success": True, "payment_name": paymentId}
+                    return {"success": True, "payment_id": paymentId}
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Delete payment failed: {str(e)}")

@@ -141,13 +141,12 @@ export default function CreatePaymentSplit({
           
             // 分帳人
             if (initialPayload.split_map) {
-              if (initialPayload.account_type === "personal") {
-                setPersonalSplitMap(initialPayload.split_map);
-              } else if (initialPayload.split_way === "person") {
                 setSplitByPersonMap(initialPayload.split_map);
-              } else if (initialPayload.split_way === "item") {
-                setSplitByItemMap(initialPayload.split_map);
-              }
+                if (initialPayload.split_way === "person") {
+                    setPersonalSplitMap(initialPayload.split_map);
+                } else if (initialPayload.split_way === "item") {
+                    setSplitByItemMap(initialPayload.split_map);
+                }
             }
           
             // 分帳項目

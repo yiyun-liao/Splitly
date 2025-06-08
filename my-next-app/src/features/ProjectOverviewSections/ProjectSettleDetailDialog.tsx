@@ -14,7 +14,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useGroupedByParentCategory } from "@/hooks/usePaymentStats";
 import { useCreatePayment } from "../CreatePaymentSections/hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { useAllSettlements,useMergedSettlements } from "@/hooks/useSettleDebts";
+import { useAllSettlements,useMergedSettlements,useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 
 
 interface ProjectSettleDetailProps {
@@ -31,6 +31,7 @@ export default function ProjectSettleDetail({
     // 須還款的金額
     const settleDetail = useAllSettlements();
     const settleSimpleDetail = useMergedSettlements(settleDetail);
+    const settleWiseDetail = useSimplifiedSettlements(settleSimpleDetail)
     const {userData} = useGlobalProjectData();
     
     // 還款紀錄
@@ -49,7 +50,10 @@ export default function ProjectSettleDetail({
     // update ui
     const visibleSettlements = useMemo(() => {
         return settleSimpleDetail.filter((s) => s.amount > 0);
-      }, [settleSimpleDetail]);
+    }, [settleSimpleDetail]);
+    const settleMiniDetail = useMemo(() => {
+        return settleWiseDetail.filter((s) => s.amount > 0);
+    }, [settleWiseDetail]);
 
 
     const { handleCreatePayment, isLoading } = useCreatePayment({
@@ -79,8 +83,8 @@ export default function ProjectSettleDetail({
                         <p className="text-sm  w-full">使用簡易還款可以更快速地還清債務！</p>
                     </div>
                     <div className="w-full min-h-20 bg-sp-green-200 rounded-2xl flex flex-col gap-2">
-                        {visibleSettlements.length === 0 ? (
-                            <p className="shrink-0 flex justify-center items-center text-xl font-semibold">專案已結清🎉</p>
+                        {settleMiniDetail.length === 0 ? (
+                            <p className="shrink-0 flex justify-center items-center my-auto text-xl font-semibold">專案已結清🎉</p>
                         ) : (
                             visibleSettlements.map((settle, index) => {
                                 const debtor = currentProjectUsers?.find(user => user.uid === settle?.from);
@@ -166,8 +170,8 @@ export default function ProjectSettleDetail({
                     <div className="w-full flex flex-col box-border h-fit min-h-40 ">
                         {debtList?.[0].payments && debtList?.[0].payments.length !==0 && (
                             debtList?.[0].payments.map((payment, index) => {
-                                const debtorUid = Object.keys(payment.split_map ?? {})[0];
-                                const creditorUid = Object.keys(payment.payer_map ?? {})[0];
+                                const debtorUid = Object.keys(payment.payer_map ?? {})[0];
+                                const creditorUid = Object.keys(payment.split_map ?? {})[0];
                                 const debtor = currentProjectUsers?.find(user => user.uid === debtorUid);
                                 const creditor = currentProjectUsers?.find(user => user.uid === creditorUid);
                                 const dateOnly = new Intl.DateTimeFormat('zh-TW', {
