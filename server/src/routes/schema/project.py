@@ -32,6 +32,7 @@ class AddProjectMembersSchema(BaseModel):
 
 # 更新用（所有欄位選填）
 class UpdateProjectSchema(BaseModel):
+    id:str
     project_name: Optional[str]  = None
     start_time: Optional[date]  = None
     end_time: Optional[date]  = None

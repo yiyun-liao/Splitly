@@ -13,6 +13,7 @@ class UserRouter:
         self._add_routes()
 
     def _add_routes(self):
+        # 專案的所有用戶
         @self.router.get("/api/getUsers/by-project", response_model=list[UserSchema])
         def get_project_users(pid: str, db: Session = Depends(get_db_session)):
             try:
@@ -25,7 +26,7 @@ class UserRouter:
         @self.router.post("/api/auth/getUser", response_model=UserCreateMinimalResponse)
         async def update_user(
             uid:str,
-            user: UserLoginSchema, 
+            user_data: UserLoginSchema, 
             uid_verified: str = Depends(verify_firebase_token),
             db: Session = Depends(get_db_session)
         ):
@@ -34,7 +35,7 @@ class UserRouter:
                 raise HTTPException(status_code=403, detail="Unauthorized access")
             try:
                 user_db = UserDB(db)
-                updated_user = user_db.update_by_uid(uid, user)
+                updated_user = user_db.update_by_uid(uid, user_data)
                 print("✅ 更新用戶成功:", updated_user.uid)
                 return {"success": True, "user": updated_user}
             except Exception as e:

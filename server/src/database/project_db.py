@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from src.database.models.project import ProjectModel, ProjectEditorRelation, ProjectMemberRelation
-from src.routes.schema.project import CreateProjectSchema, GetProjectSchema
+from src.routes.schema.project import CreateProjectSchema, GetProjectSchema, UpdateProjectSchema
 from fastapi import HTTPException
 from uuid import uuid4
 from datetime import datetime
@@ -12,7 +12,7 @@ class ProjectDB:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_project(self, project_data: CreateProjectSchema):
+    def create_project_db(self, project_data: CreateProjectSchema):
         project = ProjectModel(
             id=str(uuid4()),
             project_name=project_data.project_name,
@@ -59,7 +59,93 @@ class ProjectDB:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Create Project failed: {str(e)}")
 
-    def get_projects_by_user_id(self, uid):
+    def get_certain_project_db(self, pid: str) -> GetProjectSchema:
+        project = self.db.query(ProjectModel).filter(ProjectModel.id == pid).first()
+
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+
+        # 查出 editors
+        editor_uids = [
+            rel.user_id for rel in self.db.query(ProjectEditorRelation)
+            .filter_by(project_id=project.id)
+            .all()
+        ]
+        # 查出 members
+        member_uids = [
+            rel.user_id for rel in self.db.query(ProjectMemberRelation)
+            .filter_by(project_id=project.id)
+            .all()
+        ]
+
+        return GetProjectSchema(
+            id=project.id,
+            project_name=project.project_name,
+            start_time=project.start_time,
+            end_time=project.end_time,
+            style=project.style,
+            currency=project.currency,
+            budget=project.budget,
+            owner=project.owner,
+            member_budgets=project.member_budgets or {},
+            desc=project.desc,
+            img=project.img,
+            editor=editor_uids,
+            member=member_uids,
+        )
+
+    def update_project_db(self, pid: str, payload: UpdateProjectSchema) -> GetProjectSchema:
+        project = self.db.query(ProjectModel).filter(ProjectModel.id == pid).first()
+
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+
+        # 更新基本欄位
+        for field in [
+            "project_name", "start_time", "end_time", "style",
+            "currency", "budget", "desc", "img", "member_budgets"
+        ]:
+            val = getattr(payload, field)
+            if val is not None:
+                setattr(project, field, val)
+
+        # 更新 editor 關聯（全刪重加）
+        if payload.editor is not None:
+            self.db.query(ProjectEditorRelation).filter_by(project_id=pid).delete()
+            for uid in payload.editor:
+                self.db.add(ProjectEditorRelation(project_id=pid, user_id=uid))
+
+        # 更新 member 關聯（全刪重加）
+        if payload.member is not None:
+            self.db.query(ProjectMemberRelation).filter_by(project_id=pid).delete()
+            for uid in payload.member:
+                self.db.add(ProjectMemberRelation(project_id=pid, user_id=uid))
+
+        try:
+            self.db.commit()
+            self.db.refresh(project)
+
+            return GetProjectSchema(
+                id=project.id,
+                project_name=project.project_name,
+                start_time=project.start_time,
+                end_time=project.end_time,
+                style=project.style,
+                currency=project.currency,
+                budget=project.budget,
+                owner=project.owner,
+                member_budgets=project.member_budgets or {},
+                desc=project.desc,
+                img=project.img,
+                editor=payload.editor or [],
+                member=payload.member or [],
+            )
+        except Exception as e:
+            self.db.rollback()
+            raise HTTPException(status_code=400, detail=f"Update project failed: {str(e)}")
+
+
+    def get_projects_by_user_id_db(self, uid):
         try:
             # owner
             owner_projects = self.db.query(ProjectModel).filter(
@@ -153,8 +239,8 @@ class ProjectDB:
             raise HTTPException(status_code=400, detail=f"Add member failed: {str(e)}")     
     
     # soft delete
-    def delete_project(self, project_id: str):
-        project = self.db.query(ProjectModel).filter(ProjectModel.id == project_id).first()
+    def delete_project_db(self, pid: str):
+        project = self.db.query(ProjectModel).filter(ProjectModel.id == pid).first()
         if not project:
             raise HTTPException(status_code=404, detail="Project not found")
 

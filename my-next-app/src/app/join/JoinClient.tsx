@@ -1,20 +1,23 @@
 'use client';
 
 import { useEffect, useState, useMemo } from "react";
-import clsx from "clsx";
 import { useSearchParams, useRouter } from "next/navigation";
+import clsx from "clsx";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchProjectsByNew } from "@/lib/projectApi";
-import { getProjectStyle } from "@/utils/renderProjectStyle";
+import { fetchUserByProject } from "@/lib/projectApi";
+import { useAddMemberProject } from "@/features/CreateProjectSections/hooks/useAddMemberProject";
+
 import ImageButton from "@/components/ui/ImageButton";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
+
+import { getProjectStyle } from "@/utils/renderProjectStyle";
+import { buildAvatarUrl } from "@/utils/getAvatar";
 import { GetProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
-import { fetchUserByProject } from "@/lib/projectApi";
-import { buildAvatarUrl } from "@/utils/getAvatar";
-import { useUpdateProject } from "@/features/CreateProjectSections/hooks/useUpdateProject";
 import { MemberBudgetMap } from "@/types/project";
 
 export default function JoinProjectPage() {
@@ -57,7 +60,7 @@ export default function JoinProjectPage() {
                 const rawUsers = await fetchUserByProject(projectId);
                 const users: UserData[] = rawUsers.map((user:UserData) => ({
                     ...user,
-                    avatarURL: buildAvatarUrl(Number(user.avatar) || 1),
+                    avatarURL: buildAvatarUrl(Number(user.avatar)),
                 }));
                 setJoinProject(rawProject);
                 setJoinProjectUser(users);
@@ -82,7 +85,7 @@ export default function JoinProjectPage() {
         }
     }, [addMemberBudget, currentUid,joinProject,projectId,userData]);
 
-    const { handleUpdateProject, isLoading:isUpdateLoading } = useUpdateProject({
+    const { handleUpdateProject, isLoading:isUpdateLoading } = useAddMemberProject({
         onSuccess: (project) => {
             console.log("✅ 成功更新專案：", project);
             setJoined(true);

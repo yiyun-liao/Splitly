@@ -1,21 +1,17 @@
 import { useState } from "react";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { updateProject, fetchUserByProject } from "@/lib/projectApi";
+import { updateProject } from "@/lib/projectApi";
 import { GetProjectData } from "@/types/project";
-import { UserData } from "@/types/user";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
-import { buildAvatarUrl } from "@/utils/getAvatar"; 
 
 type UseUpdateProjectOptions = {
     onSuccess?: (project: GetProjectData) => void;
     onError?: (error: unknown) => void;
 };
 
-export function useUpdateProject(options?: UseUpdateProjectOptions) {
+export function useAddMemberProject(options?: UseUpdateProjectOptions) {
     const { setProjectData, userData } = useAuth();
-    const { setCurrentProjectUsers } = useCurrentProjectData();
     const [isLoading, setIsLoading] = useState(false); 
 
     const handleUpdateProject = async (projectPayload: GetProjectData) => {
@@ -46,24 +42,6 @@ export function useUpdateProject(options?: UseUpdateProjectOptions) {
                         }
                         return newProjectList;
                     })
-                }
-                //  重新取得 project user 並更新 currentProjectUsers 與 cache
-                const rawUsers = await fetchUserByProject(rawProject.id);
-                const projectUsers: UserData[] = rawUsers.map((user: UserData) => ({
-                    ...user,
-                    avatarURL: buildAvatarUrl(Number(user.avatar)),
-                }));
-
-                if (setCurrentProjectUsers){
-                    setCurrentProjectUsers(projectUsers);
-    
-                    // 更新 localStorage cache
-                    if (typeof window !== "undefined") {
-                        const userKey = `projectUsers | ${rawProject.id}`;
-                        const metaKey = `cacheProjectMeta | ${rawProject.id}`;
-                        localStorage.setItem(userKey, JSON.stringify(projectUsers));
-                        localStorage.setItem(metaKey, JSON.stringify({ timestamp: Date.now() }));
-                    }
                 }
                 options?.onSuccess?.(newProject); // 執行 callback
             } else {
