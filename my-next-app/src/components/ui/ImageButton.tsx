@@ -23,7 +23,9 @@ export default function ImageButton({
     const [hasError, setHasError] = useState(false);
 
     const baseClasses = clsx(
-        "relative inline-block rounded-xl overflow-hidden cursor-pointer bg-zinc-50/10 border-zinc-50/10 hover:bg-zinc-900/10 hover:border-zinc-900/10 active:bg-zinc-900/40 active:border-zinc-900/40 cursor-pointer flex-shrink-0",
+        "relative inline-block  overflow-hidden cursor-pointer  cursor-pointer flex-shrink-0",
+        "bg-sp-blue-200 border-zinc-50/10 hover:bg-zinc-900/10 hover:border-zinc-900/10 active:bg-zinc-900/40 active:border-zinc-900/40",
+        "rounded-xl animate-breathing",
         {
             "h-9 w-9 text-sm": size === "sm",
             "h-12 w-12 text-base": size === "md",
@@ -50,7 +52,11 @@ export default function ImageButton({
             ):(
                 <div
                     style={{ width: imgSize, height: imgSize }}
-                    className="bg-sp-blue-400 flex items-center justify-center text-white font-bold text-xs hover:bg-sp-blue-500 hover:text-base active:bg-sp-blue-600 transition-transform duration-200 ease-in-out"
+                    className={clsx(
+                        "flex items-center justify-center text-white font-bold text-xs  transition-transform duration-200 ease-in-out",
+                        "bg-sp-blue-400  hover:bg-sp-blue-500 hover:text-base active:bg-sp-blue-600",
+                        "rounded-xl"
+                    )}
                 >
                     {imageName ? imageName.charAt(0).toUpperCase() + imageName.charAt(1).toUpperCase() : '??'}
               </div>

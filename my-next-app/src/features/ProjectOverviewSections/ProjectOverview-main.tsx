@@ -141,11 +141,11 @@ export default function ProjectOverview(){
             </>
             <div id="expense-overview" className="w-full box-border h-fit flex flex-col items-start justify-start gap-6">
                 <div className="w-full box-border flex flex-col xl:flex-row h-fit items-start justify-start rounded-2xl overflow-hidden">
-                    <div className={`w-full 2xl:w-1/2 px-3 py-3 text-center ${projectBudgetStatus.bgColor} ${projectBudgetStatus.textColor} overflow-hidden`}>
+                    <div className={`self-stretch w-full 2xl:w-1/2 px-3 py-3 text-center ${projectBudgetStatus.bgColor} ${projectBudgetStatus.textColor} overflow-hidden`}>
                         <Icon icon={projectBudgetStatus.icon} size="xl" />
                         <p className="text-xl font-semibold pt-2">（專案）{projectBudgetStatus.text}</p>
                     </div>
-                    <div className={`w-full 2xl:w-1/2 px-3 py-3 text-center ${personalBudgetStatus.bgColor} ${personalBudgetStatus.textColor} overflow-hidden`}>
+                    <div className={`self-stretch w-full 2xl:w-1/2 px-3 py-3 text-center ${personalBudgetStatus.bgColor} ${personalBudgetStatus.textColor} overflow-hidden`}>
                         <Icon icon={personalBudgetStatus.icon} size="xl" />
                         <p className="text-xl font-semibold pt-2">（你）{personalBudgetStatus.text}</p>
                     </div>
