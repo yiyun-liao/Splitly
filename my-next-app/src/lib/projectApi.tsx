@@ -73,7 +73,7 @@ export async function fetchProjectsByUser(token: string,uid: string) {
 // join 專案時拿到特定專案資料
 export async function fetchProjectsByNew(token: string,uid: string,pid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project?pid=${pid}?uid=${uid}`,{ 
+        const res = await fetch(`${BASE_URL}/api/project?pid=${pid}&uid=${uid}`,{ 
             method: "GET", 
             headers: { Authorization: `Bearer ${token}` },
         });

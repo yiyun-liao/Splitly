@@ -70,6 +70,7 @@ class ProjectRouter:
             uid_verified: str = Depends(verify_firebase_token),
             db: Session = Depends(get_db_session)
         ):
+            print("start")
             if uid != uid_verified:
                 print("🚫 身份不符")
                 raise HTTPException(status_code=403, detail="Unauthorized access")
