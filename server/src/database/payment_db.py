@@ -137,7 +137,7 @@ class PaymentDB:
             items=items
         )
 
-
+    """get payment after update"""
     def get_payment_by_id(self, payment_id: str) -> GetPaymentSchema:
         payment = (
             self.db.query(PaymentModel)
@@ -203,8 +203,7 @@ class PaymentDB:
             items=items if items else None
         )
 
-
-
+    """get project's all payments"""
     def get_payments_by_project(self, project_id: str) -> GetPaymentListSchema:
         try:
             payments = (
@@ -274,7 +273,6 @@ class PaymentDB:
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=500, detail=f"Get payments failed: {str(e)}")
-
 
     def update_payment(self, payment_data: UpdatePaymentSchema):
         payment = self.db.query(PaymentModel).filter_by(id=payment_data.id).first()

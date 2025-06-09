@@ -114,33 +114,8 @@ export async function fetchUserByProject(pid: string) {
     }
 }
 
-// 新增成員到專案
-export async function addProjectMembers(projectId: string, memberUids: string[]) {
-    try {
-        const res = await fetch(`${BASE_URL}/api/project/?pid=${projectId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ member: memberUids }),
-        });
 
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error("Failed to add members: " + errorText);
-        }
-
-        const data = await res.json();
-        console.log("addProjectMembers:", data);
-        return data;
-    } catch (err) {
-        console.error("Error adding project members:", err);
-        throw err;
-    }
-}
-
-
-// 更新專案
+// 更新專案 / 新增成員到專案
 export async function updateProject(projectId: string, payload: GetProjectData) {
     try {
         const res = await fetch(`${BASE_URL}/api/project?pid=${projectId}`, {

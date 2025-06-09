@@ -31,3 +31,6 @@ class UsersListSchema(BaseModel):
 class UserCreateMinimalResponse(BaseModel):
     success: bool
     uid: Optional[str] = None
+    user: Optional[UserSchema] =None
+    users: Optional[List[UserSchema]] =None
+
