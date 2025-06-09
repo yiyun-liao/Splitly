@@ -22,6 +22,8 @@ type AuthContextType = {
     projectData: GetProjectData[];
     addProject: (project: GetProjectData) => void;
     setUserData?: React.Dispatch<React.SetStateAction<UserData | null>>; 
+    setProjectData?: React.Dispatch<React.SetStateAction<GetProjectData[] | []>>;
+    
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -33,6 +35,7 @@ export const AuthContext = createContext<AuthContextType>({
     logOutUser: async () => true,
     addProject: () => {},
     setUserData: () => {},
+    setProjectData: () => {},
 });
 
 
@@ -150,7 +153,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 logInUser, 
                 logOutUser,
                 addProject, 
-                setUserData
+                setUserData,
+                setProjectData
             }}
         >
         {children}

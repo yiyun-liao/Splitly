@@ -1,4 +1,4 @@
-import { ProjectData } from "@/types/project";
+import { ProjectData, GetProjectData } from "@/types/project";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -95,7 +95,7 @@ export async function fetchUserByProject(pid: string) {
 // 新增成員到專案
 export async function addProjectMembers(projectId: string, memberUids: string[]) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project/member?projectId=${projectId}`, {
+        const res = await fetch(`${BASE_URL}/api/project/?pid=${projectId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -117,3 +117,28 @@ export async function addProjectMembers(projectId: string, memberUids: string[])
     }
 }
 
+
+// 更新專案
+export async function updateProject(projectId: string, payload: GetProjectData) {
+    try {
+        const res = await fetch(`${BASE_URL}/api/project?pid=${projectId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error("Failed to update project: " + errorText);
+        }
+
+        const data = await res.json();
+        console.log("updateProject:", data);
+        return data;
+    } catch (err) {
+        console.error("Error creating project:", err);
+        throw err;
+    }
+}

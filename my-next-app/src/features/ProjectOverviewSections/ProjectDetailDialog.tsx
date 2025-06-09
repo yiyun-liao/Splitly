@@ -16,6 +16,7 @@ interface ProjectDetailProps {
     userData: UserData;
     currentProjectData:GetProjectData;
     currentProjectUsers:UserData[];
+    onEditProject: () => void;
 }
 
 export default function ProjectDetail({
@@ -23,10 +24,11 @@ export default function ProjectDetail({
     onClose,
     userData,
     currentProjectData,
-    currentProjectUsers
+    currentProjectUsers,
+    onEditProject
 }:ProjectDetailProps){
 
-
+    // css
     const titleClass = clsx("text-xl pb-4 font-medium whitespace-nowrap truncate min-w-0 max-w-100")
     const itemClass= clsx("w-full flex gap-1 p-1 items-center rounded-xl hover:text-sp-blue-600 hover:bg-zinc-900/10 active:text-sp-blue-800 active:bg-zinc-900/40 ")
     const projectClass = clsx("shrink-0 w-full px-0 py-3 box-border h-fit overflow-hidden ")
@@ -39,6 +41,9 @@ export default function ProjectDetail({
     const renderBody = () => {
         return(
             <div className="flex flex-col pag-4 text-zinc-700">
+                <>
+
+                </>
                 <div className={projectClass}>
                     <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
@@ -56,8 +61,7 @@ export default function ProjectDetail({
                                 variant= 'text-button'
                                 color='zinc'
                                 type= 'button'
-                                disabled = {true}
-                                onClick={() => {}} 
+                                onClick={onEditProject}
                             />
                         </div>
                     </div>
@@ -72,7 +76,11 @@ export default function ProjectDetail({
                         </div>
                         <div className={listClass}>
                             <p className={labelClass}>預算</p>
-                            <p className={listContentClass}>{currentProjectData.budget || "沒有設定預算"}</p>
+                            <p className={`${listContentClass} ${!currentProjectData.budget && ("text-sm text-zinc-500")}`}>{`NT$ ${currentProjectData.budget}` || "(沒有設定預算)"}</p>
+                        </div>
+                        <div className={listClass}>
+                            <p className={labelClass}>個人預算</p>
+                            <p className={`${listContentClass} ${currentProjectData.member_budgets?.[userData.uid] === undefined && ("text-sm text-zinc-500")} `}>  {currentProjectData.member_budgets?.[userData.uid] !== undefined ? `NT$ ${currentProjectData.member_budgets?.[userData.uid]?.toLocaleString()}` : "(沒有設定預算)"}</p>
                         </div>
                         <div className={listClass}>
                             <p className={labelClass}>幣別</p>

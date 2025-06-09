@@ -82,7 +82,7 @@
   }
 
   .animate-breathing {
-    animation: breathing 1.5s ease-in-out infinite;
+    animation: breathing 1s ease-in-out infinite;
   }
 }
 

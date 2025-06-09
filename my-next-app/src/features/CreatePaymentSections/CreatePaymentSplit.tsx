@@ -111,7 +111,7 @@ export default function CreatePaymentSplit({
         // update
         const isInitialLoadingRef = useRef(true);
         
-        // 初次載入 initialPayload → 設定欄位（你原本的）
+        // 初次載入 initialPayload
         useEffect(() => {
             if (!initialPayload) return;
             
@@ -136,7 +136,7 @@ export default function CreatePaymentSplit({
             // 付款人
             if (initialPayload.payer_map) {
               setSplitPayerMap(initialPayload.payer_map);
-              setPersonalPayerMap(initialPayload.payer_map); // 個人帳也通用
+              setPersonalPayerMap(initialPayload.payer_map); // 個人帳通用
             }
           
             // 分帳人
@@ -160,11 +160,12 @@ export default function CreatePaymentSplit({
         // 價格改變就重設
         const didManuallyChangeAmountRef = useRef(false);
 
-        // 1. onChange handler 內設為 true（代表使用者手動輸入）
+        // 1onChange handler 內設為 true（代表使用者手動輸入）
         const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputAmountValue(e.target.value);
-        didManuallyChangeAmountRef.current = true;
+            setInputAmountValue(e.target.value);
+            didManuallyChangeAmountRef.current = true;
         };
+        
         useEffect(() => {
             // 第一次因 initialPayload 設定 inputValue ➜ 跳過一次
             if (isInitialLoadingRef.current) {

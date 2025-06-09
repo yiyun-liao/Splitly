@@ -3,6 +3,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Avatar from "@/components/ui/Avatar";
 import ModalPortal from "@/components/ui/ModalPortal";
+import clsx from "clsx";
 
 import { validateDisplayName } from "@/utils/validate";
 import { useEffect, useState, useMemo } from "react";
@@ -96,11 +97,15 @@ export default function DataSettingDialog({
                         />
                     </div>
                 </div>
-                <div className="w-fll p-8 flex flex-wrap gap-2  min-h-40 overflow-hidden rounded-r-2xl rounded-b-2xl bg-sp-blue-200 cursor-pointer">
+                <div className="w-fll p-8 flex flex-wrap gap-2  min-h-40 overflow-hidden rounded-r-2xl rounded-b-2xl bg-sp-blue-200">
                     {Array.from({ length: 12 }, (_, index) => {
                         const imgUrl = `https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/${index + 1}.jpg`;
+                        const isSelected = index === parseInt(chooseAvatarValue) - 1;
                         return (
-                            <div key={index} className="shrink-0" 
+                            <div key={index} 
+                                className={clsx("shrink-0 h-14 w-14 flex items-center justify-center cursor-pointer rounded-full overflow-hidden", {
+                                    "border-4 border-sp-grass-500": isSelected,
+                                })}
                                 onClick={() => {
                                     setChooseAvatarURLValue(imgUrl)
                                     setChooseAvatarValue((index+1).toString())

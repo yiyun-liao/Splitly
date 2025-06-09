@@ -20,13 +20,14 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
 import { useAllSettlements,useMergedSettlements, useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 import { GetPaymentData } from "@/types/payment";
-
+import ProjectForm from "../CreateProjectSections/ProjectForm";
 
 export default function ProjectOverview(){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
     const [isWiseSpiltDialogOpen, setIsWiseSpiltDialogOpen] = useState(false)
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false)
-    const [editPayment, setEditPayment] = useState<GetPaymentData | null>(null); //開啟 payment list
+    const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false); //open project to update 
+    const [isReceiptCardOpen, setIsReceiptCardOpen] = useState<GetPaymentData | null>(null); //open payment list to update with data
     
     const {userData} = useGlobalProjectData();
     const currentUserId = userData?.uid || "";
@@ -120,6 +121,20 @@ export default function ProjectOverview(){
                         userData={userData} 
                         currentProjectData = {data}
                         currentProjectUsers = {userList || []}
+                        onEditProject={() => {
+                            setIsProjectDialogOpen(false); // 關 ProjectDetail
+                            setIsUpdateDialogOpen(true);   // 開 ProjectForm
+                          }}
+                    />
+                )}
+                {isUpdateDialogOpen && userData &&(
+                    <ProjectForm
+                        open={isUpdateDialogOpen}
+                        onClose={()=>{setIsUpdateDialogOpen(false)}}
+                        userData={userData}
+                        initialProjectData = {data}
+                        sheetTitle="更新專案"
+                        submitButtonText="更新"
                     />
                 )}
                 <ProjectSettleDetail
@@ -132,12 +147,12 @@ export default function ProjectOverview(){
                     onClose = {() => setIsWiseSpiltDialogOpen(false)}   
                     currentProjectUsers = {userList || []}
                 />
-                {editPayment && userList && (
+                {isReceiptCardOpen && userList && (
                     <CreatePayment 
                         onClose={() => {
-                            setEditPayment(null);
+                            setIsReceiptCardOpen(null);
                         }}
-                        initialPayload={editPayment || undefined} 
+                        initialPayload={isReceiptCardOpen || undefined} 
                     />
                 )}
             </>
@@ -347,7 +362,7 @@ export default function ProjectOverview(){
                         </div>
                         <div id="expense-list-frame" className="w-full pb-4 px-3">
                             {(list || []).slice(0, 5).map((payment, index) => (
-                                <div key={payment.id} onClick={() => setEditPayment(payment)}>
+                                <div key={payment.id} onClick={() => setIsReceiptCardOpen(payment)}>
                                     <ReceiptCard
                                         account_type={payment.account_type}
                                         record_mode={payment.record_mode}
