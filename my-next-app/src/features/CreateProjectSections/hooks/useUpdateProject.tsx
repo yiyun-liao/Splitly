@@ -10,7 +10,7 @@ type UseUpdateProjectOptions = {
 };
 
 export function useUpdateProject(options?: UseUpdateProjectOptions) {
-    const { setProjectData, projectData, userData } = useAuth();
+    const { setProjectData, userData } = useAuth();
     const [isLoading, setIsLoading] = useState(false); 
 
     const handleUpdateProject = async (projectPayload: GetProjectData) => {

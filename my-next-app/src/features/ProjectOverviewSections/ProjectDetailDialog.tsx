@@ -41,9 +41,6 @@ export default function ProjectDetail({
     const renderBody = () => {
         return(
             <div className="flex flex-col pag-4 text-zinc-700">
-                <>
-
-                </>
                 <div className={projectClass}>
                     <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
