@@ -73,7 +73,7 @@ export default function PaymentOverview(){
                 </Button>
             </div>
             <div ref={scrollRef} className={`flex-1 ${scrollClass} `}>
-                <div id="project-analysis-chart" className="px-3 py-3 mb-4 rounded-2xl h-fit overflow-hidden bg-sp-blue-300 ">
+                {/* <div id="project-analysis-chart" className="px-3 py-3 mb-4 rounded-2xl h-fit overflow-hidden bg-sp-blue-300 ">
                     <div id="project-analysis-chart"  className="py-2 px-4 w-full overflow-hidden">
                         <div className="flex items-center justify-start gap-2">
                             <p className="text-xl font-medium truncate w-full"> 開銷總覽</p>
@@ -92,7 +92,7 @@ export default function PaymentOverview(){
                             <img src="https://res.cloudinary.com/ddkkhfzuk/image/upload/test.JPG" width={480} height={200} alt="圖" />
                         )}
                     </div>
-                </div>
+                </div> */}
                 <div id="expense-list" className="px-3 py-3 rounded-2xl h-fit bg-sp-blue-200">
                     <div id="expense-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
                         <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視</p>
