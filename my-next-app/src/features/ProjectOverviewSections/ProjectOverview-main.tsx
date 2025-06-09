@@ -60,10 +60,12 @@ export default function ProjectOverview(){
     }, [settleSimpleDetail, currentUserId]);
 
     const quickViewDebtor = useMemo(() => {
+        if (!!quickViewSettle)
         return userList?.find(user => user.uid === quickViewSettle?.from);
     }, [userList, quickViewSettle]);
 
     const quickViewCreditor = useMemo(() => {
+        if (!!quickViewSettle)
         return userList?.find(user => user.uid === quickViewSettle?.to);
     }, [userList, quickViewSettle]);
 
