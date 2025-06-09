@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { updateProject } from "@/lib/projectApi";
-import { GetProjectData } from "@/types/project";
+import { joinProject } from "@/lib/projectApi";
+import { GetProjectData, JoinProjectData } from "@/types/project";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
 
 type UseUpdateProjectOptions = {
@@ -14,11 +14,11 @@ export function useAddMemberProject(options?: UseUpdateProjectOptions) {
     const { setProjectData, userData } = useAuth();
     const [isLoading, setIsLoading] = useState(false); 
 
-    const handleUpdateProject = async (projectPayload: GetProjectData) => {
-        console.log("create", projectPayload);
+    const handleUpdateProject = async (projectPayload: JoinProjectData) => {
+        console.log("update", projectPayload);
         try {
             setIsLoading(true);
-            const result = await updateProject(projectPayload.id ,projectPayload);
+            const result = await joinProject(projectPayload);
             const rawProject = result?.project;
 
             if (rawProject && rawProject.img !== undefined) {
@@ -27,11 +27,22 @@ export function useAddMemberProject(options?: UseUpdateProjectOptions) {
                     imgURL: buildProjectCoverUrl(rawProject.img),
                 };
                 if (!setProjectData) return;
-                if (setProjectData){
-                    setProjectData((prev)=>{
-                        const newProjectList = (prev?? []).map((p)=>
-                            p.id === newProject.id ? newProject : p
-                        )
+                if (setProjectData) {
+                    setProjectData((prev) => {
+                        const prevList = prev ?? [];
+                    
+                        const existingIndex = prevList.findIndex((p) => p.id === newProject.id);
+                        let newProjectList;
+                    
+                        if (existingIndex >= 0) {
+                            // 替換現有專案
+                            newProjectList = [...prevList];
+                            newProjectList[existingIndex] = newProject;
+                        } else {
+                            // 加入新專案
+                            newProjectList = [...prevList, newProject];
+                        }
+                    
                         if (userData) {
                             const uid = userData.uid;
                             const projectKey = `👀 myProjectList:${uid}`;
@@ -40,9 +51,10 @@ export function useAddMemberProject(options?: UseUpdateProjectOptions) {
                             localStorage.setItem(projectKey, JSON.stringify(newProjectList));
                             localStorage.setItem(myMetaKey, JSON.stringify({ timestamp: Date.now() }));
                         }
+                    
                         return newProjectList;
-                    })
-                }
+                    });
+                }                  
                 options?.onSuccess?.(newProject); // 執行 callback
             } else {
                 console.error("⚠️ createProject 回傳格式不符合預期", result);

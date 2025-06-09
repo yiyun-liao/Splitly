@@ -1,7 +1,7 @@
 #server/src/routes/project_router.py
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from src.routes.schema.project import CreateProjectSchema, ProjectCreateMinimalResponse,AddProjectMembersSchema, GetProjectSchema, UpdateProjectSchema
+from src.routes.schema.project import CreateProjectSchema, ProjectCreateMinimalResponse,AddProjectMembersSchema, GetProjectSchema, UpdateProjectSchema,JoinProjectSchema
 from src.database.project_db import ProjectDB
 from src.database.relational_db import Database
 from src.dependencies.firebase import verify_firebase_token
@@ -85,7 +85,7 @@ class ProjectRouter:
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Add member failed: {str(e)}")
             
-        # 更新專案 / 新增成員到專案
+        # 更新專案
         @self.router.patch("/api/project",response_model=ProjectCreateMinimalResponse)
         def update_project(
             pid: str, 
@@ -105,7 +105,23 @@ class ProjectRouter:
                 raise HTTPException(status_code=500, detail=f"Add member failed: {str(e)}")
     
 
+        # 新增成員到專案
+        @self.router.post("/api/project/join",response_model=ProjectCreateMinimalResponse)
+        def join_project(
+            payload: JoinProjectSchema, 
+            db: Session = Depends(get_db_session)
+        ):
+            try:
+                project_db = ProjectDB(db)
+                project = project_db.join_project_db(payload.id, payload)
 
+                return {
+                    "success": True,
+                    "project": project
+                }
+
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Add member failed: {str(e)}")
 
 
 

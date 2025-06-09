@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from src.database.models.project import ProjectModel, ProjectEditorRelation, ProjectMemberRelation
-from src.routes.schema.project import CreateProjectSchema, GetProjectSchema, UpdateProjectSchema
+from src.routes.schema.project import CreateProjectSchema, GetProjectSchema, UpdateProjectSchema,JoinProjectSchema
 from fastapi import HTTPException
 from uuid import uuid4
 from datetime import datetime
@@ -143,6 +143,68 @@ class ProjectDB:
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Update project failed: {str(e)}")
+
+    def join_project_db(self, pid: str, payload: JoinProjectSchema)-> GetProjectSchema:
+        # 查找專案
+        project: ProjectModel = self.db.query(ProjectModel).filter(ProjectModel.id == pid).first()
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+
+        # 取得新加入的成員 uid
+        new_member_uid = payload.member
+
+        # 檢查是否已存在關聯
+        existing_relation = self.db.query(ProjectMemberRelation).filter_by(
+            project_id=pid, user_id=new_member_uid
+        ).first()
+        if existing_relation:
+            raise HTTPException(status_code=400, detail="Member already joined the project")
+
+        # 加入 member 關聯
+        self.db.add(ProjectMemberRelation(project_id=pid, user_id=new_member_uid))
+
+        # 加入 budget（如果有提供）
+        if payload.member_budgets and new_member_uid in payload.member_budgets:
+            member_budget = payload.member_budgets.get(new_member_uid)
+            if member_budget is not None:
+                project.member_budgets = {
+                    **(project.member_budgets or {}),
+                    new_member_uid: member_budget
+                }
+        print("save budget", payload.member_budgets)
+
+        try:
+            self.db.commit()
+            self.db.refresh(project)
+
+            # 整理出所有 member
+            member_relations = self.db.query(ProjectMemberRelation).filter_by(project_id=pid).all()
+            member_uids = [rel.user_id for rel in member_relations]
+
+            # 整理出所有 editor
+            editor_relations = self.db.query(ProjectEditorRelation).filter_by(project_id=pid).all()
+            editor_uids = [rel.user_id for rel in editor_relations]
+
+            return GetProjectSchema(
+                id=project.id,
+                project_name=project.project_name,
+                start_time=project.start_time,
+                end_time=project.end_time,
+                style=project.style,
+                currency=project.currency,
+                budget=project.budget,
+                owner=project.owner,
+                editor=editor_uids,
+                member=member_uids,
+                member_budgets=project.member_budgets,
+                desc=project.desc,
+                img=project.img
+            )
+
+        except Exception as e:
+            self.db.rollback()
+            raise HTTPException(status_code=400, detail=f"Join project failed: {str(e)}")
+
 
 
     def get_projects_by_user_id_db(self, uid):

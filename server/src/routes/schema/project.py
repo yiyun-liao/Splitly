@@ -39,10 +39,17 @@ class UpdateProjectSchema(BaseModel):
     style: Optional[Literal["travel", "daily", "other"]]  = None
     currency: Optional[str]  = None
     budget: Optional[int]  = None
+    owner: Optional[str] = None
+    editor: Optional[List[str]] =None
+    member: Optional[List[str]]  = None
+    member_budgets: Optional[Dict[str, Optional[int]]]  = None
     img: Optional[int]  = None
     desc: Optional[str]  = None
-    member_budgets: Optional[Dict[str, Optional[int]]]  = None
 
+class JoinProjectSchema(BaseModel):
+    id:str
+    member: str
+    member_budgets: Optional[Dict[str, Optional[int]]]  = None
 
 
 # response
