@@ -16,6 +16,7 @@ type CurrentProjectContextType = {
     currentProjectUsers?: UserData[];
     currentPaymentList?: GetPaymentData[];
     setCurrentPaymentList?: React.Dispatch<React.SetStateAction<GetPaymentData[] | undefined>>;
+    setCurrentProjectUsers?: React.Dispatch<React.SetStateAction<UserData[] | undefined>>;
     isReady: boolean;
 };
 
@@ -28,8 +29,6 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const pureProjectId = typeof rawParam === "string" ? rawParam : rawParam?.[0] || fallbackId || "";
     
     const router = useRouter();
-    // const { projectId } = useParams();
-    // const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
     const [lastPath, setLastPath] = useState<string | undefined>(projectData?.[0]?.id); // fallback
 
     const currentProjectData = useMemo(() => {
@@ -133,6 +132,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         fetchProjectData();
     }, [pureProjectId]);
 
+
     // --- 找不到專案自動跳轉 ---
     useEffect(() => {
         if (!pureProjectId) return;
@@ -149,6 +149,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
             currentProjectUsers,
             currentPaymentList,
             setCurrentPaymentList,
+            setCurrentProjectUsers,
             isReady,
         }}
         >

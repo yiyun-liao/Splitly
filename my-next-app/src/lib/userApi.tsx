@@ -28,11 +28,11 @@ export async function createNewUser(
         throw new Error("Failed to sync user: " + errorText);
     }
 
-    const data = await response.json();
-    console.log('login success', data)
+        const data = await response.json();
+        console.log('login success', data)
     return data;
     } catch (err) {
-    console.error("Error syncing user to backend:", err);
+        console.error("Error syncing user to backend:", err);
     }
 }
 

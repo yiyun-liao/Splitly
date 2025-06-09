@@ -58,8 +58,8 @@ export default function DataSettingDialog({
 
     // submit
     const { handleUpdateUser, isLoading:isUpdateLoading } = useUpdateUser({
-        onSuccess: (data) => {
-            console.log("✅ 成功建立紀錄：", data);
+        onSuccess: (user) => {
+            console.log("✅ 成功建立紀錄：", user);
             onClose();
         },
         onError: (err) => {
