@@ -311,7 +311,7 @@ export default function ProjectOverview(){
                                             </div>
                                             <p className="pl-2 text-base font-base text-zinc-500">須還款給 {quickViewCreditor?.name}</p>
                                         </div>
-                                        <p className="shrink-0 text-xl font-semibold"> ${quickViewSettle.amount}</p>
+                                        <p className="shrink-0 text-xl font-semibold"> ${quickViewSettle?.amount}</p>
                                     </>
                                 )}
                             </div>
