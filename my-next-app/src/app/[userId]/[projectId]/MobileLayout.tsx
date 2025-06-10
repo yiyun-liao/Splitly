@@ -9,7 +9,7 @@ export default function MobileLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const { projectId, userId } = useParams();
 
-    const isMobileClass = clsx("flex flex-col h-screen overflow-hidden overscroll-none",
+    const isMobileClass = clsx("flex flex-col h-full overflow-hidden overscroll-none",
         {
             "bg-sp-green-300": pathname === `/${userId}/${projectId}/expense`,
             "bg-sp-blue-100 ": pathname !== `/${userId}/${projectId}/expense`

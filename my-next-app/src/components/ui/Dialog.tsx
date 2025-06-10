@@ -41,7 +41,7 @@ export default function Dialog({
     const isMobile = useIsMobile();
     const dialogStyleClass = clsx("bg-zinc-50  overflow-hidden shadow-md flex flex-col items-start justify-start transition-all duration-300 scale-100",
         {
-            "w-screen h-[80vh] fixed bottom-0 right-0 rounded-t-xl": isMobile === true,
+            "w-screen h-[75vh] fixed bottom-0 right-0 rounded-t-xl": isMobile === true,
             "w-lg h-140 max-h-[90vh] rounded-xl": isMobile === false
         }
     )

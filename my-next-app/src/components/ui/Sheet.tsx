@@ -37,7 +37,7 @@ export default function Sheet({
     const isMobile = useIsMobile();
     const isMobileClass = clsx(" flex flex-col items-center justify-bottom",
         {
-            "w-full pl-0 h-[90vh] fixed bottom-[env(safe-area-inset-bottom,16px)] right-0": isMobile === true,
+            "w-full pl-0 h-[90vh] fixed right-0": isMobile === true,
             "w-full max-w-520 pl-17 h-screen": isMobile === false,  
         }
     )
