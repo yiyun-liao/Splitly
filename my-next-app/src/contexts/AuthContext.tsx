@@ -1,6 +1,7 @@
 //全域登入狀態紀錄 用在 my-next-app/src/hoc/withAuth.tsx
 'use client'
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { logInUser, logOutUser } from "@/lib/auth";
@@ -12,11 +13,13 @@ import { buildAvatarUrl } from "@/utils/getAvatar";
 import { fetchProjectsByUser } from "@/lib/projectApi";
 import { GetProjectData } from "@/types/project";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
+import { clearUserCache } from "@/utils/cache";
 
 type AuthContextType = {
     firebaseUser: User | null;     // Firebase 原始 user
     userData: UserData | null;      // 後端取得的完整使用者資料
     isReady: boolean;
+    isLoadedReady: boolean;
     logInUser: () => Promise<boolean>;
     logOutUser: () => Promise<boolean>;
     projectData: GetProjectData[];
@@ -31,6 +34,7 @@ export const AuthContext = createContext<AuthContextType>({
     userData: null,
     projectData:[],
     isReady: false,
+    isLoadedReady:false,
     logInUser: async () => false,
     logOutUser: async () => true,
     addProject: () => {},
@@ -47,7 +51,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
     const [userData, setUserData] = useState<UserData | null>(null);
     const [projectData, setProjectData] = useState<GetProjectData[]>([]);
+    // const [isLoadedReady, setLoadedReady] = useState(false); 
     const [isReady, setIsReady] = useState(false);
+    const router = useRouter();
+
 
     const addProject = (newProject: GetProjectData) => {
         setProjectData(prev => [...prev, newProject]);
@@ -57,10 +64,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
             setFirebaseUser(userAuth);
             setIsReady(false); // 🔄 新使用者載入 → 重新準備
+
             if (!userAuth) {
                 setUserData(null);
                 setProjectData([]);
-                setIsReady(true); // ✅ 已確認無登入
+                setIsReady(true);
+                alert('權限失敗，請重新登入')
+                const success = await logOutUser();
+                if (success){
+                    clearUserCache();
+                    console.log('Can not get auth, plz try again');
+                    router.replace('/');    
+                }
                 return;
             }
     
@@ -72,14 +87,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             const isPageReload = typeof window !== 'undefined' &&
                 (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
-            // const isPageReload = false;
-
         
             const cachedMyData = localStorage.getItem(myKey);
             const cachedProjects = localStorage.getItem(projectKey);
             const cachedMeta = localStorage.getItem(myMetaKey);
             const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
-        
+            console.log("👉🏻isCacheExpired", isCacheExpired ,"isPageReload" ,isPageReload)
             if (cachedMyData && cachedProjects && !isCacheExpired && !isPageReload) {
                 try {
                     setUserData(JSON.parse(cachedMyData));
@@ -135,13 +148,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     }
                 }
             };
-    
             // 👉 啟動 fetch
             fetchAndSetUser();
         });
-    
+        
         return () => unsubscribe();
     }, []);
+
+    const isLoadedReady = useMemo(() => {
+        return !!firebaseUser && !!userData && !!projectData.length;
+      }, [firebaseUser, userData, projectData]);
     
     return (
         <AuthContext.Provider
@@ -149,6 +165,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 firebaseUser, 
                 projectData, 
                 userData, 
+                isLoadedReady,
                 isReady, 
                 logInUser, 
                 logOutUser,

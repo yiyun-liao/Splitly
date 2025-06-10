@@ -1,21 +1,23 @@
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import ViewportHeightSetter from "@/components/layout/ViewportHeightSetter"; 
 
 export const metadata = {
-  title: "Splitly",
-  icons: {
+title: "Splitly",
+icons: {
     icon: "/favicon.ico",
-  },
+},
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
+return (
     <html lang="zh-Hant">
-      <body>
+    <body>
         <AuthProvider>
-          {children}
+        <ViewportHeightSetter />
+            {children}
         </AuthProvider>
-      </body>
+    </body>
     </html>
-  );
+);
 }

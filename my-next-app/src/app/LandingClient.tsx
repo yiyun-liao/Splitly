@@ -11,7 +11,7 @@ import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 export default function LandingClient() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { projectData, isReady, userData } = useAuth();
+    const { projectData, isLoadedReady:myDataReady, userData } = useAuth();
     const [isLoginTriggered, setIsLoginTriggered] = useState(false); 
 
     const handleLogin = async () => {
@@ -22,7 +22,7 @@ export default function LandingClient() {
     };
     
     useEffect(() => {
-        if (!isLoginTriggered || !isReady || !userData) return;
+        if (!isLoginTriggered || !myDataReady || !userData) return;
         const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath");
 
 
@@ -45,7 +45,7 @@ export default function LandingClient() {
             localStorage.removeItem("lastVisitedProjectPath");
             console.log("i have nothing")
         }
-    }, [isReady, isLoginTriggered, searchParams, router, projectData, userData]);
+    }, [myDataReady, isLoginTriggered, searchParams, router, projectData, userData]);
 
     return (
         <main>

@@ -61,15 +61,15 @@
   box-sizing: border-box;
 }
 
-:root {
+/* :root {
   --vh: 100%;
-}
-
+} */
+/* 
 @media (max-width: 768px) {
   :root {
     --vh: calc(100vh - env(safe-area-inset-bottom));
   }
-}
+} */
 
 @layer utilities {
   @keyframes breathing {
