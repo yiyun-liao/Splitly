@@ -23,13 +23,13 @@ type CurrentProjectContextType = {
 const CurrentProjectContext = createContext<CurrentProjectContextType | undefined>(undefined);
 
 export const CurrentProjectProvider = ({ children }: { children: React.ReactNode }) => {
-    const { projectData, userData, isReady: myDataReady } = useAuth();
+    const { projectData, userData , isLoadedReady:myDataReady } = useAuth();
     const rawParam = useParams()?.projectId;
     const fallbackId = getLocalStorageItem<string>("lastVisitedProjectPath");
-    const pureProjectId = typeof rawParam === "string" ? rawParam : rawParam?.[0] || fallbackId || "";
+    const pureProjectId = typeof rawParam === "string" ? rawParam : rawParam?.[0] || fallbackId ;
     
     const router = useRouter();
-    const [lastPath, setLastPath] = useState<string | undefined>(projectData?.[0]?.id); // fallback
+    const [lastPath, setLastPath] = useState<string | undefined>(); // fallback
 
     const currentProjectData = useMemo(() => {
         if (!myDataReady || !pureProjectId) return undefined;
@@ -45,8 +45,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     // --- 設定 ready 狀態 ---
     useEffect(() => {
         if (currentProjectUsers && currentPaymentList) {
-        setIsReady(true);
-        console.log("我有", currentProjectUsers, currentPaymentList)
+            setIsReady(true);
         }
     }, [currentProjectUsers, currentPaymentList]);
 
@@ -54,9 +53,8 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     useEffect(() => {
         if (myDataReady && projectData && currentProjectData !== undefined){
             const stored = getLocalStorageItem<string>("lastVisitedProjectPath") || (projectData?.length ? projectData[0].id : undefined);
-            console.log("1/我要去", stored)
             if (stored) {
-            setLastPath(stored);
+                setLastPath(stored);
             }
         }
     }, [projectData, currentProjectData, currentProjectUsers, currentPaymentList, myDataReady]);

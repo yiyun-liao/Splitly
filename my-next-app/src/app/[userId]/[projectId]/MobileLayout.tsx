@@ -18,7 +18,7 @@ export default function MobileLayout({ children }: { children: ReactNode }) {
     return (
         <div className={isMobileClass}>
             <MemberHeaderMobile/>
-                <main className="flex-1 h-full overscroll-none py-13 px-6">{children}</main>
+                <main style={{ height: "calc(var(--vh, 1vh) * 100)" }} className="flex-1 h-full overscroll-none py-13 px-6">{children}</main>
             <MemberNavMobile /> 
         </div>
     );

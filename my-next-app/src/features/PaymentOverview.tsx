@@ -26,17 +26,28 @@ export default function PaymentOverview(){
     const isMobile = useIsMobile();
     const [isScrolled, setIsScrolled] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
+    const lastScrollTop = useRef(0);
+
     useEffect(() => {
         const scrollEl = scrollRef.current;
         if (!scrollEl) return;
     
         const handleScroll = () => {
-           setIsScrolled(scrollEl.scrollTop > 0);
+            const currentTop = scrollEl.scrollTop;
+
+            if (currentTop > lastScrollTop.current) {
+              setIsScrolled(true); // 向下捲動
+            } else if (currentTop < lastScrollTop.current) {
+              setIsScrolled(false); // 向上捲動
+            }
+        
+            lastScrollTop.current = currentTop;        
         };
     
         scrollEl.addEventListener("scroll", handleScroll);
         return () => scrollEl.removeEventListener("scroll", handleScroll);
     }, []);
+
     const isMobileClass = clsx("shrink-0 h-full flex flex-col box-border overflow-hidden text-zinc-700 ",
         {
             "w-full ": isMobile === true,
