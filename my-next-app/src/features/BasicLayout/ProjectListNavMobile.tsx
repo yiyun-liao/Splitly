@@ -5,8 +5,9 @@ import clsx from "clsx";
 import ModalPortal from "@/components/ui/ModalPortal";
 import ImageButton from "@/components/ui/ImageButton";
 import IconButton from "@/components/ui/IconButton";
-import CreateProject from "../CreateProjectSections/CreateProject-main";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
+
 
 interface ProjectListNavMobileProps {
     isProjectNavOpen: boolean;
@@ -19,8 +20,9 @@ export default function ProjectListNavMobile({
 }:ProjectListNavMobileProps){
     const router = useRouter();
     const { projectId, userId } = useParams();
-    const {projectData, userData} = useGlobalProjectData()
-    const [isCreateProject, setIsCreateProject]= useState(false);
+    const {projectData} = useGlobalProjectData()
+    const [lastPath, setLastPath] = useState<string | null>(null);
+
 
     useEffect(() => {
         if (isProjectNavOpen) document.body.style.overflow = 'hidden';
@@ -29,6 +31,12 @@ export default function ProjectListNavMobile({
             document.body.style.overflow = 'auto';
         };
     }, [isProjectNavOpen]);
+
+    // 讀取 localStorage 中的 lastVisitedProjectPath
+    useEffect(() => {
+        const stored = getLocalStorageItem<string>("lastVisitedProjectPath");
+        setLastPath(stored || projectData?.[0]?.id || null);
+    }, [projectData]);
     
     if (!isProjectNavOpen) return null;
     
@@ -49,14 +57,6 @@ export default function ProjectListNavMobile({
         <ModalPortal>  
             <div className={`${navWrapperClass}`} onClick={onClose}>
                 <div className={navStyleClass} onClick={(e) => e.stopPropagation()}>
-                    <>
-                        {isCreateProject && userData && (
-                            <CreateProject
-                                onClose={() => setIsCreateProject(false)}
-                                userData = {userData}
-                            />
-                        )}
-                    </>
                     <div className="w-full shrink-0 flex justify-end items-center">
                         <p className={`${labelClass}`}>所有專案</p>
                         <IconButton
@@ -70,7 +70,10 @@ export default function ProjectListNavMobile({
                     </div>
                     <div
                         className={`shrink-0 ${itemClass}`}
-                        onClick={() => setIsCreateProject(true)}
+                        onClick={() => {
+                            router.push(`/${userId}/${lastPath}/expense?openCreateProject=true`);
+                            onClose();
+                        }}
                     >
                         <IconButton
                             icon='solar:add-circle-bold'
@@ -78,7 +81,7 @@ export default function ProjectListNavMobile({
                             variant='text-button'
                             color='primary'
                             type= 'button'
-                            onClick={() => setIsCreateProject(true)}
+                            onClick={() => {}}
                         />
                         <p className={`${labelClass}`}>新增專案</p>
                     </div>

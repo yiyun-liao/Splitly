@@ -84,8 +84,7 @@ export default function ProjectOverview(){
             setIsSettleReady(true);
         }
     }, [settleSimpleDetail, settleMiniDetail]);
-
-    console.log(isSettleReady, settleMiniDetail, quickViewSettle)
+    // console.log(isSettleReady, settleMiniDetail, quickViewSettle)
     
     // render data 
     let privateBudget: number | undefined;
@@ -98,7 +97,6 @@ export default function ProjectOverview(){
     const projectBudgetStatus = getBudgetStatus( projectTotal, data?.budget);
     const personalBudgetStatus = getBudgetStatus( personalTotal, privateBudget);
 
-    console.log(projectBudgetStatus, personalBudgetStatus)
     // css
     const isMobile = useIsMobile();
     
@@ -171,7 +169,7 @@ export default function ProjectOverview(){
                     <div className="w-full 2xl:w-1/2 self-stretch  flex flex-col items-start justify-start gap-3">
                         <div id="overview-bubble-quick-view" className={`flex-1 self-stretch  ${overviewBubbleClass}`}>
                             <div className="pl-3 flex items-center justify-start gap-2">
-                                <p className="text-base w-full">專案</p>
+                                <p className="text-base w-full truncate">專案</p>
                                 <div className="shrink-0 ">
                                     <Button
                                         size='sm'
@@ -207,16 +205,16 @@ export default function ProjectOverview(){
                         <div id="overview-bubble-expense" className="w-full flex flex-row md:flex-col gap-3">
                             <div className={`${overviewBubbleChildrenClass}`}>
                                 <div className="px-3 py-3">
-                                    <p className="text-base">整體支出</p>
+                                    <p className="text-base truncate">整體支出</p>
                                     <p className="text-sm text-zinc-500">不包含私人收支紀錄</p>
-                                    <p className="text-2xl font-bold">${formatNumber(projectStats?.grandTotal || 0)}</p>
+                                    <p className="text-2xl font-bold break-all">${formatNumber(projectStats?.grandTotal || 0)}</p>
                                 </div>
                             </div>
                             <div className={`${overviewBubbleChildrenClass}`}>
                                 <div className="px-3 py-3">
-                                    <p className="text-base">你的支出</p>
+                                    <p className="text-base truncate">你的支出</p>
                                     <p className="text-sm text-zinc-500">包含尚未還款金額</p>
-                                    <p className="text-2xl font-bold">${formatNumber(userStats?.grandTotal || 0)}</p>
+                                    <p className="text-2xl font-bold break-all">${formatNumber(userStats?.grandTotal || 0)}</p>
                                 </div>
                             </div>                        
                         </div>
@@ -224,7 +222,7 @@ export default function ProjectOverview(){
                     <div className="w-full 2xl:w-1/2 self-stretch flex flex-col items-start justify-start gap-3 ">
                     <div id="overview-bubble-spilt" className={`flex-1 self-stretch  ${overviewBubbleClass} `}>
                         <div className="pl-3 pb-3 flex items-center justify-start gap-2">
-                            <p className="text-base w-full">簡易還款</p>
+                            <p className="text-base w-full truncate">簡易還款</p>
                             {settleMiniDetail.length !== 0 && (
                                 <div className="shrink-0 ">
                                     <Button
@@ -289,7 +287,7 @@ export default function ProjectOverview(){
                         </div>
                         <div id="overview-bubble-spilt-self" className={`shrink-0 ${overviewBubbleClass}`}>
                             <div className="pl-3 pb-3 flex items-center justify-start gap-2">
-                                <p className="text-base w-full">還款細節</p>
+                                <p className="text-base w-full truncate">還款細節</p>
                                 <div className="shrink-0 ">
                                     <Button
                                         size='sm'
@@ -345,7 +343,7 @@ export default function ProjectOverview(){
                 {currentPage === `/${currentUserId}/${projectId}/dashboard` && (
                     <div id="overview-bubble-expense-quick-view" className={`${overviewBubbleClass} shrink-0`}>
                         <div className="pl-3 pb-3 flex items-center justify-start gap-2">
-                            <p className="text-base w-full">近五筆收支紀錄</p>
+                            <p className="text-base w-full truncate">近五筆收支紀錄</p>
                             <div className="shrink-0 ">
                                 <Button
                                     size='sm'

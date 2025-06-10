@@ -18,6 +18,8 @@ export default function MemberNavMobile() {
     
     const [isCreatePayment, setIsCreatePayment] = useState(false)
     const [activePath, setActivePath] = useState(pathname); // 對應當前功能頁面渲染按鈕
+    // const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath") || projectData?.[0]?.id;
+
     const [lastPath, setLastPath] = useState<string | null>(null);
     console.log("i would like to go ",lastPath)
 
@@ -29,11 +31,8 @@ export default function MemberNavMobile() {
     useEffect(() => {
         const stored = getLocalStorageItem<string>("lastVisitedProjectPath");
         setLastPath(stored || projectData?.[0]?.id || null);
-    }, [projectData]);
+    }, []);
 
-
-    // 尚未有 lastPath 時不渲染
-    if (!lastPath || !userId) return null;
 
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-white z-25">
@@ -70,7 +69,7 @@ export default function MemberNavMobile() {
                     type= 'button'
                     onClick={() => {
                         if (pathname === `/${userId}/setting`) {
-                            router.push(`/${userId}/${lastPath}/expense?openCreate=true`);
+                            router.push(`/${userId}/${lastPath}/expense?openCreatePayment=true`);
                         } else {
                             setIsCreatePayment(true);
                         }

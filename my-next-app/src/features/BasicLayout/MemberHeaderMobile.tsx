@@ -22,7 +22,7 @@ export default function MemberHeaderMobile(){
 
 
     // css
-    const isMobileClass = clsx("z-20 fixed top-0 flex items-center gap-2 w-full box-border justify-start px-6 py-2",
+    const isMobileClass = clsx("z-20 fixed top-0 flex items-center gap-2 w-full box-border justify-start px-2 py-2",
         {
             "bg-sp-green-300": pathname === `/${userId}/${projectId}/expense`,
             "bg-sp-blue-100": pathname !== `/${userId}/${projectId}/expense`

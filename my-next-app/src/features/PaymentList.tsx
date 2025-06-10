@@ -57,6 +57,7 @@ export default function PaymentList(){
     const [isScrolled, setIsScrolled] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const lastScrollTop = useRef(0);
+    console.log("滑動", lastScrollTop)
 
     useEffect(() => {
         const scrollEl = scrollRef.current;

@@ -51,7 +51,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
     const [userData, setUserData] = useState<UserData | null>(null);
     const [projectData, setProjectData] = useState<GetProjectData[]>([]);
-    // const [isLoadedReady, setLoadedReady] = useState(false); 
     const [isReady, setIsReady] = useState(false);
     const router = useRouter();
 
@@ -156,7 +155,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }, []);
 
     const isLoadedReady = useMemo(() => {
-        return !!firebaseUser && !!userData && !!projectData.length;
+        return !!firebaseUser && !!userData && !!projectData;
       }, [firebaseUser, userData, projectData]);
     
     return (

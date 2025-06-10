@@ -92,15 +92,36 @@ export default function ProjectWiseSpilt({
                                                 </div>
                                                 <p className="w-full text-base truncate">{debtor?.name  === userData?.name ? "你" : debtor?.name}</p>
                                             </div>
-                                            <div className="flex items-center w-full pl-10">
-                                                <div className="w-full min-w-10 flex items-center justify-end -space-x-4.5 text-sp-green-300">
+                                            {isMobile ? (
+                                                <div className="flex items-end justify-start w-full flex-col ">
+                                                    <div className="w-full  flex items-center justify-end -space-x-4.5 text-sp-green-300 px-10">
+                                                        <div className="w-full flex-1 h-0.5 bg-sp-green-300 "></div>
+                                                            <Icon 
+                                                                icon='solar:alt-arrow-right-outline'
+                                                                size='xl'
+                                                            />
+                                                        </div>
+                                                    <div className="shrink-0 w-full flex gap-2 h-fit justify-end items-center">
+                                                        <p className="text-base truncate text-zinc-500 text-end">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
+                                                        <div className="shrink-0 flex items-center">
+                                                            <Avatar
+                                                                    size="sm"
+                                                                    img={creditor?.avatarURL}
+                                                                    userName = {creditor?.name}
+                                                                />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center w-full pl-10  justify-end">
+                                                <div className="w-full max-w-40 min-w-20 flex items-center justify-end -space-x-4.5 text-sp-green-300">
                                                     <div className="w-full flex-1 h-0.5 bg-sp-green-300"></div>
                                                         <Icon 
                                                             icon='solar:alt-arrow-right-outline'
                                                             size='xl'
                                                         />
                                                     </div>
-                                                <div className="shrink-0 max-w-40 flex gap-2 h-fit justify-end items-center">
+                                                <div className="shrink-0 max-w-60 flex gap-2 h-fit justify-end items-center">
                                                     <p className="text-base truncate text-zinc-500 text-end">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
                                                     <div className="shrink-0 flex items-center">
                                                         <Avatar
@@ -111,6 +132,7 @@ export default function ProjectWiseSpilt({
                                                     </div>
                                                 </div>
                                             </div>
+                                            )}
                                         </div>
                                         <div className="w-fit min-w-22 flex flex-col justify-end items-end gap-2">
                                             <p className="shrink-0 text-xl font-semibold">${settle.amount}</p>
