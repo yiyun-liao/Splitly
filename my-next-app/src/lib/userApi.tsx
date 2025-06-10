@@ -38,8 +38,12 @@ export async function createNewUser(
 
 export async function fetchCurrentUser(token: string, uid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/auth/getUser?uid=${uid}`, {
-            headers: { Authorization: `Bearer ${token}` },
+        const res = await fetch(`${BASE_URL}/api/auth/user?uid=${uid}`, {
+            method: "GET",
+            headers: { 
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
         });
         
         if (!res.ok) throw new Error("Failed to fetch user data");
@@ -52,10 +56,11 @@ export async function fetchCurrentUser(token: string, uid: string) {
     }
 }
 
+// 更新用戶
 export async function updateUser(token: string, uid: string, data:UserData) {
     try {
-        const res = await fetch(`${BASE_URL}/api/auth/getUser?uid=${uid}`, {
-            method: "POST",
+        const res = await fetch(`${BASE_URL}/api/auth/user?uid=${uid}`, {
+            method: "PATCH",
             headers: { 
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -71,5 +76,27 @@ export async function updateUser(token: string, uid: string, data:UserData) {
     } catch (error) {
         console.error("Error updating user data from backend:", error);
         throw error;
+    }
+}
+
+// 取得專案的所有成員
+export async function fetchUserByProject(pid: string) {
+    try {
+        const res = await fetch(`${BASE_URL}/api/auth/member?pid=${pid}`,{
+            method: "GET",
+            headers: {"Content-Type": "application/json",},
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error("Failed to fetch projects: " + errorText);
+        }
+
+        const data = await res.json();
+        console.log("fetchProjectsByUser:", data);
+        return data;
+    } catch (err) {
+        console.error("Error fetching projects:", err);
+        throw err;
     }
 }

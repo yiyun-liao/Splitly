@@ -2,7 +2,9 @@ import { useState } from "react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { updateProject, fetchUserByProject } from "@/lib/projectApi";
+import { updateProject } from "@/lib/projectApi";
+import { fetchUserByProject } from "@/lib/userApi";
+
 import { GetProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";

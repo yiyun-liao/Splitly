@@ -31,7 +31,7 @@ class ProjectRouter:
                 raise HTTPException(status_code=500, detail=str(e))
 
         # 取得某使用者的專案列表
-        @self.router.get("/api/project/by-user", response_model=list[GetProjectSchema])
+        @self.router.get("/api/project", response_model=list[GetProjectSchema])
         def get_user_projects(
             uid: str, 
             uid_verified: str = Depends(verify_firebase_token), 
@@ -47,23 +47,8 @@ class ProjectRouter:
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Failed to fetch projects: {str(e)}")
             
-        # 新增成員到專案
-        @self.router.post("/api/project/member",response_model=ProjectCreateMinimalResponse)
-        def add_project_members(projectId: str, payload: AddProjectMembersSchema, db: Session = Depends(get_db_session)):
-            try:
-                project_db = ProjectDB(db)
-                added_uids = project_db.add_members_to_project(projectId, payload.member)
-
-                return {
-                    "success": True,
-                    "member": added_uids
-                }
-
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=f"Add member failed: {str(e)}")
-            
         # join 專案時拿到特定專案資料 
-        @self.router.get("/api/project",response_model=ProjectCreateMinimalResponse)
+        @self.router.get("/api/project/certain",response_model=ProjectCreateMinimalResponse)
         def get_certain_project(
             pid: str, 
             uid: str, 
@@ -77,6 +62,7 @@ class ProjectRouter:
             try:
                 project_db = ProjectDB(db)
                 project = project_db.get_certain_project_db(pid)
+                print("🥰", project)
                 return {
                     "success": True,
                     "project": project

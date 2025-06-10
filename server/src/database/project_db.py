@@ -144,6 +144,7 @@ class ProjectDB:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Update project failed: {str(e)}")
 
+    # add member
     def join_project_db(self, pid: str, payload: JoinProjectSchema)-> GetProjectSchema:
         # 查找專案
         project: ProjectModel = self.db.query(ProjectModel).filter(ProjectModel.id == pid).first()
@@ -171,7 +172,6 @@ class ProjectDB:
                     **(project.member_budgets or {}),
                     new_member_uid: member_budget
                 }
-        print("save budget", payload.member_budgets)
 
         try:
             self.db.commit()
@@ -204,8 +204,6 @@ class ProjectDB:
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Join project failed: {str(e)}")
-
-
 
     def get_projects_by_user_id_db(self, uid):
         try:
@@ -274,32 +272,7 @@ class ProjectDB:
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Create Project failed: {str(e)}")        
-
-    # add member
-    def add_members_to_project(self, project_id: str, member: list[str]):
-        # 1. 確保專案存在
-        try:
-            project = self.db.query(ProjectModel).filter_by(id=project_id).first()
-            if not project:
-                raise HTTPException(status_code=404, detail="Project not found")
-
-            # 2. 過濾出尚未存在的 user_ids
-            existing = self.db.query(ProjectMemberRelation.user_id).filter_by(project_id=project_id).all()
-            existing_user_ids = {row[0] for row in existing}
-            new_user_ids = [uid for uid in member if uid not in existing_user_ids]
-
-            # 3. 建立新關聯
-            for uid in new_user_ids:
-                relation = ProjectMemberRelation(project_id=project_id, user_id=uid)
-                self.db.add(relation)
-
-            self.db.commit()
-            return new_user_ids  # 回傳成功新增的 uid
-        
-        except Exception as e:
-            self.db.rollback()
-            raise HTTPException(status_code=400, detail=f"Add member failed: {str(e)}")     
-    
+  
     # soft delete
     def delete_project_db(self, pid: str):
         project = self.db.query(ProjectModel).filter(ProjectModel.id == pid).first()

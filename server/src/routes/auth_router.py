@@ -19,7 +19,7 @@ class AuthRouter:
 
     def _add_routes(self):
 
-        @self.router.get("/api/auth/getUser", response_model=UserSchema)
+        @self.router.get("/api/auth/user", response_model=UserSchema)
         def getUser(
             uid: str, 
             currentUserId: str = Depends(verify_firebase_token),

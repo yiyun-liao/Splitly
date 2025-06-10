@@ -29,7 +29,7 @@ export const GlobalProjectProvider = ({ children }: GlobalProjectProviderProps) 
         // 預載其他素材圖
         Array.from({ length: 12 }, (_, index) => {
             const img = new Image();
-            img.src = `https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/${index + 1}.jpg`;
+            img.src = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1749526499/projectCover/${index + 1}.jpg`;
         });
     }, []);
 

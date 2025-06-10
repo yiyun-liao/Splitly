@@ -6,7 +6,7 @@ import { UserData } from "@/types/user";
 import { GetPaymentData } from "@/types/payment";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { fetchUserByProject } from "@/lib/projectApi";
+import { fetchUserByProject } from "@/lib/userApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
 import { buildAvatarUrl } from "@/utils/getAvatar";
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
@@ -69,7 +69,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const userKey = `projectUsers | ${pureProjectId}`;
         const paymentKey = `paymentList | ${pureProjectId}`;
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
-        const CACHE_TTL = 1000 * 60 * 180;
+        const CACHE_TTL = 1000 * 60 * 60;
         
         const isPageReload = typeof window !== 'undefined' &&
              (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';

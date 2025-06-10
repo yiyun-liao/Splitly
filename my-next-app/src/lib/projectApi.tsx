@@ -51,9 +51,12 @@ export async function deleteProject(projectId: string) {
 // 取得某使用者的專案列表
 export async function fetchProjectsByUser(token: string,uid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project/by-user?uid=${uid}`,{ 
+        const res = await fetch(`${BASE_URL}/api/project?uid=${uid}`,{ 
             method: "GET", 
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { 
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
         });
 
         if (!res.ok) {
@@ -73,37 +76,20 @@ export async function fetchProjectsByUser(token: string,uid: string) {
 // join 專案時拿到特定專案資料
 export async function fetchProjectsByNew(token: string,uid: string,pid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project?pid=${pid}&uid=${uid}`,{ 
+        const res = await fetch(`${BASE_URL}/api/project/certain?pid=${pid}&uid=${uid}`,{ 
             method: "GET", 
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { 
+                Authorization: `Bearer ${token}`, 
+                "Content-Type": "application/json",
+            },
         });
+        console.log("try to get certain project2")
 
         if (!res.ok) {
             const errorText = await res.text();
             throw new Error("Failed to fetch projects: " + errorText);
         }
-
-        const data = await res.json();
-        console.log("fetchProjectsByUser:", data);
-        return data;
-    } catch (err) {
-        console.error("Error fetching projects:", err);
-        throw err;
-    }
-}
-
-// 取得專案的所有成員
-export async function fetchUserByProject(pid: string) {
-    try {
-        const res = await fetch(`${BASE_URL}/api/getUsers/by-project?pid=${pid}`,{
-            method: "GET",
-            headers: {"Content-Type": "application/json",},
-        });
-
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error("Failed to fetch projects: " + errorText);
-        }
+        console.log("try to get certain project3")
 
         const data = await res.json();
         console.log("fetchProjectsByUser:", data);

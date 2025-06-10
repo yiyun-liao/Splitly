@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const myKey = `👀 myData:${uid}`;
             const projectKey = `👀 myProjectList:${uid}`;
             const myMetaKey = `👀 cacheMyMeta:${uid}`;
-            const CACHE_TTL = 1000 * 60 * 180;
+            const CACHE_TTL = 1000 * 60 * 60;
 
             const isPageReload = typeof window !== 'undefined' &&
                 (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';

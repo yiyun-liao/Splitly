@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchProjectsByNew } from "@/lib/projectApi";
-import { fetchUserByProject } from "@/lib/projectApi";
+import { fetchUserByProject } from "@/lib/userApi";
 import { useAddMemberProject } from "@/features/CreateProjectSections/hooks/useAddMemberProject";
 
 import ImageButton from "@/components/ui/ImageButton";
@@ -56,12 +56,26 @@ export default function JoinProjectPage() {
         setAddMemberBudget({[currentUid]: undefined})
         const loadProject = async () => {
             try {
+                console.log("try to get certain project1")
                 const token = await firebaseUser.getIdToken();
                 const rawProject = await fetchProjectsByNew(token, currentUid , projectId);
                 const newProject: GetProjectData = {
                     ...rawProject.project,
                     imgURL: buildProjectCoverUrl(rawProject.project.img),
                 };
+                console.log("try to get certain project4")
+                if (newProject.owner === currentUid) {
+                    alert('你已是專案成員')
+                    router.replace(`/${currentUid}/${projectId}/dashboard`);
+                    return;
+                }
+                if (newProject.member){
+                    if (newProject.member.includes(currentUid)) {
+                        alert('你已是專案成員')
+                        router.replace(`/${currentUid}/${projectId}/dashboard`);
+                        return;
+                    }
+                }
                 
                 const rawUsers = await fetchUserByProject(projectId);
                 const users: UserData[] = rawUsers.map((user:UserData) => ({
@@ -76,7 +90,7 @@ export default function JoinProjectPage() {
             }
         };
         loadProject();
-    }, [isReady, firebaseUser, projectId, currentUid]);
+    }, [isReady, firebaseUser, projectId, currentUid,router]);
 
     // fetch and join
     const updateProjectPayload = useMemo<JoinProjectData | undefined>(() => {

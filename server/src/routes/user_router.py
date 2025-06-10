@@ -14,7 +14,7 @@ class UserRouter:
 
     def _add_routes(self):
         # 專案的所有用戶
-        @self.router.get("/api/getUsers/by-project", response_model=list[UserSchema])
+        @self.router.get("/api/auth/member", response_model=list[UserSchema])
         def get_project_users(pid: str, db: Session = Depends(get_db_session)):
             try:
                 user_db = UserDB(db)
@@ -23,7 +23,8 @@ class UserRouter:
                 raise HTTPException(status_code=500, detail=f"Failed to fetch users: {str(e)}")
         
         
-        @self.router.post("/api/auth/getUser", response_model=UserCreateMinimalResponse)
+        # 更新用戶
+        @self.router.patch("/api/auth/user", response_model=UserCreateMinimalResponse)
         async def update_user(
             uid:str,
             user_data: UserLoginSchema, 

@@ -26,7 +26,7 @@ export default function DashboardHeader({userData}:DashboardHeaderProps){
             />
             <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
                 <ImageButton
-                    image="https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/2.JPG"
+                    image="https://res.cloudinary.com/ddkkhfzuk/image/upload/v1749526499/projectCover/2.jpg"
                     size='md'
                     imageName= "Splitly"
                     >

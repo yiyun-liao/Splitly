@@ -132,9 +132,11 @@ export default function ProjectForm({
             member_budgets: memberBudgetMap || undefined,
             desc: inputDescValue || undefined,
             img: parseFloat(chooseCoverValue),
+            imgURL:chooseCoverURLValue,
         }
-    }, [initialProjectData,currentUid, inputProjectName, inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue, memberBudgetMap, inputDescValue, chooseCoverValue]);
+    }, [initialProjectData,currentUid, inputProjectName, inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue, memberBudgetMap, inputDescValue, chooseCoverValue, chooseCoverURLValue]);
 
+    console.log(projectPayload, updateProjectPayload)
     //disable button 
     const {isComplete } = useMemo(() => {
         let isComplete = false;
@@ -234,7 +236,7 @@ export default function ProjectForm({
                                 {isCoverPageSectionOpen && (
                                     <div className={`col-span-6 p-8 flex flex-wrap gap-2  min-h-40 overflow-hidden rounded-r-2xl rounded-b-2xl bg-sp-white-40`}>
                                         {Array.from({ length: 12 }, (_, index) => {
-                                            const imgUrl = `https://res.cloudinary.com/ddkkhfzuk/image/upload/projectCover/${index + 1}.jpg`;
+                                            const imgUrl = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1749526499/projectCover/${index + 1}.jpg`;
                                             const isSelected = index === parseInt(chooseCoverValue) - 1;
                                             return (
                                                 <div key={index} 
@@ -250,7 +252,7 @@ export default function ProjectForm({
                                                     <ImageButton
                                                         image={imgUrl}
                                                         size='md'
-                                                        imageName= {inputProjectName} 
+                                                        imageName= "素材"
                                                     />                                            
                                                 </div>
                                             );
