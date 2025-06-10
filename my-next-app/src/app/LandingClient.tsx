@@ -7,6 +7,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
+export function isInAppWebView(): boolean {
+    const ua = navigator.userAgent;
+    return /Line|FBAN|FBAV|Instagram|Messenger|Twitter|MicroMessenger/i.test(ua);
+  }
 
 export default function LandingClient() {
     const router = useRouter();
@@ -14,7 +18,14 @@ export default function LandingClient() {
     const { projectData, isLoadedReady:myDataReady, userData } = useAuth();
     const [isLoginTriggered, setIsLoginTriggered] = useState(false); 
 
+
     const handleLogin = async () => {
+        if (isInAppWebView()) {
+            const currentUrl = encodeURIComponent(window.location.href);
+            window.location.href = `https://splitly-steel.vercel.app/?redirect=${currentUrl}`;
+            return;
+        }
+
         const isLogin = await logInUser();
         if (isLogin) {
             setIsLoginTriggered(true); 

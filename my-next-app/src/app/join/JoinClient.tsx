@@ -26,7 +26,7 @@ export default function JoinProjectPage() {
     const projectId = searchParams.get("pid");
     const router = useRouter();
 
-    const { firebaseUser, userData, isReady } = useAuth();
+    const { firebaseUser, userData, isLoadedReady } = useAuth();
     const currentUid : string = userData?.uid || "";
 
     const [joinProject, setJoinProject] = useState<GetProjectData>();
@@ -41,18 +41,18 @@ export default function JoinProjectPage() {
             alert('無效的邀請連結，請重新索取或是建立自己的專案！')
             router.push(`/`);
         }
-        if (!isReady || !projectId) return;
+        if (!isLoadedReady || !projectId) return;
 
         if (!firebaseUser || !userData) {
             const redirect = `/join?pid=${projectId}`;
             router.push(`/?redirect=${encodeURIComponent(redirect)}`);
         }
-    }, [isReady, firebaseUser, userData, projectId, router]);
+    }, [isLoadedReady, firebaseUser, userData, projectId, router]);
 
 
     // get current project data
     useEffect(() => {
-        if (!isReady || !firebaseUser || !projectId || !currentUid) return;
+        if (!isLoadedReady || !firebaseUser || !projectId || !currentUid) return;
         setAddMemberBudget({[currentUid]: undefined})
         const loadProject = async () => {
             try {
@@ -90,7 +90,7 @@ export default function JoinProjectPage() {
             }
         };
         loadProject();
-    }, [isReady, firebaseUser, projectId, currentUid,router]);
+    }, [isLoadedReady, firebaseUser, projectId, currentUid,router]);
 
     // fetch and join
     const updateProjectPayload = useMemo<JoinProjectData | undefined>(() => {
