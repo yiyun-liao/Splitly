@@ -138,8 +138,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 } catch (error) {
                     console.error("🔴 Error fetching user data:", error);
                     if (!retry) {
-                        console.log("⏳ Token might be too early, retrying in 1s...");
-                        setTimeout(() => fetchAndSetUser(true), 1000); // retry once
+                        console.log("⏳ Token might be too early, retrying in 2s...");
+                        setTimeout(() => fetchAndSetUser(true), 2000); // retry once
                     } else {
                         console.warn("🛑 Retry failed, fallback to null");
                         setUserData(null);
