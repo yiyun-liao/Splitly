@@ -8,7 +8,7 @@ export function useAppReady() {
     console.log(`loading... authReady: ${myDataReady},projectData: ${projectData}, userData: ${userData}, projectReady: ${projectReady}, currentProjectData: ${currentProjectData}`)
     const isFullyReady = myDataReady && projectReady && !!userData && !!currentProjectData;
     if (isFullyReady === true){
-        console.log("Have a great day! 🏖️");
+        console.log("gogo 🏖️");
     } 
         
     return isFullyReady;
