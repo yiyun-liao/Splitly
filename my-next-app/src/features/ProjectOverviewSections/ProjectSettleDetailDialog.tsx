@@ -37,7 +37,6 @@ export default function ProjectSettleDetail({
     // 還款紀錄
     const paymentListGroupedByParentCategory = useGroupedByParentCategory()
     const debtList = paymentListGroupedByParentCategory.filter(group => group.parent.id === 101);
-    console.log(debtList)
 
     // for create payment
     const { currentProjectData } = useCurrentProjectData();

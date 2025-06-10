@@ -84,8 +84,7 @@ export default function ProjectOverview(){
             setIsSettleReady(true);
         }
     }, [settleSimpleDetail, settleMiniDetail]);
-
-    console.log(isSettleReady, settleMiniDetail, quickViewSettle)
+    // console.log(isSettleReady, settleMiniDetail, quickViewSettle)
     
     // render data 
     let privateBudget: number | undefined;
@@ -98,7 +97,6 @@ export default function ProjectOverview(){
     const projectBudgetStatus = getBudgetStatus( projectTotal, data?.budget);
     const personalBudgetStatus = getBudgetStatus( personalTotal, privateBudget);
 
-    console.log(projectBudgetStatus, personalBudgetStatus)
     // css
     const isMobile = useIsMobile();
     
