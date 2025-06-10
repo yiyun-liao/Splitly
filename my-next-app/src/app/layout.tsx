@@ -1,6 +1,8 @@
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ViewportHeightSetter from "@/components/layout/ViewportHeightSetter"; 
+import { CategoryProvider } from "@/contexts/CategoryContext";
+
 
 export const metadata = {
 title: "Splitly",
@@ -19,8 +21,10 @@ return (
     </head>
     <body>
         <AuthProvider>
-        <ViewportHeightSetter />
-            {children}
+            <CategoryProvider>
+            <ViewportHeightSetter />
+                {children}
+            </CategoryProvider>
         </AuthProvider>
     </body>
     </html>

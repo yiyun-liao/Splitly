@@ -42,8 +42,7 @@ export default function MemberHeader(){
                     image={currentProjectData?.imgURL}
                     size='md'
                     imageName= {currentProjectData?.project_name || ""}
-                    >
-                </ImageButton>
+                />
                 <p className="text-2xl font-medium text-zinc-700 whitespace-nowrap truncate min-w-0 max-w-100">{currentProjectData?.project_name || ""}</p>
             </div>
             <div className="shrink-0 flex items-center justify-start gap-2">
