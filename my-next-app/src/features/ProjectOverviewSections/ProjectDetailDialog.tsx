@@ -35,7 +35,7 @@ export default function ProjectDetail({
     const memberClass = clsx("w-full shrink-0 flex flex-col gap-2 box-border px-3 py-3 rounded-2xl h-fit min-h-40 bg-sp-green-200",)
     const listClass = clsx("flex gap-2 justify-start items-start")
     const labelClass = clsx("shrink-0  w-30 font-medium truncate")
-    const listContentClass = clsx("shrink-0 w-full")
+    const listContentClass = clsx("w-full break-all")
     const typeParsed = getProjectStyle(currentProjectData.style)
 
     const renderBody = () => {
@@ -107,7 +107,7 @@ export default function ProjectDetail({
                                                 userName={user?.name}
                                             />
                                         </div>
-                                        <p className="text-base w-fll  truncate">{user.name}</p>
+                                        <p className="text-base w-fll  break-all">{user.name}</p>
                                     </div>
                                     {currentProjectData?.owner  == user.uid && (
                                         <div className="shrink-0 p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">擁有者</div>

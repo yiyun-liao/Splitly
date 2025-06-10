@@ -93,8 +93,8 @@ export default function ProjectSettleDetail({
 
                                 return (
                                     <div key={index} className={clsx( "w-full px-3 py-3 flex items-center justify-start gap-2 rounded-2xl hover:bg-sp-white-40", { "border-b border-sp-white-60": !isLast })}>
-                                        <div className="w-full flex items-center justify-start flex-wrap gap-2 overflow-hidden">
-                                            <div className="shrink-0 w-50 flex items-center gap-2">
+                                        <div className="w-full flex items-center justify-start flex-col gap-2 overflow-hidden">
+                                            <div className="shrink-0 w-full flex items-center gap-2">
                                                 <div  className="shrink-0 flex items-center">
                                                     <Avatar
                                                         size="md"
@@ -102,10 +102,25 @@ export default function ProjectSettleDetail({
                                                         userName = {debtor?.name}
                                                     />
                                                 </div>
-                                                <p className="text-base truncate">{debtor?.name  === userData?.name ? "你" : debtor?.name}</p>
+                                                <p className="w-full text-base break-all">{debtor?.name  === userData?.name ? "你" : debtor?.name}</p>
                                             </div>
-                                            <div className="flex h-fit items-center gap-2 pl-8">
-                                                <p className="pl-2 text-base font-base truncate text-zinc-500">須還款給</p>
+                                            {isMobile ? (
+                                                <div className="flex w-full items-start gap-2 overflow-hidden flex-col pl-10">
+                                                    <p className="shrink-0 text-base font-base text-zinc-500 ">須還款給</p>
+                                                    <div className="shrink-0 flex gap-2 w-full justify-start items-center">
+                                                        <div className="shrink-0 flex items-center">
+                                                            <Avatar
+                                                                    size="sm"
+                                                                    img={creditor?.avatarURL}
+                                                                    userName = {creditor?.name}
+                                                                />
+                                                        </div>
+                                                        <p className="text-base text-zinc-500 break-all">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex w-full items-center gap-2 overflow-hidden">
+                                                <p className="shrink-0 pl-10 text-base font-base text-zinc-500">須還款給</p>
                                                 <div className="shrink-0 flex gap-2">
                                                     <div className="shrink-0 flex items-center">
                                                         <Avatar
@@ -114,9 +129,10 @@ export default function ProjectSettleDetail({
                                                                 userName = {creditor?.name}
                                                             />
                                                     </div>
-                                                    <p className="text-base text-zinc-500">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
+                                                    <p className="text-base text-zinc-500 ">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
                                                 </div>
                                             </div>
+                                            )}
                                         </div>
                                         <div className="w-fit min-w-22 flex flex-col justify-end items-end gap-2">
                                             <p className="shrink-0 text-xl font-semibold">${settle.amount}</p>
@@ -191,28 +207,44 @@ export default function ProjectSettleDetail({
                                                         userName = {debtor?.name}
                                                     />
                                                 </div>
-                                                <p className="w-full text-base truncate">{debtor?.name  === userData?.name ? "你" : debtor?.name}</p>
+                                                <p className="w-full text-base break-all">{debtor?.name  === userData?.name ? "你" : debtor?.name}</p>
                                             </div>
-                                            <div className="flex items-center w-full pl-2">
-                                                <p className="shrink-0 text-sm text-zinc-500 pr-2">{dateOnly}</p>
-                                                <div className="w-full min-w-10 flex items-center justify-end -space-x-4.5 text-sp-green-300">
-                                                    <div className="w-full flex-1 h-0.5 bg-sp-green-300"></div>
-                                                        <Icon 
-                                                            icon='solar:alt-arrow-right-outline'
-                                                            size='xl'
-                                                        />
-                                                    </div>
-                                                <div className="shrink-0 max-w-40 flex gap-2 h-fit justify-end items-center">
-                                                    <p className="text-base truncate text-zinc-500 text-end">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
-                                                    <div className="shrink-0 flex items-center">
-                                                        <Avatar
-                                                                size="sm"
-                                                                img={creditor?.avatarURL}
-                                                                userName = {creditor?.name}
-                                                            />
+                                            {isMobile ? (
+                                                <div className="flex items-start w-full pl-10 flex-col justify-start gap-2">
+                                                    <p className="shrink-0 w-full text-sm text-zinc-500 pr-2">{dateOnly} 給</p>
+                                                    <div className="shrink-0 flex gap-2 h-fit items-center">
+                                                        <div className="shrink-0 flex items-center">
+                                                            <Avatar
+                                                                    size="sm"
+                                                                    img={creditor?.avatarURL}
+                                                                    userName = {creditor?.name}
+                                                                />
+                                                        </div>
+                                                        <p className="text-base  break-all text-zinc-500 ">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            ) : (
+                                                <div className="flex items-center w-full pl-2">
+                                                    <p className="shrink-0 text-sm text-zinc-500 pr-2">{dateOnly}</p>
+                                                    <div className="w-full min-w-10 flex items-center justify-end -space-x-4.5 text-sp-green-300">
+                                                        <div className="w-full flex-1 h-0.5 bg-sp-green-300"></div>
+                                                            <Icon 
+                                                                icon='solar:alt-arrow-right-outline'
+                                                                size='xl'
+                                                            />
+                                                    </div>
+                                                    <div className="shrink-0 max-w-40 flex gap-2 h-fit justify-end items-center">
+                                                        <p className="text-base truncate text-zinc-500 text-end">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
+                                                        <div className="shrink-0 flex items-center">
+                                                            <Avatar
+                                                                    size="sm"
+                                                                    img={creditor?.avatarURL}
+                                                                    userName = {creditor?.name}
+                                                                />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                         <p className="w-fit min-w-22 shrink-0 text-xl font-semibold text-end">${payment.amount}</p>
                                     </div>

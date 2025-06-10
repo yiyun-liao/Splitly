@@ -27,10 +27,11 @@ export default function SettingContent(){
         }
     }
     
-    const labelClass = clsx("w-30 font-medium truncate")
+    const labelClass = clsx("shrink-0 w-30 font-medium truncate")
+    const infoClass = clsx("w-full text-wrap break-all")
     const itemClass= clsx("w-full flex gap-2 items-center rounded-xl hover:text-sp-blue-600 hover:bg-zinc-900/10 active:text-sp-blue-800 active:bg-zinc-900/40 cursor-pointer")
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-    const myInfoClass = clsx("shrink-0 box-border h-fit overflow-hidden border-b-1 border-sp-blue-300 ",
+    const titleClass = clsx("shrink-0 box-border h-fit overflow-hidden border-b-1 border-sp-blue-300 ",
         {
             "w-full px-0 py-3": isMobile === true,
             "w-xl px-3 py-6": isMobile === false,  
@@ -54,9 +55,9 @@ export default function SettingContent(){
                     />
                 )}
             </>
-            <div className={myInfoClass}>
+            <div className={titleClass}>
                 <div className="pb-2 flex items-center justify-between gap-2">
-                    <p className="text-xl font-medium">個人資訊</p>
+                    <p className="text-xl font-medium truncate">個人資訊</p>
                     <div className="shrink-0">
                         <IconButton
                             icon= "solar:pen-new-square-outline"
@@ -71,21 +72,21 @@ export default function SettingContent(){
                 <div className="py-4 flex flex-col gap-4">
                     <div className="flex">
                         <p className={labelClass}>名字</p>
-                        <p>{userData?.name}</p>
+                        <p className={infoClass}>{userData?.name}</p>
                     </div>
                     <div className="flex">
                         <p className={labelClass}>信箱</p>
-                        <p>{userData?.email}</p>
+                        <p className={infoClass}>{userData?.email}</p>
                     </div>
                     <div className="flex">
                         <p className={labelClass}>ID</p>
-                        <p>{userData?.uid}</p>
+                        <p className={infoClass}>{userData?.uid}</p>
                     </div>
                 </div>
             </div>
-            <div className={myInfoClass}>
+            <div className={titleClass}>
                 <div className="pb-2">
-                    <p className="text-xl font-medium">參與的專案</p>
+                    <p className="text-xl font-medium truncate">參與的專案</p>
                     <p className="text-zinc-500">如需編輯，請至各專案中設定</p>
                 </div>
                 <div className={`${myProjectClass} ${scrollClass}`}>
@@ -103,7 +104,7 @@ export default function SettingContent(){
                                     imageName= {project.project_name}
                                     onClick={() => {}}
                                 />
-                                <p className={`${labelClass}`}>{project.project_name}</p>
+                                <p className={`font-medium ${infoClass}`}>{project.project_name}</p>
                             </div>
                         )}
                     )}
