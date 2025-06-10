@@ -5,7 +5,6 @@ import clsx from "clsx";
 import ModalPortal from "@/components/ui/ModalPortal";
 import ImageButton from "@/components/ui/ImageButton";
 import IconButton from "@/components/ui/IconButton";
-import CreateProject from "../CreateProjectSections/CreateProject-main";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
@@ -21,8 +20,7 @@ export default function ProjectListNavMobile({
 }:ProjectListNavMobileProps){
     const router = useRouter();
     const { projectId, userId } = useParams();
-    const {projectData, userData} = useGlobalProjectData()
-    // const [isCreateProject, setIsCreateProject]= useState(false);
+    const {projectData} = useGlobalProjectData()
     const [lastPath, setLastPath] = useState<string | null>(null);
 
 
@@ -59,14 +57,6 @@ export default function ProjectListNavMobile({
         <ModalPortal>  
             <div className={`${navWrapperClass}`} onClick={onClose}>
                 <div className={navStyleClass} onClick={(e) => e.stopPropagation()}>
-                    {/* <>
-                        {isCreateProject && userData && (
-                            <CreateProject
-                                onClose={() => setIsCreateProject(false)}
-                                userData = {userData}
-                            />
-                        )}
-                    </> */}
                     <div className="w-full shrink-0 flex justify-end items-center">
                         <p className={`${labelClass}`}>所有專案</p>
                         <IconButton
