@@ -2,12 +2,14 @@ import clsx from "clsx";
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, useMemo } from "react";
+
 import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import ProjectSettleDetail from "./ProjectSettleDetailDialog";
 import ProjectWiseSpilt from "./ProjectWiseSpiltDialog";
 import ProjectDetail from "./ProjectDetailDialog";
+import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
@@ -17,12 +19,15 @@ import { formatNumber } from "@/utils/parseNumber";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
 import { useAllSettlements,useMergedSettlements, useSimplifiedSettlements } from "@/hooks/useSettleDebts";
-
+import { GetPaymentData } from "@/types/payment";
+import ProjectForm from "../CreateProjectSections/ProjectForm";
 
 export default function ProjectOverview(){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
     const [isWiseSpiltDialogOpen, setIsWiseSpiltDialogOpen] = useState(false)
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false)
+    const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false); //open project to update 
+    const [isReceiptCardOpen, setIsReceiptCardOpen] = useState<GetPaymentData | null>(null); //open payment list to update with data
     
     const {userData} = useGlobalProjectData();
     const currentUserId = userData?.uid || "";
@@ -56,10 +61,12 @@ export default function ProjectOverview(){
     }, [settleSimpleDetail, currentUserId]);
 
     const quickViewDebtor = useMemo(() => {
+        if (!!quickViewSettle)
         return userList?.find(user => user.uid === quickViewSettle?.from);
     }, [userList, quickViewSettle]);
 
     const quickViewCreditor = useMemo(() => {
+        if (!!quickViewSettle)
         return userList?.find(user => user.uid === quickViewSettle?.to);
     }, [userList, quickViewSettle]);
 
@@ -78,7 +85,7 @@ export default function ProjectOverview(){
         }
     }, [settleSimpleDetail, settleMiniDetail]);
 
-
+    console.log(isSettleReady, settleMiniDetail, quickViewSettle)
     
     // render data 
     let privateBudget: number | undefined;
@@ -91,7 +98,7 @@ export default function ProjectOverview(){
     const projectBudgetStatus = getBudgetStatus( projectTotal, data?.budget);
     const personalBudgetStatus = getBudgetStatus( personalTotal, privateBudget);
 
-
+    console.log(projectBudgetStatus, personalBudgetStatus)
     // css
     const isMobile = useIsMobile();
     
@@ -114,6 +121,20 @@ export default function ProjectOverview(){
                         userData={userData} 
                         currentProjectData = {data}
                         currentProjectUsers = {userList || []}
+                        onEditProject={() => {
+                            setIsProjectDialogOpen(false); // 關 ProjectDetail
+                            setIsUpdateDialogOpen(true);   // 開 ProjectForm
+                          }}
+                    />
+                )}
+                {isUpdateDialogOpen && userData &&(
+                    <ProjectForm
+                        open={isUpdateDialogOpen}
+                        onClose={()=>{setIsUpdateDialogOpen(false)}}
+                        userData={userData}
+                        initialProjectData = {data}
+                        sheetTitle="更新專案"
+                        submitButtonText="更新"
                     />
                 )}
                 <ProjectSettleDetail
@@ -126,14 +147,22 @@ export default function ProjectOverview(){
                     onClose = {() => setIsWiseSpiltDialogOpen(false)}   
                     currentProjectUsers = {userList || []}
                 />
+                {isReceiptCardOpen && userList && (
+                    <CreatePayment 
+                        onClose={() => {
+                            setIsReceiptCardOpen(null);
+                        }}
+                        initialPayload={isReceiptCardOpen || undefined} 
+                    />
+                )}
             </>
             <div id="expense-overview" className="w-full box-border h-fit flex flex-col items-start justify-start gap-6">
                 <div className="w-full box-border flex flex-col xl:flex-row h-fit items-start justify-start rounded-2xl overflow-hidden">
-                    <div className={`w-full 2xl:w-1/2 px-3 py-3 text-center ${projectBudgetStatus.bgColor} ${projectBudgetStatus.textColor} overflow-hidden`}>
+                    <div className={`self-stretch w-full 2xl:w-1/2 px-3 py-3 text-center ${projectBudgetStatus.bgColor} ${projectBudgetStatus.textColor} overflow-hidden`}>
                         <Icon icon={projectBudgetStatus.icon} size="xl" />
                         <p className="text-xl font-semibold pt-2">（專案）{projectBudgetStatus.text}</p>
                     </div>
-                    <div className={`w-full 2xl:w-1/2 px-3 py-3 text-center ${personalBudgetStatus.bgColor} ${personalBudgetStatus.textColor} overflow-hidden`}>
+                    <div className={`self-stretch w-full 2xl:w-1/2 px-3 py-3 text-center ${personalBudgetStatus.bgColor} ${personalBudgetStatus.textColor} overflow-hidden`}>
                         <Icon icon={personalBudgetStatus.icon} size="xl" />
                         <p className="text-xl font-semibold pt-2">（你）{personalBudgetStatus.text}</p>
                     </div>
@@ -196,18 +225,20 @@ export default function ProjectOverview(){
                     <div id="overview-bubble-spilt" className={`flex-1 self-stretch  ${overviewBubbleClass} `}>
                         <div className="pl-3 pb-3 flex items-center justify-start gap-2">
                             <p className="text-base w-full">簡易還款</p>
-                            <div className="shrink-0 ">
-                                <Button
-                                    size='sm'
-                                    width='fit'
-                                    variant='text-button'
-                                    color='primary'
-                                    isLoading={!isSettleReady}
-                                    onClick={() => setIsWiseSpiltDialogOpen(true)} 
-                                    >
-                                        查看全部
-                                </Button>
-                            </div>
+                            {settleMiniDetail.length !== 0 && (
+                                <div className="shrink-0 ">
+                                    <Button
+                                        size='sm'
+                                        width='fit'
+                                        variant='text-button'
+                                        color='primary'
+                                        isLoading={!isSettleReady}
+                                        onClick={() => setIsWiseSpiltDialogOpen(true)} 
+                                        >
+                                            查看全部
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                         <div className="px-3 py-3 flex flex-col items-start justify-start gap-8">
                             {!isSettleReady ? (
@@ -275,8 +306,11 @@ export default function ProjectOverview(){
                             <div className="px-3 py-3 flex items-start justify-start gap-2">
                                 {!isSettleReady ? (
                                     <p className="shrink-0 text-base font-semibold text-zinc-500">計算中...</p>
-                                ) : !quickViewSettle  ? (
-                                    <p className="shrink-0 text-xl font-semibold">專案已結清🎉</p>
+                                ) : settleMiniDetail.length === 0  ? (
+                                    <div className="flex-col ">
+                                        <p className="shrink-0 text-xl font-semibold">專案已結清🎉</p>
+                                        <p className="shrink-0 text-sm text-zinc-500">詳細還款紀錄可點擊「查看全部」</p>
+                                    </div>
                                 ) : (
                                     <>
                                         <div className="w-full flex  flex-wrap items-center justify-start gap-2 overflow-hidden">
@@ -292,7 +326,7 @@ export default function ProjectOverview(){
                                             </div>
                                             <p className="pl-2 text-base font-base text-zinc-500">須還款給 {quickViewCreditor?.name}</p>
                                         </div>
-                                        <p className="shrink-0 text-xl font-semibold"> ${quickViewSettle.amount}</p>
+                                        <p className="shrink-0 text-xl font-semibold"> ${quickViewSettle?.amount}</p>
                                     </>
                                 )}
                             </div>
@@ -302,12 +336,12 @@ export default function ProjectOverview(){
                 {isMobile && (
                     <div className="shrink-0 w-full pb-3" />
                 )}
-                {currentPage === `/${currentUserId}/${projectId}/expense` &&(
+                {/* {currentPage === `/${currentUserId}/${projectId}/expense` &&(
                     <div id="overview-bubble-expense-chart" className={`${overviewBubbleClass} h-100 shrink-0 text-center`}>
                         chart
                         <img src="https://res.cloudinary.com/ddkkhfzuk/image/upload/test.JPG" width={480} height={200} alt="圖" />
                     </div>
-                )}
+                )} */}
                 {currentPage === `/${currentUserId}/${projectId}/dashboard` && (
                     <div id="overview-bubble-expense-quick-view" className={`${overviewBubbleClass} shrink-0`}>
                         <div className="pl-3 pb-3 flex items-center justify-start gap-2">
@@ -328,7 +362,7 @@ export default function ProjectOverview(){
                         </div>
                         <div id="expense-list-frame" className="w-full pb-4 px-3">
                             {(list || []).slice(0, 5).map((payment, index) => (
-                                <div key={payment.id}>
+                                <div key={payment.id} onClick={() => setIsReceiptCardOpen(payment)}>
                                     <ReceiptCard
                                         account_type={payment.account_type}
                                         record_mode={payment.record_mode}

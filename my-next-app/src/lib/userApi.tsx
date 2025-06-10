@@ -1,7 +1,8 @@
 // my-next-app/src/lib/userApi.tsx
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { UserData } from "@/types/user";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function createNewUser(
     token: string,
@@ -27,18 +28,22 @@ export async function createNewUser(
         throw new Error("Failed to sync user: " + errorText);
     }
 
-    const data = await response.json();
-    console.log('login success', data)
+        const data = await response.json();
+        console.log('login success', data)
     return data;
     } catch (err) {
-    console.error("Error syncing user to backend:", err);
+        console.error("Error syncing user to backend:", err);
     }
 }
 
 export async function fetchCurrentUser(token: string, uid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/auth/getUser?uid=${uid}`, {
-            headers: { Authorization: `Bearer ${token}` },
+        const res = await fetch(`${BASE_URL}/api/auth/user?uid=${uid}`, {
+            method: "GET",
+            headers: { 
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
         });
         
         if (!res.ok) throw new Error("Failed to fetch user data");
@@ -48,5 +53,50 @@ export async function fetchCurrentUser(token: string, uid: string) {
     } catch (error) {
         console.error("Error fetching user data from backend:", error);
         throw error;
+    }
+}
+
+// 更新用戶
+export async function updateUser(token: string, uid: string, data:UserData) {
+    try {
+        const res = await fetch(`${BASE_URL}/api/auth/user?uid=${uid}`, {
+            method: "PATCH",
+            headers: { 
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+             },
+            body: JSON.stringify(data),
+
+        });
+        
+        if (!res.ok) throw new Error("Failed to update user data");
+        const result = await res.json();
+        console.log("updateUser: ",result)
+        return result;
+    } catch (error) {
+        console.error("Error updating user data from backend:", error);
+        throw error;
+    }
+}
+
+// 取得專案的所有成員
+export async function fetchUserByProject(pid: string) {
+    try {
+        const res = await fetch(`${BASE_URL}/api/auth/member?pid=${pid}`,{
+            method: "GET",
+            headers: {"Content-Type": "application/json",},
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error("Failed to fetch projects: " + errorText);
+        }
+
+        const data = await res.json();
+        console.log("fetchProjectsByUser:", data);
+        return data;
+    } catch (err) {
+        console.error("Error fetching projects:", err);
+        throw err;
     }
 }

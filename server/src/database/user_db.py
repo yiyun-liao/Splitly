@@ -5,6 +5,7 @@ from src.database.models.user import UserModel
 from src.database.models.project import ProjectModel, ProjectEditorRelation, ProjectMemberRelation
 from src.database.models.base import Base
 from src.database.relational_db import Database
+from src.routes.schema.user import UserLoginSchema
 
 
 
@@ -23,8 +24,28 @@ class UserDB:
             print("❌ 建立使用者失敗：", str(e))
             raise HTTPException(status_code=400, detail=f"Create user failed: {str(e)}")
     
+    def update_by_uid(self, uid: str ,user_data: UserLoginSchema) -> UserModel:
+        user = (
+            self.db.query(UserModel)
+            .filter(UserModel.uid == uid)
+            .first()
+        )
+        if not user:
+            raise ValueError(f"Payment not found: {user.id}")
+        
+        user.name = user_data.name
+        user.avatar = user_data.avatar
+
+        try:
+            self.db.commit()
+            self.db.refresh(user)
+            return user
+        except Exception as e:
+            self.db.rollback()
+            raise HTTPException(status_code=400, detail=f"Get user by uid failed: {str(e)}")
+    
+    """依 uid 取得使用者"""
     def get_by_uid(self, uid: str) -> UserModel:
-        """依 uid 取得使用者"""
         try:
             user = (
                 self.db.query(UserModel)
@@ -37,6 +58,7 @@ class UserDB:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Get user by uid failed: {str(e)}")
     
+    """依 pid 取得 member"""
     def get_users_by_pid(self, pid) -> list[UserModel]:
         try:
             project = (
@@ -71,3 +93,4 @@ class UserDB:
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=400, detail=f"Create Project failed: {str(e)}")        
+        

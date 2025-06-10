@@ -33,7 +33,7 @@ export default function Avatar({
     };
 
     const dimension = SIZE_MAP[size];
-    const divClass = clsx('relative inline-block rounded-full overflow-hidden cursor-pointer', className)
+    const divClass = clsx('relative inline-block rounded-full overflow-hidden cursor-pointer animate-breathing', className)
     
     return (
         <div

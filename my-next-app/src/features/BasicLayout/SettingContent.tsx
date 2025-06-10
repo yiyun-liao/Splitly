@@ -1,17 +1,22 @@
 import clsx from "clsx";
 import { useRouter } from 'next/navigation';
+import { useState } from "react";
 
 import Button from "@/components/ui/Button";
 import ImageButton from "@/components/ui/ImageButton";
+import IconButton from "@/components/ui/IconButton";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { logOutUser } from "@/lib/auth";
 import { clearUserCache } from "@/utils/cache";
+import DataSettingDialog from "./DataSettingDialog";
 
 export default function SettingContent(){
     const router = useRouter();
     const { userData,projectData} = useGlobalProjectData();
     const isMobile = useIsMobile();
+    const [isSettingDialogOpen, setIsSettingDialogOpen] = useState(false)
+    
 
     async function handleLogout() {
         const success = await logOutUser();
@@ -23,7 +28,6 @@ export default function SettingContent(){
     }
     
     const labelClass = clsx("w-30 font-medium truncate")
-    const titleClass = clsx("text-xl pb-2 font-medium whitespace-nowrap truncate min-w-0 max-w-100")
     const itemClass= clsx("w-full flex gap-2 items-center rounded-xl hover:text-sp-blue-600 hover:bg-zinc-900/10 active:text-sp-blue-800 active:bg-zinc-900/40 cursor-pointer")
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const myInfoClass = clsx("shrink-0 box-border h-fit overflow-hidden border-b-1 border-sp-blue-300 ",
@@ -41,8 +45,29 @@ export default function SettingContent(){
     
     return(
         <div className="flex flex-col pag-4 text-zinc-700">
+            <>
+                {userData && (
+                    <DataSettingDialog
+                        isSettingDialogOpen={isSettingDialogOpen}
+                        onClose = {() => setIsSettingDialogOpen(false)}   
+                        userData={userData} 
+                    />
+                )}
+            </>
             <div className={myInfoClass}>
-                <p className={titleClass}>個人資訊</p>
+                <div className="pb-2 flex items-center justify-between gap-2">
+                    <p className="text-xl font-medium">個人資訊</p>
+                    <div className="shrink-0">
+                        <IconButton
+                            icon= "solar:pen-new-square-outline"
+                            size='md'
+                            variant= 'text-button'
+                            color='zinc'
+                            type= 'button'
+                            onClick={() => {setIsSettingDialogOpen(true)}} 
+                        />
+                    </div>
+                </div>
                 <div className="py-4 flex flex-col gap-4">
                     <div className="flex">
                         <p className={labelClass}>名字</p>
@@ -59,7 +84,10 @@ export default function SettingContent(){
                 </div>
             </div>
             <div className={myInfoClass}>
-                <p className={titleClass}>參與的專案</p>
+                <div className="pb-2">
+                    <p className="text-xl font-medium">參與的專案</p>
+                    <p className="text-zinc-500">如需編輯，請至各專案中設定</p>
+                </div>
                 <div className={`${myProjectClass} ${scrollClass}`}>
                     {projectData?.map(project => {
                         return(

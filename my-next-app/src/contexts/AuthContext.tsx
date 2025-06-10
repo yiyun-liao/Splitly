@@ -21,6 +21,9 @@ type AuthContextType = {
     logOutUser: () => Promise<boolean>;
     projectData: GetProjectData[];
     addProject: (project: GetProjectData) => void;
+    setUserData?: React.Dispatch<React.SetStateAction<UserData | null>>; 
+    setProjectData?: React.Dispatch<React.SetStateAction<GetProjectData[] | []>>;
+    
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -30,7 +33,9 @@ export const AuthContext = createContext<AuthContextType>({
     isReady: false,
     logInUser: async () => false,
     logOutUser: async () => true,
-    addProject: () => {}
+    addProject: () => {},
+    setUserData: () => {},
+    setProjectData: () => {},
 });
 
 
@@ -63,7 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const myKey = `👀 myData:${uid}`;
             const projectKey = `👀 myProjectList:${uid}`;
             const myMetaKey = `👀 cacheMyMeta:${uid}`;
-            const CACHE_TTL = 1000 * 60 * 180;
+            const CACHE_TTL = 1000 * 60 * 60;
 
             const isPageReload = typeof window !== 'undefined' &&
                 (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
@@ -140,7 +145,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     return (
         <AuthContext.Provider
-            value={{ firebaseUser, projectData, userData, isReady, logInUser, logOutUser,addProject, }}
+            value={{ 
+                firebaseUser, 
+                projectData, 
+                userData, 
+                isReady, 
+                logInUser, 
+                logOutUser,
+                addProject, 
+                setUserData,
+                setProjectData
+            }}
         >
         {children}
         </AuthContext.Provider>

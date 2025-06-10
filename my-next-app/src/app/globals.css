@@ -71,6 +71,21 @@
   }
 }
 
+@layer utilities {
+  @keyframes breathing {
+    0%, 100% {
+      background-color: var(--color-sp-blue-300); /* zinc-300 */
+    }
+    50% {
+      background-color: var(--color-blue-100); /* zinc-200 */
+    }
+  }
+
+  .animate-breathing {
+    animation: breathing 1s ease-in-out infinite;
+  }
+}
+
 body {
   padding: 0;
   margin: 0;

@@ -1,6 +1,6 @@
 // 隨機產生 1~12 的專案照片 index 
 
-const CLOUDINARY_BASE = "https://res.cloudinary.com/ddkkhfzuk/image/upload";
+const CLOUDINARY_BASE = "https://res.cloudinary.com/ddkkhfzuk/image/upload/v1749526499";
 const PROJECT_COVER_FOLDER = "projectCover";
 
 // ---------- feature: get amount in folder to auto-random

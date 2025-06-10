@@ -1,4 +1,4 @@
-import { ProjectData } from "@/types/project";
+import { ProjectData, GetProjectData, JoinProjectData } from "@/types/project";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -51,9 +51,12 @@ export async function deleteProject(projectId: string) {
 // 取得某使用者的專案列表
 export async function fetchProjectsByUser(token: string,uid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project/by-user?uid=${uid}`,{ 
+        const res = await fetch(`${BASE_URL}/api/project?uid=${uid}`,{ 
             method: "GET", 
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { 
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
         });
 
         if (!res.ok) {
@@ -70,50 +73,80 @@ export async function fetchProjectsByUser(token: string,uid: string) {
     }
 }
 
-// 取得專案的所有成員
-export async function fetchUserByProject(pid: string) {
+// join 專案時拿到特定專案資料
+export async function fetchProjectsByNew(token: string,uid: string,pid: string) {
     try {
-        const res = await fetch(`${BASE_URL}/api/getUsers/by-project?pid=${pid}`,{
-            method: "GET",
-            headers: {"Content-Type": "application/json",},
+        const res = await fetch(`${BASE_URL}/api/project/certain?pid=${pid}&uid=${uid}`,{ 
+            method: "GET", 
+            headers: { 
+                Authorization: `Bearer ${token}`, 
+                "Content-Type": "application/json",
+            },
         });
+        console.log("try to get certain project2")
 
         if (!res.ok) {
             const errorText = await res.text();
             throw new Error("Failed to fetch projects: " + errorText);
         }
+        console.log("try to get certain project3")
 
         const data = await res.json();
         console.log("fetchProjectsByUser:", data);
         return data;
     } catch (err) {
         console.error("Error fetching projects:", err);
+        throw err;
+    }
+}
+
+
+// 更新專案 
+export async function updateProject(projectId: string, payload: GetProjectData) {
+    try {
+        const res = await fetch(`${BASE_URL}/api/project?pid=${projectId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error("Failed to update project: " + errorText);
+        }
+
+        const data = await res.json();
+        console.log("updateProject:", data);
+        return data;
+    } catch (err) {
+        console.error("Error creating project:", err);
         throw err;
     }
 }
 
 // 新增成員到專案
-export async function addProjectMembers(projectId: string, memberUids: string[]) {
+export async function joinProject(payload: JoinProjectData) {
     try {
-        const res = await fetch(`${BASE_URL}/api/project/member?projectId=${projectId}`, {
+        const res = await fetch(`${BASE_URL}/api/project/join`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ member: memberUids }),
+            body: JSON.stringify(payload),
         });
 
         if (!res.ok) {
             const errorText = await res.text();
-            throw new Error("Failed to add members: " + errorText);
+            throw new Error("Failed to update project: " + errorText);
         }
 
         const data = await res.json();
-        console.log("addProjectMembers:", data);
+        console.log("joinProject:", data);
         return data;
     } catch (err) {
-        console.error("Error adding project members:", err);
+        console.error("Error creating project:", err);
         throw err;
     }
 }
-

@@ -43,7 +43,6 @@ export default function ProjectWiseSpilt({
     const router = useRouter();
 
     // update ui
-
     const settleMiniDetail = useMemo(() => {
         return settleWiseDetail.filter((s) => s.amount > 0);
       }, [settleWiseDetail]);
@@ -73,87 +72,91 @@ export default function ProjectWiseSpilt({
                     <p className="text-base w-full">最快速地還清債務！</p>
                 </div>                   
                 <div className="w-full flex flex-col box-border h-fit min-h-40 ">
-                    {settleMiniDetail.map((settle, index) => {
-                        const debtor = currentProjectUsers?.find(user => user.uid === settle?.from);
-                        const creditor = currentProjectUsers?.find(user => user.uid === settle?.to);
-                        const isLast = index === settleMiniDetail.length - 1;
-                        return (
-                            <div key={index} className={clsx( "w-full px-3 py-3 flex items-end justify-start gap-4 rounded-2xl hover:bg-sp-green-200", { "border-b border-sp-green-200": !isLast })}>
-                                <div className="w-full overflow-hidden">
-                                    <div className="shrink-0 w-full flex items-center gap-2">
-                                        <div  className="shrink-0 flex items-center">
-                                            <Avatar
-                                                size="md"
-                                                img={debtor?.avatarURL}
-                                                userName = {debtor?.name}
-                                            />
-                                        </div>
-                                        <p className="w-full text-base truncate">{debtor?.name  === userData?.name ? "你" : debtor?.name}</p>
-                                    </div>
-                                    <div className="flex items-center w-full pl-10">
-                                        <div className="w-full min-w-10 flex items-center justify-end -space-x-4.5 text-sp-green-300">
-                                            <div className="w-full flex-1 h-0.5 bg-sp-green-300"></div>
-                                                <Icon 
-                                                    icon='solar:alt-arrow-right-outline'
-                                                    size='xl'
-                                                />
-                                            </div>
-                                        <div className="shrink-0 max-w-40 flex gap-2 h-fit justify-end items-center">
-                                            <p className="text-base truncate text-zinc-500 text-end">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
-                                            <div className="shrink-0 flex items-center">
-                                                <Avatar
-                                                        size="sm"
-                                                        img={creditor?.avatarURL}
-                                                        userName = {creditor?.name}
+                    {settleMiniDetail.length === 0 ? (
+                            <p className="shrink-0 flex justify-start items-start text-xl font-semibold">專案已結清🎉</p>
+                        ) : (
+                            settleMiniDetail.map((settle, index) => {
+                                const debtor = currentProjectUsers?.find(user => user.uid === settle?.from);
+                                const creditor = currentProjectUsers?.find(user => user.uid === settle?.to);
+                                const isLast = index === settleMiniDetail.length - 1;
+                                return (
+                                    <div key={index} className={clsx( "w-full px-3 py-3 flex items-end justify-start gap-4 rounded-2xl hover:bg-sp-green-200", { "border-b border-sp-green-200": !isLast })}>
+                                        <div className="w-full overflow-hidden">
+                                            <div className="shrink-0 w-full flex items-center gap-2">
+                                                <div  className="shrink-0 flex items-center">
+                                                    <Avatar
+                                                        size="md"
+                                                        img={debtor?.avatarURL}
+                                                        userName = {debtor?.name}
                                                     />
+                                                </div>
+                                                <p className="w-full text-base truncate">{debtor?.name  === userData?.name ? "你" : debtor?.name}</p>
+                                            </div>
+                                            <div className="flex items-center w-full pl-10">
+                                                <div className="w-full min-w-10 flex items-center justify-end -space-x-4.5 text-sp-green-300">
+                                                    <div className="w-full flex-1 h-0.5 bg-sp-green-300"></div>
+                                                        <Icon 
+                                                            icon='solar:alt-arrow-right-outline'
+                                                            size='xl'
+                                                        />
+                                                    </div>
+                                                <div className="shrink-0 max-w-40 flex gap-2 h-fit justify-end items-center">
+                                                    <p className="text-base truncate text-zinc-500 text-end">{creditor?.name === userData?.name ? "你" : creditor?.name}</p>
+                                                    <div className="shrink-0 flex items-center">
+                                                        <Avatar
+                                                                size="sm"
+                                                                img={creditor?.avatarURL}
+                                                                userName = {creditor?.name}
+                                                            />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="w-fit min-w-22 flex flex-col justify-end items-end gap-2">
+                                            <p className="shrink-0 text-xl font-semibold">${settle.amount}</p>
+                                            <div className="shrink-0">
+                                                <Button
+                                                    size='sm'
+                                                    width='fit'
+                                                    variant='outline'
+                                                    color='primary'
+                                                    disabled={!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId ||isLoading} 
+                                                    isLoading={isLoading}
+                                                    onClick={async()=>{
+                                                            if (!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId) return;
+
+                                                            const now = new Date().toISOString();
+                                                            const amount = settle.amount;
+                                                            const debtorUid = debtor.uid;
+                                                            const creditorUid = creditor.uid;
+                                                            const payer_map = {[debtorUid]: amount};
+                                                            const split_map = {[creditorUid]: { fixed: amount, percent: 0, total: amount}};
+
+                                                            const payload: CreatePaymentPayload = {
+                                                                project_id: currentProjectId,
+                                                                payment_name: "debt",
+                                                                account_type: "group",
+                                                                record_mode: "debt",
+                                                                owner: currentUserId, // 我是 owner
+                                                                currency: "TWD",
+                                                                amount: amount,
+                                                                category_id: "101", // 債務還款類別
+                                                                time: now,
+                                                                payer_map,
+                                                                split_map
+                                                            };
+
+                                                            await handleCreatePayment(payload);
+                                                    }}
+                                                    >
+                                                        還款
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="w-fit min-w-22 flex flex-col justify-end items-end gap-2">
-                                    <p className="shrink-0 text-xl font-semibold">${settle.amount}</p>
-                                    <div className="shrink-0">
-                                        <Button
-                                            size='sm'
-                                            width='fit'
-                                            variant='outline'
-                                            color='primary'
-                                            disabled={!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId ||isLoading} 
-                                            isLoading={isLoading}
-                                            onClick={async()=>{
-                                                    if (!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId) return;
-
-                                                    const now = new Date().toISOString();
-                                                    const amount = settle.amount;
-                                                    const debtorUid = debtor.uid;
-                                                    const creditorUid = creditor.uid;
-                                                    const payer_map = {[debtorUid]: amount};
-                                                    const split_map = {[creditorUid]: { fixed: amount, percent: 0, total: amount}};
-
-                                                    const payload: CreatePaymentPayload = {
-                                                        project_id: currentProjectId,
-                                                        payment_name: "debt",
-                                                        account_type: "group",
-                                                        record_mode: "debt",
-                                                        owner: currentUserId, // 我是 owner
-                                                        currency: "TWD",
-                                                        amount: amount,
-                                                        category_id: "101", // 債務還款類別
-                                                        time: now,
-                                                        payer_map,
-                                                        split_map
-                                                    };
-
-                                                    await handleCreatePayment(payload);
-                                            }}
-                                            >
-                                                還款
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
+                                );
+                            })
+                        )}
                 </div>
             </div>
         )

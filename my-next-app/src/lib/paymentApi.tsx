@@ -1,4 +1,4 @@
-import { GetPaymentData, CreatePaymentPayload, UpdatePaymentData } from "@/types/payment";
+import { CreatePaymentPayload, UpdatePaymentData } from "@/types/payment";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 

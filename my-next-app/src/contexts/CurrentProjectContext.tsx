@@ -6,7 +6,7 @@ import { UserData } from "@/types/user";
 import { GetPaymentData } from "@/types/payment";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { fetchUserByProject } from "@/lib/projectApi";
+import { fetchUserByProject } from "@/lib/userApi";
 import { fetchPaymentsByProject } from "@/lib/paymentApi";
 import { buildAvatarUrl } from "@/utils/getAvatar";
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
@@ -16,6 +16,7 @@ type CurrentProjectContextType = {
     currentProjectUsers?: UserData[];
     currentPaymentList?: GetPaymentData[];
     setCurrentPaymentList?: React.Dispatch<React.SetStateAction<GetPaymentData[] | undefined>>;
+    setCurrentProjectUsers?: React.Dispatch<React.SetStateAction<UserData[] | undefined>>;
     isReady: boolean;
 };
 
@@ -28,8 +29,6 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const pureProjectId = typeof rawParam === "string" ? rawParam : rawParam?.[0] || fallbackId || "";
     
     const router = useRouter();
-    // const { projectId } = useParams();
-    // const pureProjectId = typeof projectId === 'string' ? projectId : projectId?.[0] || '';
     const [lastPath, setLastPath] = useState<string | undefined>(projectData?.[0]?.id); // fallback
 
     const currentProjectData = useMemo(() => {
@@ -70,7 +69,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const userKey = `projectUsers | ${pureProjectId}`;
         const paymentKey = `paymentList | ${pureProjectId}`;
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
-        const CACHE_TTL = 1000 * 60 * 180;
+        const CACHE_TTL = 1000 * 60 * 60;
         
         const isPageReload = typeof window !== 'undefined' &&
              (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
@@ -133,6 +132,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         fetchProjectData();
     }, [pureProjectId]);
 
+
     // --- 找不到專案自動跳轉 ---
     useEffect(() => {
         if (!pureProjectId) return;
@@ -149,6 +149,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
             currentProjectUsers,
             currentPaymentList,
             setCurrentPaymentList,
+            setCurrentProjectUsers,
             isReady,
         }}
         >

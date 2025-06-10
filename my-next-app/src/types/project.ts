@@ -40,3 +40,9 @@ export interface GetProjectData {
   img:number; // 後端回傳的 project index
   imgURL?: string; // 最後是 Cloudinary URL
 }
+
+export interface JoinProjectData {
+  id:string;
+  member: string;           
+  member_budgets?: MemberBudgetMap;
+}

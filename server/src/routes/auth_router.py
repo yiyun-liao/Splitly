@@ -19,7 +19,7 @@ class AuthRouter:
 
     def _add_routes(self):
 
-        @self.router.get("/api/auth/getUser", response_model=UserSchema)
+        @self.router.get("/api/auth/user", response_model=UserSchema)
         def getUser(
             uid: str, 
             currentUserId: str = Depends(verify_firebase_token),
@@ -76,29 +76,29 @@ class AuthRouter:
             except Exception as e:
                 raise HTTPException(status_code=401, detail=f"Token invalid: {str(e)}")
         
-        @self.router.delete("/api/auth/deleteUser")
-        def delete_user(
-            uid: str, 
-            uid_verified: str = Depends(verify_firebase_token),
-            db: Session = Depends(get_db_session)
-        ):
-            """Delete user by uid, only allow self-delete"""
-            if uid != uid_verified:
-                raise HTTPException(status_code=403, detail="Unauthorized")
+        # @self.router.delete("/api/auth/deleteUser")
+        # def delete_user(
+        #     uid: str, 
+        #     uid_verified: str = Depends(verify_firebase_token),
+        #     db: Session = Depends(get_db_session)
+        # ):
+        #     """Delete user by uid, only allow self-delete"""
+        #     if uid != uid_verified:
+        #         raise HTTPException(status_code=403, detail="Unauthorized")
             
-            user_db = UserDB(db)
-            user = user_db.get_by_uid(uid)
+        #     user_db = UserDB(db)
+        #     user = user_db.get_by_uid(uid)
 
-            if not user:
-                raise HTTPException(status_code=404, detail="User not found")
+        #     if not user:
+        #         raise HTTPException(status_code=404, detail="User not found")
 
-            # 移到 user_db 中做
-            try:
-                db.delete(user)
-                db.commit()
-                return {"status": "success", "message": f"User {uid} deleted"}
-            except Exception as e:
-                db.rollback()
-                raise HTTPException(status_code=500, detail=f"Delete failed: {str(e)}")
+        #     # 移到 user_db 中做
+        #     try:
+        #         db.delete(user)
+        #         db.commit()
+        #         return {"status": "success", "message": f"User {uid} deleted"}
+        #     except Exception as e:
+        #         db.rollback()
+        #         raise HTTPException(status_code=500, detail=f"Delete failed: {str(e)}")
 
 

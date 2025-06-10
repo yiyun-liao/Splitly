@@ -137,9 +137,73 @@ class PaymentDB:
             items=items
         )
 
+    """get payment after update"""
+    def get_payment_by_id(self, payment_id: str) -> GetPaymentSchema:
+        payment = (
+            self.db.query(PaymentModel)
+            .filter(PaymentModel.id == payment_id)
+            .first()
+        )
+        if not payment:
+            raise HTTPException(status_code=404, detail=f"Payment not found: {payment_id}")
 
+        # 取出 payer_map
+        payer_map = {
+            relation.user_id: relation.amount
+            for relation in payment.payer_relations
+        }
 
+        # 取出 split_map
+        split_map = {
+            relation.user_id: SplitDetail(
+                fixed=relation.fixed,
+                total=relation.total,
+                percent=relation.percent
+            )
+            for relation in payment.split_relations
+        }
 
+        # 取出 items
+        items = []
+        for item in payment.items:
+            item_split_map = {
+                relation.user_id: SplitDetail(
+                    fixed=relation.fixed,
+                    total=relation.total,
+                    percent=relation.percent
+                )
+                for relation in item.split_relations
+            }
+
+            items.append(GetItemSchema(
+                id=item.id,
+                payment_id=item.payment_id,
+                amount=item.amount,
+                payment_name=item.payment_name,
+                split_method=item.split_method,
+                split_map=item_split_map
+            ))
+
+        return GetPaymentSchema(
+            id=payment.id,
+            payment_name=payment.payment_name,
+            project_id=payment.project_id,
+            owner=payment.owner,
+            account_type=payment.account_type,
+            record_mode=payment.record_mode,
+            split_way=payment.split_way,
+            split_method=payment.split_method,
+            currency=payment.currency,
+            amount=payment.amount,
+            category_id=payment.category_id,
+            time=payment.time,
+            desc=payment.desc,
+            payer_map=payer_map,
+            split_map=split_map,
+            items=items if items else None
+        )
+
+    """get project's all payments"""
     def get_payments_by_project(self, project_id: str) -> GetPaymentListSchema:
         try:
             payments = (
@@ -210,7 +274,6 @@ class PaymentDB:
             self.db.rollback()
             raise HTTPException(status_code=500, detail=f"Get payments failed: {str(e)}")
 
-
     def update_payment(self, payment_data: UpdatePaymentSchema):
         payment = self.db.query(PaymentModel).filter_by(id=payment_data.id).first()
         if not payment:
@@ -226,22 +289,24 @@ class PaymentDB:
         self.db.query(PaymentSplitRelation).filter_by(payment_id=payment.id).delete()
 
         # === 建立新的 payer_map ===
-        for user_id, amt in payment_data.payer_map.items():
-            self.db.add(PaymentPayerRelation(
-                payment_id=payment.id,
-                user_id=user_id,
-                amount=amt
-            ))
+        if payment_data.payer_map:
+            for user_id, amt in payment_data.payer_map.items():
+                self.db.add(PaymentPayerRelation(
+                    payment_id=payment.id,
+                    user_id=user_id,
+                    amount=amt
+                ))
 
         # === 建立新的 split_map ===
-        for uid, split in payment_data.split_map.items():
-            self.db.add(PaymentSplitRelation(
-                payment_id=payment.id,
-                user_id=uid,
-                fixed=split.fixed,
-                total=split.total,
-                percent=split.percent
-            ))
+        if payment_data.split_map:
+            for uid, split in payment_data.split_map.items():
+                self.db.add(PaymentSplitRelation(
+                    payment_id=payment.id,
+                    user_id=uid,
+                    fixed=split.fixed,
+                    total=split.total,
+                    percent=split.percent
+                ))
 
         # === 清除舊 item 與 split（強刪除） ===
         for item in payment.items:
@@ -271,7 +336,7 @@ class PaymentDB:
                     ))
         try:
             self.db.commit()
-            return True
+            return self.get_payment_by_id(payment.id)
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=500, detail=f"Get payments failed: {str(e)}")
