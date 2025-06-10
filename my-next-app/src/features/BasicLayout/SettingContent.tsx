@@ -122,6 +122,9 @@ export default function SettingContent(){
                         登出
                 </Button>
             </div>
+            {isMobile && (
+                    <div className="shrink-0 w-full pb-5 min-h-20 " />
+            )}
         </div>
         
     )

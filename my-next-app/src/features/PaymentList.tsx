@@ -170,10 +170,10 @@ export default function PaymentList(){
                         </div>
                     )
                 ))}
+                {isMobile && (
+                        <div className="shrink-0 w-full pb-5 min-h-20 " />
+                )}
             </div>
-            {isMobile && (
-                    <div className="shrink-0 w-full pb-3" />
-            )}
         </div>
     )
 }

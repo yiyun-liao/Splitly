@@ -162,7 +162,7 @@ export default function PaymentOverview(){
                     )}
                 </div>
                 {isMobile && (
-                    <div className="shrink-0 w-full pb-5 min-h-5 " />
+                    <div className="shrink-0 w-full pb-5 min-h-20 " />
                 )}
             </div>
         </div>
