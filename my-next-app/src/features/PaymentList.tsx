@@ -57,26 +57,36 @@ export default function PaymentList(){
     const [isScrolled, setIsScrolled] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const lastScrollTop = useRef(0);
-    console.log("滑動", lastScrollTop)
 
     useEffect(() => {
         const scrollEl = scrollRef.current;
         if (!scrollEl) return;
     
+        const THRESHOLD = 5;      // 最小位移門檻
         const handleScroll = () => {
             const currentTop = scrollEl.scrollTop;
-
-            if (currentTop > lastScrollTop.current) {
-              setIsScrolled(true); // 向下捲動
-            } else if (currentTop < lastScrollTop.current) {
-              setIsScrolled(false); // 向上捲動
+            
+            if (currentTop <= 0) {
+                lastScrollTop.current = 0;
+                setIsScrolled(false);
+                return;
             }
         
-            lastScrollTop.current = currentTop;        
+            const delta = currentTop - lastScrollTop.current;
+        
+            if (delta > THRESHOLD) {
+                setIsScrolled(true);
+            } else if (delta < -THRESHOLD) {
+                setIsScrolled(false);
+            }
+        
+            lastScrollTop.current = currentTop;
         };
     
-        scrollEl.addEventListener("scroll", handleScroll);
-        return () => scrollEl.removeEventListener("scroll", handleScroll);
+        scrollEl.addEventListener('scroll', handleScroll, { passive: true });
+        return () => {
+            scrollEl.removeEventListener('scroll', handleScroll);
+        };
     }, []);
       
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
@@ -171,7 +181,7 @@ export default function PaymentList(){
                     )
                 ))}
                 {isMobile && (
-                        <div className="shrink-0 w-full pb-5 min-h-20 " />
+                        <div className="shrink-0 w-full pb-5 min-h-30 " />
                 )}
             </div>
         </div>

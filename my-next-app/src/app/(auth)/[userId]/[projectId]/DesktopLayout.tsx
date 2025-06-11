@@ -8,7 +8,7 @@ import MemberNav from "@/features/BasicLayout/MemberNav";
 export default function DashboardLayout({ children }: { children: ReactNode }) {  
     const [navWidth, setNavWidth] = useState(72);  
     return (
-        <main className="flex items-start justify-center overflow-x-hidden w-screen h-screen  bg-sp-blue-100">
+        <main className="flex items-start justify-center overflow-x-hidden w-screen h-full  bg-sp-blue-100">
             <div className="shrink-0 box-border" style={{ width: navWidth }}>
                 <MemberNav setNavWidth={setNavWidth} />
             </div>

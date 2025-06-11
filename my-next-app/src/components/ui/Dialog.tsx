@@ -51,8 +51,13 @@ export default function Dialog({
     const THRESHOLD = 100; // 滑多遠觸發關閉
 
     useEffect(() => {
-        if (open) document.body.style.overflow = 'hidden';
-        else document.body.style.overflow = 'auto';
+        if (open) {
+            document.body.style.overflow = 'hidden'
+            setTranslateY(0);
+            startYRef.current = null;
+        } else {
+            document.body.style.overflow = 'auto'
+        };
         return () => {
             document.body.style.overflow = 'auto';
         };
@@ -60,21 +65,12 @@ export default function Dialog({
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-          if (e.key === "Escape" && closeOnBackdropClick) {
-            onClose();
-          }
+            if (e.key === "Escape" && closeOnBackdropClick) {
+                onClose();
+            }
         };
-      
-        if (open) {
-          document.body.style.overflow = "hidden";
-          window.addEventListener("keydown", handleKeyDown);
-        } else {
-          document.body.style.overflow = "auto";
-        }
-      
         return () => {
-          document.body.style.overflow = "auto";
-          window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keydown", handleKeyDown);
         };
     }, [open, onClose, closeOnBackdropClick]);
 
@@ -88,7 +84,7 @@ export default function Dialog({
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         if (!isMobile || !closeOnBackdropClick ) return;
         startYRef.current = e.touches[0].clientY;
-      };
+    };
     
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
         if (!isMobile || startYRef.current === null || !closeOnBackdropClick ) return;

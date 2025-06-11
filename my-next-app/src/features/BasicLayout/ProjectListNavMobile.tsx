@@ -105,7 +105,7 @@ export default function ProjectListNavMobile({
                             )}
                         )}
                     </div>
-                    <div className="shrink-0 w-full pb-5 min-h-20 " />
+                    <div className="shrink-0 w-full pb-5 min-h-30 " />
                 </div>
             </div>
         </ModalPortal>

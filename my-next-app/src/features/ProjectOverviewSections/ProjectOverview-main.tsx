@@ -373,7 +373,7 @@ export default function ProjectOverview(){
                     </div>
                 )}
                 {isMobile && (
-                    <div className="shrink-0 w-full pb-5 min-h-20 " />
+                    <div className="shrink-0 w-full pb-5 min-h-30 " />
                 )}
             </div>
         </div>

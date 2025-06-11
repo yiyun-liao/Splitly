@@ -9,14 +9,14 @@ export default function ProjectLayout({ children }: { children: ReactNode }) {
     useTrackLastVisitedProjectPath();
 
     return (
-        <>
-            <div className="block md:hidden" style={{ height: "100vh" }}>
+        <div style={{ height: "100vh" }}>
+            <div className="block md:hidden h-full">
                 <MobileLayout>{children}</MobileLayout>
             </div>
-            <div className="hidden md:block" style={{ height: "100vh" }}>
+            <div className="hidden md:block h-full">
                 <DesktopLayout>{children}</DesktopLayout>
             </div>
-        </>
+        </div>
     );
 }
 
