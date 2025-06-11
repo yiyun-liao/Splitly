@@ -10,10 +10,10 @@ export default function ProjectLayout({ children }: { children: ReactNode }) {
 
     return (
         <>
-            <div className="block md:hidden" style={{ height: "calc(var(--vh, 1vh) * 100)" }}>
+            <div className="block md:hidden" style={{ height: "var(100vh)" }}>
                 <MobileLayout>{children}</MobileLayout>
             </div>
-            <div className="hidden md:block" style={{ height: "calc(var(--vh, 1vh) * 100)" }}>
+            <div className="hidden md:block" style={{ height: "var(100vh)" }}>
                 <DesktopLayout>{children}</DesktopLayout>
             </div>
         </>
