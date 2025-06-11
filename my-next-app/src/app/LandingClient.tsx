@@ -1,6 +1,6 @@
 'use client'
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { logInUser } from '@/lib/auth';
@@ -9,18 +9,23 @@ import ImageButton from '@/components/ui/ImageButton';
 import IconButton from '@/components/ui/IconButton';
 
 
-export function isInAppWebView(): boolean {
-    const ua = navigator.userAgent
-    return /Line|FBAN|FBAV|Instagram|Messenger|Twitter|MicroMessenger/i.test(ua)
-}
-
 
 export default function LandingClient() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [copied, setCopied] = useState(false)
+    const [inWebView, setInWebView] = useState(false)
 
-  
+    useEffect(() => {
+        if (typeof navigator !== 'undefined') {
+          setInWebView(
+            /Line|FBAN|FBAV|Instagram|Messenger|Twitter|MicroMessenger/i.test(
+              navigator.userAgent
+            )
+          )
+        }
+      }, [])
+
     const handleLogin = async () => {
         const ok = await logInUser()
         if (!ok) {
@@ -36,7 +41,7 @@ export default function LandingClient() {
         router.push(target)
     }
 
-    if (isInAppWebView()) {
+    if (inWebView) {
         const url = window.location.href
         return (
             <div className="flex flex-col items-center justify-center h-screen px-4 space-y-4 text-center">

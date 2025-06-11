@@ -8,6 +8,8 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { formatNumber, formatPercent } from "@/utils/parseNumber";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
 import { useAuth } from "@/contexts/AuthContext";
+import { useScrollDirection } from '@/hooks/useScrollDirection';
+
 
 
 export default function PaymentOverview(){
@@ -20,45 +22,13 @@ export default function PaymentOverview(){
     const projectStats = useProjectStats();
     const userId = userData?.uid || ""
     const userStats = useUserStats(userId)
-    // console.log(projectStats, userStats)
+    console.log("🥹",projectStats, userStats)
 
     // css
     const isMobile = useIsMobile();
-    const [isScrolled, setIsScrolled] = useState(false);
+    // 計算位移收合
     const scrollRef = useRef<HTMLDivElement>(null);
-    const lastScrollTop = useRef(0);
-
-
-    useEffect(() => {
-        const scrollEl = scrollRef.current;
-        if (!scrollEl) return;
-    
-        const THRESHOLD = 5;      // 最小位移門檻
-        const handleScroll = () => {
-            const currentTop = scrollEl.scrollTop;
-            
-            if (currentTop <= 0) {
-                lastScrollTop.current = 0;
-                setIsScrolled(false);
-                return;
-            }
-        
-            const delta = currentTop - lastScrollTop.current;
-        
-            if (delta > THRESHOLD) {
-                setIsScrolled(true);
-            } else if (delta < -THRESHOLD) {
-                setIsScrolled(false);
-            }
-        
-            lastScrollTop.current = currentTop;
-        };
-    
-        scrollEl.addEventListener('scroll', handleScroll, { passive: true });
-        return () => {
-            scrollEl.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
+    const isScrolled = useScrollDirection(scrollRef, 5);
 
     const isMobileClass = clsx("shrink-0 h-full flex flex-col box-border overflow-hidden text-zinc-700 ",
         {

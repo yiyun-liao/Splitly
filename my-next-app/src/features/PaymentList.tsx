@@ -1,16 +1,20 @@
-import { groupBy } from "lodash";
 import { useEffect, useRef, useState, useMemo } from "react";
 import clsx from "clsx";
 
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
+import ReceiptCard from "./PaymentListSections/ReceiptCard";
+import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
+
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+ 
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { GetPaymentData } from "@/types/payment";
-import ReceiptCard from "./PaymentListSections/ReceiptCard";
-import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
+import { formatDate } from "@/utils/formatTime";
+
 
 export default function PaymentList(){
     const [isCreatePayment, setIsCreatePayment] = useState(false)
@@ -44,50 +48,26 @@ export default function PaymentList(){
         });
     }, [list, showMyPayment, currentUserId]);
       
-    const groupedPayments = groupBy(filteredList, (payment) => {
-        return new Date(payment.time).toLocaleDateString("zh-TW", {
-            month: "2-digit",
-            day: "2-digit",
-            year: "numeric",
+    const groupedPayments = useMemo(() => {
+        return filteredList.reduce<Record<string, GetPaymentData[]>>((acc, payment) => {
+          const isoKey = new Date(payment.time).toISOString().slice(0, 10); 
+          if (!acc[isoKey]) acc[isoKey] = [];
+          acc[isoKey].push(payment);
+          return acc;
+        }, {});
+    }, [filteredList]);
+
+    const sortedDates = useMemo(() => {
+        return Object.keys(groupedPayments).sort((a, b) => {
+          return new Date(b).getTime() - new Date(a).getTime();
         });
-    });
-    
+    }, [groupedPayments]);
+
     // css
     const isMobile = useIsMobile();
-    const [isScrolled, setIsScrolled] = useState(false);
+    // 計算位移收合
     const scrollRef = useRef<HTMLDivElement>(null);
-    const lastScrollTop = useRef(0);
-
-    useEffect(() => {
-        const scrollEl = scrollRef.current;
-        if (!scrollEl) return;
-    
-        const THRESHOLD = 5;      // 最小位移門檻
-        const handleScroll = () => {
-            const currentTop = scrollEl.scrollTop;
-            
-            if (currentTop <= 0) {
-                lastScrollTop.current = 0;
-                setIsScrolled(false);
-                return;
-            }
-        
-            const delta = currentTop - lastScrollTop.current;
-        
-            if (delta > THRESHOLD) {
-                setIsScrolled(true);
-            } else if (delta < -THRESHOLD) {
-                setIsScrolled(false);
-            }
-        
-            lastScrollTop.current = currentTop;
-        };
-    
-        scrollEl.addEventListener('scroll', handleScroll, { passive: true });
-        return () => {
-            scrollEl.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
+    const isScrolled = useScrollDirection(scrollRef, 5);
       
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const isMobileClass = clsx("shrink-0  box-border h-full flex flex-col overflow-hidden bg-sp-green-300 text-zinc-700",
@@ -155,10 +135,10 @@ export default function PaymentList(){
                     </>
                 )}
                 {list && (list?.length > 0 ) && (
-                    Object.entries(groupedPayments).map(([date, payments]) => (
-                        <div key={date} className="w-full pb-4 mb-4">
-                            <p className="text-sm pb-2 w-full font-semibold">{date}</p>
-                            {payments.map((payment, index) => (
+                    sortedDates.map((iso) => (
+                        <div key={iso} className="w-full pb-4 mb-4">
+                            <p className="text-sm pb-2 w-full font-semibold">{formatDate(iso)}</p>
+                            {groupedPayments[iso].map((payment, index) => (
                                 <div key={payment.id} onClick={() => setEditPayment(payment)}>
                                     <ReceiptCard
                                         record_mode={payment.record_mode}
@@ -172,7 +152,7 @@ export default function PaymentList(){
                                         categoryId={payment.category_id ?? ""}
                                         categoryList={categoryOptions || []}
                                     />
-                                    {index !== payments.length - 1 && (
+                                    {index + 1 < groupedPayments[iso].length && (
                                         <div className="w-full h-0.25 bg-sp-green-200"></div>
                                     )}
                                 </div>
