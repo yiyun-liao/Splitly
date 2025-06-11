@@ -1,5 +1,5 @@
 'use client'
-
+import clsx from 'clsx';
 import Button from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { logInUser } from '@/lib/auth';
@@ -26,7 +26,6 @@ export default function LandingClient() {
       // ← 在這裡呼叫，確保是「user gesture」
       const ok = await logInUser()
       if (!ok) {
-        // 如果失敗，可顯示錯誤訊息
         alert('登入失敗，再試一次')
         return
       }
@@ -39,10 +38,13 @@ export default function LandingClient() {
       router.push(target)
     }
 
+    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
+
+
     return (
-        <>
-            <main>
-                <div className="flex flex-col items-center justify-center px-4">
+        <div className={`h-full ${scrollClass}`}>
+            <main className='min-h-[500px] flex flex-col items-center justify-center'>
+                <div className="h-full  px-4">
                     <h1>main page - landing page</h1>
                     <p>這頁只是還沒做介面，請放心登入</p>
                     <Button
@@ -116,6 +118,6 @@ export default function LandingClient() {
                     <p className="">© 2025  All rights reserved.</p>
                 </div>
             </footer>
-        </>
+        </div>
     );
 }
