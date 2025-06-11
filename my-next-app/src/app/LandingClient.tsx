@@ -7,35 +7,24 @@ import { logInUser } from '@/lib/auth';
 import ImageButton from '@/components/ui/ImageButton';
 import IconButton from '@/components/ui/IconButton';
 
-export function isInAppWebView(): boolean {
-    const ua = navigator.userAgent;
-    return /Line|FBAN|FBAV|Instagram|Messenger|Twitter|MicroMessenger/i.test(ua);
-}
 
 export default function LandingClient() {
     const router = useRouter()
     const searchParams = useSearchParams()
   
     const handleLogin = async () => {
-      if (isInAppWebView()) {
-        const url = encodeURIComponent(window.location.href)
-        window.location.href = `https://splitly-steel.vercel.app/?redirect=${url}`
-        return
-      }
+        const ok = await logInUser()
+        if (!ok) {
+            alert('登入失敗，再試一次')
+            return
+        }
   
-      // ← 在這裡呼叫，確保是「user gesture」
-      const ok = await logInUser()
-      if (!ok) {
-        alert('登入失敗，再試一次')
-        return
-      }
-  
-      // 登入成功，再導到 loading 頁面
-      const redirect = searchParams.get('redirect')
-      const target = redirect
-        ? `/loading?redirect=${encodeURIComponent(redirect)}`
-        : '/loading'
-      router.push(target)
+        // 登入成功，再導到 loading 頁面
+        const redirect = searchParams.get('redirect')
+        const target = redirect
+            ? `/loading?redirect=${encodeURIComponent(redirect)}`
+            : '/loading'
+        router.push(target)
     }
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")

@@ -1,12 +1,26 @@
 // ---------- 登入 / 登出 ----------
-import { signInWithPopup, signOut, getAdditionalUserInfo } from "firebase/auth";
+import { signInWithPopup, signOut, getAdditionalUserInfo, signInWithRedirect , UserCredential , getRedirectResult, } from "firebase/auth";
 import { auth, provider } from "../firebase.js";
 import { getRandomAvatarIndex } from "@/utils/getAvatar";
 import { createNewUser } from "@/lib/userApi";
 
 export async function logInUser() {
+    const ua = navigator.userAgent;
+    const inWebView = /Line|FBAN|FBAV|Instagram|Messenger|Twitter|MicroMessenger/i.test(ua);
+
     try {
-        const result = await signInWithPopup(auth, provider);
+        let result: UserCredential;
+
+        if (inWebView) {
+            // 在 WebView 裡走 redirect
+            await signInWithRedirect(auth, provider);
+            // signInWithRedirect 會重載頁面，後面用 getRedirectResult 拿到
+            return true;
+        } else {
+            // 正常瀏覽器走 Popup
+            result = await signInWithPopup(auth, provider);
+        }
+
         const isNewUser = getAdditionalUserInfo(result)?.isNewUser;
         const token = await result.user.getIdToken();
 
@@ -31,6 +45,16 @@ export async function logInUser() {
     } catch (error) {
         console.error("Log in error:", error);
         return false;
+    }
+}
+
+export async function handleRedirectResult(): Promise<UserCredential | null> {
+    try {
+        const result = await getRedirectResult(auth);
+        return result;
+    } catch (e) {
+        console.warn("No redirect result:", e);
+        return null;
     }
 }
 
