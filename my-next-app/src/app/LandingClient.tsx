@@ -8,11 +8,20 @@ import ImageButton from '@/components/ui/ImageButton';
 import IconButton from '@/components/ui/IconButton';
 
 
+export function isInAppWebView(): boolean {
+    const ua = navigator.userAgent
+    return /Line|FBAN|FBAV|Instagram|Messenger|Twitter|MicroMessenger/i.test(ua)
+}
+
+
 export default function LandingClient() {
     const router = useRouter()
     const searchParams = useSearchParams()
   
     const handleLogin = async () => {
+        if (isInAppWebView()){
+            window.open(window.location.href, '_blank')
+        }
         const ok = await logInUser()
         if (!ok) {
             alert('登入失敗，再試一次')
@@ -28,7 +37,6 @@ export default function LandingClient() {
     }
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-
 
     return (
         <div className={`h-full ${scrollClass}`}>
