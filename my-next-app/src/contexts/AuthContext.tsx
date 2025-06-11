@@ -61,13 +61,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     useEffect(() => {
 
-        handleRedirectResult().then((credential) => {
-            if (credential) {
-              // Popup 跟 Redirect 結果都會走 onAuthStateChanged 抓 userAuth
-                console.log("✅ redirect login result:", credential.user);
-            }
-            // 如果沒有 credential，表示本次不是 redirect 回來，就照原本流程
-        });
+        // handleRedirectResult().then((credential) => {
+        //     if (credential) {
+        //       // Popup 跟 Redirect 結果都會走 onAuthStateChanged 抓 userAuth
+        //         console.log("✅ redirect login result:", credential.user);
+        //     }
+        //     // 如果沒有 credential，表示本次不是 redirect 回來，就照原本流程
+        // });
 
         const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
             setFirebaseUser(userAuth);
