@@ -1,28 +1,52 @@
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
+
+import { useAuth } from "@/contexts/AuthContext";
+import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+import { useCategoryOptions } from "@/contexts/CategoryContext";
 
 import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import { formatNumber, formatPercent } from "@/utils/parseNumber";
+import ReceiptCardByCat from "./PaymentListSections/ReceiptCardByCat";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
-import { useAuth } from "@/contexts/AuthContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { useScrollDirection } from '@/hooks/useScrollDirection';
-
+import { formatNumber, formatPercent } from "@/utils/parseNumber";
+import { GetPaymentData } from "@/types/payment";
 
 
 export default function PaymentOverview(){
     // receipt-way
     const [viewExpenseWay, setViewExpenseWay] = useState<"shared" | "personal">("shared");
-    const [openChart, setOpenChart] = useState(true);
+    // const [openChart, setOpenChart] = useState(true);
 
     // get group and personal data
-    const {userData} = useAuth()
+    const {userData} = useAuth();
+    const userId = userData?.uid || "";
+    const { currentProjectUsers} = useCurrentProjectData();
+    const userList = currentProjectUsers || [];
+    const { categoryOptions } = useCategoryOptions();
+
     const projectStats = useProjectStats();
-    const userId = userData?.uid || ""
-    const userStats = useUserStats(userId)
-    console.log("🥹",projectStats, userStats)
+    const userStats = useUserStats(userId);
+    console.log("🥹",projectStats, userStats);
+
+    const statsWithGroups = useMemo(() => {
+        return projectStats.stats.map(cat => {
+          // 分组
+          const grouped = cat.payments.reduce<Record<string, GetPaymentData[]>>((acc, p) => {
+            const key = new Date(p.time).toISOString().slice(0,10);
+            (acc[key] ||= []).push(p);
+            return acc;
+          }, {});
+          // 排序日期
+          const dates = Object.keys(grouped).sort(
+            (a, b) => +new Date(b) - +new Date(a)
+          );
+          return { ...cat, groupedPayments: grouped, sortedDates: dates };
+        });
+    }, [projectStats.stats]);
 
     // css
     const isMobile = useIsMobile();
@@ -92,7 +116,7 @@ export default function PaymentOverview(){
                     </div>
                     {viewExpenseWay === "shared" && ( 
                         <div className="py-2 px-4">
-                            {projectStats  && (projectStats.stats.map(cat => {
+                            {statsWithGroups  && (statsWithGroups.map((cat, index )=> {
                                 return(
                                     <div key={cat.id} className="w-full">
                                         <div id="expense-list-token" className="flex items-center justify-start p-2 gap-2 h-16 rounded-lg hover:bg-sp-white-20 active:bg-sp-white-40 cursor-pointer">
@@ -110,7 +134,34 @@ export default function PaymentOverview(){
                                                 <p className="text-sm truncate">{formatPercent(cat.percent)}</p>
                                             </div>
                                         </div>
-                                        <div className="w-full h-0.25 bg-sp-blue-300"></div>
+                                        {index + 1 < projectStats.stats.length && (
+                                            <div className="w-full h-0.25 bg-sp-blue-300"></div>
+                                        )}
+                                        {cat.sortedDates.map(date => (
+                                            <>
+                                                {cat.groupedPayments[date].map(payment => (
+                                                    <div key={payment.id}  className="px-2">
+                                                        <ReceiptCardByCat
+                                                            record_mode={payment.record_mode}
+                                                            account_type={payment.account_type}
+                                                            payment_name={payment.payment_name}
+                                                            time={payment.time}
+                                                            amount={payment.amount}
+                                                            payer_map={payment.payer_map}
+                                                            split_map={payment.split_map}
+                                                            currentUserId={userId}
+                                                            userList={userList}
+                                                            categoryId={payment.category_id ?? ""}
+                                                            categoryList={categoryOptions || []}
+                                                            payment={payment}
+                                                        />
+                                                        {index + 1 < cat.payments.length && (
+                                                            <div className="w-full h-0.25 bg-sp-blue-300"></div>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </>
+                                        ))}
                                     </div>
                                 )
                             }))}

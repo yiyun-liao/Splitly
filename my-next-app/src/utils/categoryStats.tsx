@@ -58,7 +58,7 @@ export function getProjectCategoryStats(groupedData: GroupedByParent[]): ParentC
             percent,
             name_zh: group.parent.name_zh,
             imgURL: group.parent.imgURL || "",
-            payments:allValidPayments
+            payments:validPayments
         };
     });
 }
@@ -97,7 +97,7 @@ export function getUserCategoryStats(
         percent,
         name_zh: group.parent.name_zh,
         imgURL: group.parent.imgURL || "",
-        payments:allUserPayments
+        payments:userPayments
       };
     });
 }

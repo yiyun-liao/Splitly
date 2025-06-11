@@ -14,6 +14,15 @@ export function formatToDatetimeLocal(datetime: string): string {
 // 把 ISO key 再格式化成要顯示的 zh-TW
 export function formatDate(input: string | Date): string {
     const date = typeof input === 'string' ? new Date(input) : input;
+    const currentYear = new Date().getFullYear();
+  
+    // 當年只顯示月日
+    if (date.getFullYear() === currentYear) {
+      return date.toLocaleDateString('zh-TW', {
+        month: '2-digit',
+        day: '2-digit',
+      });
+    }
     return date.toLocaleDateString('zh-TW', {
       year:   'numeric',
       month:  '2-digit',
