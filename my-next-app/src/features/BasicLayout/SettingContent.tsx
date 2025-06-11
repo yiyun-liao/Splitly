@@ -17,7 +17,6 @@ export default function SettingContent(){
     const isMobile = useIsMobile();
     const [isSettingDialogOpen, setIsSettingDialogOpen] = useState(false)
     
-    console.log("open setting", "userData", userData)
     async function handleLogout() {
         const success = await logOutUser();
         if (success){

@@ -1,64 +1,43 @@
 'use client'
 
 import Button from '@/components/ui/Button';
-import { useAuth } from '@/contexts/AuthContext';
-import { logInUser } from '@/lib/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
+import { logInUser } from '@/lib/auth';
+
 import ImageButton from '@/components/ui/ImageButton';
 import IconButton from '@/components/ui/IconButton';
 
 export function isInAppWebView(): boolean {
     const ua = navigator.userAgent;
     return /Line|FBAN|FBAV|Instagram|Messenger|Twitter|MicroMessenger/i.test(ua);
-  }
+}
 
 export default function LandingClient() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const { projectData, isLoadedReady:myDataReady, userData } = useAuth();
-    const [isLoginTriggered, setIsLoginTriggered] = useState(false); 
-
-
+    const router = useRouter()
+    const searchParams = useSearchParams()
+  
     const handleLogin = async () => {
-        if (isInAppWebView()) {
-            const currentUrl = encodeURIComponent(window.location.href);
-            window.location.href = `https://splitly-steel.vercel.app/?redirect=${currentUrl}`;
-            return;
-        }
-
-        const isLogin = await logInUser();
-        if (isLogin) {
-            setIsLoginTriggered(true); 
-        }
-    };
-    
-    useEffect(() => {
-        if (!isLoginTriggered || !myDataReady || !userData) return;
-        const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath");
-
-
-        const redirectUrl = searchParams.get("redirect");
-        console.log("我要去哪", redirectUrl , "OR", lastPath)
-
-        if (redirectUrl) {
-            router.push(redirectUrl);
-            console.log("i have redirect", redirectUrl)
-        }else if (lastPath) {
-            router.push(`/${userData?.uid}/${lastPath}/dashboard`);
-            console.log("i have last path", lastPath)
-            console.log("🧭 redirect to last visited project:", lastPath);
-        } else if (projectData?.length && projectData[0]?.id && userData?.uid) {
-            router.push(`/${userData?.uid}/${projectData[0].id}/dashboard`);
-            localStorage.removeItem("lastVisitedProjectPath");
-            console.log("i have project")
-        } else {
-            router.push(`/create`);
-            localStorage.removeItem("lastVisitedProjectPath");
-            console.log("i have nothing")
-        }
-    }, [myDataReady, isLoginTriggered, searchParams, router, projectData, userData]);
+      if (isInAppWebView()) {
+        const url = encodeURIComponent(window.location.href)
+        window.location.href = `https://splitly-steel.vercel.app/?redirect=${url}`
+        return
+      }
+  
+      // ← 在這裡呼叫，確保是「user gesture」
+      const ok = await logInUser()
+      if (!ok) {
+        // 如果失敗，可顯示錯誤訊息
+        alert('登入失敗，再試一次')
+        return
+      }
+  
+      // 登入成功，再導到 loading 頁面
+      const redirect = searchParams.get('redirect')
+      const target = redirect
+        ? `/loading?redirect=${encodeURIComponent(redirect)}`
+        : '/loading'
+      router.push(target)
+    }
 
     return (
         <>

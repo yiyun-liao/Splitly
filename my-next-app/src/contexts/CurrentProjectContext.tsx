@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { GetProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
@@ -39,15 +39,23 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const [currentProjectUsers, setCurrentProjectUsers] = useState<UserData[]>();
     const [currentPaymentList, setCurrentPaymentList] = useState<GetPaymentData[]>();
   
-
+    const firstLoadRef = useRef(true); //是否手動跳轉
     const [isReady, setIsReady] = useState(false); // 控制資料就緒
 
     // --- 設定 ready 狀態 ---
+    // useEffect(() => {
+    //     if (currentProjectUsers && currentPaymentList) {
+    //         setIsReady(true);
+    //     }
+    // }, [currentProjectUsers, currentPaymentList]);
+
     useEffect(() => {
-        if (currentProjectUsers && currentPaymentList) {
-            setIsReady(true);
-        }
-    }, [currentProjectUsers, currentPaymentList]);
+        // 每次純 client-side route 切換 projectId 時，都先清空上一個專案資料，這樣才能去 loading page
+        setCurrentProjectUsers(undefined);
+        setCurrentPaymentList(undefined);
+        setIsReady(false);
+    }, [pureProjectId]);
+    
 
 
     useEffect(() => {
@@ -68,18 +76,17 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         const paymentKey = `paymentList | ${pureProjectId}`;
         const metaKey = `cacheProjectMeta | ${pureProjectId}`;
         const CACHE_TTL = 1000 * 60 * 60;
-        
-        const isPageReload = typeof window !== 'undefined' &&
-             (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload';
-        // const isPageReload = false;
     
         const cachedUsers = localStorage.getItem(userKey);
         const cachedPayments = localStorage.getItem(paymentKey);
         const cachedMeta = localStorage.getItem(metaKey);
         const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
 
+        const isReload = firstLoadRef.current;
+        firstLoadRef.current = false;
+        console.log('🗄️ cache?',"isCacheExpired", isCacheExpired, 'isReload?', isReload)
 
-        if (cachedUsers && cachedPayments && !isCacheExpired && !isPageReload) {
+        if (cachedUsers && cachedPayments && !isCacheExpired  && !isReload) {
             try {
                 console.log("✅ get data")
                 setCurrentProjectUsers(JSON.parse(cachedUsers));

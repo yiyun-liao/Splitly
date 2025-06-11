@@ -53,13 +53,13 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
         const fetchAndBuildCategories = async () => {
             try {
                 const categories = await getCategories(); 
-                console.log("📥 原始 categories", categories);
+                // console.log("📥 原始 categories", categories);
                 const finalCategory: Category[] = categories.map((cat:Category) => ({
                     ...cat,
                     imgURL: buildCatUrl(cat.name_en),
                 }));
 
-                console.log("🛠 加工後 finalCategory", finalCategory);
+                // console.log("🛠 加工後 finalCategory", finalCategory);
                 setCategoryOptions(finalCategory);
                 
                 localStorage.setItem(catKey, JSON.stringify(finalCategory))

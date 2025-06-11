@@ -1,0 +1,44 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
+import { logInUser } from '@/lib/auth'
+
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath'
+import { LogInScreen } from '@/components/layout/LogInScreen'
+
+
+export default function LoadingPage() {
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const {  projectData, isLoadedReady:myDataReady, userData } = useAuth()
+
+    useEffect(() => {
+        if (!myDataReady || !userData) return;
+
+        const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath");
+        const redirectUrl = searchParams.get("redirect");
+        console.log("我要去哪", redirectUrl , "OR", lastPath)
+
+        if (redirectUrl) {
+            router.push(redirectUrl);
+            console.log("i have redirect", redirectUrl)
+        }else if (lastPath) {
+            router.push(`/${userData?.uid}/${lastPath}/dashboard`);
+            console.log("i have last path", lastPath)
+            console.log("🧭 redirect to last visited project:", lastPath);
+        } else if (projectData?.length && projectData[0]?.id && userData?.uid) {
+            router.push(`/${userData?.uid}/${projectData[0].id}/dashboard`);
+            localStorage.removeItem("lastVisitedProjectPath");
+            console.log("i have project")
+        } else {
+            router.push(`/create`);
+            localStorage.removeItem("lastVisitedProjectPath");
+            console.log("i have nothing")
+        }
+    }, [myDataReady, searchParams, router, projectData, userData]);
+
+
+    return <LogInScreen text="登入中，載入中…" />
+}
