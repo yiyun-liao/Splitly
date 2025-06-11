@@ -21,11 +21,12 @@ export default function LandingClient() {
     const handleLogin = async () => {
         if (isInAppWebView()){
             window.open(window.location.href, '_blank')
+            return;
         }
         const ok = await logInUser()
         if (!ok) {
             alert('登入失敗，再試一次')
-            return
+            return;
         }
   
         // 登入成功，再導到 loading 頁面
