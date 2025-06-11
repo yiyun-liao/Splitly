@@ -14,11 +14,87 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { formatNumber, formatPercent } from "@/utils/parseNumber";
 import { GetPaymentData } from "@/types/payment";
+import { UserData } from "@/types/user";
+import { Category } from "@/types/category";
+
+type CategorySectionProps = {
+    idx:number
+    totalCat:number
+    cat: {
+        id: number;
+        imgURL: string;
+        name_en: string;
+        name_zh: string;
+        totalAmount: number;
+        percent: number;
+        groupedPayments: Record<string, GetPaymentData[]>;
+        sortedDates: string[];
+    };
+    openCatListIndex: number | null;
+    onToggle: () => void;
+    userId: string;
+    userList: UserData[];
+    categoryOptions: Category[];
+    viewExpenseWay:string;
+  };
+
+function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId, userList, categoryOptions,viewExpenseWay }: CategorySectionProps) {
+    const isOpen = openCatListIndex === idx;
+    const catParentClass = clsx("flex items-center justify-start p-2 gap-2 h-16 rounded-lg cursor-pointer",
+        {
+            "bg-sp-blue-300 hover:bg-sp-white-40 active:bg-sp-white-20" : openCatListIndex !== null,
+            "bg-sp-blue-200 hover:bg-sp-white-20 active:bg-sp-white-40" : openCatListIndex === null
+        }
+    )
+    return (
+        <div className="w-full">
+            <div className={catParentClass} onClick={onToggle}>
+                <div className="flex items-center gap-2 flex-1">
+                    <ImageButton image={cat.imgURL} size="md" imageName={cat.name_en} />
+                    <p className="text-base font-semibold truncate">{cat.name_zh}</p>
+                </div>
+                <div className="shrink-0 text-right overflow-hidden">
+                    <p className="text-base font-semibold truncate">${formatNumber(cat.totalAmount)}</p>
+                    <p className="text-sm truncate">{formatPercent(cat.percent)}</p>
+                </div>
+                <IconButton
+                    icon={isOpen ? 'solar:alt-arrow-up-outline' : 'solar:alt-arrow-down-outline'}
+                    size="md"
+                    variant="text-button"
+                    color="primary"
+                    style={{ opacity: (cat.sortedDates.length > 0) ? 1 : 0 }}
+                />
+            </div>
+            {idx + 1 < totalCat && (
+                <div className="w-full h-0.25 bg-sp-blue-300"></div>
+            )}
+            {isOpen && cat.sortedDates.map((date) => (
+                <>
+                    {cat.groupedPayments[date].map((payment, idx) => (
+                        <div key={payment.id} className="">
+                            <ReceiptCardByCat
+                                currentUserId={userId}
+                                userList={userList}
+                                categoryList={categoryOptions}
+                                payment={payment}
+                                viewExpenseWay={viewExpenseWay}
+                            />
+                            {idx + 1 < cat.sortedDates.length && (
+                                <div className="w-full h-px bg-sp-blue-300 mt-2" />
+                            )}
+                        </div>
+                    ))}
+                </>        
+            ))}
+        </div>
+    );
+  }
 
 
 export default function PaymentOverview(){
     // receipt-way
     const [viewExpenseWay, setViewExpenseWay] = useState<"shared" | "personal">("shared");
+    const [openCatListIndex, setOpenCatListIndex] = useState<number | null>(null);
     // const [openChart, setOpenChart] = useState(true);
 
     // get group and personal data
@@ -28,25 +104,22 @@ export default function PaymentOverview(){
     const userList = currentProjectUsers || [];
     const { categoryOptions } = useCategoryOptions();
 
-    const projectStats = useProjectStats();
-    const userStats = useUserStats(userId);
-    console.log("🥹",projectStats, userStats);
+    const { stats: pStats } = useProjectStats();
+    const { stats: uStats } = useUserStats(useAuth().userData?.uid || '');
+    const stats = viewExpenseWay === 'shared' ? pStats : uStats;
 
     const statsWithGroups = useMemo(() => {
-        return projectStats.stats.map(cat => {
-          // 分组
-          const grouped = cat.payments.reduce<Record<string, GetPaymentData[]>>((acc, p) => {
-            const key = new Date(p.time).toISOString().slice(0,10);
-            (acc[key] ||= []).push(p);
-            return acc;
-          }, {});
-          // 排序日期
-          const dates = Object.keys(grouped).sort(
-            (a, b) => +new Date(b) - +new Date(a)
-          );
-          return { ...cat, groupedPayments: grouped, sortedDates: dates };
+        return stats.map(cat => {
+          const grouped: Record<string, GetPaymentData[]> = {};
+          cat.payments.forEach(p => {
+            const key = new Date(p.time).toISOString().slice(0, 10);
+            (grouped[key] ||= []).push(p);
+          });
+          const sortedDates = Object.keys(grouped).sort((a, b) => +new Date(b) - +new Date(a));
+          return { ...cat, groupedPayments: grouped, sortedDates };
         });
-    }, [projectStats.stats]);
+      }, [stats]);
+
 
     // css
     const isMobile = useIsMobile();
@@ -54,6 +127,7 @@ export default function PaymentOverview(){
     const scrollRef = useRef<HTMLDivElement>(null);
     const isScrolled = useScrollDirection(scrollRef, 5);
 
+    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const isMobileClass = clsx("shrink-0 h-full flex flex-col box-border overflow-hidden text-zinc-700 ",
         {
             "w-full ": isMobile === true,
@@ -63,7 +137,6 @@ export default function PaymentOverview(){
     const headerClass = clsx("w-full mb-4 flex shrink-0 bg-sp-blue-300 rounded-xl transition-opacity duration-200",
         {"opacity-0 pointer-events-none h-0": isMobile && isScrolled }
     )
-    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
 
     return(
         <div id="project-analysis" className={isMobileClass}>
@@ -74,7 +147,7 @@ export default function PaymentOverview(){
                     leftIcon='solar:waterdrops-bold'
                     variant= {viewExpenseWay == 'shared' ? 'solid' : 'text-button'}
                     color= 'primary'
-                    onClick={() => setViewExpenseWay("shared")}
+                    onClick={() => { setViewExpenseWay('shared'); setOpenCatListIndex(null); }}
                     >
                         專案支出
                 </Button>
@@ -84,7 +157,7 @@ export default function PaymentOverview(){
                     leftIcon='solar:waterdrop-bold'
                     variant={viewExpenseWay == 'personal' ? 'solid' : 'text-button'}
                     color='primary'
-                    onClick={() => setViewExpenseWay("personal")}
+                    onClick={() => { setViewExpenseWay('personal'); setOpenCatListIndex(null);}}
                     >
                         個人支出
                 </Button>
@@ -114,85 +187,22 @@ export default function PaymentOverview(){
                     <div id="expense-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
                         <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視</p>
                     </div>
-                    {viewExpenseWay === "shared" && ( 
-                        <div className="py-2 px-4">
-                            {statsWithGroups  && (statsWithGroups.map((cat, index )=> {
-                                return(
-                                    <div key={cat.id} className="w-full">
-                                        <div id="expense-list-token" className="flex items-center justify-start p-2 gap-2 h-16 rounded-lg hover:bg-sp-white-20 active:bg-sp-white-40 cursor-pointer">
-                                            <div className="h-full w-full flex items-center justify-start gap-2">
-                                                <ImageButton
-                                                    image={cat.imgURL}
-                                                    size='md'
-                                                    imageName= {cat.name_en}
-                                                    >
-                                                </ImageButton> 
-                                                <p className="text-base font-semibold truncate">{cat.name_zh}</p>
-                                            </div>
-                                            <div className="shrink-0 text-right overflow-hidden ">
-                                                <p className="text-base font-semibold  truncate">${formatNumber(cat.totalAmount)}</p>
-                                                <p className="text-sm truncate">{formatPercent(cat.percent)}</p>
-                                            </div>
-                                        </div>
-                                        {index + 1 < projectStats.stats.length && (
-                                            <div className="w-full h-0.25 bg-sp-blue-300"></div>
-                                        )}
-                                        {cat.sortedDates.map(date => (
-                                            <>
-                                                {cat.groupedPayments[date].map(payment => (
-                                                    <div key={payment.id}  className="px-2">
-                                                        <ReceiptCardByCat
-                                                            record_mode={payment.record_mode}
-                                                            account_type={payment.account_type}
-                                                            payment_name={payment.payment_name}
-                                                            time={payment.time}
-                                                            amount={payment.amount}
-                                                            payer_map={payment.payer_map}
-                                                            split_map={payment.split_map}
-                                                            currentUserId={userId}
-                                                            userList={userList}
-                                                            categoryId={payment.category_id ?? ""}
-                                                            categoryList={categoryOptions || []}
-                                                            payment={payment}
-                                                        />
-                                                        {index + 1 < cat.payments.length && (
-                                                            <div className="w-full h-0.25 bg-sp-blue-300"></div>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </>
-                                        ))}
-                                    </div>
-                                )
-                            }))}
-                        </div>
-                    )}
-                    {viewExpenseWay === "personal" && ( 
-                        <div className="py-2 px-4">
-                            {userStats  && (userStats.stats.map(cat => {
-                                return(
-                                    <div key={cat.id} className="w-full">
-                                        <div id="expense-list-token" className="flex items-center justify-start p-2 gap-2 h-16 rounded-lg hover:bg-sp-white-20 active:bg-sp-white-40 cursor-pointer">
-                                            <div className="h-full w-full flex items-center justify-start gap-2">
-                                                <ImageButton
-                                                    image={cat.imgURL}
-                                                    size='md'
-                                                    imageName= {cat.name_en}
-                                                    >
-                                                </ImageButton> 
-                                                <p className="text-base font-semibold truncate">{cat.name_zh}</p>
-                                            </div>
-                                            <div className="shrink-0 text-right overflow-hidden ">
-                                                <p className="text-base font-semibold  truncate">${formatNumber(cat.totalAmount)}</p>
-                                                <p className="text-sm truncate">{formatPercent(cat.percent)}</p>
-                                            </div>
-                                        </div>
-                                        <div className="w-full h-0.25 bg-sp-blue-300"></div>
-                                    </div>
-                                )
-                            }))}
-                        </div>
-                    )}
+                    <div className="py-2 px-4">
+                        {statsWithGroups.map((cat, idx) => (
+                            <CategorySection
+                                key={cat.id}
+                                idx={idx}
+                                totalCat = {statsWithGroups.length}
+                                cat={cat}
+                                openCatListIndex={openCatListIndex}
+                                onToggle={() => setOpenCatListIndex(openCatListIndex === idx ? null : idx)}
+                                userId={userId}
+                                userList={userList}
+                                categoryOptions={categoryOptions || []}
+                                viewExpenseWay={viewExpenseWay}
+                            />
+                        ))}
+                    </div>
                 </div>
                 {isMobile && (
                     <div className="shrink-0 w-full pb-5 min-h-30 " />

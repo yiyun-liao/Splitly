@@ -8,18 +8,11 @@ import { formatNumber } from "@/utils/parseNumber";
 import { formatDate } from "@/utils/formatTime";
 
 interface ReceiptCardByCatProps {
-    account_type : AccountType;
-    record_mode : RecordMode | undefined;
-    payment_name: string;
-    amount: number;
-    payer_map: PayerMap;
-    split_map: SplitMap;
     currentUserId: string;
     userList: UserData[];
-    categoryId: number | string;
     categoryList: Category[] | undefined;
-    time:string;
-    payment:GetPaymentData
+    payment:GetPaymentData;
+    viewExpenseWay:string;
 }
 
 const getPayerText = (
@@ -90,24 +83,17 @@ const getCategoryImg = (
 };
 
 export default function ReceiptCardByCat({
-    account_type,
-    record_mode,
-    payment_name,
-    amount,
-    payer_map,
-    split_map,
     currentUserId,
     userList,
-    categoryId,
     categoryList,
-    time,
-    payment
+    payment,
+    viewExpenseWay
     }: ReceiptCardByCatProps) {
 
-    const payer_text = getPayerText(payer_map, amount, currentUserId, userList);
-    const category = getCategoryImg(categoryId, categoryList ?? []);
-    const borrowed = isBorrowed(account_type, record_mode ,payer_map, split_map, currentUserId);
-    const displayAmount = getMyText(account_type,record_mode, payer_map, split_map, currentUserId)
+    const payer_text = getPayerText(payment.payer_map, payment.amount, currentUserId, userList);
+    const category = getCategoryImg(payment.category_id ?? '', categoryList ?? []);
+    const borrowed = isBorrowed(payment.account_type, payment.record_mode ,payment.payer_map, payment.split_map, currentUserId);
+    const displayAmount = getMyText(payment.account_type,payment.record_mode, payment.payer_map, payment.split_map, currentUserId)
 
     const borrowText = clsx("text-sm whitespace-nowrap truncate font-semibold", {
         "text-sp-blue-500": borrowed,
@@ -116,19 +102,19 @@ export default function ReceiptCardByCat({
 
     const cardClass = clsx("flex items-center justify-start p-2 gap-2 h-16 rounded-lg cursor-pointer hover:bg-sp-white-60 active:bg-sp-white-80",
         {
-            "bg-sp-white-20 " : account_type === 'personal',
+            "bg-sp-white-20 " : payment.account_type === 'personal',
         }
     )
 
     const paymentNameClass = clsx("text-base font-semibold whitespace-nowrap truncate",
         {
-            "text-sp-blue-500" : record_mode === 'debt',
+            "text-sp-blue-500" : payment.record_mode === 'debt',
         }
     )
 
     const payerTextClass = clsx("text-sm whitespace-nowrap truncate",
         {
-            "text-sp-blue-500" : record_mode === 'debt',
+            "text-sp-blue-500" : payment.record_mode === 'debt',
         }
     )
 
@@ -138,13 +124,13 @@ export default function ReceiptCardByCat({
             <ImageButton image={category.imgURL} size="md" imageName={category.name_en} />
         </div>
         <div className="flex-1 overflow-hidden">
-            <p className={paymentNameClass}>{payment_name}</p>
-            <p className={payerTextClass}>{formatDate(time)}</p>
+            <p className={paymentNameClass}>{payment.payment_name}</p>
+            <p className={payerTextClass}>{formatDate(payment.time)}</p>
         </div>
         <div className="shrink-0 text-right overflow-hidden">
                 <>
                     {/* <p className={borrowText}>{record_mode === 'debt' ? "還款" : account_type === 'personal' ? "個人" : borrowed ? "借出" : "借用"}</p> */}
-                    <p className="text-base font-semibold whitespace-nowrap truncate">${amount}</p>
+                    <p className="text-base font-semibold whitespace-nowrap truncate">${payment.amount}</p>
                 </>
         </div>
         </div>
