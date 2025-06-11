@@ -19,10 +19,6 @@ export default function LandingClient() {
     const searchParams = useSearchParams()
   
     const handleLogin = async () => {
-        if (isInAppWebView()){
-            window.open(window.location.href, '_blank')
-            return;
-        }
         const ok = await logInUser()
         if (!ok) {
             alert('登入失敗，再試一次')
@@ -35,6 +31,30 @@ export default function LandingClient() {
             ? `/loading?redirect=${encodeURIComponent(redirect)}`
             : '/loading'
         router.push(target)
+    }
+
+    if (isInAppWebView()) {
+        const url = window.location.href;
+        return (
+          <div className="flex flex-col items-center justify-center h-screen px-4 text-center">
+            <p className="mb-4">
+              由於安全策略限制，Google 登入必須在系統瀏覽器中完成。
+            </p>
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mb-2"
+            >
+              <Button size="md" color="primary" variant="solid">
+                在瀏覽器中打開
+              </Button>
+            </a>
+            <p className="text-sm text-gray-500">
+              如果按鈕無效，請長按上方連結並選擇「在瀏覽器打開」。
+            </p>
+          </div>
+        );
     }
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
