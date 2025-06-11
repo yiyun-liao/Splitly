@@ -1,5 +1,6 @@
 'use client'
 import clsx from 'clsx';
+import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { logInUser } from '@/lib/auth';
@@ -17,6 +18,8 @@ export function isInAppWebView(): boolean {
 export default function LandingClient() {
     const router = useRouter()
     const searchParams = useSearchParams()
+    const [copied, setCopied] = useState(false)
+
   
     const handleLogin = async () => {
         const ok = await logInUser()
@@ -34,27 +37,32 @@ export default function LandingClient() {
     }
 
     if (isInAppWebView()) {
-        const url = window.location.href;
+        const url = window.location.href
         return (
-          <div className="flex flex-col items-center justify-center h-screen px-4 text-center">
-            <p className="mb-4">
-              由於安全策略限制，Google 登入必須在系統瀏覽器中完成。
-            </p>
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mb-2"
-            >
-              <Button size="md" color="primary" variant="solid">
-                在瀏覽器中打開
-              </Button>
-            </a>
-            <p className="text-sm text-gray-500">
-              如果按鈕無效，請長按上方連結並選擇「在瀏覽器打開」。
-            </p>
-          </div>
-        );
+            <div className="flex flex-col items-center justify-center h-screen px-4 space-y-4 text-center">
+                <p className="text-base">由於內嵌瀏覽器限制，Google 登入必須在系統瀏覽器完成。</p>
+                <input
+                    type="text"
+                    readOnly
+                    value={url}
+                    className="w-full max-w-md p-2 border rounded"
+                    onFocus={(e) => e.currentTarget.select()}
+                />
+                <Button
+                    size="md"
+                    variant="solid"
+                    color="primary"
+                    onClick={() => {
+                        navigator.clipboard.writeText(url)
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 2000)
+                    }}
+                >
+                    {copied ? '已複製!' : '複製連結'}
+                </Button>
+                <p className="text-sm text-gray-500">複製完畢後，請使用瀏覽器前往，即可完成登入。</p>
+            </div>
+        )
     }
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
