@@ -62,20 +62,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
             setFirebaseUser(userAuth);
+            console.log(userAuth)
             setIsReady(false); // 🔄 新使用者載入 → 重新準備
 
             if (!userAuth) {
                 setUserData(null);
                 setProjectData([]);
                 setIsReady(true);
+                console.log("停在這了")
                 alert('權限失敗，請重新登入')
                 const success = await logOutUser();
                 if (success){
                     clearUserCache();
-                    console.log('Can not get auth, plz try again');
                     router.replace('/');    
                 }
-                return;
+                return null;
             }
     
             const uid = userAuth.uid;

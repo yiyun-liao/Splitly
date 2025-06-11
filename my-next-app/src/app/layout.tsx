@@ -1,5 +1,4 @@
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
 import ViewportHeightSetter from "@/components/layout/ViewportHeightSetter"; 
 import { CategoryProvider } from "@/contexts/CategoryContext";
 
@@ -20,12 +19,10 @@ return (
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
     <body>
-        <AuthProvider>
-            <CategoryProvider>
+        <CategoryProvider>
             <ViewportHeightSetter />
                 {children}
-            </CategoryProvider>
-        </AuthProvider>
+        </CategoryProvider>
     </body>
     </html>
 );
