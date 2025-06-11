@@ -130,7 +130,7 @@ export default function JoinProjectPage() {
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
 
     return (
-        <div className={`min-h-screen h-full text-zinc-700  ${scrollClass}`} >
+        <div className={`h-full text-zinc-700  ${scrollClass}`} >
             <div className="flex flex-col items-start justify-start h-full py-10 px-4 gap-2 max-w-xl mx-auto">
                 <div className="w-full px-4 ">
                     <div 

@@ -35,7 +35,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
 
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
-    const navStyleClass = clsx("h-screen box-border py-4 flex flex-col justify-start gap-2 bg-sp-white-40",
+    const navStyleClass = clsx("box-border py-4 flex flex-col justify-start gap-2 bg-sp-white-40",
         "transition-all duration-300 ease-in-out",
         {
             "min-w-18 items-center": navStyle === 'contraction',
@@ -99,7 +99,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                 )}
             </>
             {navStyle === 'contraction' && (
-                <nav className={navStyleClass}>
+                <nav className={navStyleClass} style={{ height: "100vh" }}>
                     <div id="nav-brand-logo" className={navDivClass}>
                         <ImageButton
                             image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
@@ -144,7 +144,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                 </nav>
             )}
             {navStyle === 'expansion' && (
-                <nav className={navStyleClass}>
+                <nav className={navStyleClass} style={{ height: "100vh" }}>
                     <div id="nav-brand-logo" className={navDivClass}>
                         <ImageButton
                             image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"

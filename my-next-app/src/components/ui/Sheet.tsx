@@ -37,10 +37,14 @@ export default function Sheet({
     const isMobile = useIsMobile();
     const isMobileClass = clsx(" flex flex-col items-center justify-bottom",
         {
-            "w-full pl-0 h-[90vh] fixed bottom-[env(safe-area-inset-bottom,16px)] right-0": isMobile === true,
-            "w-full max-w-520 pl-17 h-screen": isMobile === false,  
+            "w-full pl-0 fixed right-0 bottom-0": isMobile === true,
+            "w-full max-w-520 pl-17 ": isMobile === false,  
         }
     )
+    const wrapperStyle: React.CSSProperties = isMobile
+    ? { height: "calc(var(--vh,1vh) * 90)" }   // 手機用 90vh
+    : { height: "100vh" };  
+
     const sheetStyleClass = clsx("w-full h-full box-border px-6 py-6 overflow-hidden shadow-md flex flex-col items-start justify-bottom  bg-sp-green-300 text-zinc-700 text-base",
         {
             "rounded-t-2xl" : isMobile,
@@ -51,12 +55,13 @@ export default function Sheet({
             "translate-x-full" : !open,
         }
     )
+
     
     if (!open && !visible) return null;
     
     return(
         <div style={{ opacity: open ? 1 : 0 }} className={`fixed inset-0 z-30 flex items-center justify-center bg-black/50 ${isMobile && "backdrop-blur-sm"}`}>
-            <div className={isMobileClass}>
+            <div className={isMobileClass} style={wrapperStyle}>
                 <div 
                     onClick={(e) => e.stopPropagation()}
                     className={sheetStyleClass}

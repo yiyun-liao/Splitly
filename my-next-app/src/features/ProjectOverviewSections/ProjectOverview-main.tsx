@@ -331,15 +331,6 @@ export default function ProjectOverview(){
                         </div>
                     </div>
                 </div>
-                {isMobile && (
-                    <div className="shrink-0 w-full pb-3" />
-                )}
-                {/* {currentPage === `/${currentUserId}/${projectId}/expense` &&(
-                    <div id="overview-bubble-expense-chart" className={`${overviewBubbleClass} h-100 shrink-0 text-center`}>
-                        chart
-                        <img src="https://res.cloudinary.com/ddkkhfzuk/image/upload/test.JPG" width={480} height={200} alt="圖" />
-                    </div>
-                )} */}
                 {currentPage === `/${currentUserId}/${projectId}/dashboard` && (
                     <div id="overview-bubble-expense-quick-view" className={`${overviewBubbleClass} shrink-0`}>
                         <div className="pl-3 pb-3 flex items-center justify-start gap-2">
@@ -380,6 +371,9 @@ export default function ProjectOverview(){
                             ))}
                         </div>
                     </div>
+                )}
+                {isMobile && (
+                    <div className="shrink-0 w-full pb-5 min-h-20 " />
                 )}
             </div>
         </div>

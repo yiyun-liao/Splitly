@@ -47,7 +47,7 @@ export default function ProjectListNavMobile({
       );
       
     const navStyleClass = clsx(
-        "h-screen min-w-[200px] w-[60%] max-w-[480px] bottom-[env(safe-area-inset-bottom,16px)] bg-sp-white-100 shadow-xl box-border py-4 px-4 flex flex-col justify-start gap-2 rounded-r-xl text-zinc-700",
+        "h-full min-w-[200px] w-[60%] max-w-[480px] bg-sp-white-100 shadow-xl box-border py-4 px-4 flex flex-col justify-start gap-2 rounded-r-xl text-zinc-700",
         "transition-all duration-300 ease-in-out"
     );
     const labelClass = clsx("w-full font-medium truncate", "transition-opacity duration-300",)
@@ -105,6 +105,7 @@ export default function ProjectListNavMobile({
                             )}
                         )}
                     </div>
+                    <div className="shrink-0 w-full pb-5 min-h-20 " />
                 </div>
             </div>
         </ModalPortal>

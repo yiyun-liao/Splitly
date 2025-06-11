@@ -20,18 +20,11 @@ export default function MemberNavMobile() {
     const [activePath, setActivePath] = useState(pathname); // 對應當前功能頁面渲染按鈕
     const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath") || projectData?.[0]?.id;
 
-    // const [lastPath, setLastPath] = useState<string | null>(null);
     console.log("i would like to go ",lastPath)
 
     useEffect(() => {
         setActivePath(pathname);
     }, [pathname]);
-    
-    // 讀取 localStorage 中的 lastVisitedProjectPath
-    // useEffect(() => {
-    //     const stored = getLocalStorageItem<string>("lastVisitedProjectPath");
-    //     setLastPath(stored || projectData?.[0]?.id || null);
-    // }, []);
 
 
     return (
