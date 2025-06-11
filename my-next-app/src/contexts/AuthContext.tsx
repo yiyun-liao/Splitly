@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { logInUser, logOutUser, handleRedirectResult } from "@/lib/auth";
+import { logInUser, logOutUser } from "@/lib/auth";
 
 import { fetchCurrentUser } from "@/lib/userApi";
 import { UserData } from "@/types/user.js";
