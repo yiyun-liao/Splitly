@@ -11,7 +11,9 @@ export default function MobileLayout({ children }: { children: ReactNode }) {
     return (
         <div className="flex flex-col h-full overflow-hidden overscroll-none">
             <SettingMemberHeader/>
-            <main className={`flex-1 h-full overscroll-none pt-3 px-6 pb-19 ${scrollClass}`}>{children}</main>
+                <main className={`flex-1 h-full overscroll-none pt-3 px-6 pb-19 ${scrollClass}`}>
+                    {children}
+                </main>
             <MemberNavMobile /> 
         </div>
     );
