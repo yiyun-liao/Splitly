@@ -11,6 +11,7 @@ interface ReceiptCardByCatProps {
     categoryList: Category[] | undefined;
     payment:GetPaymentData;
     viewExpenseWay:string;
+    isMobile:boolean
 }
 
 const getCategoryImg = (
@@ -30,12 +31,15 @@ export default function ReceiptCardByCat({
     currentUserId,
     categoryList,
     payment,
-    viewExpenseWay
+    viewExpenseWay,
+    isMobile
     }: ReceiptCardByCatProps) {
 
     const category = getCategoryImg(payment.category_id ?? '', categoryList ?? []);
 
-    const cardClass = clsx("flex items-center justify-start py-2 pl-2 pr-14 gap-2 h-16 rounded-lg cursor-pointer bg-sp-white-40 hover:bg-sp-white-60 active:bg-sp-white-80")
+    const cardClass = clsx("flex items-center justify-start py-2 pl-2 pr-14 gap-2 h-16 rounded-lg cursor-pointer hover:bg-sp-white-60 active:bg-sp-white-80",
+        {"bg-sp-blue-100": isMobile, " bg-sp-white-40": !isMobile}
+    )
     const paymentNameClass = clsx("text-base font-semibold whitespace-nowrap truncate")
     const payerTextClass = clsx("text-sm whitespace-nowrap truncate")
     return (

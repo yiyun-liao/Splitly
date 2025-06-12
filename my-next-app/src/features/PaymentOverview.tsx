@@ -36,9 +36,10 @@ type CategorySectionProps = {
     categoryOptions: Category[];
     viewExpenseWay:string;
     setEditPayment:(payment: GetPaymentData) => void;
+    isMobile:boolean
   };
 
-function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId, categoryOptions,viewExpenseWay,setEditPayment }: CategorySectionProps) {
+function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId, categoryOptions,viewExpenseWay,setEditPayment, isMobile }: CategorySectionProps) {
     const isOpen = openCatListIndex === idx;
     const catParentClass = clsx(
         "flex items-center justify-start p-2 gap-2 h-16 rounded-lg cursor-pointer",
@@ -76,6 +77,7 @@ function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId
                                 categoryList={categoryOptions}
                                 payment={payment}
                                 viewExpenseWay={viewExpenseWay}
+                                isMobile={isMobile}
                             />
                             {idx + 1 < cat.sortedDates.length && (
                                 <div className="w-full h-px bg-sp-blue-300" />
@@ -171,8 +173,8 @@ export default function PaymentOverview(){
                 </Button>
             </div>
             <div ref={scrollRef} className={`flex-1 ${scrollClass} `}>
-                <div id="expense-list" className="px-3 py-3 rounded-2xl h-fit bg-sp-blue-200">
-                    <div id="expense-list-header"  className={`w-full ${!isMobile ? "py-2 px-4" : ""}`}>
+                <div id="expense-list" className={`px-3 py-3 rounded-2xl h-fit ${!isMobile && "bg-sp-blue-200"}`}>
+                    <div id="expense-list-header"  className={`w-full ${!isMobile && "py-2 px-4"}`}>
                         <p className="text-xl font-medium truncate min-w-0 max-w-100 ">類別檢視</p>
                         <p className="text-base  min-w-0 max-w-100 pb-2">不包含轉帳紀錄</p>
                     </div>
@@ -189,6 +191,7 @@ export default function PaymentOverview(){
                                 categoryOptions={categoryOptions || []}
                                 viewExpenseWay={viewExpenseWay}
                                 setEditPayment={setEditPayment}
+                                isMobile={isMobile}
                             />
                         ))}
                     </div>

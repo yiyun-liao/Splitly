@@ -1,0 +1,8 @@
+.react-hot-toast.info {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #38bdf8;
+  }
+  .react-hot-toast.info svg {
+    stroke: #0369a1;
+  }

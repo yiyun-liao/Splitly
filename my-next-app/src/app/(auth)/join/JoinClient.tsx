@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import clsx from "clsx";
+import toast from "react-hot-toast";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchProjectsByNew } from "@/lib/projectApi";
@@ -14,6 +15,7 @@ import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 
+import { showInfoToast } from "@/utils/infoToast";
 import { getProjectStyle } from "@/utils/renderProjectStyle";
 import { buildAvatarUrl } from "@/utils/getAvatar";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
@@ -44,6 +46,7 @@ export default function JoinProjectPage() {
         if (!isLoadedReady || !projectId) return;
 
         if (!firebaseUser || !userData) {
+            showInfoToast('加入專案前請先登入')
             const redirect = `/join?pid=${projectId}`;
             router.push(`/?redirect=${encodeURIComponent(redirect)}`);
         }
@@ -56,22 +59,20 @@ export default function JoinProjectPage() {
         setAddMemberBudget({[currentUid]: undefined})
         const loadProject = async () => {
             try {
-                console.log("try to get certain project1")
                 const token = await firebaseUser.getIdToken();
                 const rawProject = await fetchProjectsByNew(token, currentUid , projectId);
                 const newProject: GetProjectData = {
                     ...rawProject.project,
                     imgURL: buildProjectCoverUrl(rawProject.project.img),
                 };
-                console.log("try to get certain project4")
                 if (newProject.owner === currentUid) {
-                    alert('你已是專案成員')
+                    showInfoToast('你已是專案成員，正在將您傳送進專案中～')
                     router.replace(`/${currentUid}/${projectId}/dashboard`);
                     return;
                 }
                 if (newProject.member){
                     if (newProject.member.includes(currentUid)) {
-                        alert('你已是專案成員')
+                        showInfoToast('你已是專案成員，正在將您傳送進專案中～')
                         router.replace(`/${currentUid}/${projectId}/dashboard`);
                         return;
                     }

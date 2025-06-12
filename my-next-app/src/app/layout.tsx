@@ -1,6 +1,7 @@
 import "./globals.css";
 import ViewportHeightSetter from "@/components/layout/ViewportHeightSetter"; 
 import { CategoryProvider } from "@/contexts/CategoryContext";
+import { ToastProvider } from "@/components/ui/Toast";
 
 export const metadata = {
     title: 'Splitly – 您最佳的分帳工具',
@@ -44,6 +45,7 @@ return (
         <CategoryProvider>
             <ViewportHeightSetter />
                 {children}
+                <ToastProvider />
         </CategoryProvider>
     </body>
     </html>
