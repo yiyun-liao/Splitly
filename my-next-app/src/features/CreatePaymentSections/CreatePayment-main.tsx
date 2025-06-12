@@ -46,6 +46,7 @@ export default function CreatePayment({
         payer_map: {},
         split_map: {},
     });
+
     const [updatePayload, setUpdatePayload] = useState<UpdatePaymentData>();
     
     useEffect(() => {
@@ -88,31 +89,28 @@ export default function CreatePayment({
     // submit
     const { handleCreatePayment } = useCreatePayment({
         onSuccess: (payment) => {
-            console.log("✅ 成功建立紀錄：", payment);
+            // console.log("✅ 成功建立紀錄：", payment);
             onClose();
         },
         onError: (err) => {
-            // alert("建立紀錄失敗，請稍後再試");
             console.log("紀錄建立錯誤", err);
         },
     });
     const { handleUpdatePayment} = useUpdatePayment({
         onSuccess: (payment) => {
-            console.log("✅ 成功更新紀錄：", payment);
+            // console.log("✅ 成功更新紀錄：", payment);
             onClose();
         },
         onError: (err) => {
-            // alert("更新紀錄失敗，請稍後再試");
             console.log("付款更新紀錄", err);
         },
     });
     const { handleDeletePayment } = useDeletePayment({
         onSuccess: (paymentId) => {
-            console.log("✅ 成功刪除紀錄：", paymentId);
+            // console.log("✅ 成功刪除紀錄：", paymentId);
             onClose();
         },
         onError: (err) => {
-            // alert("刪除紀錄失敗，請稍後再試");
             console.log("紀錄刪除錯誤", err);
         },
     });
@@ -136,10 +134,7 @@ export default function CreatePayment({
                                     variant= 'text-button'
                                     color='primary'
                                     disabled={!isComplete}
-                                    // disabled={!isComplete || isDeleteLoading} 
-                                    // isLoading={isDeleteLoading}
                                     onClick={async()=>{
-                                        console.log("delete", initialPayload.project_id, initialPayload.id)
                                         await handleDeletePayment(initialPayload.project_id, initialPayload.id);
                                     }}
                                     >
@@ -151,11 +146,7 @@ export default function CreatePayment({
                                     variant='solid'
                                     color='primary'
                                     disabled={!isComplete}
-                                    // disabled={!isComplete || isUpdateLoading} 
-                                    // isLoading={isUpdateLoading}
                                     onClick={async()=>{
-                                        console.log("帳目", updatePayload?.account_type,"增加內容", updatePayload?.record_mode, "分帳方式", updatePayload?.split_way,"分錢方式", updatePayload?.split_method)
-                                        console.log("update", updatePayload)
                                         await handleUpdatePayment(updatePayload);
                                     }}
                                     >
@@ -170,10 +161,7 @@ export default function CreatePayment({
                                 variant='solid'
                                 color='primary'
                                 disabled={!isComplete}
-                                // disabled={!isComplete || isCreateLoading} 
-                                // isLoading={isCreateLoading}
                                 onClick={async()=>{
-                                    console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
                                     await handleCreatePayment(payload);
                                 }}
                                 >

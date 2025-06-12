@@ -118,9 +118,9 @@ export default function PaymentOverview(){
           const sortedDates = Object.keys(grouped).sort((a, b) => +new Date(b) - +new Date(a));
           return { ...cat, groupedPayments: grouped, sortedDates };
         });
-      }, [stats]);
+    }, [stats]);
 
-
+    console.log(stats)
     // css
     const isMobile = useIsMobile();
     // 計算位移收合

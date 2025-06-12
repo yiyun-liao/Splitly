@@ -40,7 +40,7 @@ export default function SplitByPerson({
     }:SplitByPersonProps){
 
     const [localChooseSplitByPerson, setLocalChooseSplitByPerson] = useState<SplitMethod>(chooseSplitByPerson);
-    console.log("預設人分帳資料", splitByPersonMap)
+    // console.log("預設人分帳資料", splitByPersonMap)
 
     const percentageHook = useSplitPercentageMap({
         currentProjectUsers,
@@ -83,7 +83,7 @@ export default function SplitByPerson({
         adjusted: `/ 共計 ${inputAmountValue} 元`,
     };
 
-    console.log("[person] payloadList", JSON.stringify(generateFinalMap(), null, 2));
+    // console.log("[person] payloadList", JSON.stringify(generateFinalMap(), null, 2));
 
     const renderFooter = () => {
         return(
@@ -101,7 +101,7 @@ export default function SplitByPerson({
                     onClick={() => {
                         setChooseSplitByPerson(localChooseSplitByPerson)
                         setSplitByPersonMap(generateFinalMap())
-                        console.log("最終分帳方式", generateFinalMap())
+                        // console.log("最終分帳方式", generateFinalMap())
                         setSplitWay("person")
                         onClose()
                     }}

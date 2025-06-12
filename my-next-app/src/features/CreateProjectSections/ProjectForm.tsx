@@ -51,10 +51,7 @@ export default function ProjectForm({
     const [chooseProjectStyle, setChooseProjectStyle] = useState<ProjectStyle>("travel");
     const [inputBudgetValue, setInputBudgetValue] = useState("");
     const [memberBudgetMap, setMemberBudgetMap] = useState<MemberBudgetMap>(() => ({ [currentUid]: undefined }));
-    const [inputDescValue, setInputDescValue] = useState("");
-
-    // const [updatePayload, setUpdatePayload] = useState<GetProjectData>();
-    
+    const [inputDescValue, setInputDescValue] = useState("");    
 
     const [isCoverPageSectionOpen, setIsCoverPageSectionOpen] = useState(true);
 
@@ -136,7 +133,8 @@ export default function ProjectForm({
         }
     }, [initialProjectData,currentUid, inputProjectName, inputStartTimeValue, inputEndTimeValue, chooseProjectStyle, inputBudgetValue, memberBudgetMap, inputDescValue, chooseCoverValue, chooseCoverURLValue]);
 
-    console.log(projectPayload, updateProjectPayload)
+    // console.log(projectPayload, updateProjectPayload)
+
     //disable button 
     const {isComplete } = useMemo(() => {
         let isComplete = false;
@@ -147,30 +145,30 @@ export default function ProjectForm({
     }, [projectPayload]); 
 
     // submit and create project
-    const { handleCreateProject, isLoading:isCreateLoading } = useCreateProject({
+    const { handleCreateProject } = useCreateProject({
         onSuccess: (project) => {
-            console.log("✅ 成功建立專案：", project);
+            // console.log("✅ 成功建立專案：", project);
             if (onSuccessRedirect) {
                 router.push(`/${currentUid}/${project.id}/dashboard`);
             }
             onClose();
             },
         onError: (err) => {
-            alert("建立專案失敗，請稍後再試");
+            // alert("建立專案失敗，請稍後再試");
             console.log("專案建立", err);
         },
     });
 
-    const { handleUpdateProject, isLoading:isUpdateLoading } = useUpdateProject({
+    const { handleUpdateProject } = useUpdateProject({
         onSuccess: (project) => {
-            console.log("✅ 成功更新專案：", project);
+            // console.log("✅ 成功更新專案：", project);
             if (onSuccessRedirect) {
                 router.push(`/${currentUid}/${project.id}/dashboard`);
             }
             onClose();
             },
         onError: (err) => {
-            alert("更新專案失敗，請稍後再試");
+            // alert("更新專案失敗，請稍後再試");
             console.log("專案更新", err);
         },
     });
@@ -194,10 +192,8 @@ export default function ProjectForm({
                                     width='fit'
                                     variant='solid'
                                     color='primary'
-                                    disabled={!isComplete || isUpdateLoading}
-                                    isLoading={isUpdateLoading}
+                                    disabled={!isComplete}
                                     onClick={async()=> {
-                                        console.log("update", updateProjectPayload);
                                         if (!updateProjectPayload) return;
                                         await handleUpdateProject(updateProjectPayload);
                                     }}  
@@ -210,10 +206,8 @@ export default function ProjectForm({
                                     width='fit'
                                     variant='solid'
                                     color='primary'
-                                    disabled={!isComplete || isCreateLoading}
-                                    isLoading={isCreateLoading}
+                                    disabled={!isComplete}
                                     onClick={async()=> {
-                                        console.log("create", projectPayload);
                                         await handleCreateProject(projectPayload);
                                     }}  
                                 >

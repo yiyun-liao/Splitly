@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { updatePayment } from "@/lib/paymentApi";
 import { GetPaymentData, UpdatePaymentData } from "@/types/payment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
@@ -13,7 +12,6 @@ type UseUpdatePaymentOptions = {
 export function useUpdatePayment(options?: UseUpdatePaymentOptions) {
     const { setCurrentPaymentList } = useCurrentProjectData();
     const { setLoading } = useLoading();
-    // const [isLoading, setIsLoading] = useState(false);
 
     const handleUpdatePayment = async (payload: UpdatePaymentData) => {
         const toastId = toast.loading("更新中…");
@@ -55,7 +53,6 @@ export function useUpdatePayment(options?: UseUpdatePaymentOptions) {
             options?.onError?.(error);
         } finally {
             setLoading(false);
-            // setIsLoading(false);
         }
     };
 

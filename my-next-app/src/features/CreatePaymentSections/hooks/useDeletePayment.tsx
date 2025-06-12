@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { deletePayment } from "@/lib/paymentApi";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useLoading } from "@/contexts/LoadingContext";
@@ -12,14 +11,12 @@ type UseDeletePaymentOptions = {
 export function useDeletePayment(options?: UseDeletePaymentOptions) {
     const { setCurrentPaymentList } = useCurrentProjectData();
     const { setLoading } = useLoading();
-    // const [isLoading, setIsLoading] = useState(false);
 
     const handleDeletePayment = async (projectId: string, paymentId:string) => {
         const toastId = toast.loading("刪除中…");
 
         try {
             setLoading(true);
-            // setIsLoading(true);
             const result = await deletePayment(paymentId);
 
             if (!result.success){
@@ -51,7 +48,6 @@ export function useDeletePayment(options?: UseDeletePaymentOptions) {
             options?.onError?.(error);
         } finally {
             setLoading(false);
-            // setIsLoading(false);
         }
     };
 
