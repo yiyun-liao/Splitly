@@ -17,7 +17,6 @@ export function useUpdatePayment(options?: UseUpdatePaymentOptions) {
         const toastId = toast.loading("更新中…");
 
         try {
-            console.log(payload)
             setIsLoading(true);
             const result = await updatePayment(payload.id, payload);
             const payment = result?.payment;
