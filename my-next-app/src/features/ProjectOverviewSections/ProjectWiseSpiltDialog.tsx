@@ -47,9 +47,9 @@ export default function ProjectWiseSpilt({
         return settleWiseDetail.filter((s) => s.amount > 0);
       }, [settleWiseDetail]);
     
-    const { handleCreatePayment, isLoading } = useCreatePayment({
-        onSuccess: (payment) => {
-            console.log("✅ 成功建立付款：", payment);
+    const { handleCreatePayment } = useCreatePayment({
+        onSuccess: () => {
+            // console.log("✅ 成功建立付款：", payment);
             if (isMobile) {
                 router.push(`/${userId}/${currentProjectId}/overview`)
             } else {
@@ -59,7 +59,6 @@ export default function ProjectWiseSpilt({
             onClose();
         },
         onError: (err) => {
-            alert("建立付款失敗，請稍後再試");
             console.log("付款建立錯誤", err);
         },
     });
@@ -142,8 +141,7 @@ export default function ProjectWiseSpilt({
                                                     width='fit'
                                                     variant='outline'
                                                     color='primary'
-                                                    disabled={!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId ||isLoading} 
-                                                    isLoading={isLoading}
+                                                    disabled={!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId} 
                                                     onClick={async()=>{
                                                             if (!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId) return;
 

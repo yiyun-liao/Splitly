@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { logInUser } from '@/lib/auth';
-
+import toast from "react-hot-toast";
 import ImageButton from '@/components/ui/ImageButton';
 import IconButton from '@/components/ui/IconButton';
 
@@ -29,11 +29,13 @@ export default function LandingClient() {
     const handleLogin = async () => {
         const ok = await logInUser()
         if (!ok) {
-            alert('登入失敗，再試一次')
+            toast.error('登入失敗，再試一次')
+            // alert('登入失敗，再試一次')
             return;
         }
   
         // 登入成功，再導到 loading 頁面
+        toast.success('登入成功')
         const redirect = searchParams.get('redirect')
         const target = redirect
             ? `/loading?redirect=${encodeURIComponent(redirect)}`

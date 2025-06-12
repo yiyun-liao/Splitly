@@ -17,7 +17,6 @@ import { useCreatePayment } from "../CreatePaymentSections/hooks/useCreatePaymen
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useAllSettlements,useMergedSettlements,useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 import { formatDate } from "@/utils/formatTime";
-import { group } from "console";
 
 interface ProjectSettleDetailProps {
     isSelfExpenseOpen: boolean;
@@ -73,9 +72,9 @@ export default function ProjectSettleDetail({
     }, [settleWiseDetail]);
 
 
-    const { handleCreatePayment, isLoading } = useCreatePayment({
-        onSuccess: (payment) => {
-            console.log("✅ 成功建立付款：", payment);
+    const { handleCreatePayment } = useCreatePayment({
+        onSuccess: () => {
+            // console.log("✅ 成功建立付款：", payment);
             if (isMobile) {
                 router.push(`/${userId}/${currentProjectId}/overview`)
             } else {
@@ -85,7 +84,6 @@ export default function ProjectSettleDetail({
             onClose();
         },
         onError: (err) => {
-            alert("建立付款失敗，請稍後再試");
             console.log("付款建立錯誤", err);
         },
     });
@@ -159,8 +157,7 @@ export default function ProjectSettleDetail({
                                                     width='fit'
                                                     variant='outline'
                                                     color='primary'
-                                                    disabled={!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId ||isLoading} 
-                                                    isLoading={isLoading}
+                                                    disabled={!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId} 
                                                     onClick={async()=>{
                                                             if (!currentProjectData?.id || !userData || !creditor || !debtor || !currentProjectId || !currentUserId) return;
 

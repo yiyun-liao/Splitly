@@ -88,7 +88,7 @@ export default function CreatePayment({
 
     // submit
     const { handleCreatePayment } = useCreatePayment({
-        onSuccess: (payment) => {
+        onSuccess: () => {
             // console.log("✅ 成功建立紀錄：", payment);
             onClose();
         },
@@ -97,7 +97,7 @@ export default function CreatePayment({
         },
     });
     const { handleUpdatePayment} = useUpdatePayment({
-        onSuccess: (payment) => {
+        onSuccess: () => {
             // console.log("✅ 成功更新紀錄：", payment);
             onClose();
         },
@@ -106,7 +106,7 @@ export default function CreatePayment({
         },
     });
     const { handleDeletePayment } = useDeletePayment({
-        onSuccess: (paymentId) => {
+        onSuccess: () => {
             // console.log("✅ 成功刪除紀錄：", paymentId);
             onClose();
         },

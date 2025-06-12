@@ -34,7 +34,6 @@ export async function logInUser() {
     }
 }
 
-
 export async function logOutUser() {
     try {
         await signOut(auth);
