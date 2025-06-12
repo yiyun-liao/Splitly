@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button"
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton";
 import ReceiptCardByCat from "./PaymentListSections/ReceiptCardByCat";
+import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useScrollDirection } from '@/hooks/useScrollDirection';
@@ -33,12 +34,12 @@ type CategorySectionProps = {
     openCatListIndex: number | null;
     onToggle: () => void;
     userId: string;
-    userList: UserData[];
     categoryOptions: Category[];
     viewExpenseWay:string;
+    setEditPayment:(payment: GetPaymentData) => void;
   };
 
-function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId, userList, categoryOptions,viewExpenseWay }: CategorySectionProps) {
+function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId, categoryOptions,viewExpenseWay,setEditPayment }: CategorySectionProps) {
     const isOpen = openCatListIndex === idx;
     const catParentClass = clsx(
         "flex items-center justify-start p-2 gap-2 h-16 rounded-lg cursor-pointer",
@@ -68,7 +69,7 @@ function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId
             {isOpen && cat.sortedDates.map((date) => (
                 <>
                     {cat.groupedPayments[date].map((payment, idx) => (
-                        <div key={payment.id} className="">
+                        <div key={payment.id} onClick={() => setEditPayment(payment)}>
                             <ReceiptCardByCat
                                 currentUserId={userId}
                                 categoryList={categoryOptions}
@@ -91,13 +92,13 @@ export default function PaymentOverview(){
     // receipt-way
     const [viewExpenseWay, setViewExpenseWay] = useState<"shared" | "personal">("shared");
     const [openCatListIndex, setOpenCatListIndex] = useState<number | null>(null);
+    const [editPayment, setEditPayment] = useState<GetPaymentData | null>(null); //開啟 payment list
     // const [openChart, setOpenChart] = useState(true);
 
     // get group and personal data
     const {userData} = useAuth();
     const userId = userData?.uid || "";
     const { currentProjectUsers} = useCurrentProjectData();
-    const userList = currentProjectUsers || [];
     const { categoryOptions } = useCategoryOptions();
 
     const { stats: pStats } = useProjectStats();
@@ -136,6 +137,16 @@ export default function PaymentOverview(){
 
     return(
         <div id="project-analysis" className={isMobileClass}>
+            <>
+                {editPayment && currentProjectUsers && (
+                    <CreatePayment 
+                        onClose={() => {
+                            setEditPayment(null);
+                        }}
+                        initialPayload={editPayment || undefined} 
+                    />
+                )}
+            </>
             <div id="Expense-splitting" className={headerClass}>
                 <Button
                     size='sm'
@@ -159,26 +170,6 @@ export default function PaymentOverview(){
                 </Button>
             </div>
             <div ref={scrollRef} className={`flex-1 ${scrollClass} `}>
-                {/* <div id="project-analysis-chart" className="px-3 py-3 mb-4 rounded-2xl h-fit overflow-hidden bg-sp-blue-300 ">
-                    <div id="project-analysis-chart"  className="py-2 px-4 w-full overflow-hidden">
-                        <div className="flex items-center justify-start gap-2">
-                            <p className="text-xl font-medium truncate w-full"> 開銷總覽</p>
-                            <div className="shrink-0">
-                                <IconButton
-                                    icon= {openChart ? "solar:minimize-linear" : "solar:maximize-outline"}
-                                    size='md'
-                                    variant= 'text-button'
-                                    color='primary'
-                                    type= 'button'
-                                    onClick={() => setOpenChart((prev) => (!prev))} 
-                                />
-                            </div>
-                        </div>
-                        {openChart && (
-                            <img src="https://res.cloudinary.com/ddkkhfzuk/image/upload/test.JPG" width={480} height={200} alt="圖" />
-                        )}
-                    </div>
-                </div> */}
                 <div id="expense-list" className="px-3 py-3 rounded-2xl h-fit bg-sp-blue-200">
                     <div id="expense-list-header"  className="py-2 px-4 w-full">
                         <p className="text-xl font-medium truncate min-w-0 max-w-100 ">類別檢視</p>
@@ -194,9 +185,9 @@ export default function PaymentOverview(){
                                 openCatListIndex={openCatListIndex}
                                 onToggle={() => setOpenCatListIndex(openCatListIndex === idx ? null : idx)}
                                 userId={userId}
-                                userList={userList}
                                 categoryOptions={categoryOptions || []}
                                 viewExpenseWay={viewExpenseWay}
+                                setEditPayment={setEditPayment}
                             />
                         ))}
                     </div>
@@ -208,3 +199,28 @@ export default function PaymentOverview(){
         </div>
     )
 }
+
+
+
+
+
+{/* <div id="project-analysis-chart" className="px-3 py-3 mb-4 rounded-2xl h-fit overflow-hidden bg-sp-blue-300 ">
+    <div id="project-analysis-chart"  className="py-2 px-4 w-full overflow-hidden">
+        <div className="flex items-center justify-start gap-2">
+            <p className="text-xl font-medium truncate w-full"> 開銷總覽</p>
+            <div className="shrink-0">
+                <IconButton
+                    icon= {openChart ? "solar:minimize-linear" : "solar:maximize-outline"}
+                    size='md'
+                    variant= 'text-button'
+                    color='primary'
+                    type= 'button'
+                    onClick={() => setOpenChart((prev) => (!prev))} 
+                />
+            </div>
+        </div>
+        {openChart && (
+            <img src="https://res.cloudinary.com/ddkkhfzuk/image/upload/test.JPG" width={480} height={200} alt="圖" />
+        )}
+    </div>
+</div> */}

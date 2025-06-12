@@ -141,16 +141,10 @@ export default function PaymentList(){
                             {groupedPayments[iso].map((payment, index) => (
                                 <div key={payment.id} onClick={() => setEditPayment(payment)}>
                                     <ReceiptCard
-                                        record_mode={payment.record_mode}
-                                        account_type={payment.account_type}
-                                        payment_name={payment.payment_name}
-                                        amount={payment.amount}
-                                        payer_map={payment.payer_map}
-                                        split_map={payment.split_map}
                                         currentUserId={currentUserId}
                                         userList={userList}
-                                        categoryId={payment.category_id ?? ""}
                                         categoryList={categoryOptions || []}
+                                        payment={payment}
                                     />
                                     {index + 1 < groupedPayments[iso].length && (
                                         <div className="w-full h-0.25 bg-sp-green-200"></div>
