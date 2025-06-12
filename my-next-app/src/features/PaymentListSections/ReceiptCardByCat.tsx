@@ -38,7 +38,6 @@ export default function ReceiptCardByCat({
     const cardClass = clsx("flex items-center justify-start py-2 pl-2 pr-14 gap-2 h-16 rounded-lg cursor-pointer bg-sp-white-40 hover:bg-sp-white-60 active:bg-sp-white-80")
     const paymentNameClass = clsx("text-base font-semibold whitespace-nowrap truncate")
     const payerTextClass = clsx("text-sm whitespace-nowrap truncate")
-    console.log(payment)
     return (
         <div className={cardClass}>
             <div className="shrink-0">

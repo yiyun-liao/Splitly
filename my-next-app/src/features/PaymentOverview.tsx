@@ -15,7 +15,6 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { formatNumber, formatPercent } from "@/utils/parseNumber";
 import { GetPaymentData } from "@/types/payment";
-import { UserData } from "@/types/user";
 import { Category } from "@/types/category";
 
 type CategorySectionProps = {
@@ -43,9 +42,11 @@ function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId
     const isOpen = openCatListIndex === idx;
     const catParentClass = clsx(
         "flex items-center justify-start p-2 gap-2 h-16 rounded-lg cursor-pointer",
-        "bg-sp-blue-200 hover:bg-sp-white-20 active:bg-sp-white-40" )
+        "bg-sp-blue-200 hover:bg-sp-white-20 active:bg-sp-white-40",
+        {"sticky top-0 z-3" : isOpen}
+    )
     return (
-        <div className="w-full">
+        <div className="w-full relative">
             <div className={catParentClass} onClick={onToggle}>
                 <div className="flex items-center gap-2 flex-1">
                     <ImageButton image={cat.imgURL} size="md" imageName={cat.name_en} />
@@ -171,11 +172,11 @@ export default function PaymentOverview(){
             </div>
             <div ref={scrollRef} className={`flex-1 ${scrollClass} `}>
                 <div id="expense-list" className="px-3 py-3 rounded-2xl h-fit bg-sp-blue-200">
-                    <div id="expense-list-header"  className="py-2 px-4 w-full">
+                    <div id="expense-list-header"  className={`w-full ${!isMobile ? "py-2 px-4" : ""}`}>
                         <p className="text-xl font-medium truncate min-w-0 max-w-100 ">類別檢視</p>
                         <p className="text-base  min-w-0 max-w-100 pb-2">不包含轉帳紀錄</p>
                     </div>
-                    <div className="py-2 px-4">
+                    <div className={!isMobile ? "py-2 px-4" : ""}>
                         {statsWithGroups.map((cat, idx) => (
                             <CategorySection
                                 key={cat.id}
