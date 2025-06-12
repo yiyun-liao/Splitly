@@ -140,7 +140,7 @@ export default function ReceiptCard({
             {Number(displayAmount) !== 0 && (
                 <>
                     <p className={borrowText}>{record_mode === 'debt' ? "還款" : account_type === 'personal' ? "個人" : borrowed ? "借出" : "借用"}</p>
-                    <p className="text-base font-semibold whitespace-nowrap truncate">${displayAmount}</p>
+                    <p className="text-lg font-semibold whitespace-nowrap truncate">${displayAmount}</p>
                 </>
             )}
         </div>

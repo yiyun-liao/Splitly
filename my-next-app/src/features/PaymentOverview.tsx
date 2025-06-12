@@ -40,12 +40,9 @@ type CategorySectionProps = {
 
 function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId, userList, categoryOptions,viewExpenseWay }: CategorySectionProps) {
     const isOpen = openCatListIndex === idx;
-    const catParentClass = clsx("flex items-center justify-start p-2 gap-2 h-16 rounded-lg cursor-pointer",
-        {
-            "bg-sp-blue-300 hover:bg-sp-white-40 active:bg-sp-white-20" : openCatListIndex !== null,
-            "bg-sp-blue-200 hover:bg-sp-white-20 active:bg-sp-white-40" : openCatListIndex === null
-        }
-    )
+    const catParentClass = clsx(
+        "flex items-center justify-start p-2 gap-2 h-16 rounded-lg cursor-pointer",
+        "bg-sp-blue-200 hover:bg-sp-white-20 active:bg-sp-white-40" )
     return (
         <div className="w-full">
             <div className={catParentClass} onClick={onToggle}>
@@ -54,8 +51,8 @@ function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId
                     <p className="text-base font-semibold truncate">{cat.name_zh}</p>
                 </div>
                 <div className="shrink-0 text-right overflow-hidden">
-                    <p className="text-base font-semibold truncate">${formatNumber(cat.totalAmount)}</p>
-                    <p className="text-sm truncate">{formatPercent(cat.percent)}</p>
+                    <p className="text-sm">{formatPercent(cat.percent)}</p>
+                    <p className="text-lg font-semibold">${formatNumber(cat.totalAmount)}</p>
                 </div>
                 <IconButton
                     icon={isOpen ? 'solar:alt-arrow-up-outline' : 'solar:alt-arrow-down-outline'}
@@ -65,7 +62,7 @@ function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId
                     style={{ opacity: (cat.sortedDates.length > 0) ? 1 : 0 }}
                 />
             </div>
-            {idx + 1 < totalCat && (
+            {!openCatListIndex && (idx + 1 < totalCat) && (
                 <div className="w-full h-0.25 bg-sp-blue-300"></div>
             )}
             {isOpen && cat.sortedDates.map((date) => (
@@ -74,13 +71,12 @@ function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId
                         <div key={payment.id} className="">
                             <ReceiptCardByCat
                                 currentUserId={userId}
-                                userList={userList}
                                 categoryList={categoryOptions}
                                 payment={payment}
                                 viewExpenseWay={viewExpenseWay}
                             />
                             {idx + 1 < cat.sortedDates.length && (
-                                <div className="w-full h-px bg-sp-blue-300 mt-2" />
+                                <div className="w-full h-px bg-sp-blue-300" />
                             )}
                         </div>
                     ))}
@@ -184,8 +180,9 @@ export default function PaymentOverview(){
                     </div>
                 </div> */}
                 <div id="expense-list" className="px-3 py-3 rounded-2xl h-fit bg-sp-blue-200">
-                    <div id="expense-list-header"  className="py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden">
-                        <p className="text-xl font-medium truncate min-w-0 max-w-100 pb-2"> 類別檢視</p>
+                    <div id="expense-list-header"  className="py-2 px-4 w-full">
+                        <p className="text-xl font-medium truncate min-w-0 max-w-100 ">類別檢視</p>
+                        <p className="text-base  min-w-0 max-w-100 pb-2">不包含轉帳紀錄</p>
                     </div>
                     <div className="py-2 px-4">
                         {statsWithGroups.map((cat, idx) => (
