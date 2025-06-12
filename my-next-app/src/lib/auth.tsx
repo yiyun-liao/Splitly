@@ -3,6 +3,8 @@ import { signInWithPopup, signOut, getAdditionalUserInfo } from "firebase/auth";
 import { auth, provider } from "../firebase.js";
 import { getRandomAvatarIndex } from "@/utils/getAvatar";
 import { createNewUser } from "@/lib/userApi";
+import toast from "react-hot-toast";
+
 
 export async function logInUser() {
     try {
@@ -26,9 +28,11 @@ export async function logInUser() {
             console.log("new member! try to ", token, newUserData)
             await createNewUser(token, newUserData);
         }
-        console.log(result.user)
+        // console.log(result.user)
+        toast.success('登入成功')
         return true;
     } catch (error) {
+        toast.error('登入失敗，再試一次')
         console.error("Log in error:", error);
         return false;
     }
