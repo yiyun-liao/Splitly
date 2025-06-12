@@ -2,7 +2,7 @@
 import "./globals.css";
 import { CategoryProvider } from "@/contexts/CategoryContext";
 import ViewportHeightSetter from "@/components/layout/ViewportHeightSetter"; 
-import { LoadingProvider, useLoading } from '@/contexts/LoadingContext';
+import { LoadingProvider } from '@/contexts/LoadingContext';
 import { FetchLoadingMask } from "@/components/layout/FetchLoadingMask";
 
 export const metadata = {

@@ -15,7 +15,7 @@ type UseCreatePaymentOptions = {
 export function useCreatePayment(options?: UseCreatePaymentOptions) {
     const { setLoading } = useLoading();
     const { setCurrentPaymentList } = useCurrentProjectData();
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     const rawProjectId = useParams()?.projectId;
     const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
 
@@ -28,7 +28,7 @@ export function useCreatePayment(options?: UseCreatePaymentOptions) {
         };
         try {
             setLoading(true);
-            setIsLoading(true);
+            // setIsLoading(true);
             const result = await createPayment(fullPayload);
             const payment = result?.payment;
 
@@ -61,9 +61,9 @@ export function useCreatePayment(options?: UseCreatePaymentOptions) {
             options?.onError?.(error);
         } finally {
             setLoading(false);
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     };
 
-    return { handleCreatePayment, isLoading };
+    return { handleCreatePayment };
 }

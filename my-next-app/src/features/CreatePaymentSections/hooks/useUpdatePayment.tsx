@@ -2,6 +2,7 @@ import { useState } from "react";
 import { updatePayment } from "@/lib/paymentApi";
 import { GetPaymentData, UpdatePaymentData } from "@/types/payment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+import { useLoading } from "@/contexts/LoadingContext";
 import toast from "react-hot-toast";
 
 type UseUpdatePaymentOptions = {
@@ -11,13 +12,15 @@ type UseUpdatePaymentOptions = {
 
 export function useUpdatePayment(options?: UseUpdatePaymentOptions) {
     const { setCurrentPaymentList } = useCurrentProjectData();
-    const [isLoading, setIsLoading] = useState(false);
+    const { setLoading } = useLoading();
+    // const [isLoading, setIsLoading] = useState(false);
 
     const handleUpdatePayment = async (payload: UpdatePaymentData) => {
         const toastId = toast.loading("更新中…");
 
         try {
-            setIsLoading(true);
+            setLoading(true);
+            // setIsLoading(true);
             const result = await updatePayment(payload.id, payload);
             const payment = result?.payment;
 
@@ -51,9 +54,10 @@ export function useUpdatePayment(options?: UseUpdatePaymentOptions) {
             console.error("Create payment failed:", error);
             options?.onError?.(error);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
+            // setIsLoading(false);
         }
     };
 
-    return { handleUpdatePayment, isLoading };
+    return { handleUpdatePayment };
 }
