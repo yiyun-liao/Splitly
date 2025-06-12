@@ -24,12 +24,13 @@ const CurrentProjectContext = createContext<CurrentProjectContextType | undefine
 
 export const CurrentProjectProvider = ({ children }: { children: React.ReactNode }) => {
     const { projectData, userData , isLoadedReady:myDataReady } = useAuth();
+
     const rawParam = useParams()?.projectId;
     const fallbackId = getLocalStorageItem<string>("lastVisitedProjectPath");
-    const pureProjectId = typeof rawParam === "string" ? rawParam : rawParam?.[0] || fallbackId ;
+    const pureProjectId = typeof rawParam === "string" ? rawParam : rawParam?.[0] || fallbackId ; //要讀哪個 project
     
     const router = useRouter();
-    const [lastPath, setLastPath] = useState<string | undefined>(); // fallback
+    const [lastPath, setLastPath] = useState<string | undefined>(); // 用來 redirect 的 fallback
 
     const currentProjectData = useMemo(() => {
         if (!myDataReady || !pureProjectId) return undefined;
@@ -42,13 +43,6 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
     const firstLoadRef = useRef(true); //是否手動跳轉
     const [isReady, setIsReady] = useState(false); // 控制資料就緒
 
-    // --- 設定 ready 狀態 ---
-    // useEffect(() => {
-    //     if (currentProjectUsers && currentPaymentList) {
-    //         setIsReady(true);
-    //     }
-    // }, [currentProjectUsers, currentPaymentList]);
-
     useEffect(() => {
         // 每次純 client-side route 切換 projectId 時，都先清空上一個專案資料，這樣才能去 loading page
         setCurrentProjectUsers(undefined);
@@ -56,8 +50,6 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
         setIsReady(false);
     }, [pureProjectId]);
     
-
-
     useEffect(() => {
         if (myDataReady && projectData && currentProjectData !== undefined){
             const stored = getLocalStorageItem<string>("lastVisitedProjectPath") || (projectData?.length ? projectData[0].id : undefined);

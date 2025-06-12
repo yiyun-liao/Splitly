@@ -15,6 +15,7 @@ export type ParentCategoryStat = {
     imgURL : string;
     totalAmount: number;
     percent: number;
+    payments: GetPaymentData[];
 };
 
 // for my-next-app/src/hooks/useSettleDebts.tsx

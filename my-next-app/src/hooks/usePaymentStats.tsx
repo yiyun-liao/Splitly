@@ -26,11 +26,10 @@ export function useGroupedByParentCategory(): GroupedByParent[] {
 // 群體的
 export function useProjectStats() :{ stats: ParentCategoryStat[]; grandTotal: number }  {
     const list = useGroupedByParentCategory();
-  
     const projectStats = useMemo(() => {
         const stats = list ? getProjectCategoryStats(list) : [];
         const grandTotal = stats.reduce((sum, stat) => sum + stat.totalAmount, 0);
-        return { stats, grandTotal };
+        return { stats, grandTotal};
       }, [list]);
 
     return projectStats

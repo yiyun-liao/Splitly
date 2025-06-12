@@ -3,8 +3,9 @@ import Avatar from "@/components/ui/Avatar";
 import ModalPortal from "@/components/ui/ModalPortal";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
+import IconButton from "@/components/ui/IconButton";
 import { useParams, useRouter } from 'next/navigation';
-import { useMemo } from "react";
+import { useMemo,useState } from "react";
 import clsx from "clsx";
 
 import { UserData } from "@/types/user";
@@ -15,7 +16,8 @@ import { useGroupedByParentCategory } from "@/hooks/usePaymentStats";
 import { useCreatePayment } from "../CreatePaymentSections/hooks/useCreatePayment";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useAllSettlements,useMergedSettlements,useSimplifiedSettlements } from "@/hooks/useSettleDebts";
-
+import { formatDate } from "@/utils/formatTime";
+import { group } from "console";
 
 interface ProjectSettleDetailProps {
     isSelfExpenseOpen: boolean;
@@ -34,10 +36,6 @@ export default function ProjectSettleDetail({
     const settleWiseDetail = useSimplifiedSettlements(settleSimpleDetail)
     const {userData} = useGlobalProjectData();
     
-    // 還款紀錄
-    const paymentListGroupedByParentCategory = useGroupedByParentCategory()
-    const debtList = paymentListGroupedByParentCategory.filter(group => group.parent.id === 101);
-
     // for create payment
     const { currentProjectData } = useCurrentProjectData();
     const {projectId, userId} = useParams();
@@ -45,11 +43,31 @@ export default function ProjectSettleDetail({
     const currentUserId = typeof userId === 'string' ? userId : "";  
     const isMobile = useIsMobile();
     const router = useRouter();
+    
+    // 還款紀錄
+    const paymentListGroupedByParentCategory = useGroupedByParentCategory()
+    const debtList = paymentListGroupedByParentCategory.filter(group => group.parent.id === 101);
+    const [showMyRecord, setShowMyRecord] = useState(false); //顯示個人支出
+    const displayDebtList = useMemo(()=>{
+        if (!showMyRecord) {
+            return debtList;
+          }
+        return debtList.map(group => {
+            const filteredPayments = group.payments.filter(p => 
+              p.payer_map?.[currentUserId] != null ||
+              p.split_map?.[currentUserId] != null
+            );
+            return { ...group, payments: filteredPayments };
+          }).filter(group => group.payments.length > 0);
+    },[showMyRecord,debtList,currentUserId])
+
+    console.log(debtList)
 
     // update ui
     const visibleSettlements = useMemo(() => {
         return settleSimpleDetail.filter((s) => s.amount > 0);
     }, [settleSimpleDetail]);
+
     const settleMiniDetail = useMemo(() => {
         return settleWiseDetail.filter((s) => s.amount > 0);
     }, [settleWiseDetail]);
@@ -181,19 +199,30 @@ export default function ProjectSettleDetail({
                     </div>
                 </div>
                 <div className="w-full box-border h-fit">
-                    <p className="text-lg pb-4 font-medium w-full">還款紀錄</p>
+                    <div className="flex gap-2 items-center pb-4">
+                        <p className="text-lg font-medium w-full">還款紀錄</p>
+                        <div
+                            className={`shrink-0 px-2 py-2 flex items-center justify-center gap-2 rounded-xl bg-sp-green-100 hover:bg-sp-green-200 active:bg-sp-green-200 cursor-pointer }`}
+                            onClick={() => {setShowMyRecord(prev => (!prev))}}
+                        >
+                            <p className="text-base ml-4 shrink-0">僅顯示個人紀錄</p>
+                            <IconButton
+                                icon={showMyRecord === true ? "solar:check-square-bold" : "solar:stop-outline" }
+                                size="sm"
+                                variant="text-button"
+                                color="primary"
+                                type="button"
+                            />
+                        </div>
+                    </div>
                     <div className="w-full flex flex-col box-border h-fit min-h-40 ">
                         {debtList?.[0].payments && debtList?.[0].payments.length !==0 && (
-                            debtList?.[0].payments.map((payment, index) => {
+                            displayDebtList?.[0].payments.map((payment, index) => {
                                 const debtorUid = Object.keys(payment.payer_map ?? {})[0];
                                 const creditorUid = Object.keys(payment.split_map ?? {})[0];
                                 const debtor = currentProjectUsers?.find(user => user.uid === debtorUid);
                                 const creditor = currentProjectUsers?.find(user => user.uid === creditorUid);
-                                const dateOnly = new Intl.DateTimeFormat('zh-TW', {
-                                    year: 'numeric',
-                                    month: '2-digit',
-                                    day: '2-digit'
-                                }).format(new Date(payment.time));
+                                const dateOnly = formatDate(payment.time);
                                 const isLast = index === debtList.length - 1;
                                 return (
                                     <div key={index} className={clsx( "w-full px-3 py-3 flex items-end justify-start gap-2", { "border-b border-sp-green-200": !isLast })}>

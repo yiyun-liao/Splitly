@@ -353,16 +353,10 @@ export default function ProjectOverview(){
                             {(list || []).slice(0, 5).map((payment, index) => (
                                 <div key={payment.id} onClick={() => setIsReceiptCardOpen(payment)}>
                                     <ReceiptCard
-                                        account_type={payment.account_type}
-                                        record_mode={payment.record_mode}
-                                        payment_name={payment.payment_name}
-                                        amount={payment.amount}
-                                        payer_map={payment.payer_map}
-                                        split_map={payment.split_map}
                                         currentUserId={currentUserId}
                                         userList={userList || []}
-                                        categoryId={payment.category_id ?? ""}
                                         categoryList={categoryOptions || []}
+                                        payment={payment}
                                     />
                                     {index !== 4 && (
                                         <div className="w-full h-0.25 bg-sp-green-200"></div>
