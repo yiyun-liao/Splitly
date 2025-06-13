@@ -27,6 +27,11 @@ export default function LandingClient() {
         }
       }, [])
 
+    const redirect = searchParams.get('redirect')
+    const target = redirect
+        ? `/loading?redirect=${encodeURIComponent(redirect)}`
+        : '/loading'
+      
     const handleLogin = async () => {
         if (inWebView) { 
             setIsRedirectDialog(true);
@@ -36,10 +41,6 @@ export default function LandingClient() {
         if (!ok) return;
   
         // 登入成功，再導到 loading 頁面
-        const redirect = searchParams.get('redirect')
-        const target = redirect
-            ? `/loading?redirect=${encodeURIComponent(redirect)}`
-            : '/loading'
         router.push(target)
     }
 
@@ -52,10 +53,10 @@ export default function LandingClient() {
                     <RedirectDialog
                         open={isRedirectDialog}
                         onClose={() => setIsRedirectDialog(false)}
-                        url={typeof window !== 'undefined' ? window.location.href : ''}
+                        url={typeof window !== 'undefined' ? window.location.origin + target : ''}
                     />            
                 )}
-            </>
+            </> 
             <main className='min-h-[500px] flex flex-col items-center justify-center'>
                 <div className="h-full  px-4">
                     <h1>main page - landing page</h1>
