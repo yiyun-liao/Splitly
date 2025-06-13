@@ -1,3 +1,5 @@
+'use client';
+
 import { useLoading } from "@/contexts/LoadingContext";
 import toast from "react-hot-toast";
 

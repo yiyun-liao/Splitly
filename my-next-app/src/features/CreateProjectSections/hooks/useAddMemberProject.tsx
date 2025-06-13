@@ -1,3 +1,5 @@
+'use client';
+
 import { useAuth } from "@/contexts/AuthContext";
 import { joinProject } from "@/lib/projectApi";
 import { GetProjectData, JoinProjectData } from "@/types/project";

@@ -1,3 +1,5 @@
+'use client';
+
 import { createProject } from "@/lib/projectApi";
 import { ProjectData,GetProjectData } from "@/types/project";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
