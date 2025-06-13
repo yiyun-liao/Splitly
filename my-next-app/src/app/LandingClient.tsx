@@ -29,18 +29,11 @@ export default function LandingClient() {
 
     const handleLogin = async () => {
         if (inWebView) { 
-            return (
-                <RedirectDialog
-                    open = {isRedirectDialog}
-                    onClose={()=>{setIsRedirectDialog(false)}}
-                    url= {window.location.href}
-                /> 
-            )
-        }
-        const ok = await logInUser()
-        if (!ok) {
+            setIsRedirectDialog(true);
             return;
         }
+        const ok = await logInUser()
+        if (!ok) return;
   
         // 登入成功，再導到 loading 頁面
         const redirect = searchParams.get('redirect')
@@ -54,6 +47,15 @@ export default function LandingClient() {
 
     return (
         <div className={`h-full ${scrollClass}`}>
+            <>
+                { isRedirectDialog && (
+                    <RedirectDialog
+                        open={isRedirectDialog}
+                        onClose={() => setIsRedirectDialog(false)}
+                        url={typeof window !== 'undefined' ? window.location.href : ''}
+                    />            
+                )}
+            </>
             <main className='min-h-[500px] flex flex-col items-center justify-center'>
                 <div className="h-full  px-4">
                     <h1>main page - landing page</h1>
