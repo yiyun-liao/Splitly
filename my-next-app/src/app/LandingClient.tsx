@@ -6,14 +6,16 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { logInUser } from '@/lib/auth';
 import ImageButton from '@/components/ui/ImageButton';
 import IconButton from '@/components/ui/IconButton';
+import RedirectDialog from '@/features/BasicLayout/RedirectDialog';
 
 
 
 export default function LandingClient() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const [copied, setCopied] = useState(false)
     const [inWebView, setInWebView] = useState(false)
+    const [isRedirectDialog, setIsRedirectDialog] = useState(false)
+
 
     useEffect(() => {
         if (typeof navigator !== 'undefined') {
@@ -26,6 +28,15 @@ export default function LandingClient() {
       }, [])
 
     const handleLogin = async () => {
+        if (inWebView) { 
+            return (
+                <RedirectDialog
+                    open = {isRedirectDialog}
+                    onClose={()=>{setIsRedirectDialog(false)}}
+                    url= {window.location.href}
+                /> 
+            )
+        }
         const ok = await logInUser()
         if (!ok) {
             return;
@@ -37,35 +48,6 @@ export default function LandingClient() {
             ? `/loading?redirect=${encodeURIComponent(redirect)}`
             : '/loading'
         router.push(target)
-    }
-
-    if (inWebView) {
-        const url = window.location.href
-        return (
-            <div className="flex flex-col items-center justify-center h-screen px-4 space-y-4 text-center">
-                <p className="text-base">由於內嵌瀏覽器限制，Google 登入必須在系統瀏覽器完成。</p>
-                <input
-                    type="text"
-                    readOnly
-                    value={url}
-                    className="w-full max-w-md p-2 border rounded"
-                    onFocus={(e) => e.currentTarget.select()}
-                />
-                <Button
-                    size="md"
-                    variant="solid"
-                    color="primary"
-                    onClick={() => {
-                        navigator.clipboard.writeText(url)
-                        setCopied(true)
-                        setTimeout(() => setCopied(false), 2000)
-                    }}
-                >
-                    {copied ? '已複製!' : '複製連結'}
-                </Button>
-                <p className="text-sm text-gray-500">複製完畢後，請使用瀏覽器前往，即可完成登入。</p>
-            </div>
-        )
     }
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
