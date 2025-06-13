@@ -78,8 +78,11 @@ export default function PaymentList(){
             "w-xl px-3 py-3 rounded-2xl": isMobile === false,  
         }
     )
-    const headerClass = clsx("py-2 px-4 flex items-center gap-2 w-full justify-between overflow-hidden transition-opacity duration-200",
-        {"opacity-0 pointer-events-none h-0": isMobile && isScrolled }
+    const headerClass = clsx("py-2 flex items-center gap-2 w-full justify-between overflow-hidden transition-opacity duration-200",
+        {
+            "opacity-0 pointer-events-none h-0": isMobile && isScrolled,
+            "px-4" : !isMobile,
+         }
     )
     
     return(
@@ -111,7 +114,7 @@ export default function PaymentList(){
                     />
                 </div>
             </div>
-            <div id="receipt-list-frame" ref={scrollRef} className={`py-2 px-4 flex-1 ${scrollClass}`}>
+            <div id="receipt-list-frame" ref={scrollRef} className={`py-2 flex-1 ${scrollClass} ${!isMobile && 'px-4 '}`}>
                 {list && (list?.length < 1 ) && (
                     <>
                         <div 
