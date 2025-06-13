@@ -2,7 +2,7 @@
 'use client'
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { useRouter} from "next/navigation";
+import { useRouter, usePathname} from "next/navigation";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { logInUser, logOutUser } from "@/lib/auth";
@@ -16,7 +16,7 @@ import { GetProjectData } from "@/types/project";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
 
 import { clearUserCache } from "@/utils/cache";
-
+import { showInfoToast } from "@/utils/infoToast";
 
 type AuthContextType = {
     firebaseUser: User | null;     // Firebase 原始 user
@@ -57,6 +57,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [isReady, setIsReady] = useState(false);
     const router = useRouter();
 
+    const pathname = usePathname();                    // ← 拿到當前路徑
+    const isJoinRoute = pathname === "/join";
+
 
     const addProject = (newProject: GetProjectData) => {
         setProjectData(prev => [...prev, newProject]);
@@ -73,12 +76,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 setUserData(null);
                 setProjectData([]);
                 setIsReady(true);
+                if (isJoinRoute) {
+                    showInfoToast("加入專案前請先登入");
+                } else {
+                    toast.error("權限失敗，請重新登入");
+                  }
                 const success = await logOutUser();
                 if (success){
                     clearUserCache();
                     router.replace('/');    
-                }else{
-                    toast.error('權限失敗，請重新登入')
                 }
                 return null;
             }
