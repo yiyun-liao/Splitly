@@ -1,3 +1,4 @@
+"use client"; 
 import Dialog from "@/components/ui/Dialog";
 import Avatar from "@/components/ui/Avatar";
 import ModalPortal from "@/components/ui/ModalPortal";

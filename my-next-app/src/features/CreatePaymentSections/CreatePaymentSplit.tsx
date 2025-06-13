@@ -1,3 +1,4 @@
+"use client"; 
 import clsx from "clsx";
 import { useState, useEffect, useMemo, useRef} from "react";
 import { useParams } from "next/navigation";
@@ -12,7 +13,7 @@ import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
 import { UserData } from "@/types/user";
-import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType, GetPaymentData, UpdatePaymentData} from "@/types/payment";
+import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType, UpdatePaymentData} from "@/types/payment";
 import { formatPercent, formatNumber, formatNumberForData } from "@/utils/parseNumber";
 import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";

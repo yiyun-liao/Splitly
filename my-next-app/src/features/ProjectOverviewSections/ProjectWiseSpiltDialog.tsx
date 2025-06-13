@@ -1,3 +1,4 @@
+"use client"; 
 import { useParams, useRouter } from 'next/navigation';
 import { useMemo } from "react";
 import clsx from "clsx";

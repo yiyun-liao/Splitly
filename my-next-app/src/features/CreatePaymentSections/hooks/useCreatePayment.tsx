@@ -1,3 +1,4 @@
+"use client"; 
 import { useParams } from "next/navigation";
 import { createPayment } from "@/lib/paymentApi";
 import { CreatePaymentPayload, GetPaymentData } from "@/types/payment";
