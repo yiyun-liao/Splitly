@@ -68,8 +68,8 @@ function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId
             {!openCatListIndex && (idx + 1 < totalCat) && (
                 <div className="w-full h-0.25 bg-sp-blue-300"></div>
             )}
-            {isOpen && cat.sortedDates.map((date) => (
-                <>
+            {isOpen && cat.sortedDates.map((date, idx) => (
+                <div key={idx}>
                     {cat.groupedPayments[date].map((payment, idx) => (
                         <div key={payment.id} onClick={() => setEditPayment(payment)}>
                             <ReceiptCardByCat
@@ -84,7 +84,7 @@ function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId
                             )}
                         </div>
                     ))}
-                </>        
+                </div>        
             ))}
         </div>
     );
