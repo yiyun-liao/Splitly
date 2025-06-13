@@ -1,3 +1,4 @@
+"use client";
 import { Suspense } from 'react';
 import LoadingDataPage from './LoadingClient';
 import { LoadingScreen } from '@/components/layout/LoadingScreen';

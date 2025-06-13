@@ -1,3 +1,4 @@
+"use client";
 import { Suspense } from "react";
 import CreateFirstProject from "./CreateFirstProject";
 import { LoadingScreen } from '@/components/layout/LoadingScreen';

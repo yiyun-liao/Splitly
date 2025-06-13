@@ -1,3 +1,4 @@
+"use client";
 import { Suspense } from "react";
 import JoinProjectPage from "./JoinClient";
 import { LoadingScreen } from '@/components/layout/LoadingScreen';
