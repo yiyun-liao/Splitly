@@ -1,9 +1,11 @@
-import { useState } from "react";
+'use client';
 
 import { useAuth } from "@/contexts/AuthContext";
 import { joinProject } from "@/lib/projectApi";
 import { GetProjectData, JoinProjectData } from "@/types/project";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
+import { useLoading } from "@/contexts/LoadingContext";
+import toast from "react-hot-toast";
 
 type UseUpdateProjectOptions = {
     onSuccess?: (project: GetProjectData) => void;
@@ -12,12 +14,12 @@ type UseUpdateProjectOptions = {
 
 export function useAddMemberProject(options?: UseUpdateProjectOptions) {
     const { setProjectData, userData } = useAuth();
-    const [isLoading, setIsLoading] = useState(false); 
+    const { setLoading } = useLoading();
 
     const handleUpdateProject = async (projectPayload: JoinProjectData) => {
-        console.log("update", projectPayload);
+        const toastId = toast.loading("加入中…");
         try {
-            setIsLoading(true);
+            setLoading(true);
             const result = await joinProject(projectPayload);
             const rawProject = result?.project;
 
@@ -26,7 +28,9 @@ export function useAddMemberProject(options?: UseUpdateProjectOptions) {
                     ...rawProject,
                     imgURL: buildProjectCoverUrl(rawProject.img),
                 };
-                if (!setProjectData) return;
+                if (!setProjectData){
+                    throw new Error("伺服器回傳格式不正確");
+                }
                 if (setProjectData) {
                     setProjectData((prev) => {
                         const prevList = prev ?? [];
@@ -54,17 +58,17 @@ export function useAddMemberProject(options?: UseUpdateProjectOptions) {
                     
                         return newProjectList;
                     });
-                }                  
+                }
+                toast.success("加入成功！", { id: toastId });                  
                 options?.onSuccess?.(newProject); // 執行 callback
-            } else {
-                console.error("⚠️ createProject 回傳格式不符合預期", result);
             }
         } catch (error) {
+            toast.error("加入失敗，請稍後再試", { id: toastId });
             console.error("Create project failed:", error);
             options?.onError?.(error); // ✅ 錯誤處理 callback
         } finally {
-            setIsLoading(false); 
+            setLoading(false);
         }
     };
-    return { handleUpdateProject, isLoading };
+    return { handleUpdateProject};
 };

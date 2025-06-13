@@ -4,8 +4,7 @@ import Avatar from "@/components/ui/Avatar";
 import ModalPortal from "@/components/ui/ModalPortal";
 import { useState } from "react";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-
-
+import toast from "react-hot-toast";
 
 interface ProjectMemberListProps {
     isMemberListOpen: boolean;
@@ -102,7 +101,8 @@ export default function ProjectMemberList({
                             width = 'full'
                             onClick={()=>{
                                 navigator.clipboard.writeText(inviteUrl);
-                                alert("複製成功，請分享連結給團員")
+                                toast.success('複製成功，請分享連結給團員');
+                                onClose();
                             }}
                         >
                             複製專案連結

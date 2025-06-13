@@ -14,6 +14,7 @@ import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 
+import { showInfoToast } from "@/utils/infoToast";
 import { getProjectStyle } from "@/utils/renderProjectStyle";
 import { buildAvatarUrl } from "@/utils/getAvatar";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
@@ -35,6 +36,7 @@ export default function JoinProjectPage() {
     const [joined, setJoined] = useState(false);
     const [error, setError] = useState("");
 
+
     // check customer is member already
     useEffect(() => {
         if (!projectId){
@@ -44,6 +46,7 @@ export default function JoinProjectPage() {
         if (!isLoadedReady || !projectId) return;
 
         if (!firebaseUser || !userData) {
+            showInfoToast("加入專案前請先登入");
             const redirect = `/join?pid=${projectId}`;
             router.push(`/?redirect=${encodeURIComponent(redirect)}`);
         }
@@ -56,22 +59,20 @@ export default function JoinProjectPage() {
         setAddMemberBudget({[currentUid]: undefined})
         const loadProject = async () => {
             try {
-                console.log("try to get certain project1")
                 const token = await firebaseUser.getIdToken();
                 const rawProject = await fetchProjectsByNew(token, currentUid , projectId);
                 const newProject: GetProjectData = {
                     ...rawProject.project,
                     imgURL: buildProjectCoverUrl(rawProject.project.img),
                 };
-                console.log("try to get certain project4")
                 if (newProject.owner === currentUid) {
-                    alert('你已是專案成員')
+                    showInfoToast('你已是專案成員，正在將您傳送進專案中～')
                     router.replace(`/${currentUid}/${projectId}/dashboard`);
                     return;
                 }
                 if (newProject.member){
                     if (newProject.member.includes(currentUid)) {
-                        alert('你已是專案成員')
+                        showInfoToast('你已是專案成員，正在將您傳送進專案中～')
                         router.replace(`/${currentUid}/${projectId}/dashboard`);
                         return;
                     }
@@ -104,9 +105,9 @@ export default function JoinProjectPage() {
     
     console.log(updateProjectPayload)
     console.log(currentUid)
-    const { handleUpdateProject, isLoading:isUpdateLoading } = useAddMemberProject({
-        onSuccess: (project) => {
-            console.log("✅ 成功更新專案：", project);
+    const { handleUpdateProject} = useAddMemberProject({
+        onSuccess: () => {
+            // console.log("✅ 成功更新專案：", project);
             setJoined(true);
             },
         onError: (err) => {
@@ -177,8 +178,6 @@ export default function JoinProjectPage() {
                                     width='full'
                                     variant='solid'
                                     color='primary'
-                                    disabled={isUpdateLoading}
-                                    isLoading={isUpdateLoading}
                                     onClick={() => router.replace(`/${currentUid}/${projectId}/dashboard`)}   
                                 >
                                     前往專案
@@ -189,15 +188,13 @@ export default function JoinProjectPage() {
                                     width='full'
                                     variant='solid'
                                     color='primary'
-                                    disabled={isUpdateLoading}
-                                    isLoading={isUpdateLoading}
                                     onClick={async()=> {
                                         console.log("update", updateProjectPayload);
                                         if (!updateProjectPayload) return;
                                         await handleUpdateProject(updateProjectPayload);
                                     }}  
                                 >
-                                    {isUpdateLoading ? "加入中..." : "確認加入"}
+                                    確認加入
                                 </Button>   
                             )}
                         </div>

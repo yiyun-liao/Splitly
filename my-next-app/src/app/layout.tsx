@@ -1,6 +1,8 @@
 import "./globals.css";
-import ViewportHeightSetter from "@/components/layout/ViewportHeightSetter"; 
 import { CategoryProvider } from "@/contexts/CategoryContext";
+import ViewportHeightSetter from "@/components/layout/ViewportHeightSetter"; 
+import { LoadingProvider } from '@/contexts/LoadingContext';
+import { FetchLoadingMask } from "@/components/layout/FetchLoadingMask";
 
 export const metadata = {
     title: 'Splitly – 您最佳的分帳工具',
@@ -30,7 +32,6 @@ export const metadata = {
       images: ['https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG'],
     },
   }
-  
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 return (
@@ -43,7 +44,11 @@ return (
     <body>
         <CategoryProvider>
             <ViewportHeightSetter />
-                {children}
+                <LoadingProvider>
+                    <FetchLoadingMask>
+                        {children}
+                    </FetchLoadingMask>
+                </LoadingProvider>
         </CategoryProvider>
     </body>
     </html>

@@ -1,3 +1,4 @@
+"use client"; 
 import clsx from "clsx";
 import { useState, useEffect, useMemo} from "react";
 import { useParams } from "next/navigation";
@@ -9,7 +10,7 @@ import Select from "@/components/ui/Select";
 import DebtPayer from "./DebtPayerDialog";
 import DebtReceiver from "./DebtReceiverDialog";
 import { getNowDatetimeLocal } from "@/utils/time";
-import {  CreatePaymentPayload, GetPaymentData, UpdatePaymentData} from "@/types/payment"
+import {  CreatePaymentPayload, UpdatePaymentData} from "@/types/payment"
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { UserData } from "@/types/user";
 import { useIsMobile } from "@/hooks/useIsMobile";

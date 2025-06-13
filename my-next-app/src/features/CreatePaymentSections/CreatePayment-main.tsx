@@ -1,3 +1,4 @@
+"use client"; 
 import { useState, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 
@@ -46,6 +47,7 @@ export default function CreatePayment({
         payer_map: {},
         split_map: {},
     });
+
     const [updatePayload, setUpdatePayload] = useState<UpdatePaymentData>();
     
     useEffect(() => {
@@ -86,33 +88,30 @@ export default function CreatePayment({
     }, [payload, updatePayload, initialPayload]);  
 
     // submit
-    const { handleCreatePayment, isLoading:isCreateLoading } = useCreatePayment({
-        onSuccess: (payment) => {
-            console.log("✅ 成功建立紀錄：", payment);
+    const { handleCreatePayment } = useCreatePayment({
+        onSuccess: () => {
+            // console.log("✅ 成功建立紀錄：", payment);
             onClose();
         },
         onError: (err) => {
-            alert("建立紀錄失敗，請稍後再試");
             console.log("紀錄建立錯誤", err);
         },
     });
-    const { handleUpdatePayment, isLoading:isUpdateLoading } = useUpdatePayment({
-        onSuccess: (payment) => {
-            console.log("✅ 成功更新紀錄：", payment);
+    const { handleUpdatePayment} = useUpdatePayment({
+        onSuccess: () => {
+            // console.log("✅ 成功更新紀錄：", payment);
             onClose();
         },
         onError: (err) => {
-            alert("更新紀錄失敗，請稍後再試");
             console.log("付款更新紀錄", err);
         },
     });
-    const { handleDeletePayment, isLoading:isDeleteLoading } = useDeletePayment({
-        onSuccess: (paymentId) => {
-            console.log("✅ 成功刪除紀錄：", paymentId);
+    const { handleDeletePayment } = useDeletePayment({
+        onSuccess: () => {
+            // console.log("✅ 成功刪除紀錄：", paymentId);
             onClose();
         },
         onError: (err) => {
-            alert("刪除紀錄失敗，請稍後再試");
             console.log("紀錄刪除錯誤", err);
         },
     });
@@ -135,10 +134,8 @@ export default function CreatePayment({
                                     width='fit'
                                     variant= 'text-button'
                                     color='primary'
-                                    disabled={!isComplete || isDeleteLoading} 
-                                    isLoading={isDeleteLoading}
+                                    disabled={!isComplete}
                                     onClick={async()=>{
-                                        console.log("delete", initialPayload.project_id, initialPayload.id)
                                         await handleDeletePayment(initialPayload.project_id, initialPayload.id);
                                     }}
                                     >
@@ -149,11 +146,8 @@ export default function CreatePayment({
                                     width='fit'
                                     variant='solid'
                                     color='primary'
-                                    disabled={!isComplete || isUpdateLoading} 
-                                    isLoading={isUpdateLoading}
+                                    disabled={!isComplete}
                                     onClick={async()=>{
-                                        console.log("帳目", updatePayload?.account_type,"增加內容", updatePayload?.record_mode, "分帳方式", updatePayload?.split_way,"分錢方式", updatePayload?.split_method)
-                                        console.log("update", updatePayload)
                                         await handleUpdatePayment(updatePayload);
                                     }}
                                     >
@@ -167,10 +161,8 @@ export default function CreatePayment({
                                 width='fit'
                                 variant='solid'
                                 color='primary'
-                                disabled={!isComplete || isCreateLoading} 
-                                isLoading={isCreateLoading}
+                                disabled={!isComplete}
                                 onClick={async()=>{
-                                    console.log("帳目", payload?.account_type,"增加內容", payload?.record_mode, "分帳方式", payload?.split_way,"分錢方式", payload?.split_method)
                                     await handleCreatePayment(payload);
                                 }}
                                 >

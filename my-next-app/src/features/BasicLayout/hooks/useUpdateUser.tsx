@@ -1,4 +1,4 @@
-import { useState } from "react";
+'use client';
 import { useRouter } from "next/navigation";
 
 import { auth } from "@/firebase";
@@ -10,6 +10,9 @@ import { updateUser } from "@/lib/userApi";
 import { buildAvatarUrl } from "@/utils/getAvatar";
 import { updateAllCachedProjectUsers } from "@/utils/cache";
 
+import { useLoading } from "@/contexts/LoadingContext";
+import toast from "react-hot-toast";
+
 type UseUpdateUserOptions = {
     onSuccess?: (payment: UserData) => void;
     onError?: (error: unknown) => void;
@@ -19,11 +22,13 @@ export function useUpdateUser(options?: UseUpdateUserOptions) {
     const router = useRouter();
     const { setUserData } = useAuth(); 
     const { setCurrentProjectUsers } = useCurrentProjectData();
-    const [isLoading, setIsLoading] = useState(false);
+    const { setLoading } = useLoading();
 
     const handleUpdateUser = async (data: UserData) => {
+        const toastId = toast.loading("更新中…");
+
         try {
-            setIsLoading(true);
+            setLoading(true);
             const userAuth = auth.currentUser; 
             if (!userAuth) {
                 router.push(`/`);
@@ -32,6 +37,10 @@ export function useUpdateUser(options?: UseUpdateUserOptions) {
 
             const token = await userAuth.getIdToken();
             const result = await updateUser(token, data.uid, data);
+
+            if (!result.success){
+                throw new Error("伺服器回傳格式不正確");
+            }
 
             if (result.success && result.user) {
                 if (setUserData && setCurrentProjectUsers) {
@@ -55,19 +64,20 @@ export function useUpdateUser(options?: UseUpdateUserOptions) {
                         console.warn("⚠️ 快取更新失敗", e);
                     }                    
                     updateAllCachedProjectUsers(fullUser);
+
+                    toast.success("更新成功！", { id: toastId });
                     options?.onSuccess?.(fullUser);
                     return fullUser;
                 }
-            } else {
-                console.error("⚠️ createPayment 回傳格式不符合預期", result);
-            }
+            } 
         } catch (error) {
-            console.error("Create payment failed:", error);
+            toast.error("更新失敗，請稍後再試", { id: toastId });
+            console.error("Update user data failed:", error);
             options?.onError?.(error);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
-    return { handleUpdateUser, isLoading };
+    return { handleUpdateUser };
 }

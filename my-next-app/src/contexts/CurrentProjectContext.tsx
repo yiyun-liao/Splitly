@@ -94,7 +94,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
             
         }
 
-        const fetchProjectData = async () => {
+        const fetchProjectData = async (retry = false) => {
             try {
                 console.log("🙃 fetch current data")
                 if (!pureProjectId) {
@@ -119,10 +119,15 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
                 setIsReady(true); // ✅ fetch 成功標記 ready
             } catch (err) {
-                console.error("🔴 專案資料取得失敗", err);
-                setCurrentProjectUsers(undefined);
-                setCurrentPaymentList(undefined);
-                setIsReady(true); // ✅ 即使失敗，也要讓頁面能跳錯誤頁等
+                if (!retry) {
+                    console.log("⏳ Fetching user data might too early, retrying in 2s...");
+                    setTimeout(() => fetchProjectData(true), 2000); // retry once
+                } else {
+                    console.error("🛑 Retry get user data failed, fallback to null", err);
+                    setCurrentProjectUsers(undefined);
+                    setCurrentPaymentList(undefined);
+                    setIsReady(true); // ✅ 即使失敗，也要讓頁面能跳錯誤頁等
+                }
             }
         };
 

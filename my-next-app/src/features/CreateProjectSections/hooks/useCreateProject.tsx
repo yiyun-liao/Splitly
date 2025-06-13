@@ -1,8 +1,11 @@
+'use client';
+
 import { createProject } from "@/lib/projectApi";
 import { ProjectData,GetProjectData } from "@/types/project";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState } from "react";
+import { useLoading } from "@/contexts/LoadingContext";
+import toast from "react-hot-toast";
 
 type UseCreateProjectOptions = {
     onSuccess?: (project: GetProjectData) => void;
@@ -11,14 +14,18 @@ type UseCreateProjectOptions = {
 
 export function useCreateProject(options?: UseCreateProjectOptions) {
     const { addProject, projectData, userData } = useAuth();
-    const [isLoading, setIsLoading] = useState(false); 
+    const { setLoading } = useLoading();
 
     const handleCreateProject = async (projectPayload: ProjectData) => {
-        console.log("create", projectPayload);
+        const toastId = toast.loading("新增中…");
         try {
-            setIsLoading(true);
+            setLoading(true);
             const result = await createProject(projectPayload);
             const project = result?.project;
+
+            if (!project){
+                throw new Error("⚠️ createProject 回傳格式不符合預期", result);
+            }
 
             if (project && project.img !== undefined) {
                 const fullProject: GetProjectData = {
@@ -36,16 +43,16 @@ export function useCreateProject(options?: UseCreateProjectOptions) {
                     localStorage.setItem(projectKey, JSON.stringify(updatedProjectList));
                     localStorage.setItem(myMetaKey, JSON.stringify({ timestamp: Date.now() }));
                 }
+                toast.success("新增成功！", { id: toastId });
                 options?.onSuccess?.(fullProject); // ✅ 執行 callback
-            } else {
-                console.error("⚠️ createProject 回傳格式不符合預期", result);
             }
         } catch (error) {
+            toast.error("新增失敗，請稍後再試", { id: toastId });
             console.error("Create project failed:", error);
             options?.onError?.(error); // ✅ 錯誤處理 callback
         } finally {
-            setIsLoading(false); 
+            setLoading(false);
         }
     };
-    return { handleCreateProject, isLoading };
+    return { handleCreateProject };
 };

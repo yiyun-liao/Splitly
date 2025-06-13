@@ -1,3 +1,4 @@
+"use client"; 
 import clsx from "clsx";
 import { useState, useEffect, useMemo, useRef} from "react";
 import { useParams } from "next/navigation";
@@ -12,7 +13,7 @@ import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
 import { UserData } from "@/types/user";
-import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType, GetPaymentData, UpdatePaymentData} from "@/types/payment";
+import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType, UpdatePaymentData} from "@/types/payment";
 import { formatPercent, formatNumber, formatNumberForData } from "@/utils/parseNumber";
 import { getNowDatetimeLocal } from "@/utils/time";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
@@ -69,7 +70,7 @@ export default function CreatePaymentSplit({
             const firstUid = currentProjectUsers.find(user => user.uid === currentUid)?.uid || currentProjectUsers[0]?.uid ;
             return { [firstUid]: 0 } ;
         });
-        console.log(splitPayerMap)
+
         // 個人帳目付款人設定
         const [personalPayerMap, setPersonalPayerMap] = useState<PayerMap>(() =>{
             return { [currentUid]: 0 }
@@ -141,9 +142,10 @@ export default function CreatePaymentSplit({
           
             // 分帳人
             if (initialPayload.split_map) {
-                setSplitByPersonMap(initialPayload.split_map);
-                if (initialPayload.split_way === "person") {
+                if (initialPayload.account_type === "personal") {
                     setPersonalSplitMap(initialPayload.split_map);
+                } else if (initialPayload.split_way === "person") {
+                    setSplitByPersonMap(initialPayload.split_map);
                 } else if (initialPayload.split_way === "item") {
                     setSplitByItemMap(initialPayload.split_map);
                 }
@@ -160,9 +162,11 @@ export default function CreatePaymentSplit({
         // 價格改變就重設
         const didManuallyChangeAmountRef = useRef(false);
 
-        // 1onChange handler 內設為 true（代表使用者手動輸入）
-        const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            setInputAmountValue(e.target.value);
+        // 金額輸入限制，onChange handler 內設為 true（代表使用者手動輸入）
+        const handleSplitAmountChange = (actualInput: string) => {
+            const rawValue = sanitizeDecimalInput(actualInput);
+            if (isNaN(rawValue) || rawValue < 0) return; 
+            setInputAmountValue(rawValue.toString());
             didManuallyChangeAmountRef.current = true;
         };
         
@@ -184,27 +188,25 @@ export default function CreatePaymentSplit({
                     total: total
                 }])
             );
-            const personalMap: SplitMap = { [currentUid]: { fixed: amount, percent: 0, total: amount}}
 
-            setSplitWay('person');
-            setChooseSplitByPerson("percentage");
-            setSplitByPersonMap(groupMap);
-            setSplitPayerMap({[currentUid]: amount });
-            setLocalItemPayloadList([]);
+
             // person
-            setPersonalPayerMap({[currentUid]: amount })
-            setPersonalSplitMap(personalMap);
+            if (accountType === "personal") {
+                setPersonalPayerMap({ [currentUid]: amount });
+                setPersonalSplitMap({ 
+                  [currentUid]: { fixed: amount, percent: 0, total: amount } 
+                });
+            }else{
+                setSplitWay('person');
+                setChooseSplitByPerson("percentage");
+                setSplitByPersonMap(groupMap);
+                setSplitPayerMap({[currentUid]: amount });
+                setLocalItemPayloadList([]);
+            }
             didManuallyChangeAmountRef.current = false;
 
-        }, [inputAmountValue, currentProjectUsers, userData, currentUid, initialPayload]);
+        }, [inputAmountValue, currentProjectUsers, userData, currentUid, initialPayload, accountType]);
 
-
-        // 金額輸入限制
-        const handleSplitAmountChange = (actualInput: string) => {
-            const rawValue = sanitizeDecimalInput(actualInput);
-            if (isNaN(rawValue) || rawValue < 0) return; 
-            setInputAmountValue(rawValue.toString());
-        };
 
         // tag hint
         const tagDescMap: Record<string, (entry: SplitDetail, allEntries: SplitMap) => string> = {
@@ -505,7 +507,7 @@ export default function CreatePaymentSplit({
                                     <Input
                                     value={inputAmountValue}
                                     type="number"
-                                    onChange={(e) => {handleAmountChange(e)}}
+                                    onChange={(e) => {handleSplitAmountChange(e.target.value)}}
                                     flexDirection="row"
                                     width="full"
                                     placeholder="點擊編輯"
