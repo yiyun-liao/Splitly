@@ -1,4 +1,3 @@
-
 import "./globals.css";
 import { CategoryProvider } from "@/contexts/CategoryContext";
 import ViewportHeightSetter from "@/components/layout/ViewportHeightSetter"; 

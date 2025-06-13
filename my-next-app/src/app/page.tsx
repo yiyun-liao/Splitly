@@ -1,11 +1,12 @@
 import { Suspense } from 'react';
 import LandingClient from './LandingClient';
+import { LoadingScreen } from '@/components/layout/LoadingScreen';
 
 export default function HomePage() {
     return (
-        // <Suspense fallback={<p>載入中中中...</p>}>
+        <Suspense fallback={<LoadingScreen text="載入中…" />}>
             <LandingClient />
-        // </Suspense>
+        </Suspense>
     );
 }
 
