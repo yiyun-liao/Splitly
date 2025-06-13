@@ -1,11 +1,11 @@
 //全域登入狀態紀錄 用在 my-next-app/src/hoc/withAuth.tsx
 'use client'
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { useRouter, usePathname} from "next/navigation";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { logInUser, logOutUser } from "@/lib/auth";
+import { logInUser, logOutUser as signOutFromLib } from "@/lib/auth";
 
 import { fetchCurrentUser } from "@/lib/userApi";
 import { UserData } from "@/types/user.js";
@@ -57,8 +57,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [isReady, setIsReady] = useState(false);
     const router = useRouter();
 
-    const pathname = usePathname();                    // ← 拿到當前路徑
+    const pathname = usePathname(); // 拿到當前路徑
     const isJoinRoute = pathname === "/join";
+
+    const manualLogoutRef = useRef(false);
+    const contextLogOutUser = async () => {
+            manualLogoutRef.current = true;
+        return await signOutFromLib();
+    };
 
 
     const addProject = (newProject: GetProjectData) => {
@@ -76,12 +82,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 setUserData(null);
                 setProjectData([]);
                 setIsReady(true);
-                if (isJoinRoute) {
-                    showInfoToast("加入專案前請先登入");
-                } else {
-                    toast.error("權限失敗，請重新登入");
-                  }
-                const success = await logOutUser();
+                if (!manualLogoutRef.current) {
+                    if (isJoinRoute) {
+                        showInfoToast("加入專案前請先登入");
+                    } else {
+                        toast.error("權限失敗，請重新登入");
+                    }
+                }
+                manualLogoutRef.current = false;
+        
+                const success = await signOutFromLib();
                 if (success){
                     clearUserCache();
                     router.replace('/');    
@@ -178,7 +188,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 isLoadedReady,
                 isReady, 
                 logInUser, 
-                logOutUser,
+                logOutUser: contextLogOutUser,
                 addProject, 
                 setUserData,
                 setProjectData

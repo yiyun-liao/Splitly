@@ -1,18 +1,20 @@
 import clsx from "clsx";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 import Button from "@/components/ui/Button";
 import ImageButton from "@/components/ui/ImageButton";
 import IconButton from "@/components/ui/IconButton";
+import { useAuth } from "@/contexts/AuthContext";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { logOutUser } from "@/lib/auth";
 import { clearUserCache } from "@/utils/cache";
 import DataSettingDialog from "./DataSettingDialog";
 
 export default function SettingContent(){
     const router = useRouter();
+    const { logOutUser } = useAuth(); 
     const { userData,projectData} = useGlobalProjectData();
     const isMobile = useIsMobile();
     const [isSettingDialogOpen, setIsSettingDialogOpen] = useState(false)
@@ -20,8 +22,9 @@ export default function SettingContent(){
     async function handleLogout() {
         const success = await logOutUser();
         if (success){
+            console.log('Bye Bye 👋🏻');
+            toast.success('Bye Bye 👋🏻')
             clearUserCache();
-            console.log('Logged out!');
             router.replace('/');    
         }
     }
