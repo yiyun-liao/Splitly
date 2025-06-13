@@ -46,6 +46,7 @@ export default function JoinProjectPage() {
         if (!isLoadedReady || !projectId) return;
 
         if (!firebaseUser || !userData) {
+            showInfoToast("加入專案前請先登入");
             const redirect = `/join?pid=${projectId}`;
             router.push(`/?redirect=${encodeURIComponent(redirect)}`);
         }

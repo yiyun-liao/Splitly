@@ -2,7 +2,7 @@
 'use client'
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter} from "next/navigation";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { logInUser, logOutUser } from "@/lib/auth";
@@ -16,7 +16,6 @@ import { GetProjectData } from "@/types/project";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
 
 import { clearUserCache } from "@/utils/cache";
-import { showInfoToast } from "@/utils/infoToast";
 
 
 type AuthContextType = {
@@ -57,8 +56,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [projectData, setProjectData] = useState<GetProjectData[]>([]);
     const [isReady, setIsReady] = useState(false);
     const router = useRouter();
-    const searchParams = useSearchParams()
-    const pid = searchParams.get('pid')
 
 
     const addProject = (newProject: GetProjectData) => {
@@ -80,11 +77,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 if (success){
                     clearUserCache();
                     router.replace('/');    
-                }
-                if (!!pid){
-                    showInfoToast('加入專案前請先登入')
-                }
-                if(!pid){
+                }else{
                     toast.error('權限失敗，請重新登入')
                 }
                 return null;
