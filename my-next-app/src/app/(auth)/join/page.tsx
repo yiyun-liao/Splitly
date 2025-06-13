@@ -3,7 +3,7 @@ import JoinProjectPage from "./JoinClient";
 
 export default function JoinPage() {
 return (
-    <Suspense fallback={<p>載入中...</p>}>
+    <Suspense fallback={<p>載入參加中...</p>}>
         <div style={{ height: "var(100vh)" }}>
             <JoinProjectPage />
         </div>

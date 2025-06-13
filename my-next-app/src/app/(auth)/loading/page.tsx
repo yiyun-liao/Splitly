@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import { logInUser } from '@/lib/auth'
 
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath'
 import { LogInScreen } from '@/components/layout/LogInScreen'
@@ -40,5 +39,5 @@ export default function LoadingPage() {
     }, [myDataReady, searchParams, router, projectData, userData]);
 
 
-    return <LogInScreen text="登入中，載入中…" />
+    return <LogInScreen text="登入載入中…" />
 }

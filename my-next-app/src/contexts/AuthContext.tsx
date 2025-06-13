@@ -1,6 +1,7 @@
 //全域登入狀態紀錄 用在 my-next-app/src/hoc/withAuth.tsx
 'use client'
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged, User } from "firebase/auth";
@@ -16,9 +17,6 @@ import { buildProjectCoverUrl } from "@/utils/getProjectCover";
 
 import { clearUserCache } from "@/utils/cache";
 import { showInfoToast } from "@/utils/infoToast";
-
-
-import toast from "react-hot-toast";
 
 
 type AuthContextType = {
@@ -78,16 +76,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 setUserData(null);
                 setProjectData([]);
                 setIsReady(true);
+                const success = await logOutUser();
+                if (success){
+                    clearUserCache();
+                    router.replace('/');    
+                }
                 if (!!pid){
                     showInfoToast('加入專案前請先登入')
                 }
                 if(!pid){
                     toast.error('權限失敗，請重新登入')
-                }
-                const success = await logOutUser();
-                if (success){
-                    clearUserCache();
-                    router.replace('/');    
                 }
                 return null;
             }
