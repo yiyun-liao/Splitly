@@ -57,13 +57,12 @@ export default function DataSettingDialog({
     }, [avoidInjectionTest, errorMessage, inputNameValue, chooseAvatarValue, userData ]);  
 
     // submit
-    const { handleUpdateUser, isLoading:isUpdateLoading } = useUpdateUser({
-        onSuccess: (user) => {
-            console.log("✅ 成功建立紀錄：", user);
+    const { handleUpdateUser } = useUpdateUser({
+        onSuccess: () => {
+            // console.log("✅ 成功建立紀錄：", user);
             onClose();
         },
         onError: (err) => {
-            alert("建立紀錄失敗，請稍後再試");
             console.log("紀錄建立錯誤", err);
         },
     });
@@ -143,8 +142,7 @@ export default function DataSettingDialog({
                     width='full'
                     variant= 'solid'
                     color= 'primary'
-                    disabled={isSaveDisabled || isUpdateLoading}
-                    isLoading={isUpdateLoading}
+                    disabled={isSaveDisabled}
                     onClick={async()=>{
                         if ( !userData) return;
                         const data: UserData = {

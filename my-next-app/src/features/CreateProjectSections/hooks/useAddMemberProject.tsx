@@ -28,7 +28,6 @@ export function useAddMemberProject(options?: UseUpdateProjectOptions) {
                 };
                 if (!setProjectData){
                     throw new Error("伺服器回傳格式不正確");
-                    return
                 }
                 if (setProjectData) {
                     setProjectData((prev) => {

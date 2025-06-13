@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useEffect, useRef, useState, useMemo } from "react";
+import {  useRef, useState, useMemo } from "react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
