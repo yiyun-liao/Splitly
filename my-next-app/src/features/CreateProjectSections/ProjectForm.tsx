@@ -17,7 +17,7 @@ import { useCreateProject } from "@/features/CreateProjectSections/hooks/useCrea
 import { useUpdateProject } from "@/features/CreateProjectSections/hooks/useUpdateProject";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import ModalPortal from "@/components/ui/ModalPortal";
-import { validateDisplayName } from "@/utils/validate";
+import { validateInput } from "@/utils/validate";
 
 
 
@@ -98,9 +98,9 @@ export default function ProjectForm({
         didManuallyChangeTimeRef.current = false;
     }, [inputStartTimeValue]);
 
-    const displayNameAvoidInjectionTest = validateDisplayName(inputProjectName);
+    const displayNameAvoidInjectionTest = validateInput(inputProjectName);
     const errorMessage = inputTest(inputProjectName);
-    const descAvoidInjectionTest = validateDisplayName(inputDescValue);
+    const descAvoidInjectionTest = validateInput(inputDescValue);
 
     function inputTest(name: string): string | null {
         const trimmed = name.trim();

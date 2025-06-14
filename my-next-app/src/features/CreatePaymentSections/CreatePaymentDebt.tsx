@@ -16,7 +16,7 @@ import { UserData } from "@/types/user";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { GetProjectData } from "@/types/project";
 import { formatToDatetimeLocal } from "@/utils/formatTime";
-
+import { validateInput } from "@/utils/validate";
 
 
 interface CreatePaymentDebtProps {
@@ -26,6 +26,7 @@ interface CreatePaymentDebtProps {
     setPayload : (map: CreatePaymentPayload) => void;
     initialPayload?: UpdatePaymentData;
     setUpdatePayload : (map: UpdatePaymentData) => void;
+    setIsValidCreate : (map: boolean) => void ;
 }
 
 export default function CreatePaymentDebt({
@@ -34,7 +35,8 @@ export default function CreatePaymentDebt({
     projectData,
     setPayload,
     initialPayload,
-    setUpdatePayload
+    setUpdatePayload,
+    setIsValidCreate
     }:CreatePaymentDebtProps){
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
@@ -86,6 +88,17 @@ export default function CreatePaymentDebt({
             setInputDebtAmountValue(rawValue.toString())
 
         };
+        
+        const avoidInjectionTest = useMemo(() => {
+            const result = validateInput(inputDescValue);
+            return result
+        }, [inputDescValue]);
+
+        useEffect(()=>{
+            console.log('avoidInjectionTest', avoidInjectionTest)
+            const valid = avoidInjectionTest === null;
+            setIsValidCreate(valid);
+        },[avoidInjectionTest])
 
         
         //update
@@ -286,6 +299,7 @@ export default function CreatePaymentDebt({
                                 flexDirection="row"
                                 width="full"
                                 placeholder="點擊編輯"
+                                errorMessage={avoidInjectionTest ? avoidInjectionTest : undefined}
                             />
                         </div>
                     </div>
