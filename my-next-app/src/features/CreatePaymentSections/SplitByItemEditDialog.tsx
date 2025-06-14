@@ -13,7 +13,7 @@ import { useSplitActualMap } from "./hooks/useSplitActualMap";
 import { useSplitAdjustedMap } from "./hooks/useSplitAdjustMap";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { validateInput, tokenTest } from "@/utils/validate";
-import { formatPercent, formatNumber, formatNumberForData } from "@/utils/parseNumber";
+import { formatPercent, formatNumberForData } from "@/utils/parseNumber";
 
 
 
@@ -32,33 +32,38 @@ export default function SplitByItemEdit({
     setItemPayload,
     onDeleteItem,
 }: SplitByItemEditProps) {
-    const [inputItemValue, setInputItemValue] = useState("產品");
+    const [inputItemValue, setInputItemValue] = useState("品項");
     const [inputItemAmountValue, setInputItemAmountValue] = useState("");
     const [chooseSplitByItem, setChooseSplitByItem] = useState<SplitMethod>("percentage");
  
     // 還款人預設
     const [splitMap, setSplitMap] = useState<SplitMap>();
-    const isMobile = useIsMobile();
-    
-    console.log("預設產品分帳資料", initialPayload)
+    const isMobile = useIsMobile();    
+    // console.log("預設產品分帳資料", initialPayload)
 
     const isInitialLoadingRef = useRef(true);
+    // 價格改變就重設
+    const didManuallyChangeAmountRef = useRef(false);
 
     // prepare hooks
     const percentageHook = useSplitPercentageMap({
         currentProjectUsers,
         inputAmountValue: inputItemAmountValue,
         initialMap: splitMap || {},
+        manualReset: didManuallyChangeAmountRef.current,
     });
     const actualHook = useSplitActualMap({
         currentProjectUsers,
         inputAmountValue: inputItemAmountValue,
         initialMap: splitMap || {},
+        manualReset: didManuallyChangeAmountRef.current,
+
     });
     const adjustedHook = useSplitAdjustedMap({
         currentProjectUsers,
         inputAmountValue: inputItemAmountValue,
         initialMap: splitMap || {},
+        manualReset: didManuallyChangeAmountRef.current,
     });
 
     const activeHook =
@@ -80,8 +85,6 @@ export default function SplitByItemEdit({
         setSplitMap(initialPayload.split_map)
     }, [initialPayload]);
 
-    // 價格改變就重設
-    const didManuallyChangeAmountRef = useRef(false);
     // 金額輸入限制，onChange handler 內設為 true（代表使用者手動輸入）
     const handleSplitAmountChange = (actualInput: string) => {
         const rawValue = sanitizeDecimalInput(actualInput);
@@ -111,12 +114,10 @@ export default function SplitByItemEdit({
         );
         setSplitMap(groupMap);
         setChooseSplitByItem('percentage');
+        console.log('改價格',amount, groupMap)
         didManuallyChangeAmountRef.current = false;
 
     }, [inputItemAmountValue, currentProjectUsers, initialPayload]);
-
-    
-
 
     // watch and update payload
     const finalSplitMap = generateFinalMap();
@@ -135,6 +136,10 @@ export default function SplitByItemEdit({
     const itemNameAvoidInjectionTest = validateInput(inputItemValue);
     const itemNameTokenTest = tokenTest(inputItemValue);
 
+    const isAmountEmpty = useMemo(() => {
+        const amount = parseFloat(inputItemAmountValue);
+        return !inputItemAmountValue || isNaN(amount) || amount <= 0;
+    }, [inputItemAmountValue]);
 
     const labelClass = clsx("w-full font-medium truncate");
     const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end");
@@ -155,7 +160,7 @@ export default function SplitByItemEdit({
         "text-red-500": !computeFooterInfo.isComplete,
     });
 
-    console.log("[item] payloadList", JSON.stringify(payload, null, 2));
+    // console.log("[item] payloadList", JSON.stringify(payload, null, 2));
 
     return (
         <div className="flex flex-col h-full">
@@ -203,43 +208,45 @@ export default function SplitByItemEdit({
                     </div>
                     <p className="py-2 px-2 text-sp-blue-500">{splitByItemDescMap[chooseSplitByItem]}</p>
                 </div>
-                <div className="pt-2">
-                {currentProjectUsers.map(user => {
-                    const entry = localMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
+                {!isAmountEmpty && (
+                    <div className="pt-2">
+                    {currentProjectUsers.map(user => {
+                        const entry = localMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
 
-                    return (
-                    <div key={user.uid} className={`px-3 pb-2 flex items-start gap-2  ${isMobile ? 'flex-col' : 'flex-row'}`}>
-                        <div className="min-h-9 w-full flex items-center gap-2 overflow-hidden">
-                            <div className="shrink-0">
-                                <Avatar size="md" img={user.avatarURL} userName={user.name} />
+                        return (
+                        <div key={user.uid} className={`px-3 pb-2 flex items-start gap-2  ${isMobile ? 'flex-col' : 'flex-row'}`}>
+                            <div className="min-h-9 w-full flex items-center gap-2 overflow-hidden">
+                                <div className="shrink-0">
+                                    <Avatar size="md" img={user.avatarURL} userName={user.name} />
+                                </div>
+                            <p className="text-base w-full truncate">{user.name}</p>
                             </div>
-                        <p className="text-base w-full truncate">{user.name}</p>
-                        </div>
-                        <div className={`shrink-0 flex flex-col items-end pb-3 ${isMobile ? 'min-w-60 w-full' : 'w-60'}`} >
-                            <div className="w-full flex items-start gap-2">
-                                <p className="shrink-0 h-9 text-base flex items-center">支出</p>
-                                <Input
-                                    value={rawInputMap[user.uid] ?? ""}
-                                    type="number"
-                                    onChange={e => handleChange(user.uid, e.target.value)}
-                                    flexDirection="row"
-                                    width="full"
-                                    placeholder="支出金額"
-                                    step="0.01"
-                                    inputMode="decimal"
-                                />
-                                <p className="shrink-0 h-9 text-base flex items-center">
-                                {chooseSplitByItem === "percentage" ? "%" : "元"}
+                            <div className={`shrink-0 flex flex-col items-end pb-3 ${isMobile ? 'min-w-60 w-full' : 'w-60'}`} >
+                                <div className="w-full flex items-start gap-2">
+                                    <p className="shrink-0 h-9 text-base flex items-center">支出</p>
+                                    <Input
+                                        value={rawInputMap[user.uid] ?? ""}
+                                        type="number"
+                                        onChange={e => handleChange(user.uid, e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        placeholder="支出金額"
+                                        step="0.01"
+                                        inputMode="decimal"
+                                    />
+                                    <p className="shrink-0 h-9 text-base flex items-center">
+                                    {chooseSplitByItem === "percentage" ? "%" : "元"}
+                                    </p>
+                                </div>
+                                <p className="shrink-0 w-full mt-[-24px] text-sm flex justify-end text-zinc-500">
+                                {chooseSplitByItem === 'adjusted' ? `+ ${formatPercent(1/currentProjectUsers.length)} = ${entry.total.toFixed(2)} 元`  : `= ${entry.total.toFixed(2)} 元`}
                                 </p>
                             </div>
-                            <p className="shrink-0 w-full mt-[-24px] text-sm flex justify-end text-zinc-500">
-                              {chooseSplitByItem === 'adjusted' ? `+ ${formatPercent(1/currentProjectUsers.length)} = ${entry.total.toFixed(2)} 元`  : `= ${entry.total.toFixed(2)} 元`}
-                            </p>
                         </div>
+                        );
+                    })}
                     </div>
-                    );
-                })}
-                </div>
+                )}
             </div>
             <div className="shrink-0 pt-2 w-full flex flex-col gap-2 text-base text-zinc-700">
                 <div className="w-full flex items-center justify-end gap-4 text-base">

@@ -8,18 +8,20 @@ interface UseSplitMapProps {
     currentProjectUsers: UserData[];
     inputAmountValue: string;
     initialMap?: SplitMap;
+    manualReset: boolean;
 }
 
 export function useSplitAdjustedMap({
     currentProjectUsers,
     inputAmountValue,
     initialMap = {},
+    manualReset = false,
 }: UseSplitMapProps) {
     const [localMap, setLocalMap] = useState<SplitMap>({});
     const [rawInputMap, setRawInputMap] = useState<Record<string, string>>({});
     
     useEffect(() => {
-        const isInitialMapEmpty = Object.keys(initialMap).length === 0;
+        const isInitialMapEmpty = Object.keys(initialMap).length === 0 || manualReset;
 
         const amount = parseFloat(inputAmountValue || "0");
         const count = currentProjectUsers.length;

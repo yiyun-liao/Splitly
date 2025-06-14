@@ -90,7 +90,6 @@ export default function CreatePayment({
         }
         return { isComplete };
     }, [payload, updatePayload, initialPayload, isValidCreate]);  
-    console.log('isValidCreate', isValidCreate)
     
     // submit
     const { handleCreatePayment } = useCreatePayment({

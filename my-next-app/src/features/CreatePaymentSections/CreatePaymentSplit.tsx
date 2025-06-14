@@ -176,7 +176,6 @@ export default function CreatePaymentSplit({
         const paymentNameAvoidInjectionTest = validateInput(inputPaymentValue);
         const paymentNameTokenTest = tokenTest(inputPaymentValue);
         const descAvoidInjectionTest = validateInput(inputDescValue);
-        console.log('paymentNameAvoidInjectionTest', paymentNameAvoidInjectionTest, 'paymentNameTokenTest', paymentNameTokenTest, 'descAvoidInjectionTest', descAvoidInjectionTest)
         useEffect(()=>{
             const valid = (descAvoidInjectionTest === null && paymentNameAvoidInjectionTest === null && paymentNameTokenTest === null);
             setIsValidCreate(valid);
@@ -325,6 +324,11 @@ export default function CreatePaymentSplit({
         }, [fullPayload, setPayload, initialPayload, setUpdatePayload, fullUpdate]);
 
         // css
+        const isAmountEmpty = useMemo(() => {
+            const amount = parseFloat(inputAmountValue);
+            return !inputAmountValue || isNaN(amount) || amount <= 0;
+          }, [inputAmountValue]);
+
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
@@ -562,7 +566,7 @@ export default function CreatePaymentSplit({
                                             width='fit'
                                             variant='text-button'
                                             color='primary'
-                                            disabled={inputPaymentValue === '' }
+                                            disabled={!!isAmountEmpty}
                                             onClick={() => setIsSplitPayerOpen(true)}
                                             >
                                                 多位付款人
@@ -601,6 +605,7 @@ export default function CreatePaymentSplit({
                                                 width='full'
                                                 variant= {splitWay == 'item' ? 'solid' : 'text-button'}
                                                 color= 'primary'
+                                                disabled={!!isAmountEmpty}
                                                 onClick={() => {
                                                     setIsSplitByItemOpen(true)
                                                 }}
@@ -612,6 +617,7 @@ export default function CreatePaymentSplit({
                                                 width='full'
                                                 variant={splitWay == 'person' ? 'solid' : 'text-button'}
                                                 color='primary'
+                                                disabled={!!isAmountEmpty}
                                                 onClick={() => {
                                                     setIsSplitByPersonOpen(true)
                                                 }}

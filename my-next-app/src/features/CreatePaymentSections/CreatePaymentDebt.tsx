@@ -116,6 +116,11 @@ export default function CreatePaymentDebt({
             if (initialReceiverUid) setSelectedReceiverUid(initialReceiverUid);
         }, [initialPayload]);
 
+        const isAmountEmpty = useMemo(() => {
+            const amount = parseFloat(inputDebtAmountValue);
+            return !inputDebtAmountValue || isNaN(amount) || amount <= 0;
+          }, [inputDebtAmountValue]);
+
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
@@ -208,6 +213,7 @@ export default function CreatePaymentDebt({
                                             width='fit'
                                             variant='text-button'
                                             color='zinc'
+                                            disabled={isAmountEmpty}
                                             onClick={()=> setIsDebtPayerOpen(true)}
                                             >
                                                 其他人
@@ -265,6 +271,7 @@ export default function CreatePaymentDebt({
                                             width='fit'
                                             variant='text-button'
                                             color='zinc'
+                                            disabled={isAmountEmpty}
                                             onClick={()=> setIsDebtReceiverOpen(true)}
                                             >
                                                 其他人
