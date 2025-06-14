@@ -22,3 +22,11 @@ export function validateInput(name: string): string | null {
     return null;
   }
   
+
+export function tokenTest(name: string): string | null {
+    const trimmed = name.trim();
+    if (trimmed.length < 1 || trimmed.length > 20) {
+      return "稱呼需為 1~20 字內";
+    }      
+    return null;
+}

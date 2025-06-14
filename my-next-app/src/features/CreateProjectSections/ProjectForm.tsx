@@ -17,7 +17,7 @@ import { useCreateProject } from "@/features/CreateProjectSections/hooks/useCrea
 import { useUpdateProject } from "@/features/CreateProjectSections/hooks/useUpdateProject";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import ModalPortal from "@/components/ui/ModalPortal";
-import { validateInput } from "@/utils/validate";
+import { validateInput, tokenTest } from "@/utils/validate";
 
 
 
@@ -98,17 +98,10 @@ export default function ProjectForm({
         didManuallyChangeTimeRef.current = false;
     }, [inputStartTimeValue]);
 
+    // 輸入測試
     const displayNameAvoidInjectionTest = validateInput(inputProjectName);
-    const errorMessage = inputTest(inputProjectName);
+    const displayNameTokenTest = tokenTest(inputProjectName);
     const descAvoidInjectionTest = validateInput(inputDescValue);
-
-    function inputTest(name: string): string | null {
-        const trimmed = name.trim();
-        if (trimmed.length < 1 || trimmed.length > 20) {
-          return "稱呼需為 1~20 字內";
-        }      
-        return null;
-    }
 
     // get data
     const projectPayload: ProjectData = useMemo(() => ({
@@ -154,11 +147,11 @@ export default function ProjectForm({
         if (!!projectPayload.project_name && !!projectPayload.owner && !!projectPayload.img){
             isComplete = true;
         }    
-        if (!!displayNameAvoidInjectionTest || !!errorMessage || !!descAvoidInjectionTest ){
+        if (!!displayNameAvoidInjectionTest || !!displayNameTokenTest || !!descAvoidInjectionTest ){
             isComplete = false;
         } 
         return { isComplete };
-    }, [projectPayload, displayNameAvoidInjectionTest, errorMessage, descAvoidInjectionTest]); 
+    }, [projectPayload, displayNameAvoidInjectionTest, displayNameTokenTest, descAvoidInjectionTest]); 
 
     // submit and create project
     const { handleCreateProject } = useCreateProject({
@@ -277,7 +270,7 @@ export default function ProjectForm({
                                         type="text" 
                                         width="full" 
                                         placeholder="點擊編輯"
-                                        errorMessage={displayNameAvoidInjectionTest ? displayNameAvoidInjectionTest : errorMessage ? errorMessage : undefined}
+                                        errorMessage={displayNameAvoidInjectionTest ? displayNameAvoidInjectionTest : displayNameTokenTest ? displayNameTokenTest : undefined}
                                         tokenMaxCount={[inputProjectName.length, 20] }   
                                     />
                                 </div>

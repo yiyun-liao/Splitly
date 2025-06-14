@@ -89,16 +89,12 @@ export default function CreatePaymentDebt({
 
         };
         
-        const avoidInjectionTest = useMemo(() => {
-            const result = validateInput(inputDescValue);
-            return result
-        }, [inputDescValue]);
-
+        // 輸入測試
+        const descAvoidInjectionTest = validateInput(inputDescValue);
         useEffect(()=>{
-            console.log('avoidInjectionTest', avoidInjectionTest)
-            const valid = avoidInjectionTest === null;
+            const valid = descAvoidInjectionTest === null;
             setIsValidCreate(valid);
-        },[avoidInjectionTest])
+        },[descAvoidInjectionTest])
 
         
         //update
@@ -299,7 +295,7 @@ export default function CreatePaymentDebt({
                                 flexDirection="row"
                                 width="full"
                                 placeholder="點擊編輯"
-                                errorMessage={avoidInjectionTest ? avoidInjectionTest : undefined}
+                                errorMessage={descAvoidInjectionTest ? descAvoidInjectionTest : undefined}
                             />
                         </div>
                     </div>

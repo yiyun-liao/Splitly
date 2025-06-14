@@ -34,8 +34,6 @@ export default function CreatePayment({
     const rawProjectId = useParams()?.projectId;
     const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
     const [isValidCreate, setIsValidCreate] = useState<boolean>(true);
-    const [isValidUpdate, setIsValidUpdate] = useState<boolean>(false);
-
 
     // receipt-way
     const [recordMode, setRecordMode] = useState<RecordMode>("split");
@@ -206,6 +204,7 @@ export default function CreatePayment({
                             setPayload = {setPayload}
                             initialPayload={initialPayload || undefined} 
                             setUpdatePayload = {setUpdatePayload}
+                            setIsValidCreate = {setIsValidCreate}
                         />
                     )}
                     {recordMode === "debt"  && userData && currentProjectUsers&& (

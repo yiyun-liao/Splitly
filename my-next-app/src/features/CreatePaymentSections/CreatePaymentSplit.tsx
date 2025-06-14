@@ -20,6 +20,7 @@ import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { GetProjectData } from "@/types/project";
 import { formatToDatetimeLocal } from "@/utils/formatTime";
+import { validateInput, tokenTest } from "@/utils/validate";
 
 
 
@@ -30,6 +31,7 @@ interface CreatePaymentSplitProps {
     setPayload : (map: CreatePaymentPayload) => void;
     initialPayload?: UpdatePaymentData;
     setUpdatePayload : (map: UpdatePaymentData) => void;
+    setIsValidCreate : (map: boolean) => void ;
 }
 
 
@@ -39,7 +41,8 @@ export default function CreatePaymentSplit({
     projectData,
     setPayload,
     initialPayload,
-    setUpdatePayload
+    setUpdatePayload,
+    setIsValidCreate
     }:CreatePaymentSplitProps){
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
@@ -53,7 +56,7 @@ export default function CreatePaymentSplit({
         
         const { options: categoryOptions, selectedValue: selectedCategoryValue, setSelectedValue: setSelectedCategoryValue,} = useCategorySelectOptions();
 
-        const [inputPaymentValue, setInputPaymentValue] = useState("");
+        const [inputPaymentValue, setInputPaymentValue] = useState("吃飯");
         const [inputTimeValue, setInputTimeValue] = useState(getNowDatetimeLocal());
         const [inputDescValue, setInputDescValue] = useState("");
 
@@ -158,7 +161,6 @@ export default function CreatePaymentSplit({
         }, [initialPayload]);
           
 
-
         // 價格改變就重設
         const didManuallyChangeAmountRef = useRef(false);
 
@@ -169,7 +171,17 @@ export default function CreatePaymentSplit({
             setInputAmountValue(rawValue.toString());
             didManuallyChangeAmountRef.current = true;
         };
-        
+    
+        // 輸入測試
+        const paymentNameAvoidInjectionTest = validateInput(inputPaymentValue);
+        const paymentNameTokenTest = tokenTest(inputPaymentValue);
+        const descAvoidInjectionTest = validateInput(inputDescValue);
+        console.log('paymentNameAvoidInjectionTest', paymentNameAvoidInjectionTest, 'paymentNameTokenTest', paymentNameTokenTest, 'descAvoidInjectionTest', descAvoidInjectionTest)
+        useEffect(()=>{
+            const valid = (descAvoidInjectionTest === null && paymentNameAvoidInjectionTest === null && paymentNameTokenTest === null);
+            setIsValidCreate(valid);
+        },[descAvoidInjectionTest,paymentNameAvoidInjectionTest,paymentNameTokenTest])
+
         useEffect(() => {
             // 第一次因 initialPayload 設定 inputValue ➜ 跳過一次
             if (isInitialLoadingRef.current) {
@@ -481,6 +493,7 @@ export default function CreatePaymentSplit({
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        errorMessage={descAvoidInjectionTest ? descAvoidInjectionTest : undefined}
                                     />
                                 </div>
                             </div>
@@ -535,6 +548,8 @@ export default function CreatePaymentSplit({
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        errorMessage={paymentNameAvoidInjectionTest ? paymentNameAvoidInjectionTest : paymentNameTokenTest ? paymentNameTokenTest : undefined}
+                                        tokenMaxCount={[inputPaymentValue.length, 20] }   
                                     />
                                 </div>
                                 <div className={`pb-5 ${formSpan3CLass}`}>
@@ -655,6 +670,7 @@ export default function CreatePaymentSplit({
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        errorMessage={descAvoidInjectionTest ? descAvoidInjectionTest : undefined}
                                     />
                                 </div>
                             </div>
