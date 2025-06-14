@@ -17,6 +17,8 @@ import { useCreateProject } from "@/features/CreateProjectSections/hooks/useCrea
 import { useUpdateProject } from "@/features/CreateProjectSections/hooks/useUpdateProject";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import ModalPortal from "@/components/ui/ModalPortal";
+import { validateDisplayName } from "@/utils/validate";
+
 
 
 
@@ -45,7 +47,7 @@ export default function ProjectForm({
 
     const [chooseCoverValue, setChooseCoverValue] = useState("");
     const [chooseCoverURLValue, setChooseCoverURLValue] = useState("");
-    const [inputProjectName, setInputProjectName] = useState("");
+    const [inputProjectName, setInputProjectName] = useState("出去玩！");
     const [inputStartTimeValue, setInputStartTimeValue] = useState(getNowDateLocal());
     const [inputEndTimeValue, setInputEndTimeValue] = useState("");
     const [chooseProjectStyle, setChooseProjectStyle] = useState<ProjectStyle>("travel");
@@ -66,7 +68,6 @@ export default function ProjectForm({
         if(!initialProjectData) return
         isInitialLoadingRef.current = true;
 
-        // setUpdatePayload(initialProjectData)
         setChooseCoverValue(initialProjectData.img.toString())
         setChooseCoverURLValue(initialProjectData.imgURL || "")
         setInputProjectName(initialProjectData.project_name)
@@ -96,6 +97,18 @@ export default function ProjectForm({
         setInputEndTimeValue('')
         didManuallyChangeTimeRef.current = false;
     }, [inputStartTimeValue]);
+
+    const displayNameAvoidInjectionTest = validateDisplayName(inputProjectName);
+    const errorMessage = inputTest(inputProjectName);
+    const descAvoidInjectionTest = validateDisplayName(inputDescValue);
+
+    function inputTest(name: string): string | null {
+        const trimmed = name.trim();
+        if (trimmed.length < 1 || trimmed.length > 20) {
+          return "稱呼需為 1~20 字內";
+        }      
+        return null;
+    }
 
     // get data
     const projectPayload: ProjectData = useMemo(() => ({
@@ -141,8 +154,11 @@ export default function ProjectForm({
         if (!!projectPayload.project_name && !!projectPayload.owner && !!projectPayload.img){
             isComplete = true;
         }    
+        if (!!displayNameAvoidInjectionTest || !!errorMessage || !!descAvoidInjectionTest ){
+            isComplete = false;
+        } 
         return { isComplete };
-    }, [projectPayload]); 
+    }, [projectPayload, displayNameAvoidInjectionTest, errorMessage, descAvoidInjectionTest]); 
 
     // submit and create project
     const { handleCreateProject } = useCreateProject({
@@ -261,6 +277,8 @@ export default function ProjectForm({
                                         type="text" 
                                         width="full" 
                                         placeholder="點擊編輯"
+                                        errorMessage={displayNameAvoidInjectionTest ? displayNameAvoidInjectionTest : errorMessage ? errorMessage : undefined}
+                                        tokenMaxCount={[inputProjectName.length, 20] }   
                                     />
                                 </div>
                                 <div className={formSpan(3)}>
@@ -340,6 +358,7 @@ export default function ProjectForm({
                                         maxRows={4}
                                         placeholder="點擊編輯"
                                         width="full"
+                                        errorMessage={descAvoidInjectionTest ? descAvoidInjectionTest : undefined}
                                     />
                                 </div>
                                 <div className="col-span-6 bg-sp-white-20 rounded-xl p-4 mt-4">

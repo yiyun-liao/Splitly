@@ -12,7 +12,7 @@ export function validateDisplayName(name: string): string | null {
         "--", ";", "'", "\"", "\\", "/*", "*/", "DROP", "SELECT", "INSERT", "DELETE", "UPDATE"
     ];
     
-    const escaped = blacklist.map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); // <-- 轉義關鍵
+    const escaped = blacklist.map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
     const pattern = new RegExp(escaped.join("|"), "i");
     
     if (pattern.test(trimmed)) {
