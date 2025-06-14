@@ -10,6 +10,8 @@ import { PayerMap} from "@/types/payment";
 import { UserData } from "@/types/user";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { formatNumber } from "@/utils/parseNumber";
+import { useIsMobile } from "@/hooks/useIsMobile";
+
 
 interface SplitPayerProps {
     isSplitPayerOpen: boolean;
@@ -30,6 +32,7 @@ export default function SplitPayer({
     }:SplitPayerProps){
     
     const [localPayerMap, setLocalPayerMap] = useState<PayerMap>({});
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         if (isSplitPayerOpen) {
@@ -98,7 +101,7 @@ export default function SplitPayer({
             <div>
                 {currentProjectUsers.map((user) => {
                     return(
-                        <div key={user.uid} className="px-3 pb-2 flex items-start justify-start gap-2">
+                        <div key={user.uid} className={`px-3 pb-2 flex items-start justify-start gap-2 ${isMobile ? 'flex-col' : 'flex-row'}`}>
                             <div className="min-h-9 w-full flex items-center justify-start gap-2 overflow-hidden">
                                 <div  className="shrink-0 flex items-center justify-center ">
                                     <Avatar
@@ -109,7 +112,7 @@ export default function SplitPayer({
                                 </div>
                                 <p className="text-base w-full truncate">{user?.name}</p>
                             </div>
-                            <div  className="shrink-0 w-60 flex items-start justify-start gap-2">
+                            <div  className={`shrink-0 flex items-start justify-start gap-2 ${isMobile ? 'min-w-60 w-full' : 'w-60'}`}>
                                 <p className="shrink-0 h-9 text-base flex items-center">支出</p>
                                 <Input
                                     value={localPayerMap[user.uid]?.toString() || ""}

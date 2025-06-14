@@ -148,7 +148,7 @@ export default function SplitByPerson({
                                 </div>
                                 <p className="text-base w-full truncate">{user.name}</p>
                             </div>
-                            <div className="shrink-0 min-w-60 w-full flex flex-col items-end pb-3">
+                            <div className={`shrink-0 flex flex-col items-end pb-3 ${isMobile ? 'min-w-60 w-full' : 'w-60'}`}>
                                 <div className="w-full flex items-start gap-2">
                                     <p className="shrink-0 h-9 text-base flex items-center">支出</p>
                                     <Input

@@ -562,6 +562,7 @@ export default function CreatePaymentSplit({
                                             width='fit'
                                             variant='text-button'
                                             color='primary'
+                                            disabled={inputPaymentValue === '' }
                                             onClick={() => setIsSplitPayerOpen(true)}
                                             >
                                                 多位付款人
