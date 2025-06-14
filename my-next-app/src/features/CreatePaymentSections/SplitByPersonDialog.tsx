@@ -13,6 +13,7 @@ import { useSplitPercentageMap } from "./hooks/useSplitPercentageMap";
 import { useSplitActualMap } from "./hooks/useSplitActualMap";
 import { useSplitAdjustedMap } from "./hooks/useSplitAdjustMap";
 import { formatPercent } from "@/utils/parseNumber";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface SplitByPersonProps {
     isSplitByPersonOpen: boolean;
@@ -40,6 +41,7 @@ export default function SplitByPerson({
     }:SplitByPersonProps){
 
     const [localChooseSplitByPerson, setLocalChooseSplitByPerson] = useState<SplitMethod>(chooseSplitByPerson);
+    const isMobile = useIsMobile();
     // console.log("預設人分帳資料", splitByPersonMap)
 
     const percentageHook = useSplitPercentageMap({
@@ -139,12 +141,14 @@ export default function SplitByPerson({
                         const entry = localMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
 
                         return (
-                        <div key={user.uid} className="px-3 pb-2 flex items-start gap-2">
-                            <div className="min-h-9 w-full flex items-center gap-2 overflow-hidden">
-                                <Avatar size="md" img={user.avatarURL} userName={user.name} />
+                        <div key={user.uid} className={`px-3 pb-2 flex items-start gap-2 ${isMobile ? 'flex-col' : 'flex-row'}`}>
+                            <div className={`min-h-9 w-full flex items-center gap-2 overflow-hidden`}>
+                                <div className="shrink-0">
+                                    <Avatar size="md" img={user.avatarURL} userName={user.name} />
+                                </div>
                                 <p className="text-base w-full truncate">{user.name}</p>
                             </div>
-                            <div className="shrink-0 w-60 flex flex-col items-end pb-3">
+                            <div className="shrink-0 min-w-60 w-full flex flex-col items-end pb-3">
                                 <div className="w-full flex items-start gap-2">
                                     <p className="shrink-0 h-9 text-base flex items-center">支出</p>
                                     <Input
@@ -157,9 +161,7 @@ export default function SplitByPerson({
                                         step="0.01"
                                         inputMode="decimal"
                                     />
-                                    <p className="shrink-0 h-9 text-base flex items-center">
-                                    {localChooseSplitByPerson === "percentage" ? "%" : "元"}
-                                    </p>
+                                    <p className="shrink-0 h-9 text-base flex items-center">{localChooseSplitByPerson === "percentage" ? "%" : "元"}</p>
                                 </div>
                                 <p className="shrink-0 w-full mt-[-24px] text-sm flex justify-end text-zinc-500">
                                    {localChooseSplitByPerson === 'adjusted' ? `+ ${formatPercent(1/currentProjectUsers.length)} = ${entry.total.toFixed(2)} 元`  : `= ${entry.total.toFixed(2)} 元`}

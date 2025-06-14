@@ -378,7 +378,7 @@ export default function CreatePaymentSplit({
                 </div>
                 <section className={`w-full px-1 h-full pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
                     <div className={`w-full ${!isMobile && "max-w-xl"}`}>
-                        <div className='w-full flex gap-2 items-center justify-end'>
+                        <div className='w-full flex gap-2 items-center justify-end pb-2'>
                             <div className="w-full flex items-center justify-start gap-2">
                                 <span className="font-medium truncate">專案</span>
                                 <span className="font-medium truncate text-sp-blue-500">{projectName}</span>
@@ -447,6 +447,8 @@ export default function CreatePaymentSplit({
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        errorMessage={paymentNameAvoidInjectionTest ? paymentNameAvoidInjectionTest : paymentNameTokenTest ? paymentNameTokenTest : undefined}
+                                        tokenMaxCount={[inputPaymentValue.length, 20] }  
                                     />
                                 </div>
                                 <div className={`pb-5 ${formSpan3CLass}`}>

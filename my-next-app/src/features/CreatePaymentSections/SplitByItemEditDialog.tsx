@@ -12,6 +12,9 @@ import { formatPercent } from "@/utils/parseNumber";
 import { useSplitPercentageMap } from "./hooks/useSplitPercentageMap";
 import { useSplitActualMap } from "./hooks/useSplitActualMap";
 import { useSplitAdjustedMap } from "./hooks/useSplitAdjustMap";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { validateInput, tokenTest } from "@/utils/validate";
+
 
 interface SplitByItemEditProps {
     currentProjectUsers: UserData[];
@@ -28,9 +31,10 @@ export default function SplitByItemEdit({
     setItemPayload,
     onDeleteItem,
 }: SplitByItemEditProps) {
-    const [inputItemValue, setInputItemValue] = useState("");
+    const [inputItemValue, setInputItemValue] = useState("產品");
     const [inputItemAmountValue, setInputItemAmountValue] = useState("");
     const [chooseSplitByItem, setChooseSplitByItem] = useState<SplitMethod>("percentage");
+    const isMobile = useIsMobile();
     
     console.log("預設產品分帳資料", initialPayload)
 
@@ -84,11 +88,14 @@ export default function SplitByItemEdit({
         };
     }, [inputItemAmountValue, inputItemValue, chooseSplitByItem, finalSplitMap]);
 
-
+    // 輸入測試
     const handleSplitAmountChange = (input: string) => {
         const raw = sanitizeDecimalInput(input);
         setInputItemAmountValue(raw.toString());
     };
+    const itemNameAvoidInjectionTest = validateInput(inputItemValue);
+    const itemNameTokenTest = tokenTest(inputItemValue);
+
 
     const labelClass = clsx("w-full font-medium truncate");
     const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end");
@@ -123,6 +130,8 @@ export default function SplitByItemEdit({
                             onChange={e => setInputItemValue(e.target.value)}
                             width="full"
                             placeholder="點擊編輯"
+                            errorMessage={itemNameAvoidInjectionTest ? itemNameAvoidInjectionTest : itemNameTokenTest ? itemNameTokenTest : undefined}
+                            tokenMaxCount={[inputItemValue.length, 20] }  
                         />
                     </div>
                     <div className={formSpan1CLass}>
@@ -162,12 +171,14 @@ export default function SplitByItemEdit({
                     const entry = localMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
 
                     return (
-                    <div key={user.uid} className="px-3 pb-2 flex items-start gap-2">
+                    <div key={user.uid} className={`px-3 pb-2 flex items-start gap-2  ${isMobile ? 'flex-col' : 'flex-row'}`}>
                         <div className="min-h-9 w-full flex items-center gap-2 overflow-hidden">
-                        <Avatar size="md" img={user.avatarURL} userName={user.name} />
+                            <div className="shrink-0">
+                                <Avatar size="md" img={user.avatarURL} userName={user.name} />
+                            </div>
                         <p className="text-base w-full truncate">{user.name}</p>
                         </div>
-                        <div className="shrink-0 w-60 flex flex-col items-end pb-3">
+                        <div className="shrink-0 min-w-60 w-full flex flex-col items-end pb-3">
                             <div className="w-full flex items-start gap-2">
                                 <p className="shrink-0 h-9 text-base flex items-center">支出</p>
                                 <Input
@@ -208,8 +219,8 @@ export default function SplitByItemEdit({
                             variant="outline"
                             color="primary"
                             onClick={() => {
-                            onDeleteItem();
-                            setStep("list");
+                                onDeleteItem();
+                                setStep("list");
                             }}
                         >
                             刪除項目
@@ -221,10 +232,10 @@ export default function SplitByItemEdit({
                         width="full"
                         variant="solid"
                         color="primary"
-                        disabled={!computeFooterInfo.isComplete}
+                        disabled={!computeFooterInfo.isComplete || !!itemNameAvoidInjectionTest || !!itemNameTokenTest || parseFloat(inputItemAmountValue) <= 0}
                         onClick={() => {
-                        setItemPayload(payload);
-                        setStep("list");
+                            setItemPayload(payload);
+                            setStep("list");
                         }}
                     >
                         儲存項目
