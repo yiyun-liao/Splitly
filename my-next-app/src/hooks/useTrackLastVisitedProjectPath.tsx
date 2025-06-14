@@ -1,6 +1,8 @@
 "use client"; 
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
+import { showInfoToast } from "@/utils/infoToast";
+
 
 export function useTrackLastVisitedProjectPath() {
     const { projectId } = useParams();
@@ -12,7 +14,7 @@ export function useTrackLastVisitedProjectPath() {
         const lastPath = localStorage.getItem(key);
         if (projectId === lastPath) return;
 
-        console.log("換專案了", projectId)
+        showInfoToast("切換專案");
         localStorage.setItem(key, pureProjectId);
 
     }, [projectId, pureProjectId]);

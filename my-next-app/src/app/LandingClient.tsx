@@ -33,7 +33,7 @@ export default function LandingClient() {
         : '/loading'
       
     const handleLogin = async () => {
-        if (inWebView) { 
+        if (!inWebView) { 
             setIsRedirectDialog(true);
             return;
         }
@@ -53,7 +53,7 @@ export default function LandingClient() {
                     <RedirectDialog
                         open={isRedirectDialog}
                         onClose={() => setIsRedirectDialog(false)}
-                        url={typeof window !== 'undefined' ? window.location.origin + target : ''}
+                        url={typeof window !== 'undefined' ? window.location.origin  : ''}
                     />            
                 )}
             </> 

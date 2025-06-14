@@ -4,6 +4,8 @@ import ProjectForm from "@/features/CreateProjectSections/ProjectForm";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
+import { showInfoToast } from "@/utils/infoToast";
+
 
 export default function CreateFirstProject() {
     const { userData, projectData, isReady } = useAuth();
@@ -15,7 +17,7 @@ export default function CreateFirstProject() {
         if (!isReady) return;
 
         if (projectData && projectData.length > 0) {
-            console.log("你已經有專案了")
+            showInfoToast("您已經有專案了");
             router.replace(`/${userData?.uid}/${lastPath}/dashboard`);
         }
     }, [isReady, router, projectData, lastPath, userData]);
