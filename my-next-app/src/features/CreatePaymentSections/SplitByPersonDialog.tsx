@@ -48,18 +48,21 @@ export default function SplitByPerson({
         currentProjectUsers,
         inputAmountValue,
         initialMap: splitByPersonMap,
+        manualReset:false
     });
     
     const actualHook = useSplitActualMap({
         currentProjectUsers,
         inputAmountValue,
         initialMap: splitByPersonMap,
+        manualReset:false
     });
     
     const adjustedHook = useSplitAdjustedMap({
         currentProjectUsers,
         inputAmountValue,
         initialMap: splitByPersonMap,
+        manualReset:false
     });
     
     const activeHook =
