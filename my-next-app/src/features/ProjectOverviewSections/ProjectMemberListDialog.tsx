@@ -136,7 +136,7 @@ export default function ProjectMemberList({
                                     variant="outline"
                                     color="primary"
                                     width = 'full'
-                                    // disabled = {true}
+                                    disabled = {true}
                                     onClick={() => alert('建立虛擬成員')}
                                 >
                                     建立虛擬成員(還沒做)

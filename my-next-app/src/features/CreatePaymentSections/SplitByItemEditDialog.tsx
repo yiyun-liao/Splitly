@@ -6,12 +6,16 @@ import Input from "@/components/ui/Input";
 import clsx from "clsx";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { UserData } from "@/types/user";
-import { SplitMethod,  CreateItemPayload } from "@/types/payment";
+import { SplitMethod,  CreateItemPayload, SplitMap } from "@/types/payment";
 import { sanitizeDecimalInput } from "@/utils/parseAmount";
-import { formatPercent } from "@/utils/parseNumber";
 import { useSplitPercentageMap } from "./hooks/useSplitPercentageMap";
 import { useSplitActualMap } from "./hooks/useSplitActualMap";
 import { useSplitAdjustedMap } from "./hooks/useSplitAdjustMap";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { validateInput, tokenTest } from "@/utils/validate";
+import { formatPercent, formatNumberForData } from "@/utils/parseNumber";
+
+
 
 interface SplitByItemEditProps {
     currentProjectUsers: UserData[];
@@ -28,29 +32,38 @@ export default function SplitByItemEdit({
     setItemPayload,
     onDeleteItem,
 }: SplitByItemEditProps) {
-    const [inputItemValue, setInputItemValue] = useState("");
+    const [inputItemValue, setInputItemValue] = useState("品項");
     const [inputItemAmountValue, setInputItemAmountValue] = useState("");
     const [chooseSplitByItem, setChooseSplitByItem] = useState<SplitMethod>("percentage");
-    
-    console.log("預設產品分帳資料", initialPayload)
+ 
+    // 還款人預設
+    const [splitMap, setSplitMap] = useState<SplitMap>();
+    const isMobile = useIsMobile();    
+    // console.log("預設產品分帳資料", initialPayload)
 
-    const initializedRef = useRef(false);
+    const isInitialLoadingRef = useRef(true);
+    // 價格改變就重設
+    const didManuallyChangeAmountRef = useRef(false);
 
     // prepare hooks
     const percentageHook = useSplitPercentageMap({
         currentProjectUsers,
         inputAmountValue: inputItemAmountValue,
-        initialMap: initialPayload?.split_map || {},
+        initialMap: splitMap || {},
+        manualReset: didManuallyChangeAmountRef.current,
     });
     const actualHook = useSplitActualMap({
         currentProjectUsers,
         inputAmountValue: inputItemAmountValue,
-        initialMap: initialPayload?.split_map || {},
+        initialMap: splitMap || {},
+        manualReset: didManuallyChangeAmountRef.current,
+
     });
     const adjustedHook = useSplitAdjustedMap({
         currentProjectUsers,
         inputAmountValue: inputItemAmountValue,
-        initialMap: initialPayload?.split_map || {},
+        initialMap: splitMap || {},
+        manualReset: didManuallyChangeAmountRef.current,
     });
 
     const activeHook =
@@ -64,12 +77,34 @@ export default function SplitByItemEdit({
 
     // restore payload from props
     useEffect(() => {
-        if (initializedRef.current || !initialPayload) return;
-        initializedRef.current = true;
+        if (!initialPayload) return;
+        isInitialLoadingRef.current = true;
         setInputItemValue(initialPayload.payment_name);
         setInputItemAmountValue(initialPayload.amount.toString());
         setChooseSplitByItem(initialPayload.split_method);
+        setSplitMap(initialPayload.split_map)
     }, [initialPayload]);
+
+    // 金額輸入限制，onChange handler 內設為 true（代表使用者手動輸入）
+    const handleSplitAmountChange = (actualInput: string) => {
+        const rawValue = sanitizeDecimalInput(actualInput);
+        if (isNaN(rawValue) || rawValue < 0) return; 
+        setInputItemAmountValue(rawValue.toString());
+        didManuallyChangeAmountRef.current = true;
+    };
+
+    useEffect(() => {
+        // 第一次因 initialPayload 設定 inputValue ➜ 跳過一次
+        if (isInitialLoadingRef.current) {
+            isInitialLoadingRef.current = false;
+            return;
+        }
+        if (!didManuallyChangeAmountRef.current) return;
+        
+        setChooseSplitByItem('percentage');
+        didManuallyChangeAmountRef.current = false;
+
+    }, [inputItemAmountValue, currentProjectUsers, initialPayload]);
 
     // watch and update payload
     const finalSplitMap = generateFinalMap();
@@ -84,11 +119,14 @@ export default function SplitByItemEdit({
         };
     }, [inputItemAmountValue, inputItemValue, chooseSplitByItem, finalSplitMap]);
 
+    // 輸入測試
+    const itemNameAvoidInjectionTest = validateInput(inputItemValue);
+    const itemNameTokenTest = tokenTest(inputItemValue);
 
-    const handleSplitAmountChange = (input: string) => {
-        const raw = sanitizeDecimalInput(input);
-        setInputItemAmountValue(raw.toString());
-    };
+    const isAmountEmpty = useMemo(() => {
+        const amount = parseFloat(inputItemAmountValue);
+        return !inputItemAmountValue || isNaN(amount) || amount <= 0;
+    }, [inputItemAmountValue]);
 
     const labelClass = clsx("w-full font-medium truncate");
     const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end");
@@ -109,12 +147,12 @@ export default function SplitByItemEdit({
         "text-red-500": !computeFooterInfo.isComplete,
     });
 
-    console.log("[item] payloadList", JSON.stringify(payload, null, 2));
+    // console.log("[item] payloadList", JSON.stringify(payload, null, 2));
 
     return (
         <div className="flex flex-col h-full">
             <div className="w-full flex-1 px-1 pt-2 pb-20 h-full relative text-zinc-700 overflow-y-auto">
-                <div className="max-w-xl w-full grid grid-cols-3 gap-2">
+                <div className="max-w-xl w-full grid grid-cols-3 gap-2 pb-4">
                     <div className={formSpan2CLass}>
                         <span className={labelClass}>名稱</span>
                         <Input
@@ -123,6 +161,8 @@ export default function SplitByItemEdit({
                             onChange={e => setInputItemValue(e.target.value)}
                             width="full"
                             placeholder="點擊編輯"
+                            errorMessage={itemNameAvoidInjectionTest ? itemNameAvoidInjectionTest : itemNameTokenTest ? itemNameTokenTest : undefined}
+                            tokenMaxCount={[inputItemValue.length, 20] }  
                         />
                     </div>
                     <div className={formSpan1CLass}>
@@ -138,7 +178,6 @@ export default function SplitByItemEdit({
                         />
                     </div>
                 </div>
-
                 <div className="w-full pb-4 bg-zinc-50 sticky -top-2 z-12">
                     <div className="w-full flex bg-sp-blue-200 rounded-xl">
                         {["percentage", "actual", "adjusted"].map(method => (
@@ -156,44 +195,46 @@ export default function SplitByItemEdit({
                     </div>
                     <p className="py-2 px-2 text-sp-blue-500">{splitByItemDescMap[chooseSplitByItem]}</p>
                 </div>
+                {!isAmountEmpty && (
+                    <div className="pt-2">
+                    {currentProjectUsers.map(user => {
+                        const entry = localMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
 
-                <div className="pt-2">
-                {currentProjectUsers.map(user => {
-                    const entry = localMap[user.uid] ?? { fixed: 0, percent: 0, total: 0 };
-
-                    return (
-                    <div key={user.uid} className="px-3 pb-2 flex items-start gap-2">
-                        <div className="min-h-9 w-full flex items-center gap-2 overflow-hidden">
-                        <Avatar size="md" img={user.avatarURL} userName={user.name} />
-                        <p className="text-base w-full truncate">{user.name}</p>
-                        </div>
-                        <div className="shrink-0 w-60 flex flex-col items-end pb-3">
-                            <div className="w-full flex items-start gap-2">
-                                <p className="shrink-0 h-9 text-base flex items-center">支出</p>
-                                <Input
-                                    value={rawInputMap[user.uid] ?? ""}
-                                    type="number"
-                                    onChange={e => handleChange(user.uid, e.target.value)}
-                                    flexDirection="row"
-                                    width="full"
-                                    placeholder="支出金額"
-                                    step="0.01"
-                                    inputMode="decimal"
-                                />
-                                <p className="shrink-0 h-9 text-base flex items-center">
-                                {chooseSplitByItem === "percentage" ? "%" : "元"}
+                        return (
+                        <div key={user.uid} className={`px-3 pb-2 flex items-start gap-2  ${isMobile ? 'flex-col' : 'flex-row'}`}>
+                            <div className="min-h-9 w-full flex items-center gap-2 overflow-hidden">
+                                <div className="shrink-0">
+                                    <Avatar size="md" img={user.avatarURL} userName={user.name} />
+                                </div>
+                            <p className="text-base w-full truncate">{user.name}</p>
+                            </div>
+                            <div className={`shrink-0 flex flex-col items-end pb-3 ${isMobile ? 'min-w-60 w-full' : 'w-60'}`} >
+                                <div className="w-full flex items-start gap-2">
+                                    <p className="shrink-0 h-9 text-base flex items-center">支出</p>
+                                    <Input
+                                        value={rawInputMap[user.uid] ?? ""}
+                                        type="number"
+                                        onChange={e => handleChange(user.uid, e.target.value)}
+                                        flexDirection="row"
+                                        width="full"
+                                        placeholder="支出金額"
+                                        step="0.01"
+                                        inputMode="decimal"
+                                    />
+                                    <p className="shrink-0 h-9 text-base flex items-center">
+                                    {chooseSplitByItem === "percentage" ? "%" : "元"}
+                                    </p>
+                                </div>
+                                <p className="shrink-0 w-full mt-[-24px] text-sm flex justify-end text-zinc-500">
+                                {chooseSplitByItem === 'adjusted' ? `+ ${formatPercent(1/currentProjectUsers.length)} = ${entry.total.toFixed(2)} 元`  : `= ${entry.total.toFixed(2)} 元`}
                                 </p>
                             </div>
-                            <p className="shrink-0 w-full mt-[-24px] text-sm flex justify-end text-zinc-500">
-                              {chooseSplitByItem === 'adjusted' ? `+ ${formatPercent(1/currentProjectUsers.length)} = ${entry.total.toFixed(2)} 元`  : `= ${entry.total.toFixed(2)} 元`}
-                            </p>
                         </div>
+                        );
+                    })}
                     </div>
-                    );
-                })}
-                </div>
+                )}
             </div>
-
             <div className="shrink-0 pt-2 w-full flex flex-col gap-2 text-base text-zinc-700">
                 <div className="w-full flex items-center justify-end gap-4 text-base">
                     <p className={remainingClass}>{computeFooterInfo.infoText}</p>
@@ -208,8 +249,8 @@ export default function SplitByItemEdit({
                             variant="outline"
                             color="primary"
                             onClick={() => {
-                            onDeleteItem();
-                            setStep("list");
+                                onDeleteItem();
+                                setStep("list");
                             }}
                         >
                             刪除項目
@@ -221,10 +262,10 @@ export default function SplitByItemEdit({
                         width="full"
                         variant="solid"
                         color="primary"
-                        disabled={!computeFooterInfo.isComplete}
+                        disabled={!computeFooterInfo.isComplete || !!itemNameAvoidInjectionTest || !!itemNameTokenTest || parseFloat(inputItemAmountValue) <= 0}
                         onClick={() => {
-                        setItemPayload(payload);
-                        setStep("list");
+                            setItemPayload(payload);
+                            setStep("list");
                         }}
                     >
                         儲存項目

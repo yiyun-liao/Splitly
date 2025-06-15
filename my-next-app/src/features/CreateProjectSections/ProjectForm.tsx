@@ -17,6 +17,8 @@ import { useCreateProject } from "@/features/CreateProjectSections/hooks/useCrea
 import { useUpdateProject } from "@/features/CreateProjectSections/hooks/useUpdateProject";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import ModalPortal from "@/components/ui/ModalPortal";
+import { validateInput, tokenTest } from "@/utils/validate";
+
 
 
 
@@ -45,7 +47,7 @@ export default function ProjectForm({
 
     const [chooseCoverValue, setChooseCoverValue] = useState("");
     const [chooseCoverURLValue, setChooseCoverURLValue] = useState("");
-    const [inputProjectName, setInputProjectName] = useState("");
+    const [inputProjectName, setInputProjectName] = useState("出去玩！");
     const [inputStartTimeValue, setInputStartTimeValue] = useState(getNowDateLocal());
     const [inputEndTimeValue, setInputEndTimeValue] = useState("");
     const [chooseProjectStyle, setChooseProjectStyle] = useState<ProjectStyle>("travel");
@@ -66,7 +68,6 @@ export default function ProjectForm({
         if(!initialProjectData) return
         isInitialLoadingRef.current = true;
 
-        // setUpdatePayload(initialProjectData)
         setChooseCoverValue(initialProjectData.img.toString())
         setChooseCoverURLValue(initialProjectData.imgURL || "")
         setInputProjectName(initialProjectData.project_name)
@@ -96,6 +97,11 @@ export default function ProjectForm({
         setInputEndTimeValue('')
         didManuallyChangeTimeRef.current = false;
     }, [inputStartTimeValue]);
+
+    // 輸入測試
+    const displayNameAvoidInjectionTest = validateInput(inputProjectName);
+    const displayNameTokenTest = tokenTest(inputProjectName);
+    const descAvoidInjectionTest = validateInput(inputDescValue);
 
     // get data
     const projectPayload: ProjectData = useMemo(() => ({
@@ -141,8 +147,11 @@ export default function ProjectForm({
         if (!!projectPayload.project_name && !!projectPayload.owner && !!projectPayload.img){
             isComplete = true;
         }    
+        if (!!displayNameAvoidInjectionTest || !!displayNameTokenTest || !!descAvoidInjectionTest ){
+            isComplete = false;
+        } 
         return { isComplete };
-    }, [projectPayload]); 
+    }, [projectPayload, displayNameAvoidInjectionTest, displayNameTokenTest, descAvoidInjectionTest]); 
 
     // submit and create project
     const { handleCreateProject } = useCreateProject({
@@ -261,6 +270,8 @@ export default function ProjectForm({
                                         type="text" 
                                         width="full" 
                                         placeholder="點擊編輯"
+                                        errorMessage={displayNameAvoidInjectionTest ? displayNameAvoidInjectionTest : displayNameTokenTest ? displayNameTokenTest : undefined}
+                                        tokenMaxCount={[inputProjectName.length, 20] }   
                                     />
                                 </div>
                                 <div className={formSpan(3)}>
@@ -340,6 +351,7 @@ export default function ProjectForm({
                                         maxRows={4}
                                         placeholder="點擊編輯"
                                         width="full"
+                                        errorMessage={descAvoidInjectionTest ? descAvoidInjectionTest : undefined}
                                     />
                                 </div>
                                 <div className="col-span-6 bg-sp-white-20 rounded-xl p-4 mt-4">

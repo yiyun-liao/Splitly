@@ -5,7 +5,7 @@ import Avatar from "@/components/ui/Avatar";
 import ModalPortal from "@/components/ui/ModalPortal";
 import clsx from "clsx";
 
-import { validateDisplayName } from "@/utils/validate";
+import { validateInput } from "@/utils/validate";
 import { useEffect, useState, useMemo } from "react";
 import { UserData } from "@/types/user";
 import { useUpdateUser } from "./hooks/useUpdateUser";
@@ -33,7 +33,7 @@ export default function DataSettingDialog({
         }
     },[isSettingDialogOpen,userData])
 
-    const avoidInjectionTest = validateDisplayName(inputNameValue);
+    const avoidInjectionTest = validateInput(inputNameValue);
     const errorMessage = inputTest(inputNameValue);
 
     function inputTest(name: string): string | null {

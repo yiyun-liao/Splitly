@@ -33,6 +33,7 @@ export default function CreatePayment({
     const currentUid = userData?.uid;
     const rawProjectId = useParams()?.projectId;
     const projectId = typeof rawProjectId === 'string' ? rawProjectId : "";
+    const [isValidCreate, setIsValidCreate] = useState<boolean>(true);
 
     // receipt-way
     const [recordMode, setRecordMode] = useState<RecordMode>("split");
@@ -83,10 +84,13 @@ export default function CreatePayment({
         }
         if (!!payload.amount && !!payload.payer_map && !!payload.payment_name && !!payload.owner){
             isComplete = true;
-        }    
+        }
+        if (!isValidCreate){
+            isComplete = false;
+        }
         return { isComplete };
-    }, [payload, updatePayload, initialPayload]);  
-
+    }, [payload, updatePayload, initialPayload, isValidCreate]);  
+    
     // submit
     const { handleCreatePayment } = useCreatePayment({
         onSuccess: () => {
@@ -134,7 +138,6 @@ export default function CreatePayment({
                                     width='fit'
                                     variant= 'text-button'
                                     color='primary'
-                                    disabled={!isComplete}
                                     onClick={async()=>{
                                         await handleDeletePayment(initialPayload.project_id, initialPayload.id);
                                     }}
@@ -200,6 +203,7 @@ export default function CreatePayment({
                             setPayload = {setPayload}
                             initialPayload={initialPayload || undefined} 
                             setUpdatePayload = {setUpdatePayload}
+                            setIsValidCreate = {setIsValidCreate}
                         />
                     )}
                     {recordMode === "debt"  && userData && currentProjectUsers&& (
@@ -210,6 +214,7 @@ export default function CreatePayment({
                             setPayload = {setPayload}
                             initialPayload={initialPayload || undefined} 
                             setUpdatePayload = {setUpdatePayload}
+                            setIsValidCreate = {setIsValidCreate}
                         />
                     )}
                 </div>

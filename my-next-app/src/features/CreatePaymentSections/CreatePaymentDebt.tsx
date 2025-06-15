@@ -16,7 +16,7 @@ import { UserData } from "@/types/user";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { GetProjectData } from "@/types/project";
 import { formatToDatetimeLocal } from "@/utils/formatTime";
-
+import { validateInput } from "@/utils/validate";
 
 
 interface CreatePaymentDebtProps {
@@ -26,6 +26,7 @@ interface CreatePaymentDebtProps {
     setPayload : (map: CreatePaymentPayload) => void;
     initialPayload?: UpdatePaymentData;
     setUpdatePayload : (map: UpdatePaymentData) => void;
+    setIsValidCreate : (map: boolean) => void ;
 }
 
 export default function CreatePaymentDebt({
@@ -34,7 +35,8 @@ export default function CreatePaymentDebt({
     projectData,
     setPayload,
     initialPayload,
-    setUpdatePayload
+    setUpdatePayload,
+    setIsValidCreate
     }:CreatePaymentDebtProps){
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
@@ -86,6 +88,13 @@ export default function CreatePaymentDebt({
             setInputDebtAmountValue(rawValue.toString())
 
         };
+        
+        // 輸入測試
+        const descAvoidInjectionTest = validateInput(inputDescValue);
+        useEffect(()=>{
+            const valid = descAvoidInjectionTest === null;
+            setIsValidCreate(valid);
+        },[descAvoidInjectionTest])
 
         
         //update
@@ -106,6 +115,11 @@ export default function CreatePaymentDebt({
             const initialReceiverUid = Object.keys(initialPayload.split_map || {})[0];
             if (initialReceiverUid) setSelectedReceiverUid(initialReceiverUid);
         }, [initialPayload]);
+
+        const isAmountEmpty = useMemo(() => {
+            const amount = parseFloat(inputDebtAmountValue);
+            return !inputDebtAmountValue || isNaN(amount) || amount <= 0;
+          }, [inputDebtAmountValue]);
 
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
@@ -199,6 +213,7 @@ export default function CreatePaymentDebt({
                                             width='fit'
                                             variant='text-button'
                                             color='zinc'
+                                            disabled={isAmountEmpty}
                                             onClick={()=> setIsDebtPayerOpen(true)}
                                             >
                                                 其他人
@@ -256,6 +271,7 @@ export default function CreatePaymentDebt({
                                             width='fit'
                                             variant='text-button'
                                             color='zinc'
+                                            disabled={isAmountEmpty}
                                             onClick={()=> setIsDebtReceiverOpen(true)}
                                             >
                                                 其他人
@@ -286,6 +302,7 @@ export default function CreatePaymentDebt({
                                 flexDirection="row"
                                 width="full"
                                 placeholder="點擊編輯"
+                                errorMessage={descAvoidInjectionTest ? descAvoidInjectionTest : undefined}
                             />
                         </div>
                     </div>

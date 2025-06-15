@@ -137,7 +137,7 @@ export default function Dialog({
         footer={
         <>
             <Button variant="outline" color="primary" onClick={handleClose}>取消</Button>
-            <Button variant="solid" color="primary" onClick={() => alert('確定！')}>確定</Button>
+            <Button variant="solid" color="primary" onClick={() => {}}>確定</Button>
         </>
         }
     >

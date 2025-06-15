@@ -114,7 +114,7 @@ export default function ProjectWiseSpilt({
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center w-full pl-10  justify-end">
-                                                <div className="w-full max-w-40 min-w-20 flex items-center justify-end -space-x-4.5 text-sp-green-300">
+                                                <div className="w-full min-w-20 flex items-center justify-end -space-x-4.5 text-sp-green-300">
                                                     <div className="w-full flex-1 h-0.5 bg-sp-green-300"></div>
                                                         <Icon 
                                                             icon='solar:alt-arrow-right-outline'

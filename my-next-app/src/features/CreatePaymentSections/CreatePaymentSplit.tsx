@@ -20,6 +20,7 @@ import { sanitizeDecimalInput } from "@/utils/parseAmount";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { GetProjectData } from "@/types/project";
 import { formatToDatetimeLocal } from "@/utils/formatTime";
+import { validateInput, tokenTest } from "@/utils/validate";
 
 
 
@@ -30,6 +31,7 @@ interface CreatePaymentSplitProps {
     setPayload : (map: CreatePaymentPayload) => void;
     initialPayload?: UpdatePaymentData;
     setUpdatePayload : (map: UpdatePaymentData) => void;
+    setIsValidCreate : (map: boolean) => void ;
 }
 
 
@@ -39,7 +41,8 @@ export default function CreatePaymentSplit({
     projectData,
     setPayload,
     initialPayload,
-    setUpdatePayload
+    setUpdatePayload,
+    setIsValidCreate
     }:CreatePaymentSplitProps){
         const currentUid = userData.uid;
         const rawProjectId = useParams()?.projectId;
@@ -53,7 +56,7 @@ export default function CreatePaymentSplit({
         
         const { options: categoryOptions, selectedValue: selectedCategoryValue, setSelectedValue: setSelectedCategoryValue,} = useCategorySelectOptions();
 
-        const [inputPaymentValue, setInputPaymentValue] = useState("");
+        const [inputPaymentValue, setInputPaymentValue] = useState("吃飯");
         const [inputTimeValue, setInputTimeValue] = useState(getNowDatetimeLocal());
         const [inputDescValue, setInputDescValue] = useState("");
 
@@ -158,7 +161,6 @@ export default function CreatePaymentSplit({
         }, [initialPayload]);
           
 
-
         // 價格改變就重設
         const didManuallyChangeAmountRef = useRef(false);
 
@@ -169,7 +171,16 @@ export default function CreatePaymentSplit({
             setInputAmountValue(rawValue.toString());
             didManuallyChangeAmountRef.current = true;
         };
-        
+    
+        // 輸入測試
+        const paymentNameAvoidInjectionTest = validateInput(inputPaymentValue);
+        const paymentNameTokenTest = tokenTest(inputPaymentValue);
+        const descAvoidInjectionTest = validateInput(inputDescValue);
+        useEffect(()=>{
+            const valid = (descAvoidInjectionTest === null && paymentNameAvoidInjectionTest === null && paymentNameTokenTest === null);
+            setIsValidCreate(valid);
+        },[descAvoidInjectionTest,paymentNameAvoidInjectionTest,paymentNameTokenTest])
+
         useEffect(() => {
             // 第一次因 initialPayload 設定 inputValue ➜ 跳過一次
             if (isInitialLoadingRef.current) {
@@ -313,6 +324,11 @@ export default function CreatePaymentSplit({
         }, [fullPayload, setPayload, initialPayload, setUpdatePayload, fullUpdate]);
 
         // css
+        const isAmountEmpty = useMemo(() => {
+            const amount = parseFloat(inputAmountValue);
+            return !inputAmountValue || isNaN(amount) || amount <= 0;
+          }, [inputAmountValue]);
+
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
         const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
@@ -366,7 +382,7 @@ export default function CreatePaymentSplit({
                 </div>
                 <section className={`w-full px-1 h-full pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
                     <div className={`w-full ${!isMobile && "max-w-xl"}`}>
-                        <div className='w-full flex gap-2 items-center justify-end'>
+                        <div className='w-full flex gap-2 items-center justify-end pb-2'>
                             <div className="w-full flex items-center justify-start gap-2">
                                 <span className="font-medium truncate">專案</span>
                                 <span className="font-medium truncate text-sp-blue-500">{projectName}</span>
@@ -435,6 +451,8 @@ export default function CreatePaymentSplit({
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        errorMessage={paymentNameAvoidInjectionTest ? paymentNameAvoidInjectionTest : paymentNameTokenTest ? paymentNameTokenTest : undefined}
+                                        tokenMaxCount={[inputPaymentValue.length, 20] }  
                                     />
                                 </div>
                                 <div className={`pb-5 ${formSpan3CLass}`}>
@@ -481,6 +499,7 @@ export default function CreatePaymentSplit({
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        errorMessage={descAvoidInjectionTest ? descAvoidInjectionTest : undefined}
                                     />
                                 </div>
                             </div>
@@ -535,6 +554,8 @@ export default function CreatePaymentSplit({
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        errorMessage={paymentNameAvoidInjectionTest ? paymentNameAvoidInjectionTest : paymentNameTokenTest ? paymentNameTokenTest : undefined}
+                                        tokenMaxCount={[inputPaymentValue.length, 20] }   
                                     />
                                 </div>
                                 <div className={`pb-5 ${formSpan3CLass}`}>
@@ -545,6 +566,7 @@ export default function CreatePaymentSplit({
                                             width='fit'
                                             variant='text-button'
                                             color='primary'
+                                            disabled={!!isAmountEmpty}
                                             onClick={() => setIsSplitPayerOpen(true)}
                                             >
                                                 多位付款人
@@ -583,6 +605,7 @@ export default function CreatePaymentSplit({
                                                 width='full'
                                                 variant= {splitWay == 'item' ? 'solid' : 'text-button'}
                                                 color= 'primary'
+                                                disabled={!!isAmountEmpty}
                                                 onClick={() => {
                                                     setIsSplitByItemOpen(true)
                                                 }}
@@ -594,6 +617,7 @@ export default function CreatePaymentSplit({
                                                 width='full'
                                                 variant={splitWay == 'person' ? 'solid' : 'text-button'}
                                                 color='primary'
+                                                disabled={!!isAmountEmpty}
                                                 onClick={() => {
                                                     setIsSplitByPersonOpen(true)
                                                 }}
@@ -655,6 +679,7 @@ export default function CreatePaymentSplit({
                                         flexDirection="row"
                                         width="full"
                                         placeholder="點擊編輯"
+                                        errorMessage={descAvoidInjectionTest ? descAvoidInjectionTest : undefined}
                                     />
                                 </div>
                             </div>

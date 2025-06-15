@@ -162,9 +162,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                         setTimeout(() => fetchAndSetUser(true), 2000); // retry once
                     } else {
                         console.warn("🛑 Retry failed, fallback to null");
+                        toast.error('驗證過程發生錯誤，請重新登入或更新網頁')
                         setUserData(null);
                         setProjectData([]);
                         setIsReady(true);
+                        router.push('/')
                     }
                 }
             };

@@ -32,7 +32,7 @@ export default function LoadingDataPage() {
             localStorage.removeItem("lastVisitedProjectPath");
             console.log("i have project")
         } else {
-            router.push(`/create`);
+            router.push(`/${userData?.uid}/create`);
             localStorage.removeItem("lastVisitedProjectPath");
             console.log("i have nothing")
         }
