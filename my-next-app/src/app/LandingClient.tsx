@@ -33,10 +33,10 @@ export default function LandingClient() {
         : '/loading'
       
     const handleLogin = async () => {
-        // if (!inWebView) { 
-        //     setIsRedirectDialog(true);
-        //     return;
-        // }
+        if (inWebView) { 
+            setIsRedirectDialog(true);
+            return;
+        }
         const ok = await logInUser()
         if (!ok) return;
   

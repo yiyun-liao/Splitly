@@ -101,20 +101,7 @@ export default function SplitByItemEdit({
         }
         if (!didManuallyChangeAmountRef.current) return;
         
-        setSplitMap({});
-        const amount = parseFloat(inputItemAmountValue || "0");
-        const percent = parseFloat(formatNumberForData(1 / currentProjectUsers.length));
-        const total = parseFloat(formatNumberForData(amount * percent))
-        const groupMap: SplitMap = Object.fromEntries(
-            currentProjectUsers.map(user => [user.uid, {
-                fixed: 0,
-                percent: percent,
-                total: total
-            }])
-        );
-        setSplitMap(groupMap);
         setChooseSplitByItem('percentage');
-        console.log('改價格',amount, groupMap)
         didManuallyChangeAmountRef.current = false;
 
     }, [inputItemAmountValue, currentProjectUsers, initialPayload]);
