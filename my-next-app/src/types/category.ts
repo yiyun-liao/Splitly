@@ -5,3 +5,7 @@ export interface Category {
     parent_id: number | null;
     imgURL?:string;
 }
+
+export type CategoryGrouped = Category & {
+    children: Category[]
+}

@@ -59,7 +59,7 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
                     imgURL: buildCatUrl(cat.name_en),
                 }));
 
-                // console.log("🛠 加工後 finalCategory", finalCategory);
+                console.log("🛠 加工後 finalCategory", finalCategory);
                 setCategoryOptions(finalCategory);
                 
                 localStorage.setItem(catKey, JSON.stringify(finalCategory))
