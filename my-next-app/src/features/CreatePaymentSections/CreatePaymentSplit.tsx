@@ -4,14 +4,16 @@ import { useState, useEffect, useMemo, useRef} from "react";
 import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
+import ImageButton from "@/components/ui/ImageButton";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import IconButton from "@/components/ui/IconButton";
 import Select from "@/components/ui/Select";
-import { useCategorySelectOptions } from "@/hooks/useCategory";
+import { useCategoryDisplayOptions } from "@/hooks/useCategory";
 import SplitPayer from "./SplitPayerDialog";
 import SplitByPerson from "./SplitByPersonDialog";
 import SplitByItem from "./SplitByItemDialog";
+import CategoryDialog from "./CategoryDialog";
 import { UserData } from "@/types/user";
 import { SplitDetail, SplitMap, PayerMap, SplitMethod, SplitWay, CreatePaymentPayload, CreateItemPayload, AccountType, UpdatePaymentData} from "@/types/payment";
 import { formatPercent, formatNumber, formatNumberForData } from "@/utils/parseNumber";
@@ -21,6 +23,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { GetProjectData } from "@/types/project";
 import { formatToDatetimeLocal } from "@/utils/formatTime";
 import { validateInput, tokenTest } from "@/utils/validate";
+import { useCategoryOptions } from "@/contexts/CategoryContext";
 
 
 
@@ -54,19 +57,24 @@ export default function CreatePaymentSplit({
         const [selectCurrencyValue, setSelectedCurrencyValue] = useState("TWD");
         const [inputAmountValue, setInputAmountValue] = useState("");
         
-        const { options: categoryOptions, selectedValue: selectedCategoryValue, setSelectedValue: setSelectedCategoryValue,} = useCategorySelectOptions();
-
+        const { grouped } = useCategoryDisplayOptions();
+        const [selectedParentId, setSelectedParentId] = useState<number | null>(null)
+        const [selectedCategoryValue, setSelectedCategoryValue] = useState<string>();
+        const [selectedCategoryURLValue, setSelectedCategoryURLValue] = useState<string>();
+        console.log(grouped, selectedParentId, selectedCategoryValue, selectedCategoryURLValue)
+        
         const [inputPaymentValue, setInputPaymentValue] = useState("吃飯");
         const [inputTimeValue, setInputTimeValue] = useState(getNowDatetimeLocal());
         const [inputDescValue, setInputDescValue] = useState("");
-
+        
         const [accountType, setAccountType] = useState<AccountType>("group");
         const [splitWay, setSplitWay] = useState<SplitWay>("person");
         const [chooseSplitByPerson, setChooseSplitByPerson] = useState<SplitMethod>("percentage");
-
+        
         const [isSplitPayerOpen, setIsSplitPayerOpen] = useState(false);
         const [isSplitByPersonOpen, setIsSplitByPersonOpen] = useState(false);
         const [isSplitByItemOpen, setIsSplitByItemOpen] = useState(false);
+        const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
         //  付款人預設
         const [splitPayerMap, setSplitPayerMap] = useState<PayerMap>(()=>{
@@ -111,6 +119,25 @@ export default function CreatePaymentSplit({
             setAccountType(prev => (prev === "group" ? "personal" : "group"));
         };
 
+        // cat 一開始如果還沒選 parent，就預設成 grouped[0].id
+        useEffect(() => {
+            if (selectedParentId === null && selectedCategoryValue === null && grouped.length > 0) {
+                setSelectedParentId(grouped[0].id)
+            }
+            if(selectedCategoryValue === null && grouped[0].children.length > 0 ){
+                setSelectedCategoryValue(grouped[0].children[0].id.toString())
+            }
+        }, [grouped, selectedParentId, selectedCategoryValue])
+
+        const selectedCategoryZh = useMemo(() => {
+            if (selectedCategoryValue == null) return ''
+            for (const g of grouped) {
+              const child = g.children.find(c => c.id === parseFloat(selectedCategoryValue))
+              if (child) return child.name_zh
+            }
+          
+            return ''
+        }, [selectedCategoryValue, grouped])
 
         // update
         const isInitialLoadingRef = useRef(true);
@@ -129,7 +156,15 @@ export default function CreatePaymentSplit({
           
             // 類別
             if (initialPayload.category_id) {
-              setSelectedCategoryValue(String(initialPayload.category_id));
+                const rawId = initialPayload.category_id;
+                const catId = typeof rawId === 'string' ? parseInt(rawId) : rawId;
+                setSelectedCategoryValue(String(catId));
+                const parent = grouped.find(g => g.children.some(c => c.id === catId));
+                if (parent) {
+                    setSelectedParentId(parent.id);
+                    const child = parent.children.find(c => c.id === catId)!;
+                    setSelectedCategoryURLValue(child.imgURL ?? "");
+                }
             }
           
             // 帳目類型,分帳邏輯
@@ -323,6 +358,8 @@ export default function CreatePaymentSplit({
             setPayload(fullPayload);
         }, [fullPayload, setPayload, initialPayload, setUpdatePayload, fullUpdate]);
 
+        console.log("final", fullPayload)
+
         // css
         const isAmountEmpty = useMemo(() => {
             const amount = parseFloat(inputAmountValue);
@@ -331,9 +368,9 @@ export default function CreatePaymentSplit({
 
         const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
         const labelClass = clsx("w-full font-medium truncate")
-        const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-end")
-        const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-end")
-        const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-end")
+        const formSpan1CLass = clsx("col-span-1 flex flex-col gap-2 items-start justify-start")
+        const formSpan2CLass = clsx("col-span-2 flex flex-col gap-2 items-start justify-start")
+        const formSpan3CLass = clsx("col-span-3 flex flex-col gap-2 items-start justify-start")
         const toggleClass = clsx("shrink-0 px-2 py-2 flex items-center justify-center gap-2 rounded-xl bg-sp-white-20",
             {
                 "text-zinc-400 cursor-not-allowed": initialPayload,
@@ -344,6 +381,18 @@ export default function CreatePaymentSplit({
         return(
             <div className="w-full h-full pb-20 mb-20">
                 <div>
+                    {isCategoryOpen &&
+                        <CategoryDialog
+                            isCategoryOpen = {isCategoryOpen}
+                            onClose={() => setIsCategoryOpen(false)}
+                            grouped={grouped}
+                            selectedParentId={selectedParentId}
+                            setSelectedParentId={setSelectedParentId}
+                            selectedCategoryValue={selectedCategoryValue || ""}
+                            setSelectedCategoryValue={setSelectedCategoryValue}
+                            setSelectedCategoryURLValue={setSelectedCategoryURLValue}
+                        />
+                    }
                     {isSplitPayerOpen &&
                         <SplitPayer
                             isSplitPayerOpen = {isSplitPayerOpen}
@@ -405,7 +454,7 @@ export default function CreatePaymentSplit({
                         {accountType === 'personal' && (
                             <div className="w-full grid grid-cols-3 gap-2">
                                 <div className={formSpan1CLass}>
-                                    <span className={labelClass}>費用</span>
+                                    <span className={labelClass}>幣別</span>
                                     <Select
                                         value={selectCurrencyValue}
                                         required={true}
@@ -420,6 +469,7 @@ export default function CreatePaymentSplit({
                                     />
                                 </div>
                                 <div className={formSpan2CLass}>
+                                    <span className="w-full font-sm text-zinc-570 truncate">費用</span>
                                     <Input
                                     value={inputAmountValue}
                                     type="number"
@@ -433,14 +483,16 @@ export default function CreatePaymentSplit({
                                 </div>
                                 <div className={formSpan1CLass}>
                                     <span className={labelClass}>類別</span>
-                                    <Select
-                                        value={selectedCategoryValue?? ""}
-                                        required = {true}
-                                        onChange={(e) => setSelectedCategoryValue(e.target.value)}
-                                        flexDirection= "row"
-                                        width= "full"
-                                        options={categoryOptions}
-                                    />
+                                    <div  className="w-full shrink-0 flex gap-2 items-center justify-start" onClick={()=> setIsCategoryOpen(true)}>
+                                        <div className="shrink-0">
+                                            <ImageButton
+                                                image={selectedCategoryURLValue ?? ""}
+                                                size= 'md'
+                                                imageName= {selectedCategoryValue?? ""} 
+                                            />
+                                        </div>
+                                        {!isMobile && (<p className="w-full text-sm truncate text-center">{selectedCategoryZh}</p>)}
+                                    </div>
                                 </div>
                                 <div className={formSpan2CLass}>
                                     <span className={labelClass}>名稱</span>
@@ -452,9 +504,9 @@ export default function CreatePaymentSplit({
                                         width="full"
                                         placeholder="點擊編輯"
                                         errorMessage={paymentNameAvoidInjectionTest ? paymentNameAvoidInjectionTest : paymentNameTokenTest ? paymentNameTokenTest : undefined}
-                                        tokenMaxCount={[inputPaymentValue.length, 20] }  
+                                        tokenMaxCount={[inputPaymentValue.length, 20] }   
                                     />
-                                </div>
+                                </div>                               
                                 <div className={`pb-5 ${formSpan3CLass}`}>
                                     <div className="w-full flex items-center justify-start gap-2">
                                         <span className={labelClass}>付款人</span>
@@ -536,14 +588,16 @@ export default function CreatePaymentSplit({
                                 </div>
                                 <div className={formSpan1CLass}>
                                     <span className={labelClass}>類別</span>
-                                    <Select
-                                        value={selectedCategoryValue??""}
-                                        required = {true}
-                                        onChange={(e) => setSelectedCategoryValue(e.target.value)}
-                                        flexDirection= "row"
-                                        width= "full"
-                                        options={categoryOptions}
-                                    />
+                                    <div  className="w-full shrink-0 flex gap-2 items-center justify-start" onClick={()=> setIsCategoryOpen(true)}>
+                                        <div className="shrink-0">
+                                            <ImageButton
+                                                image={selectedCategoryURLValue ?? ""}
+                                                size= 'md'
+                                                imageName= {selectedCategoryZh?? ""} 
+                                            />
+                                        </div>
+                                        {!isMobile && (<p className="w-full text-sm truncate text-center">{selectedCategoryZh}</p>)}
+                                    </div>
                                 </div>
                                 <div className={formSpan2CLass}>
                                     <span className={labelClass}>名稱</span>
