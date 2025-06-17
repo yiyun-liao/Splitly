@@ -491,7 +491,7 @@ export default function CreatePaymentSplit({
                                                 imageName= {selectedCategoryValue?? ""} 
                                             />
                                         </div>
-                                        {!isMobile && (<p className="w-full text-sm truncate text-center">{selectedCategoryZh}</p>)}
+                                        {!isMobile && (<p className="w-full text-sm truncate">{selectedCategoryZh}</p>)}
                                     </div>
                                 </div>
                                 <div className={formSpan2CLass}>
@@ -596,7 +596,7 @@ export default function CreatePaymentSplit({
                                                 imageName= {selectedCategoryZh?? ""} 
                                             />
                                         </div>
-                                        {!isMobile && (<p className="w-full text-sm truncate text-center">{selectedCategoryZh}</p>)}
+                                        {!isMobile && (<p className="w-full text-sm truncate">{selectedCategoryZh}</p>)}
                                     </div>
                                 </div>
                                 <div className={formSpan2CLass}>
