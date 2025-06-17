@@ -1,8 +1,10 @@
 # server/src/routes/schema/payment.py
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator, ValidationError
 from typing import Optional, Dict, List, Literal
 from datetime import datetime
+import math
+
 
 
 # 分帳明細：splitMap 每個使用者的細節
@@ -18,6 +20,16 @@ class ItemDetailSchema(BaseModel):
     payment_name: str
     split_method: Literal["percentage", "actual", "adjusted"]
     split_map: Dict[str, SplitDetail]
+
+    @model_validator(mode="after")
+    def amount_must_equal_sum_of_totals(cls, model, info):
+        total_sum = sum(detail.total for detail in model.split_map.values())
+        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1e-3):
+            raise ValueError(
+                f"amount ({model.amount}) must equal sum of split_map totals ({total_sum})"
+            )
+        return model
+
 
 class GetItemSchema(ItemDetailSchema):
     id: str
@@ -42,6 +54,15 @@ class CreatePaymentSchema(BaseModel):
 
     items: Optional[List[ItemDetailSchema]] = None
 
+    @model_validator(mode="after")
+    def amount_must_equal_sum_of_totals(cls, model, info):
+        total_sum = sum(detail.total for detail in model.split_map.values())
+        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1e-3):
+            raise ValueError(
+                f"amount ({model.amount}) must equal sum of split_map totals ({total_sum})"
+            )
+        return model
+    
     model_config = {
         "from_attributes": True
     }
@@ -55,6 +76,15 @@ class UpdateItemDetailSchema(BaseModel):
     payment_name: str
     split_method: Literal["percentage", "actual", "adjusted"]
     split_map: Dict[str, SplitDetail]
+    
+    @model_validator(mode="after")
+    def amount_must_equal_sum_of_totals(cls, model, info):
+        total_sum = sum(detail.total for detail in model.split_map.values())
+        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1e-3):
+            raise ValueError(
+                f"amount ({model.amount}) must equal sum of split_map totals ({total_sum})"
+            )
+        return model
 
 
 class UpdatePaymentSchema(BaseModel):
@@ -75,6 +105,15 @@ class UpdatePaymentSchema(BaseModel):
     payer_map: Optional[Dict[str, float]] = None
     split_map: Optional[Dict[str, SplitDetail]] = None
     items: Optional[List[UpdateItemDetailSchema]] = None
+
+    @model_validator(mode="after")
+    def amount_must_equal_sum_of_totals(cls, model, info):
+        total_sum = sum(detail.total for detail in model.split_map.values())
+        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1e-3):
+            raise ValueError(
+                f"amount ({model.amount}) must equal sum of split_map totals ({total_sum})"
+            )
+        return model
 
     model_config = {
         "from_attributes": True
