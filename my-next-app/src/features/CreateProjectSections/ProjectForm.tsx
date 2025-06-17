@@ -183,7 +183,10 @@ export default function ProjectForm({
     });
 
     // css
-    const formSpan = (cols: number) => clsx(`col-span-${cols}`, "shrink-0 flex flex-col gap-2 items-start justify-start mt-2 min-w-0");
+    const formSpan = (cols: number) => clsx("shrink-0 flex flex-col gap-2 items-start justify-start mt-2 min-w-0",{
+        [`col-span-${cols}`]: !isMobile,
+        "col-span-6" : isMobile,
+    });
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const labelClass = clsx("w-full font-medium truncate")
 
