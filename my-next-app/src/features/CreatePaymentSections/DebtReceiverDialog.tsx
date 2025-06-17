@@ -69,7 +69,6 @@ export default function DebtReceiver({
                     onClose={ () => {
                         onClose();
                     }}
-                    closeOnBackdropClick = {true}
                 >
                     {renderBody()}
             </Dialog>

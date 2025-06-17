@@ -68,7 +68,6 @@ export default function DebtPayer({
                     onClose={ () => {
                         onClose();
                     }} // 點擊哪裡關閉
-                    closeOnBackdropClick = {true}
                 >
                     {renderBody()}
             </Dialog>

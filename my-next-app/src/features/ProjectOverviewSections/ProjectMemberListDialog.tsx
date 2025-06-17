@@ -5,6 +5,7 @@ import ModalPortal from "@/components/ui/ModalPortal";
 import { useState } from "react";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import toast from "react-hot-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ProjectMemberListProps {
     isMemberListOpen: boolean;
@@ -17,6 +18,7 @@ export default function ProjectMemberList({
 }:ProjectMemberListProps){
 
     const {currentProjectData, currentProjectUsers} = useCurrentProjectData();
+    const {userData} = useAuth();
 
     const inviteUrl = `${window.location.origin}/join?pid=${currentProjectData?.id}`;
 
@@ -41,7 +43,7 @@ export default function ProjectMemberList({
                                         //onAvatarClick={() => console.log('Clicked!')}
                                     />
                                 </div>
-                                <p className="text-base w-fll  truncate">{user.name}</p>
+                                <p className="text-base w-fll  truncate">{user.name}{user.name === userData?.name ? "（你）" : ""}</p>
                             </div>
                             {currentProjectData?.owner  == user.uid && (
                                 <div className="shrink-0 p-1 rounded-sm bg-sp-blue-300 text-sp-blue-500">擁有者</div>
@@ -132,7 +134,7 @@ export default function ProjectMemberList({
                     footer={
                         step === "list" ? (
                             <>
-                                <Button
+                                {/* <Button
                                     variant="outline"
                                     color="primary"
                                     width = 'full'
@@ -140,7 +142,7 @@ export default function ProjectMemberList({
                                     onClick={() => alert('建立虛擬成員')}
                                 >
                                     建立虛擬成員(還沒做)
-                                </Button>
+                                </Button> */}
                                 <Button
                                     variant="outline"
                                     color="primary"
