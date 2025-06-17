@@ -55,45 +55,19 @@ export default function ProjectMemberList({
         }
         if (step === 'add'){
             return(
-                <div className="flex flex-col justify-start items-center gap-4 pt-20">
+                <div className="flex flex-col justify-start items-center gap-6 pt-20">
                     <p className="text-xl w-full text-sp-blue-500 font-bold text-center">新增成員</p>
-                    <div  className="w-full flex items-center justify-center -space-x-2">
+                    <div className="w-full flex items-center justify-center -space-x-2">
+                        {[1,2,3,4,5,6].map((i, idx) => (
                             <Avatar
+                                key={i}
                                 size="lg"
-                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/1.jpg"
+                                img={`https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750175833/avatar/${i}.jpg`}
                                 userName="demo"
-                                className="border-2 border-zinc-100"
+                                className="border-2 border-zinc-100 animate-float"
+                                style={{ animationDelay: `${idx * 0.5}s` }}
                             />
-                            <Avatar
-                                size="lg"
-                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/2.jpg"
-                                userName="demo"
-                                className="border-2 border-zinc-100"
-                            />
-                            <Avatar
-                                size="lg"
-                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/3.jpg"
-                                userName="demo"
-                                className="border-2 border-zinc-100"
-                            />
-                            <Avatar
-                                size="lg"
-                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/4.jpg"
-                                userName="demo"
-                                className="border-2 border-zinc-100"
-                            />
-                            <Avatar
-                                size="lg"
-                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/5.jpg"
-                                userName="demo"
-                                className="border-2 border-zinc-100"
-                            />
-                            <Avatar
-                                size="lg"
-                                img="https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/6.jpg"
-                                userName="demo"
-                                className="border-2 border-zinc-100"
-                            />
+                        ))}
                     </div>
                     <div className="w-60">
                         <Button

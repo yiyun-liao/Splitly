@@ -10,7 +10,7 @@ const SIZE_MAP: Record<AvatarSize, number> = {
 };
 
 
-interface AvatarProps {
+interface AvatarProps extends React.HTMLAttributes<HTMLDivElement>  {
   size?: AvatarSize;
   img?: string;
   userName?: string;
@@ -24,6 +24,7 @@ export default function Avatar({
         userName,
         onAvatarClick,
         className,
+        style,
         ...props
     }: AvatarProps) {
     
@@ -34,12 +35,17 @@ export default function Avatar({
 
     const dimension = SIZE_MAP[size];
     const divClass = clsx('relative inline-block rounded-full overflow-hidden cursor-pointer animate-breathing', className)
+    const combinedStyle: React.CSSProperties = {
+        width: dimension,
+        height: dimension,
+        ...style
+    };
     
     return (
         <div
             onClick={avatarClick}
             className={divClass}
-            style={{ width: dimension, height: dimension }}
+            style={combinedStyle}
             {...props}
         >
             {!hasError && img ? (
