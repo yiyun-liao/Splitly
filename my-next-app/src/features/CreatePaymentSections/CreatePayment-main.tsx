@@ -141,7 +141,7 @@ export default function CreatePayment({
                             />
                         </div>
                     )}
-                    <div id="receipt-form-header"  className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden backdrop-blur-xl`}>
+                    <div id="receipt-form-header"  className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden backdrop-blur-2xl`}>
                         <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
                         <p className="w-full text-xl font-medium truncate min-w-0"> {initialPayload ? '更新' : '新增'}{recordMode == 'split' ? '支出' : '轉帳'}</p>
                         {initialPayload && updatePayload && (
@@ -186,7 +186,7 @@ export default function CreatePayment({
                             </Button>
                         )}
                     </div>
-                    <div id="receipt-way" className={`w-full my-4 flex ${!isMobile && "max-w-xl"} bg-sp-white-20 rounded-xl backdrop-blur-xl`}>
+                    <div id="receipt-way" className={`w-full my-4 flex ${!isMobile && "max-w-xl"} bg-sp-white-20 rounded-xl backdrop-blur-2xl`}>
                         <Button
                             size='sm'
                             width='full'
