@@ -21,10 +21,10 @@ export const GlobalProjectProvider = ({ children }: GlobalProjectProviderProps) 
     const { projectData, userData, isReady } = useAuth(); // 從 useAuth 取資料
     useEffect(() => {
         // 預載 avatars
-        Array.from({ length: 15 }, (_, index) => {
-            const img = new Image();
-            img.src = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750175833/avatar/${index + 1}.jpg`;
-        });
+        // Array.from({ length: 15 }, (_, index) => {
+        //     const img = new Image();
+        //     img.src = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750175833/avatar/${index + 1}.jpg`;
+        // });
 
         // 預載其他素材圖
         Array.from({ length: 16 }, (_, index) => {

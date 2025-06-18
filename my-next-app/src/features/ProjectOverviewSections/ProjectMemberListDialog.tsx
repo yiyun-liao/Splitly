@@ -62,7 +62,7 @@ export default function ProjectMemberList({
                             <Avatar
                                 key={i}
                                 size="lg"
-                                img={`https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750175833/avatar/${i}.jpg`}
+                                img={`/avatar/avatar-${i}.svg`}
                                 userName="demo"
                                 className="border-2 border-zinc-100 animate-float"
                                 style={{ animationDelay: `${idx * 0.5}s` }}
