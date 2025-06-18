@@ -123,28 +123,28 @@ export default function JoinProjectPage() {
                         <div className="fixed left-[-80px] top-[-80px] z-[-1] pointer-events-none">
                             <img
                                 src="/join/join-tl.svg"
-                                alt="flower animation"
+                                alt="bg"
                                 className="w-80 h-80 object-contain "
                             />
                         </div>
                         <div className="fixed right-[-80px] top-[-80px] z-[-1] pointer-events-none">
                             <img
                                 src="/join/join-tr.svg"
-                                alt="flower animation"
+                                alt="bg"
                                 className="w-80 h-80 object-contain"
                             />
                         </div>                        
                         <div className="fixed left-[-80px] bottom-[-80px] z-[-1] pointer-events-none">
                             <img
                                 src="/join/join-bl.svg"
-                                alt="flower animation"
+                                alt="bg"
                                 className="w-80 h-80 object-contain"
                             />
                         </div>
                         <div className="fixed right-[-80px] bottom-[-80px] z-[-1] pointer-events-none">
                             <img
                                 src="/join/join-br.svg"
-                                alt="flower animation"
+                                alt="bg"
                                 className="w-80 h-80 object-contain"
                             />
                         </div>
