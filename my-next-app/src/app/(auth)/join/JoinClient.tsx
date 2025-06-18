@@ -38,7 +38,6 @@ export default function JoinProjectPage() {
     const [joined, setJoined] = useState(false);
     const [error, setError] = useState("");
 
-
     // get current project data
     useEffect(() => {
         if (!isLoadedReady || !firebaseUser || !projectId || !currentUid) return;
