@@ -2,7 +2,6 @@
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
 import { logInUser } from '@/lib/auth';
 import Button from '@/components/ui/Button';
 import ImageButton from '@/components/ui/ImageButton';
