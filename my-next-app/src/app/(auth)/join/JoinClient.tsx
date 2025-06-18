@@ -157,11 +157,11 @@ export default function JoinProjectPage() {
                         className="flex items-center justify-start gap-2 pb-2"
                         onClick={()=> {router.push(`/`)}}
                     >
-                        <ImageButton
-                            image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
-                            size='sm'
-                            imageName= "Splitly"
-                        />
+                        <img
+                                src="/logo/logo.svg"
+                                alt="Splitly"
+                                className="w-9 h-9 object-contain "
+                            />                        
                         <h1 className="text-2xl font-medium text-zinc-700 ">Splitly</h1>
                     </div>
                     <p className="text-lg text-zinc-700">您最佳的分帳工具</p>
@@ -279,10 +279,10 @@ export default function JoinProjectPage() {
                 </div>
                 <div className='w-full flex flex-col gap-4 justify-center items-center min-h-40 pb-12 pt-8 border-t-1 border-zinc-300 text-zinc-700'>
                     <div className='flex items-center justify-start gap-2'>
-                        <ImageButton
-                            image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
-                            size='sm'
-                            imageName= "Splitly"
+                        <img
+                            src="/logo/logo.svg"
+                            alt="Splitly"
+                            className="w-9 h-9 object-contain "
                         />
                         <h1 className="text-xl font-medium">Splitly</h1>
                     </div>

@@ -77,11 +77,11 @@ export default function LandingClient() {
                 <div className='flex px-20 py-20 min-h-50 w-full max-w-[1400px] justify-between items-start'>
                     <div className="shrink-0">
                         <div className='flex items-center justify-start gap-2 pb-4'>
-                            <ImageButton
-                                image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
-                                size='sm'
-                                imageName= "Splitly"
-                            />
+                            <img
+                                    src="/logo/logo.svg"
+                                    alt="Splitly"
+                                    className="w-9 h-9 object-contain "
+                                />
                             <h1 className="text-xl font-medium">Splitly</h1>
                         </div>
                         <p className="text-base">您最佳的分帳工具</p>

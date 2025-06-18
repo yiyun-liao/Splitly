@@ -125,10 +125,10 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
             {navStyle === 'contraction' && (
                 <nav className={navStyleClass} style={{ height: "100vh" }}>
                     <div id="nav-brand-logo" className={navDivClass}>
-                        <ImageButton
-                            image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
-                            size='md'
-                            imageName= "Splitly"
+                        <img
+                            src="/logo/logo.svg"
+                            alt="Splitly"
+                            className="w-9 h-9 object-contain "
                         />
                     </div>
                     <div id="nav-function" className={`${navDivClass} flex-1 `}>
@@ -170,10 +170,10 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
             {navStyle === 'expansion' && (
                 <nav className={navStyleClass} style={{ height: "100vh" }}>
                     <div id="nav-brand-logo" className={navDivClass}>
-                        <ImageButton
-                            image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
-                            size='md'
-                            imageName= "Splitly"
+                        <img
+                            src="/logo/logo.svg"
+                            alt="Splitly"
+                            className="w-9 h-9 object-contain "
                         />
                     </div>
                     <div id="nav-function" className={`${navFunctionDivClass} flex-1 `}>
