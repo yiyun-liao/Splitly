@@ -198,7 +198,7 @@ export default function ProjectForm({
                         {!isMobile && (
                         <div className="fixed right-[-80px] bottom-[-80px] z-[-1] pointer-events-none">
                             <img
-                                src="/threeGif/three-1.svg"
+                                src="/bg/three.svg"
                                 alt="flower animation"
                                 className="w-120 h-120 object-contain"
                             />
