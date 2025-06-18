@@ -21,11 +21,13 @@ import { buildProjectCoverUrl } from "@/utils/getProjectCover";
 import { GetProjectData, JoinProjectData } from "@/types/project";
 import { UserData } from "@/types/user";
 import { MemberBudgetMap } from "@/types/project";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export default function JoinProjectPage() {
     const searchParams = useSearchParams();
     const projectId = searchParams.get("pid");
     const router = useRouter();
+    const isMobile = useIsMobile();
 
     const { firebaseUser, userData, isLoadedReady } = useAuth();
     const currentUid : string = userData?.uid || "";
@@ -35,23 +37,6 @@ export default function JoinProjectPage() {
     const [addMemberBudget, setAddMemberBudget] = useState<MemberBudgetMap>(() => ({ [currentUid]: undefined }));
     const [joined, setJoined] = useState(false);
     const [error, setError] = useState("");
-
-
-    // check customer is member already
-    useEffect(() => {
-        if (!projectId){
-            alert('無效的邀請連結，請重新索取或是建立自己的專案！')
-            router.push(`/`);
-        }
-        if (!isLoadedReady || !projectId) return;
-
-        if (!firebaseUser || !userData) {
-            showInfoToast("加入專案前請先登入");
-            const redirect = `/join?pid=${projectId}`;
-            router.push(`/?redirect=${encodeURIComponent(redirect)}`);
-        }
-    }, [isLoadedReady, firebaseUser, userData, projectId, router]);
-
 
     // get current project data
     useEffect(() => {
@@ -131,18 +116,52 @@ export default function JoinProjectPage() {
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
 
     return (
-        <div className={`h-full text-zinc-700  ${scrollClass}`} >
+        <div className={`h-full text-zinc-700 ${scrollClass}`} >
+            <div>
+                {!isMobile && (
+                    <div className="w-full h-full relative ">
+                        <div className="fixed left-[-80px] top-[-80px] z-[-1] pointer-events-none">
+                            <img
+                                src="/join/join-tl.svg"
+                                alt="flower animation"
+                                className="w-80 h-80 object-contain "
+                            />
+                        </div>
+                        <div className="fixed right-[-80px] top-[-80px] z-[-1] pointer-events-none">
+                            <img
+                                src="/join/join-tr.svg"
+                                alt="flower animation"
+                                className="w-80 h-80 object-contain"
+                            />
+                        </div>                        
+                        <div className="fixed left-[-80px] bottom-[-80px] z-[-1] pointer-events-none">
+                            <img
+                                src="/join/join-bl.svg"
+                                alt="flower animation"
+                                className="w-80 h-80 object-contain"
+                            />
+                        </div>
+                        <div className="fixed right-[-80px] bottom-[-80px] z-[-1] pointer-events-none">
+                            <img
+                                src="/join/join-br.svg"
+                                alt="flower animation"
+                                className="w-80 h-80 object-contain"
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
             <div className="flex flex-col items-start justify-start h-full py-10 px-4 gap-2 max-w-xl mx-auto">
                 <div className="w-full px-4 ">
                     <div 
                         className="flex items-center justify-start gap-2 pb-2"
                         onClick={()=> {router.push(`/`)}}
                     >
-                        <ImageButton
-                            image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
-                            size='sm'
-                            imageName= "Splitly"
-                        />
+                        <img
+                                src="/logo/logo.svg"
+                                alt="Splitly"
+                                className="w-9 h-9 object-contain "
+                            />                        
                         <h1 className="text-2xl font-medium text-zinc-700 ">Splitly</h1>
                     </div>
                     <p className="text-lg text-zinc-700">您最佳的分帳工具</p>
@@ -257,6 +276,17 @@ export default function JoinProjectPage() {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className='w-full flex flex-col gap-4 justify-center items-center min-h-40 pb-12 pt-8 border-t-1 border-zinc-300 text-zinc-700'>
+                    <div className='flex items-center justify-start gap-2'>
+                        <img
+                            src="/logo/logo.svg"
+                            alt="Splitly"
+                            className="w-9 h-9 object-contain "
+                        />
+                        <h1 className="text-xl font-medium">Splitly</h1>
+                    </div>
+                    <p className="">© 2025  All rights reserved.</p>
                 </div>
             </div>
         </div>

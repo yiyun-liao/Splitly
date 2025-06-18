@@ -6,10 +6,14 @@ const AVATAR_FOLDER = "v1750175833/avatar";
 // ---------- feature: get amount in folder to auto-random
 
 export function getRandomAvatarIndex(): number {
-  return Math.floor(Math.random() * 16) + 1;
+  return Math.floor(Math.random() * 15) + 1;
 }
 
 // 組合 Cloudinary 頭貼網址
+// export function buildAvatarUrl(index: number): string {
+//   return `${CLOUDINARY_BASE}/${AVATAR_FOLDER}/${index}.jpg`;
+// }
+
 export function buildAvatarUrl(index: number): string {
-  return `${CLOUDINARY_BASE}/${AVATAR_FOLDER}/${index}.jpg`;
+  return `/avatar/avatar-${index}.svg`;
 }

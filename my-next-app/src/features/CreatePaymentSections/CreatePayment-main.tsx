@@ -7,19 +7,22 @@ import Sheet from "@/components/ui/Sheet";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
-import { RecordMode, CreatePaymentPayload, UpdatePaymentData } from "@/types/payment";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+
+import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCreatePayment } from "./hooks/useCreatePayment";
 import { useUpdatePayment } from "./hooks/useUpdatePayment";
 import { useDeletePayment } from "./hooks/useDeletePayment";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { RecordMode, CreatePaymentPayload, UpdatePaymentData } from "@/types/payment";
+
 
 interface CreatePaymentProps {
     open?: boolean;
     onClose: () => void;
     initialPayload?: UpdatePaymentData; //for update
 }
+
 
 export default function CreatePayment({
     open = true,
@@ -28,7 +31,7 @@ export default function CreatePayment({
     }:CreatePaymentProps){
     
     const isMobile = useIsMobile();
-    const {userData, projectData} = useGlobalProjectData();
+    const { userData, projectData} = useAuth();
     const {currentProjectUsers} = useCurrentProjectData();
     const currentUid = userData?.uid;
     const rawProjectId = useParams()?.projectId;
@@ -127,8 +130,17 @@ export default function CreatePayment({
     return(
         <Sheet open={open} onClose={onClose}>
             {(onClose) => (
-                <div className="w-full h-full overflow-hidden">
-                    <div id="receipt-form-header"  className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden`}>
+                <div className="w-full h-full overflow-hidden relative">
+                    {!isMobile && (
+                        <div className="fixed right-[-80px] bottom-[-80px] z-[-1] pointer-events-none">
+                            <img
+                                src="/flowerGif/flower-3.svg"
+                                alt="flower animation"
+                                className="w-120 h-120 object-contain"
+                            />
+                        </div>
+                    )}
+                    <div id="receipt-form-header"  className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden backdrop-blur-2xl`}>
                         <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
                         <p className="w-full text-xl font-medium truncate min-w-0"> {initialPayload ? '更新' : '新增'}{recordMode == 'split' ? '支出' : '轉帳'}</p>
                         {initialPayload && updatePayload && (
@@ -173,7 +185,7 @@ export default function CreatePayment({
                             </Button>
                         )}
                     </div>
-                    <div id="receipt-way" className={`w-full my-4 flex ${!isMobile && "max-w-xl"} bg-sp-white-20 rounded-xl`}>
+                    <div id="receipt-way" className={`w-full my-4 flex ${!isMobile && "max-w-xl"} bg-sp-white-20 rounded-xl backdrop-blur-2xl`}>
                         <Button
                             size='sm'
                             width='full'

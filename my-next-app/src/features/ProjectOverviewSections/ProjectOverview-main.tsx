@@ -11,16 +11,18 @@ import ProjectWiseSpilt from "./ProjectWiseSpiltDialog";
 import ProjectDetail from "./ProjectDetailDialog";
 import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
 import ReceiptCard from "../PaymentListSections/ReceiptCard";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import ProjectForm from "../CreateProjectSections/ProjectForm";
+
+import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
-import { getBudgetStatus } from "@/utils/renderBudgetHint";
-import { formatNumber } from "@/utils/parseNumber";
+
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useProjectStats, useUserStats } from "@/hooks/usePaymentStats";
 import { useAllSettlements,useMergedSettlements, useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 import { GetPaymentData } from "@/types/payment";
-import ProjectForm from "../CreateProjectSections/ProjectForm";
+import { getBudgetStatus } from "@/utils/renderBudgetHint";
+import { formatNumber } from "@/utils/parseNumber";
 
 export default function ProjectOverview(){
     const [isSelfExpenseDialogOpen, setIsSelfExpenseDialogOpen] = useState(false)
@@ -29,7 +31,7 @@ export default function ProjectOverview(){
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false); //open project to update 
     const [isReceiptCardOpen, setIsReceiptCardOpen] = useState<GetPaymentData | null>(null); //open payment list to update with data
     
-    const {userData} = useGlobalProjectData();
+    const {userData} = useAuth();
     const currentUserId = userData?.uid || "";
     const {currentProjectData:data, currentPaymentList:list, currentProjectUsers:userList} = useCurrentProjectData();
     const projectId = data?.id;

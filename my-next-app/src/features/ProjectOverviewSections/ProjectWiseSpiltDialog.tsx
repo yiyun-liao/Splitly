@@ -9,13 +9,14 @@ import Avatar from "@/components/ui/Avatar";
 import Icon from "@/components/ui/Icon";
 import ModalPortal from "@/components/ui/ModalPortal";
 
-import { UserData } from "@/types/user";
-import { CreatePaymentPayload } from "@/types/payment";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { useAuth } from '@/contexts/AuthContext';
+import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useAllSettlements,useMergedSettlements,useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 import { useCreatePayment } from "../CreatePaymentSections/hooks/useCreatePayment";
-import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+import { UserData } from "@/types/user";
+import { CreatePaymentPayload } from "@/types/payment";
 
 interface ProjectWiseSpiltProps {
     isProjectWiseSpiltOpen: boolean;
@@ -33,7 +34,7 @@ export default function ProjectWiseSpilt({
     const settleDetail = useAllSettlements();
     const settleSimpleDetail = useMergedSettlements(settleDetail);
     const settleWiseDetail = useSimplifiedSettlements(settleSimpleDetail);
-    const {userData} = useGlobalProjectData();
+    const {userData} = useAuth();
 
     // for create payment
     const { currentProjectData } = useCurrentProjectData();

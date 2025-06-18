@@ -1,9 +1,9 @@
 'use client'
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
-import Button from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { logInUser } from '@/lib/auth';
+import Button from '@/components/ui/Button';
 import ImageButton from '@/components/ui/ImageButton';
 import IconButton from '@/components/ui/IconButton';
 import RedirectDialog from '@/features/BasicLayout/RedirectDialog';
@@ -27,11 +27,12 @@ export default function LandingClient() {
         }
       }, [])
 
-    const redirect = searchParams.get('redirect')
-    const target = redirect
-        ? `/loading?redirect=${encodeURIComponent(redirect)}`
-        : '/loading'
-      
+
+    const redirect = searchParams.get('redirect') || '';
+    const decoded = decodeURIComponent(redirect);
+    const target = decoded  ? `/loading?redirect=${encodeURIComponent(decoded)}`  : '/loading';
+    const joinTarget = decoded  ? `${typeof window !== 'undefined' ? window.location.origin : ''}${decoded}`  : '/'; //保持原網址讓瀏覽器打開用
+    
     const handleLogin = async () => {
         if (inWebView) { 
             setIsRedirectDialog(true);
@@ -53,7 +54,7 @@ export default function LandingClient() {
                     <RedirectDialog
                         open={isRedirectDialog}
                         onClose={() => setIsRedirectDialog(false)}
-                        url={typeof window !== 'undefined' ? window.location.origin  : ''}
+                        url={joinTarget}
                     />            
                 )}
             </> 
@@ -76,11 +77,11 @@ export default function LandingClient() {
                 <div className='flex px-20 py-20 min-h-50 w-full max-w-[1400px] justify-between items-start'>
                     <div className="shrink-0">
                         <div className='flex items-center justify-start gap-2 pb-4'>
-                            <ImageButton
-                                image="https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG"
-                                size='sm'
-                                imageName= "Splitly"
-                            />
+                            <img
+                                    src="/logo/logo.svg"
+                                    alt="Splitly"
+                                    className="w-9 h-9 object-contain "
+                                />
                             <h1 className="text-xl font-medium">Splitly</h1>
                         </div>
                         <p className="text-base">您最佳的分帳工具</p>

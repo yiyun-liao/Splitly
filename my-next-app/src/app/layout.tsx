@@ -16,7 +16,7 @@ export const metadata = {
       url: 'https://splitly-steel.vercel.app',
       images: [
         {
-          url: 'https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG',
+          url: 'https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750256948/logo.png',
           width: 1200,
           height: 630,
           alt: 'Splitly Logo',
@@ -29,7 +29,7 @@ export const metadata = {
       card: 'summary_large_image',
       title: 'Splitly – 您最佳的分帳工具',
       description: 'Splitly 幫助您與朋友同事快速分帳、記帳，支援多種分帳方式。',
-      images: ['https://res.cloudinary.com/ddkkhfzuk/image/upload/logo/logo.JPG'],
+      images: ['https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750256948/logo.png'],
     },
   }
 

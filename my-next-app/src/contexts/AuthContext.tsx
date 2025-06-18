@@ -1,8 +1,8 @@
 //全域登入狀態紀錄 用在 my-next-app/src/hoc/withAuth.tsx
 'use client'
 import { createContext, useContext, useEffect, useMemo, useState, useRef } from "react";
-import toast from "react-hot-toast";
 import { useRouter, usePathname} from "next/navigation";
+import toast from "react-hot-toast";
 import { auth } from "../firebase.js";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { logInUser, logOutUser as signOutFromLib } from "@/lib/auth";
@@ -16,7 +16,6 @@ import { GetProjectData } from "@/types/project";
 import { buildProjectCoverUrl } from "@/utils/getProjectCover";
 
 import { clearUserCache } from "@/utils/cache";
-import { showInfoToast } from "@/utils/infoToast";
 
 type AuthContextType = {
     firebaseUser: User | null;     // Firebase 原始 user
@@ -58,12 +57,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const router = useRouter();
 
     const pathname = usePathname(); // 拿到當前路徑
-    const isJoinRoute = pathname === "/join";
+    const isJoinRoute = pathname === "/join"; //如果是 join 讓 LoginReadyGuard 處理
 
     const manualLogoutRef = useRef(false);
+
     const contextLogOutUser = async () => {
-            manualLogoutRef.current = true;
-        return await signOutFromLib();
+        manualLogoutRef.current = true;
+        return await signOutFromLib(); //回到頁面，頁面要處理個別 toast
     };
 
 
@@ -84,17 +84,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 setIsReady(true);
                 if (!manualLogoutRef.current) {
                     if (isJoinRoute) {
-                        showInfoToast("加入專案前請先登入");
+                        return null;
                     } else {
                         toast.error("權限失敗，請重新登入");
+                        console.log('Can not get auth, plz try again');
+                        manualLogoutRef.current = false;
+
+                        const success = await signOutFromLib();
+                        if (success){
+                            clearUserCache();
+                            router.replace('/');    
+                        }
                     }
-                }
-                manualLogoutRef.current = false;
-        
-                const success = await signOutFromLib();
-                if (success){
-                    clearUserCache();
-                    router.replace('/');    
                 }
                 return null;
             }
@@ -180,6 +181,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const isLoadedReady = useMemo(() => {
         return !!firebaseUser && !!userData && !!projectData;
       }, [firebaseUser, userData, projectData]);
+
+    console.log(isReady, isLoadedReady, firebaseUser, userData)
     
     return (
         <AuthContext.Provider

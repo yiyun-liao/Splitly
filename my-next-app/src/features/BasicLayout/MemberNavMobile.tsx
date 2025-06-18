@@ -5,8 +5,9 @@ import { usePathname } from 'next/navigation';
 
 import IconButton from "@/components/ui/IconButton";
 import CreatePayment from "../CreatePaymentSections/CreatePayment-main";
+
+import { useAuth } from '@/contexts/AuthContext';
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-import { useGlobalProjectData } from '@/contexts/GlobalProjectContext';
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
 export default function MemberNavMobile() {
@@ -14,7 +15,7 @@ export default function MemberNavMobile() {
     const pathname = usePathname();
     const { projectId, userId } = useParams();
 
-    const { projectData } = useGlobalProjectData();
+    const { projectData } =useAuth();
     const { currentProjectUsers} = useCurrentProjectData();
     
     const [isCreatePayment, setIsCreatePayment] = useState(false)

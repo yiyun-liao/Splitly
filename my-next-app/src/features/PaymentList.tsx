@@ -1,16 +1,14 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import clsx from "clsx";
-import toast from "react-hot-toast";
 
-import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import ReceiptCard from "./PaymentListSections/ReceiptCard";
 import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
  
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useScrollDirection } from '@/hooks/useScrollDirection';
@@ -29,8 +27,7 @@ export default function PaymentList(){
     
     // 處理卡片需要資料
     const { categoryOptions } = useCategoryOptions();
-
-    const {userData} = useGlobalProjectData();
+    const {userData} = useAuth();
     const currentUserId = userData?.uid || "";
 
     const {currentPaymentList:list, currentProjectUsers} = useCurrentProjectData();

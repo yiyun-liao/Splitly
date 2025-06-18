@@ -47,7 +47,7 @@ export default function ProjectForm({
 
     const [chooseCoverValue, setChooseCoverValue] = useState("");
     const [chooseCoverURLValue, setChooseCoverURLValue] = useState("");
-    const [inputProjectName, setInputProjectName] = useState("出去玩！");
+    const [inputProjectName, setInputProjectName] = useState("Have Fun！");
     const [inputStartTimeValue, setInputStartTimeValue] = useState(getNowDateLocal());
     const [inputEndTimeValue, setInputEndTimeValue] = useState("");
     const [chooseProjectStyle, setChooseProjectStyle] = useState<ProjectStyle>("travel");
@@ -194,8 +194,17 @@ export default function ProjectForm({
         <ModalPortal>
             <Sheet open={open} onClose={onClose}>
                 {(onClose) => (
-                    <div className="w-full h-full overflow-hidden">
-                        <div className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden`}>
+                    <div className="w-full h-full overflow-hidden relative">
+                        {!isMobile && (
+                        <div className="fixed right-[-80px] bottom-[-80px] z-[-1] pointer-events-none">
+                            <img
+                                src="/threeGif/three-1.svg"
+                                alt="flower animation"
+                                className="w-120 h-120 object-contain"
+                            />
+                        </div>
+                        )}
+                        <div className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden backdrop-blur-2xl`}>
                             <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
                             <p className="w-full text-xl font-medium truncate min-w-0">{sheetTitle}</p>
                             {initialProjectData ? (
@@ -228,7 +237,7 @@ export default function ProjectForm({
                             )}
                         </div>
                         <section className={`w-full px-1 h-full pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                            <div className={`w-full grid grid-cols-6 gap-2 ${!isMobile && "max-w-xl"}`}>
+                            <div className={`w-full grid grid-cols-6 gap-2 ${!isMobile && "max-w-xl"} backdrop-blur-2xl`}>
                                 <div className={formSpan(6)}>
                                     <span className={labelClass}>專案封面</span>
                                     <div  className="shrink-0" onClick={()=> setIsCoverPageSectionOpen(prev => (!prev))}>
