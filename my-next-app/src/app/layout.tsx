@@ -17,8 +17,8 @@ export const metadata = {
       images: [
         {
           url: 'https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750256948/logo.png',
-          width: 1200,
-          height: 630,
+          width: 400,
+          height: 400,
           alt: 'Splitly Logo',
         },
       ],

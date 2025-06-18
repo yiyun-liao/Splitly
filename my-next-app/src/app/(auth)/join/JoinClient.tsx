@@ -277,7 +277,7 @@ export default function JoinProjectPage() {
                         </div>
                     </div>
                 </div>
-                <div className='w-full flex flex-col gap-4 justify-center items-center min-h-40 pb-12 pt-8 border-t-1 border-zinc-300 text-zinc-700'>
+                <div className='w-full flex flex-col gap-4 justify-center items-center min-h-40 pb-24 pt-8 border-t-1 border-zinc-300 text-zinc-700'>
                     <div className='flex items-center justify-start gap-2'>
                         <img
                             src="/logo/logo.svg"

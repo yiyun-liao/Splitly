@@ -204,7 +204,7 @@ export default function ProjectForm({
                             />
                         </div>
                         )}
-                        <div className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden backdrop-blur-2xl`}>
+                        <div className={`shrink-0 w-full px-1 ${!isMobile && "max-w-xl backdrop-blur-2xl"} flex pt-1 pb-4 items-center gap-2 justify-start overflow-hidden`}>
                             <IconButton icon='solar:alt-arrow-left-line-duotone' size="sm" variant="text-button" color="zinc" type="button" onClick={onClose} />
                             <p className="w-full text-xl font-medium truncate min-w-0">{sheetTitle}</p>
                             {initialProjectData ? (
@@ -237,7 +237,7 @@ export default function ProjectForm({
                             )}
                         </div>
                         <section className={`w-full px-1 h-full pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                            <div className={`w-full grid grid-cols-6 gap-2 ${!isMobile && "max-w-xl"} backdrop-blur-2xl`}>
+                            <div className={`w-full grid grid-cols-6 gap-2 ${!isMobile && "max-w-xl backdrop-blur-2xl"} `}>
                                 <div className={formSpan(6)}>
                                     <span className={labelClass}>專案封面</span>
                                     <div  className="shrink-0" onClick={()=> setIsCoverPageSectionOpen(prev => (!prev))}>
