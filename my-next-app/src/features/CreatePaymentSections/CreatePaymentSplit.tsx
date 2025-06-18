@@ -521,7 +521,7 @@ export default function CreatePaymentSplit({
                                                     userName={userData?.name}
                                                     />
                                                 </div>
-                                                <p className="text-base truncate">{userData?.name}</p>
+                                                <p className="text-base truncate">{userData?.name}（自己）</p>
                                                 </div>
                                                 <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                                                 <p className="shrink-0 text-xl font-lg">${formatNumber(Number(inputAmountValue))}</p>
@@ -640,7 +640,7 @@ export default function CreatePaymentSplit({
                                                     userName={user.name}
                                                     />
                                                 </div>
-                                                <p className="text-base truncate">{user.name}</p>
+                                                <p className="text-base truncate">{user.name === userData?.name ? "你" : user.name}</p>
                                                 </div>
                                                 <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                                                 <p className="shrink-0 text-xl font-lg">${formatNumber(amount)}</p>
@@ -699,7 +699,7 @@ export default function CreatePaymentSplit({
                                                         userName={user.name}
                                                         />
                                                     </div>
-                                                    <p className="text-base truncate">{user.name}</p>
+                                                    <p className="text-base truncate">{user.name === userData?.name ? "你" : user.name}</p>
                                                 </div>
                                                 <div className="shrink-0 flex items-center justify-start gap-2 overflow-hidden">
                                                     <p className="shrink-0 text-xl font-lg">

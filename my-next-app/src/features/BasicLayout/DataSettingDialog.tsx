@@ -97,8 +97,8 @@ export default function DataSettingDialog({
                     </div>
                 </div>
                 <div className="w-fll p-8 flex flex-wrap gap-2  min-h-40 overflow-hidden rounded-r-2xl rounded-b-2xl bg-sp-blue-200">
-                    {Array.from({ length: 12 }, (_, index) => {
-                        const imgUrl = `https://res.cloudinary.com/ddkkhfzuk/image/upload/avatar/${index + 1}.jpg`;
+                    {Array.from({ length: 15 }, (_, index) => {
+                        const imgUrl = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750175833/avatar/${index + 1}.jpg`;
                         const isSelected = index === parseInt(chooseAvatarValue) - 1;
                         return (
                             <div key={index} 

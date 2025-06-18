@@ -258,7 +258,7 @@ export default function ProjectOverview(){
                                             </div>
                                             <p className="text-xs w-fll  truncate">{debtor?.name}</p>
                                         </div>
-                                        <div className="w-full text-center flex flex-col items-center justify-start overflow-hidden -space-y-3">
+                                        <div className="w-full text-center flex flex-col items-start justify-start overflow-hidden -space-y-3">
                                             <p className="text-sm whitespace-nowrap truncate">須還款</p>
                                             <div className="w-full flex items-center justify-start -space-x-4.5 text-sp-blue-500">
                                                 <div className="w-full flex-1 h-0.5 bg-sp-blue-500"></div>
@@ -278,7 +278,7 @@ export default function ProjectOverview(){
                                                     userName = {creditor?.name}
                                                 />
                                             </div>
-                                            <p className="text-xs w-fll  truncate">{creditor?.name}</p>
+                                            <p className="text-xs w-fll  truncate">{creditor?.name === userData?.name ? "你" : creditor?.name }</p>
                                         </div>                                       
                                     </div>
                                 )}

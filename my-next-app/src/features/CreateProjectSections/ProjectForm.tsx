@@ -183,10 +183,10 @@ export default function ProjectForm({
     });
 
     // css
-    const formSpan = (cols: number) => clsx("shrink-0 flex flex-col gap-2 items-start justify-start mt-2 min-w-0",{
-        [`col-span-${cols}`]: !isMobile,
-        "col-span-6" : isMobile,
-    });
+    const formSpan = (cols: number) => clsx(
+        isMobile ? "col-span-6" : `col-span-${cols}`,
+        "shrink-0 flex flex-col gap-2 items-start justify-start mt-2 min-w-0",
+    );
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const labelClass = clsx("w-full font-medium truncate")
 
@@ -241,8 +241,8 @@ export default function ProjectForm({
                                 </div>
                                 {isCoverPageSectionOpen && (
                                     <div className={`col-span-6 p-8 flex flex-wrap gap-2  min-h-40 overflow-hidden rounded-r-2xl rounded-b-2xl bg-sp-white-40`}>
-                                        {Array.from({ length: 12 }, (_, index) => {
-                                            const imgUrl = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1749526499/projectCover/${index + 1}.jpg`;
+                                        {Array.from({ length: 16 }, (_, index) => {
+                                            const imgUrl = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750164850/${index + 1}.jpg`;
                                             const isSelected = index === parseInt(chooseCoverValue) - 1;
                                             return (
                                                 <div key={index} 
@@ -258,7 +258,7 @@ export default function ProjectForm({
                                                     <ImageButton
                                                         image={imgUrl}
                                                         size='md'
-                                                        imageName= "素材"
+                                                        imageName= "Project Cover"
                                                     />                                            
                                                 </div>
                                             );
