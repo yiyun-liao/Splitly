@@ -379,7 +379,7 @@ export default function CreatePaymentSplit({
         )
 
         return(
-            <div className="w-full h-full pb-20 mb-20">
+            <div className="w-full h-full pb-20 mb-20 ">
                 <div>
                     {isCategoryOpen &&
                         <CategoryDialog
@@ -430,7 +430,7 @@ export default function CreatePaymentSplit({
                     }
                 </div>
                 <section className={`w-full px-1 h-full pb-20 mb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                    <div className={`w-full ${!isMobile && "max-w-xl"}`}>
+                    <div className={`w-full ${!isMobile && "max-w-xl"} backdrop-blur-xl`}>
                         <div className='w-full flex gap-2 items-center justify-end pb-2'>
                             <div className="w-full flex items-center justify-start gap-2">
                                 <span className="font-medium truncate">專案</span>

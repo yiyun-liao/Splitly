@@ -184,12 +184,39 @@ export default function CreatePaymentDebt({
                     }
                 </div>
                 <section  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                    <div className={`w-full grid grid-cols-3 gap-2 px-1 ${!isMobile && "max-w-xl"}`}>
+                    <div className={`w-full grid grid-cols-3 gap-2 px-1 ${!isMobile && "max-w-xl"} backdrop-blur-xl`}>
                         <div className={`pb-5 ${formSpan3CLass}`}>
                             <div className="w-full flex items-center justify-start gap-2">
                                 <span className="font-medium truncate">專案</span>
                                 <span className="font-medium truncate text-sp-blue-500">{projectName}</span>
                             </div>
+                        </div>
+                        <div className={formSpan1CLass}>
+                            <span className={labelClass}>費用</span>
+                            <Select
+                                value={selectCurrencyValue}
+                                required={true}
+                                placeholder="點擊選擇"
+                                onChange={(e) => setSelectedCurrencyValue(e.target.value)}
+                                flexDirection="row"
+                                width="full"
+                                disabled = {true}
+                                options={[
+                                    { label: "TWD", value: "TWD" , disabled: true}
+                                ]}
+                            />
+                        </div>
+                        <div className={formSpan2CLass}>
+                            <Input
+                            value={inputDebtAmountValue}
+                            type="number"
+                            onChange={(e)=>{handleDebtAmountChange(e.target.value)}}
+                            flexDirection="row"
+                            width="full"
+                            placeholder="點擊編輯"
+                            step="0.01"
+                            inputMode="decimal"                                         
+                            />
                         </div>
                         <div className={`pb-5 ${formSpan3CLass}`}>
                             <div className="w-full flex items-center justify-start gap-2">
@@ -221,34 +248,7 @@ export default function CreatePaymentDebt({
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className={formSpan1CLass}>
-                            <span className={labelClass}>費用</span>
-                            <Select
-                                value={selectCurrencyValue}
-                                required={true}
-                                placeholder="點擊選擇"
-                                onChange={(e) => setSelectedCurrencyValue(e.target.value)}
-                                flexDirection="row"
-                                width="full"
-                                disabled = {true}
-                                options={[
-                                    { label: "TWD", value: "TWD" , disabled: true}
-                                ]}
-                            />
-                        </div>
-                        <div className={formSpan2CLass}>
-                            <Input
-                            value={inputDebtAmountValue}
-                            type="number"
-                            onChange={(e)=>{handleDebtAmountChange(e.target.value)}}
-                            flexDirection="row"
-                            width="full"
-                            placeholder="點擊編輯"
-                            step="0.01"
-                            inputMode="decimal"                                         
-                            />
-                        </div>
+                        </div>                        
                         <div className={`pb-5 ${formSpan3CLass}`}>
                             <div className="w-full flex items-center justify-start gap-2">
                                 <span className={labelClass}>收款人</span>
