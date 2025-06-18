@@ -1,20 +1,16 @@
 // "use client";
-import { Suspense } from "react";
-// import JoinProjectPage from "./JoinClient";
-import { LoadingScreen } from '@/components/layout/LoadingScreen';
-import dynamic from "next/dynamic";
+// import { Suspense } from "react";
+import JoinProjectPage from "./JoinClient";
+import ClientOnly from "@/components/ClientOnly";
+import { LoadingScreen } from "@/components/layout/LoadingScreen";
 
-// dynamically import the client-only component
-const JoinClient = dynamic(() => import("./JoinClient"), {
-    ssr: false,
-});
 
 export default function JoinPage() {
 return (
-    <Suspense fallback={<LoadingScreen text="載入參加中…" />}>
+    <ClientOnly>
         <div style={{ height: "100vh" }}>
-            <JoinClient />
+            <JoinProjectPage />
         </div>
-    </Suspense>
+    </ClientOnly>
 );
 }
