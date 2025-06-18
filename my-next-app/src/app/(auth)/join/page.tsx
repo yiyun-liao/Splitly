@@ -1,16 +1,14 @@
-// "use client";
-// import { Suspense } from "react";
+"use client";
+import { Suspense } from "react";
 import JoinProjectPage from "./JoinClient";
-import ClientOnly from "@/components/ClientOnly";
-import { LoadingScreen } from "@/components/layout/LoadingScreen";
-
+import { LoadingScreen } from '@/components/layout/LoadingScreen';
 
 export default function JoinPage() {
 return (
-    <ClientOnly>
+    <Suspense fallback={<LoadingScreen text="載入參加中…" />}>
         <div style={{ height: "100vh" }}>
             <JoinProjectPage />
         </div>
-    </ClientOnly>
+    </Suspense>
 );
 }

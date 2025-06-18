@@ -26,11 +26,10 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 export default function JoinProjectPage() {
     const searchParams = useSearchParams();
     const projectId = searchParams.get("pid");
-    console.log('pid', projectId)
     const router = useRouter();
     const isMobile = useIsMobile();
 
-    const { firebaseUser, userData, isLoadedReady, isReady } = useAuth();
+    const { firebaseUser, userData, isLoadedReady } = useAuth();
     const currentUid : string = userData?.uid || "";
 
     const [joinProject, setJoinProject] = useState<GetProjectData>();
@@ -38,23 +37,6 @@ export default function JoinProjectPage() {
     const [addMemberBudget, setAddMemberBudget] = useState<MemberBudgetMap>(() => ({ [currentUid]: undefined }));
     const [joined, setJoined] = useState(false);
     const [error, setError] = useState("");
-
-    // console.log(firebaseUser, userData, isLoadedReady)
-    // // check customer is member already
-    // useEffect(() => {
-    //     if (!projectId){
-    //         alert('無效的邀請連結，請重新索取或是建立自己的專案！')
-    //         router.push(`/`);
-    //     }
-    //     if (!isReady) return;
-
-    //     if (!firebaseUser || !userData) {
-    //         showInfoToast("加入專案前請先登入 tttt");
-    //         const redirect = `/join?pid=${projectId}`;
-    //         console.log(`/?redirect=${encodeURIComponent(redirect)}`)
-    //         router.push(`/?redirect=${encodeURIComponent(redirect)}`);
-    //     }
-    // }, [isReady, firebaseUser, userData, projectId, router]);
 
 
     // get current project data
