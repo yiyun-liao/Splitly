@@ -7,15 +7,14 @@ import Sheet from "@/components/ui/Sheet";
 import IconButton from "@/components/ui/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
-import { RecordMode, CreatePaymentPayload, UpdatePaymentData } from "@/types/payment";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+
+import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCreatePayment } from "./hooks/useCreatePayment";
 import { useUpdatePayment } from "./hooks/useUpdatePayment";
 import { useDeletePayment } from "./hooks/useDeletePayment";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { FlowerGif } from "@/components/gif/flowerGif";
-
+import { RecordMode, CreatePaymentPayload, UpdatePaymentData } from "@/types/payment";
 
 
 interface CreatePaymentProps {
@@ -32,7 +31,7 @@ export default function CreatePayment({
     }:CreatePaymentProps){
     
     const isMobile = useIsMobile();
-    const {userData, projectData} = useGlobalProjectData();
+    const { userData, projectData} = useAuth();
     const {currentProjectUsers} = useCurrentProjectData();
     const currentUid = userData?.uid;
     const rawProjectId = useParams()?.projectId;

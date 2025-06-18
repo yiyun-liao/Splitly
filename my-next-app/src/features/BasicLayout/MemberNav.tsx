@@ -1,15 +1,15 @@
 "use client"; 
+import clsx from "clsx";
 import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
-import clsx from "clsx";
 import toast from 'react-hot-toast';
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton"
 import CreateProject from "../CreateProjectSections/CreateProject-main";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
-import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
+
 import { useAuth } from '@/contexts/AuthContext';
+import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 import { clearUserCache } from "@/utils/cache";
 
 
@@ -18,11 +18,11 @@ interface MemberNavProps {
 }
 
 export default function MemberNav({setNavWidth}:MemberNavProps) {
-    const {logOutUser} = useAuth();
+    const {logOutUser, projectData, userData} = useAuth();
+
     const router = useRouter();
     const pathname = usePathname();
     const { projectId, userId } = useParams();
-    const {projectData, userData} = useGlobalProjectData();
     const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath") || projectData?.[0]?.id;
 
     const [navStyle, setNavStyle] = useState<"contraction" | "expansion">("contraction")

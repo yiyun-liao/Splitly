@@ -1,9 +1,9 @@
 import Avatar from "@/components/ui/Avatar"
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 export default function SettingMemberHeader(){
-    const { userData,} = useGlobalProjectData();
+    const { userData} = useAuth();
     
     return(
         <div id="dashboard-header"  className="min-h-13 md:min-h-18 flex items-center gap-2 w-full box-border justify-between px-6 py-2">

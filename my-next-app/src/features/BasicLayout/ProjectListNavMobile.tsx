@@ -6,7 +6,8 @@ import clsx from "clsx";
 import ModalPortal from "@/components/ui/ModalPortal";
 import ImageButton from "@/components/ui/ImageButton";
 import IconButton from "@/components/ui/IconButton";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+
+import { useAuth } from "@/contexts/AuthContext";
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 
 
@@ -21,7 +22,7 @@ export default function ProjectListNavMobile({
 }:ProjectListNavMobileProps){
     const router = useRouter();
     const { projectId, userId } = useParams();
-    const {projectData} = useGlobalProjectData()
+    const { projectData} = useAuth();
     const [lastPath, setLastPath] = useState<string | null>(null);
 
 

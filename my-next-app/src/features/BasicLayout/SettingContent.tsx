@@ -6,16 +6,15 @@ import toast from "react-hot-toast";
 import Button from "@/components/ui/Button";
 import ImageButton from "@/components/ui/ImageButton";
 import IconButton from "@/components/ui/IconButton";
+import DataSettingDialog from "./DataSettingDialog";
+
 import { useAuth } from "@/contexts/AuthContext";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { clearUserCache } from "@/utils/cache";
-import DataSettingDialog from "./DataSettingDialog";
 
 export default function SettingContent(){
     const router = useRouter();
-    const { logOutUser } = useAuth(); 
-    const { userData,projectData} = useGlobalProjectData();
+    const { logOutUser, userData, projectData } = useAuth(); 
     const isMobile = useIsMobile();
     const [isSettingDialogOpen, setIsSettingDialogOpen] = useState(false)
     

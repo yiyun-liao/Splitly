@@ -9,15 +9,16 @@ import { useParams, useRouter } from 'next/navigation';
 import { useMemo,useState } from "react";
 import clsx from "clsx";
 
-import { UserData } from "@/types/user";
-import { CreatePaymentPayload } from "@/types/payment";
-import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
+
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useGroupedByParentCategory } from "@/hooks/usePaymentStats";
 import { useCreatePayment } from "../CreatePaymentSections/hooks/useCreatePayment";
-import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useAllSettlements,useMergedSettlements,useSimplifiedSettlements } from "@/hooks/useSettleDebts";
 import { formatDate } from "@/utils/formatTime";
+import { UserData } from "@/types/user";
+import { CreatePaymentPayload } from "@/types/payment";
 
 interface ProjectSettleDetailProps {
     isSelfExpenseOpen: boolean;
@@ -34,7 +35,7 @@ export default function ProjectSettleDetail({
     const settleDetail = useAllSettlements();
     const settleSimpleDetail = useMergedSettlements(settleDetail);
     const settleWiseDetail = useSimplifiedSettlements(settleSimpleDetail)
-    const {userData} = useGlobalProjectData();
+    const {userData} = useAuth();
     
     // for create payment
     const { currentProjectData } = useCurrentProjectData();
