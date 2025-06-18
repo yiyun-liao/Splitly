@@ -1,3 +1,4 @@
+// "use client";
 // import { Suspense } from "react";
 // import JoinProjectPage from "./JoinClient";
 import { LoadingScreen } from '@/components/layout/LoadingScreen';
@@ -12,6 +13,7 @@ import { LoadingScreen } from '@/components/layout/LoadingScreen';
 // );
 // }
 
+// src/app/(auth)/join/page.tsx
 import dynamic from 'next/dynamic'
 
 // 動態載 client component，並在載入時顯示 LoadingScreen
