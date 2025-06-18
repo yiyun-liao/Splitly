@@ -6,7 +6,7 @@ import { LoadingScreen } from '@/components/layout/LoadingScreen';
 export default function JoinPage() {
 return (
     <Suspense fallback={<LoadingScreen text="載入參加中…" />}>
-        <div style={{ height: "var(100vh)" }}>
+        <div style={{ height: "100vh" }}>
             <JoinProjectPage />
         </div>
     </Suspense>

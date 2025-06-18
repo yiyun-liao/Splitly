@@ -47,7 +47,7 @@ export default function ProjectForm({
 
     const [chooseCoverValue, setChooseCoverValue] = useState("");
     const [chooseCoverURLValue, setChooseCoverURLValue] = useState("");
-    const [inputProjectName, setInputProjectName] = useState("出去玩！");
+    const [inputProjectName, setInputProjectName] = useState("Have Fun！");
     const [inputStartTimeValue, setInputStartTimeValue] = useState(getNowDateLocal());
     const [inputEndTimeValue, setInputEndTimeValue] = useState("");
     const [chooseProjectStyle, setChooseProjectStyle] = useState<ProjectStyle>("travel");

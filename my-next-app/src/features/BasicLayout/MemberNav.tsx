@@ -3,18 +3,22 @@ import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import clsx from "clsx";
-
+import toast from 'react-hot-toast';
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton"
 import CreateProject from "../CreateProjectSections/CreateProject-main";
 import { useGlobalProjectData } from "@/contexts/GlobalProjectContext";
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
+import { useAuth } from '@/contexts/AuthContext';
+import { clearUserCache } from "@/utils/cache";
+
 
 interface MemberNavProps {
     setNavWidth:(width: number) => void; 
 }
 
 export default function MemberNav({setNavWidth}:MemberNavProps) {
+    const {logOutUser} = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const { projectId, userId } = useParams();
@@ -34,6 +38,15 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
         else if (pathname.includes("/expense")) setActivePath("expense");
     }, [pathname]);
 
+    async function handleLogout() {
+        const success = await logOutUser();
+        if (success){
+            console.log('Bye Bye 👋🏻');
+            toast.success('Bye Bye 👋🏻')
+            clearUserCache();
+            router.replace('/');    
+        }
+    }
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const navStyleClass = clsx("box-border py-4 flex flex-col justify-start gap-2 bg-sp-white-40",
@@ -69,6 +82,16 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
     const navSetting = () => (
         <>
             <div id="nav-setting" className={`${navStyle == 'expansion' ? "flex-row items-start justify-between": "flex-col items-center justify-start"} w-full flex gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
+                {navStyle === 'expansion' &&(
+                    <IconButton
+                    icon='solar:logout-2-bold'
+                    size='md'
+                    variant='text-button'
+                    color='primary'
+                    type= 'button'
+                    onClick={handleLogout}
+                    />           
+                )}  
                 <IconButton
                     icon='solar:user-bold'
                     size='md'
@@ -76,9 +99,9 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                     color='primary'
                     type= 'button'
                     onClick={() => router.push(`/${userId}/setting`)}
-                />            
+                />
                 <IconButton
-                    icon={navStyle === 'contraction' ? 'solar:square-double-alt-arrow-right-outline' : "solar:square-double-alt-arrow-left-outline"}
+                    icon={navStyle === 'contraction' ? 'solar:maximize-outline' : "solar:minimize-outline"}
                     size='md'
                     variant='text-button'
                     color='primary'
