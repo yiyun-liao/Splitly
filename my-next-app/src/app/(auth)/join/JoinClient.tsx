@@ -26,10 +26,11 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 export default function JoinProjectPage() {
     const searchParams = useSearchParams();
     const projectId = searchParams.get("pid");
+    console.log('pid', projectId)
     const router = useRouter();
     const isMobile = useIsMobile();
 
-    const { firebaseUser, userData, isLoadedReady } = useAuth();
+    const { firebaseUser, userData, isLoadedReady, isReady } = useAuth();
     const currentUid : string = userData?.uid || "";
 
     const [joinProject, setJoinProject] = useState<GetProjectData>();
@@ -38,21 +39,22 @@ export default function JoinProjectPage() {
     const [joined, setJoined] = useState(false);
     const [error, setError] = useState("");
 
+    // console.log(firebaseUser, userData, isLoadedReady)
+    // // check customer is member already
+    // useEffect(() => {
+    //     if (!projectId){
+    //         alert('無效的邀請連結，請重新索取或是建立自己的專案！')
+    //         router.push(`/`);
+    //     }
+    //     if (!isReady) return;
 
-    // check customer is member already
-    useEffect(() => {
-        if (!projectId){
-            alert('無效的邀請連結，請重新索取或是建立自己的專案！')
-            router.push(`/`);
-        }
-        if (!isLoadedReady || !projectId) return;
-
-        if (!firebaseUser || !userData) {
-            showInfoToast("加入專案前請先登入");
-            const redirect = `/join?pid=${projectId}`;
-            router.push(`/?redirect=${encodeURIComponent(redirect)}`);
-        }
-    }, [isLoadedReady, firebaseUser, userData, projectId, router]);
+    //     if (!firebaseUser || !userData) {
+    //         showInfoToast("加入專案前請先登入 tttt");
+    //         const redirect = `/join?pid=${projectId}`;
+    //         console.log(`/?redirect=${encodeURIComponent(redirect)}`)
+    //         router.push(`/?redirect=${encodeURIComponent(redirect)}`);
+    //     }
+    // }, [isReady, firebaseUser, userData, projectId, router]);
 
 
     // get current project data
@@ -136,12 +138,12 @@ export default function JoinProjectPage() {
         <div className={`h-full text-zinc-700 ${scrollClass}`} >
             <div>
                 {!isMobile && (
-                    <div className="w-full h-full relative">
+                    <div className="w-full h-full relative ">
                         <div className="fixed left-[-80px] top-[-80px] z-[-1] pointer-events-none">
                             <img
                                 src="/join/join-tl.svg"
                                 alt="flower animation"
-                                className="w-80 h-80 object-contain"
+                                className="w-80 h-80 object-contain "
                             />
                         </div>
                         <div className="fixed right-[-80px] top-[-80px] z-[-1] pointer-events-none">

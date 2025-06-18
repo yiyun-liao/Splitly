@@ -1,45 +1,44 @@
 'use client';
 import { LogInScreen } from "./LogInScreen";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
-import { logOutUser } from "@/lib/auth";
-import { clearUserCache } from "@/utils/cache";
-import toast from "react-hot-toast";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { showInfoToast } from "@/utils/infoToast";
 
 
-async function logOut(){
-    const success = await logOutUser();
-    if (success){
-        clearUserCache();
-        console.log('Can not get auth, plz try again');
-        return success;
-    }else{
-        return null;
-    }
-}
 
 export function LogInReadyGuard({ children }: { children: React.ReactNode }) {
+    const pathname = usePathname(); // 拿到當前路徑
+    const isJoinRoute = pathname === "/join";
+    const searchParams = useSearchParams();
+    const projectId = searchParams.get("pid");
     const router = useRouter()
 
-    const { firebaseUser, isLoadedReady:myDataReady, userData, projectData } = useAuth();
+    const { isLoadedReady:myDataReady, isReady, userData } = useAuth();
     // console.log(`login ing ... authReady: ${myDataReady},projectData: ${projectData}, userData: ${userData}`)
 
-    const isLogInReady = myDataReady  && !!userData && !!projectData;
+    // 登入失敗：代表已經嘗試過載入（isReady=true），卻拿不到 userData/projectData
+    const isLogInFail = isReady && userData === null;
 
-    if (isLogInReady === true){
-        console.log("Login success 🏖️");
-    } 
-
-    if (!isLogInReady) return <LogInScreen text="正在檢查登入狀態…"/>;
-
-    if (!firebaseUser) {
-        toast.error('權限失敗，請重新登入')
-        const success = logOut();
-        if (!!success){
-            clearUserCache();
-            router.replace('/');    
+    // 處理 join 頁面
+    useEffect(() => {
+        if (!isJoinRoute)return
+        if (!isReady) return;
+        if (!projectId){
+            alert('無效的邀請連結，請重新索取或是建立自己的專案！')
+            router.push(`/`);
         }
-        return null;        
+
+        if (isLogInFail) {
+            showInfoToast("加入專案前請先登入");
+            const redirect = `/join?pid=${projectId}`;
+            router.push(`/?redirect=${encodeURIComponent(redirect)}`);
+        }
+    }, [isReady, projectId, router, isLogInFail, isJoinRoute]);
+
+    // 還在初始化階段，顯示檢查畫面
+    if (!myDataReady) {
+        return <LogInScreen text="正在檢查登入狀態…" />;
     }
 
     return <>{children}</>;

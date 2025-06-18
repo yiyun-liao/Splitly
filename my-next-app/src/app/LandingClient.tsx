@@ -1,9 +1,10 @@
 'use client'
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
-import Button from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
+
 import { logInUser } from '@/lib/auth';
+import Button from '@/components/ui/Button';
 import ImageButton from '@/components/ui/ImageButton';
 import IconButton from '@/components/ui/IconButton';
 import RedirectDialog from '@/features/BasicLayout/RedirectDialog';
@@ -27,11 +28,12 @@ export default function LandingClient() {
         }
       }, [])
 
-    const redirect = searchParams.get('redirect')
-    const target = redirect
-        ? `/loading?redirect=${encodeURIComponent(redirect)}`
-        : '/loading'
-      
+
+    const redirect = searchParams.get('redirect') || '';
+    const decoded = decodeURIComponent(redirect);
+    const target = decoded  ? `/loading?redirect=${encodeURIComponent(decoded)}`  : '/loading';
+    const joinTarget = decoded  ? `${typeof window !== 'undefined' ? window.location.origin : ''}${decoded}`  : '/'; //保持原網址讓瀏覽器打開用
+    
     const handleLogin = async () => {
         if (inWebView) { 
             setIsRedirectDialog(true);
@@ -53,7 +55,7 @@ export default function LandingClient() {
                     <RedirectDialog
                         open={isRedirectDialog}
                         onClose={() => setIsRedirectDialog(false)}
-                        url={typeof window !== 'undefined' ? window.location.origin  : ''}
+                        url={joinTarget}
                     />            
                 )}
             </> 
