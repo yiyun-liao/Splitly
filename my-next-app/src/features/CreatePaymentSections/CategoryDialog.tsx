@@ -42,7 +42,7 @@ export default function CategoryDialog({
     const renderBody = () => {
         return(
             <div className="flex flex-col gap-4">
-                <div className={`w-hug max-w-full flex items-center justify-start gap-2 bg-sp-blue-200 rounded-2xl ${scrollXClass}`}>
+                <div className={`w-hug max-w-full flex items-center bg-sp-blue-200 rounded-2xl ${scrollXClass} ${isMobile ? 'justify-start' : 'justify-center'}`}>
                     {grouped.map(cat =>{ 
                         const isSelected = selectedParentId === cat.id
                         const Icon = cat.icon
@@ -60,7 +60,7 @@ export default function CategoryDialog({
                             </div>
                     )})}
                 </div>
-                <div className="w-full flex gap-2 flex-wrap">
+                <div className={`w-full flex flex-wrap ${scrollXClass} ${isMobile ? 'justify-start' : 'justify-center'}`}>
                     {parent?.children.map(child => {
                         const isSelected = parseFloat(selectedCategoryValue) === child.id
                         const Icon = child.icon
