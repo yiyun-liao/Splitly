@@ -1,9 +1,9 @@
 import Dialog from "@/components/ui/Dialog";
 import IconButton from "@/components/ui/IconButton";
-import ImageButton from "@/components/ui/ImageButton";
 import ModalPortal from "@/components/ui/ModalPortal";
 
 import clsx from "clsx";
+import type { IconProps } from '@phosphor-icons/react';
 import { useEffect } from "react";
 import { CategoryGrouped } from "@/types/category";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -17,7 +17,7 @@ interface CategoryDialogProps {
     setSelectedParentId: (id: number | null) => void
     selectedCategoryValue:string;
     setSelectedCategoryValue: (value: string) => void
-    setSelectedCategoryURLValue: (url: string) => void
+    setSelectedCategoryIconValue: (icon: React.ComponentType<IconProps>) => void
 }
 
 export default function CategoryDialog({
@@ -28,7 +28,7 @@ export default function CategoryDialog({
         setSelectedParentId,
         selectedCategoryValue,
         setSelectedCategoryValue,
-        setSelectedCategoryURLValue,
+        setSelectedCategoryIconValue,
     }:CategoryDialogProps){
     const isMobile = useIsMobile();
     useEffect(() => {
@@ -42,56 +42,44 @@ export default function CategoryDialog({
     const renderBody = () => {
         return(
             <div className="flex flex-col gap-4">
-                <div className={`w-full flex items-center justify-start gap-2 p-2 bg-sp-blue-200 rounded-2xl ${scrollXClass}`}>
+                <div className={`w-hug max-w-full flex items-center justify-start gap-2 bg-sp-blue-200 rounded-2xl ${scrollXClass}`}>
                     {grouped.map(cat =>{ 
                         const isSelected = selectedParentId === cat.id
+                        const Icon = cat.icon
                         return(
                             <div key={cat.id} 
-                                className={clsx("min-w-20 flex flex-col gap-1 items-center justify-center cursor-pointer rounded-xl overflow-hidden hover:bg-sp-blue-300", {
+                                className={clsx("min-w-22 flex flex-col items-center justify-center cursor-pointer rounded-xl overflow-hidden hover:bg-sp-blue-300", {
                                     "bg-sp-blue-300": isSelected,
                                 })}
                                 onClick={() => setSelectedParentId(cat.id)}
                             >
                                 <div className="shrink-0 w-12 h-12 flex items-center justify-center">
-                                    <ImageButton
-                                        image={cat.imgURL}
-                                        size="sm"
-                                        imageName={cat.name_zh}
-                                        onClick={()=> {}}
-                                    />
+                                    {Icon && (<Icon weight="duotone" size={28} color="#2e67a7" />)}
                                 </div>
-                                <p className="w-full text-sm truncate text-center">{cat.name_zh}</p>
+                                <p className="w-full text-sm truncate text-center pb-2">{cat.name_zh}</p>
                             </div>
                     )})}
                 </div>
-                <div className={clsx("w-full grid gap-2",{
-                    "grid-cols-5 p-2": !isMobile,
-                    "grid-cols-4": isMobile
-                })}>
+                <div className="w-full flex gap-2 flex-wrap">
                     {parent?.children.map(child => {
                         const isSelected = parseFloat(selectedCategoryValue) === child.id
-
+                        const Icon = child.icon
                         return(
                             <div
                                 key={child.id}
-                                className={clsx("flex flex-col gap-1 items-center justify-center cursor-pointer rounded-xl overflow-hidden hover:bg-sp-blue-200",{
+                                className={clsx("min-w-22 flex flex-col items-center justify-center cursor-pointer rounded-xl overflow-hidden hover:bg-sp-blue-200",{
                                     "bg-sp-blue-200": isSelected,
-                                    "min-w-20": !isMobile,
                                 })}
                                 onClick={() => {
                                     setSelectedCategoryValue(child.id.toString())
-                                    setSelectedCategoryURLValue(child.imgURL ?? "")
+                                    setSelectedCategoryIconValue(child.icon!)
                                     onClose()
                                 }}
                             >
                                 <div className="shrink-0 w-12 h-12 flex items-center justify-center">
-                                    <ImageButton 
-                                        image={child.imgURL} 
-                                        size="sm" 
-                                        imageName={child.name_zh} 
-                                    />
+                                    {Icon && (<Icon weight="duotone" size={28} color="#2e67a7" />)}
                                 </div>
-                                <p className="w-full text-sm truncate text-center">{child.name_zh}</p>
+                                <p className="w-full text-sm truncate text-center pb-2">{child.name_zh}</p>
                             </div>
                         )
                     })}

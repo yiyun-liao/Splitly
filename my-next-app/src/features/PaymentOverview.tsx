@@ -2,13 +2,14 @@
 
 import clsx from "clsx";
 import {  useRef, useState, useMemo } from "react";
+import type { IconProps } from '@phosphor-icons/react';
+
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
 
 import Button from "@/components/ui/Button"
-import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton";
 import ReceiptCardByCat from "./PaymentListSections/ReceiptCardByCat";
 import CreatePayment from "./CreatePaymentSections/CreatePayment-main";
@@ -24,7 +25,7 @@ type CategorySectionProps = {
     totalCat:number
     cat: {
         id: number;
-        imgURL: string;
+        icon:React.ComponentType<IconProps> ;
         name_en: string;
         name_zh: string;
         totalAmount: number;
@@ -52,7 +53,7 @@ function CategorySection({ idx, cat,totalCat, openCatListIndex, onToggle, userId
         <div className="w-full relative">
             <div className={catParentClass} onClick={onToggle}>
                 <div className="flex items-center gap-2 flex-1">
-                    <ImageButton image={cat.imgURL} size="md" imageName={cat.name_en} />
+                    <IconButton icon={cat.icon} size='md' variant= {isOpen ? 'solid' : 'text-button'} color='primary'/>
                     <p className="text-base font-semibold truncate">{cat.name_zh}</p>
                 </div>
                 <div className="shrink-0 text-right overflow-hidden">
@@ -112,17 +113,17 @@ export default function PaymentOverview(){
 
     const statsWithGroups = useMemo(() => {
         return stats.map(cat => {
-          const grouped: Record<string, GetPaymentData[]> = {};
-          cat.payments.forEach(p => {
-            const key = new Date(p.time).toISOString().slice(0, 10);
-            (grouped[key] ||= []).push(p);
-          });
-          const sortedDates = Object.keys(grouped).sort((a, b) => +new Date(b) - +new Date(a));
-          return { ...cat, groupedPayments: grouped, sortedDates };
+            const grouped: Record<string, GetPaymentData[]> = {};
+            cat.payments.forEach(p => {
+                const key = new Date(p.time).toISOString().slice(0, 10);
+                (grouped[key] ||= []).push(p);
+            });
+            const sortedDates = Object.keys(grouped).sort((a, b) => +new Date(b) - +new Date(a));
+            return { ...cat, groupedPayments: grouped, sortedDates };
         });
     }, [stats]);
+    // console.log(stats)
 
-    console.log(stats)
     // css
     const isMobile = useIsMobile();
     // 計算位移收合
@@ -152,7 +153,7 @@ export default function PaymentOverview(){
                     />
                 )}
             </>
-            <div id="Expense-splitting" className={headerClass} style={{opacity: isScrolled ? 0 : 1}}>
+            <div id="Expense-splitting" className={headerClass} style={{opacity: (isScrolled && isMobile) ? 0 : 1}}>
                 <Button
                     size='sm'
                     width='full'
@@ -174,7 +175,7 @@ export default function PaymentOverview(){
                         個人支出
                 </Button>
             </div>
-            <div ref={scrollRef} className={`flex-1 ${scrollClass} `}>
+            <div ref={scrollRef} className={`flex-1 rounded-2xl overflow-hidden bg-sp-blue-200 ${scrollClass} `}>
                 <div id="expense-list" className={` py-3 rounded-2xl h-fit  ${!isMobile && "px-3 bg-sp-blue-200"}`}>
                     <div id="expense-list-header"  className={`w-full ${!isMobile && "py-2 px-4"}`}>
                         <p className="text-xl font-medium truncate min-w-0 max-w-100 ">類別檢視</p>

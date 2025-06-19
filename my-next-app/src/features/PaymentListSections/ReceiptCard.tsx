@@ -1,6 +1,8 @@
 // src/features/PaymentListSections/ReceiptCard.tsx
-import ImageButton from "@/components/ui/ImageButton";
+import IconButton from "@/components/ui/IconButton";
+import type { IconProps } from '@phosphor-icons/react';
 import clsx from "clsx";
+
 import { PayerMap, SplitMap, AccountType, RecordMode, GetPaymentData } from "@/types/payment";
 import { UserData } from "@/types/user";
 import { Category } from "@/types/category";
@@ -67,17 +69,12 @@ const isBorrowed = (
     } else return false;
 };
 
-const getCategoryImg = (
+
+const getCategoryIcon = (
     categoryId: number | string,
     categoryList: Category[]
-    ) => {
-    const matched = Array.isArray(categoryList)
-        ? categoryList.find((cat) => cat.id === categoryId)
-        : undefined;
-    return {
-        imgURL: matched?.imgURL ?? "",
-        name_en: matched?.name_en ?? "",
-    };
+    ): React.ComponentType<IconProps> | undefined => {
+    return categoryList.find((cat) => cat.id === categoryId)?.icon;
 };
 
 export default function ReceiptCard({
@@ -88,7 +85,8 @@ export default function ReceiptCard({
     }: ReceiptCardProps) {
 
     const payer_text = getPayerText(payment.payer_map, payment.amount, currentUserId, userList);
-    const category = getCategoryImg(payment.category_id ?? '', categoryList ?? []);
+    const categoryIcon = getCategoryIcon(payment.category_id ?? "", categoryList ?? []);
+
     const borrowed = isBorrowed(payment.account_type, payment.record_mode ,payment.payer_map, payment.split_map, currentUserId);
     const displayAmount = getMyText(payment.account_type,payment.record_mode, payment.payer_map, payment.split_map, currentUserId)
 
@@ -118,7 +116,12 @@ export default function ReceiptCard({
     return (
         <div className={cardClass}>
         <div className="h-full">
-            <ImageButton image={category.imgURL} size="md" imageName={category.name_en} />
+            <IconButton
+                icon={categoryIcon}
+                size='md'
+                variant='text-button'
+                color='primary'
+            />
         </div>
         <div className="flex-1 overflow-hidden">
             <p className={paymentNameClass}>{payment.payment_name}</p>

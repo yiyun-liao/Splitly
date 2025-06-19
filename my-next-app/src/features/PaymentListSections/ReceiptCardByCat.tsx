@@ -1,5 +1,6 @@
 // src/features/PaymentListSections/ReceiptCardByCat.tsx
-import ImageButton from "@/components/ui/ImageButton";
+import IconButton from "@/components/ui/IconButton";
+import type { IconProps } from '@phosphor-icons/react';
 import clsx from "clsx";
 import { GetPaymentData } from "@/types/payment";
 import { Category } from "@/types/category";
@@ -14,17 +15,11 @@ interface ReceiptCardByCatProps {
     isMobile:boolean
 }
 
-const getCategoryImg = (
+const getCategoryIcon = (
     categoryId: number | string,
     categoryList: Category[]
-    ) => {
-    const matched = Array.isArray(categoryList)
-        ? categoryList.find((cat) => cat.id === categoryId)
-        : undefined;
-    return {
-        imgURL: matched?.imgURL ?? "",
-        name_en: matched?.name_en ?? "",
-    };
+    ): React.ComponentType<IconProps> | undefined => {
+    return categoryList.find((cat) => cat.id === categoryId)?.icon;
 };
 
 export default function ReceiptCardByCat({
@@ -35,7 +30,7 @@ export default function ReceiptCardByCat({
     isMobile
     }: ReceiptCardByCatProps) {
 
-    const category = getCategoryImg(payment.category_id ?? '', categoryList ?? []);
+    const categoryIcon = getCategoryIcon(payment.category_id ?? "", categoryList ?? []);
 
     const cardClass = clsx("flex items-center justify-start py-2 pl-2 pr-14 gap-2 h-16 rounded-lg cursor-pointer hover:bg-sp-white-60 active:bg-sp-white-80",
         {"bg-sp-blue-100": isMobile, " bg-sp-white-40": !isMobile}
@@ -45,7 +40,12 @@ export default function ReceiptCardByCat({
     return (
         <div className={cardClass}>
             <div className="shrink-0">
-                <ImageButton image={category.imgURL} size="md" imageName={category.name_en} />
+                <IconButton
+                    icon={categoryIcon}
+                    size='md'
+                    variant='text-button'
+                    color='primary'
+                />
             </div>
             <div className="flex-1 overflow-hidden">
                 <p className={paymentNameClass}>{payment.payment_name}</p>

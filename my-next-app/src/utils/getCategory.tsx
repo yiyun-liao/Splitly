@@ -1,11 +1,74 @@
-// 隨機產生 1~16 的頭貼 index 
 
-const CLOUDINARY_BASE = "https://res.cloudinary.com/ddkkhfzuk/image/upload";
-const CATEGORY_FOLDER = "cat";
+import {
+    ForkKnifeIcon, BreadIcon, HamburgerIcon, PizzaIcon, CheeseIcon, CoffeeIcon, WineIcon, CarrotIcon,
+    StorefrontIcon, SneakerIcon, ToteIcon, TShirtIcon, BaseballCapIcon,MagicWandIcon , GiftIcon, LaptopIcon, SketchLogoIcon,
+    VanIcon, BuildingIcon, CarProfileIcon, GasPumpIcon, LetterCirclePIcon, TrainIcon, AirplaneTiltIcon, SailboatIcon, TaxiIcon, ShieldCheckIcon,
+    HouseLineIcon, CouchIcon, LightbulbIcon, DropIcon, LightningIcon, FireSimpleIcon, WrenchIcon, WashingMachineIcon, PhoneDisconnectIcon, BroomIcon, GlobeIcon, BrowsersIcon, InvoiceIcon,
+    MusicNotesIcon, MicrophoneStageIcon, GameControllerIcon, HairDryerIcon, CastleTurretIcon, BeachBallIcon, ConfettiIcon, FilmSlateIcon, PaletteIcon, PersonIcon,
+    DotsThreeCircleIcon,
+    WalletIcon
+} from "@phosphor-icons/react";
 
+export const categoryIconMap: Record<number, React.FC<import("@phosphor-icons/react").IconProps>> = {
+    46: ForkKnifeIcon,
+    47: BreadIcon,
+    48: HamburgerIcon,
+    49: PizzaIcon,
+    50: CheeseIcon,
+    51: CarrotIcon,
+    52: CoffeeIcon,
+    53: WineIcon,
+    54:DotsThreeCircleIcon,
 
-// 組合 Cloudinary 頭貼網址
-export function buildCatUrl(name: string): string {
-  const sanitizedName = name.replace(/[\\\/\?\&#%<> ]/g, '');
-  return `${CLOUDINARY_BASE}/${CATEGORY_FOLDER}/${sanitizedName}.jpg` || "";
-}
+    55: StorefrontIcon,
+    56: TShirtIcon,
+    57: SneakerIcon,
+    58: BaseballCapIcon,
+    59: ToteIcon,
+    60: MagicWandIcon,
+    61: SketchLogoIcon,
+    62: GiftIcon,
+    63: LaptopIcon,
+    64:DotsThreeCircleIcon,
+
+    65: VanIcon,
+    66: BuildingIcon,
+    67: GasPumpIcon,
+    68: LetterCirclePIcon,
+    69: CarProfileIcon,
+    70: TrainIcon,
+    71: TaxiIcon,
+    72: AirplaneTiltIcon,
+    73: SailboatIcon,
+    74: ShieldCheckIcon,
+    75:DotsThreeCircleIcon,
+
+    76:HouseLineIcon,
+    77: CouchIcon,
+    78: LightbulbIcon,
+    79: LightningIcon,
+    80: DropIcon,
+    81: FireSimpleIcon,
+    82: BrowsersIcon,
+    83:WashingMachineIcon ,
+    84: WrenchIcon,
+    85: InvoiceIcon,
+    86: GlobeIcon,
+    87: PhoneDisconnectIcon,
+    88: BroomIcon,
+    89:DotsThreeCircleIcon,
+
+    90:MicrophoneStageIcon,
+    91: GameControllerIcon,
+    92: HairDryerIcon,
+    93: CastleTurretIcon,
+    94: PaletteIcon,
+    95: FilmSlateIcon,
+    96: MusicNotesIcon,
+    97: BeachBallIcon,
+    98: ConfettiIcon,
+    99: PersonIcon,
+    100:DotsThreeCircleIcon,
+
+    101:WalletIcon,
+};

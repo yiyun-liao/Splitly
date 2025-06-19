@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getCategories } from '@/lib/categoryApi';
 import { Category } from '@/types/category';
-import { buildCatUrl } from '@/utils/getCategory';
+import { categoryIconMap } from '@/utils/getCategory';
 
 type CategoryType = {
     categoryOptions:Category[] | undefined; 
@@ -34,7 +34,13 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
 
         if (cachedCats  &&  !isCacheExpired) {
             try {
-                const parsed = JSON.parse(cachedCats);
+                // const parsed = JSON.parse(cachedCats);
+                const raw: Omit<Category, 'icon'>[] = JSON.parse(cachedCats);
+                // 讀快取後，再把 icon 映射進來
+                const parsed = raw.map(cat => ({
+                    ...cat,
+                    icon: categoryIconMap[cat.id],
+                }));
                 if (Array.isArray(parsed) && parsed.length > 0) {
                     setCategoryOptions(parsed);
                     setIsReady(true);
@@ -52,18 +58,19 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
 
         const fetchAndBuildCategories = async () => {
             try {
-                const categories = await getCategories(); 
-                // console.log("📥 原始 categories", categories);
-                const finalCategory: Category[] = categories.map((cat:Category) => ({
-                    ...cat,
-                    imgURL: buildCatUrl(cat.name_en),
-                }));
-
-                console.log("🛠 加工後 finalCategory", finalCategory);
-                setCategoryOptions(finalCategory);
-                
-                localStorage.setItem(catKey, JSON.stringify(finalCategory))
+                // 1. 先拿原始不含 icon 的資料
+                const raw: Omit<Category, 'icon'>[] = await getCategories();
+                // 2. 存快取（不含 icon）
+                localStorage.setItem(catKey, JSON.stringify(raw));
                 localStorage.setItem(metaCatKey, JSON.stringify({ timestamp: Date.now() }));
+        
+                // 3. 再把 icon 裝回去
+                const withIcon: Category[] = raw.map(cat => ({
+                  ...cat,
+                  icon: categoryIconMap[cat.id],
+                }));
+                setCategoryOptions(withIcon);
+                console.log("🛠 加工後 finalCategory", withIcon);
                 
                 setIsReady(true);
             } catch (error) {
