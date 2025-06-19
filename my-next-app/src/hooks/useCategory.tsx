@@ -1,5 +1,5 @@
 // my-next-app/src/hooks/category.tsx
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
 import { Category, CategoryGrouped } from "@/types/category";
 

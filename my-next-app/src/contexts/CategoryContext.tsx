@@ -71,22 +71,6 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
                 }));
                 setCategoryOptions(withIcon);
                 console.log("🛠 加工後 finalCategory", withIcon);
-
-                // const categories = await getCategories(); 
-                // console.log("📥 原始 categories", categories);
-
-                // const finalCategory: Category[] = categories.map((cat:Category) => {
-                //     return {
-                //       ...cat,
-                //       icon:categoryIconMap[cat.id]
-                //     };
-                //   });
-
-                // console.log("🛠 加工後 finalCategory", finalCategory);
-                // setCategoryOptions(finalCategory);
-                
-                // localStorage.setItem(catKey, JSON.stringify(finalCategory))
-                // localStorage.setItem(metaCatKey, JSON.stringify({ timestamp: Date.now() }));
                 
                 setIsReady(true);
             } catch (error) {
