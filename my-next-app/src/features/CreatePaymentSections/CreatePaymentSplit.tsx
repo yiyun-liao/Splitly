@@ -214,6 +214,7 @@ export default function CreatePaymentSplit({
             setIsValidCreate(valid);
         },[descAvoidInjectionTest,paymentNameAvoidInjectionTest,paymentNameTokenTest])
 
+        // 價格變動就重設
         useEffect(() => {
             // 第一次因 initialPayload 設定 inputValue ➜ 跳過一次
             if (isInitialLoadingRef.current) {
@@ -233,20 +234,15 @@ export default function CreatePaymentSplit({
                 }])
             );
 
-
-            // person
-            if (accountType === "personal") {
-                setPersonalPayerMap({ [currentUid]: amount });
-                setPersonalSplitMap({ 
-                  [currentUid]: { fixed: amount, percent: 0, total: amount } 
-                });
-            }else{
-                setSplitWay('person');
-                setChooseSplitByPerson("percentage");
-                setSplitByPersonMap(groupMap);
-                setSplitPayerMap({[currentUid]: amount });
-                setLocalItemPayloadList([]);
-            }
+            setSplitWay('person');
+            setChooseSplitByPerson("percentage");
+            setSplitPayerMap({[currentUid]: amount });
+            setSplitByPersonMap(groupMap);
+            setLocalItemPayloadList([]);
+            setPersonalPayerMap({ [currentUid]: amount });
+            setPersonalSplitMap({ 
+                [currentUid]: { fixed: amount, percent: 0, total: amount } 
+            });
             didManuallyChangeAmountRef.current = false;
 
         }, [inputAmountValue, currentProjectUsers, userData, currentUid, initialPayload, accountType]);
