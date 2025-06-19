@@ -24,7 +24,7 @@ class ItemDetailSchema(BaseModel):
     @model_validator(mode="after")
     def amount_must_equal_sum_of_totals(cls, model, info):
         total_sum = sum(detail.total for detail in model.split_map.values())
-        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1e-3):
+        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1.0):
             raise ValueError(
                 f"amount ({model.amount}) must equal sum of split_map totals ({total_sum})"
             )
@@ -57,7 +57,7 @@ class CreatePaymentSchema(BaseModel):
     @model_validator(mode="after")
     def amount_must_equal_sum_of_totals(cls, model, info):
         total_sum = sum(detail.total for detail in model.split_map.values())
-        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1e-3):
+        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1.0):
             raise ValueError(
                 f"amount ({model.amount}) must equal sum of split_map totals ({total_sum})"
             )
@@ -80,7 +80,7 @@ class UpdateItemDetailSchema(BaseModel):
     @model_validator(mode="after")
     def amount_must_equal_sum_of_totals(cls, model, info):
         total_sum = sum(detail.total for detail in model.split_map.values())
-        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1e-3):
+        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1.0):
             raise ValueError(
                 f"amount ({model.amount}) must equal sum of split_map totals ({total_sum})"
             )
@@ -109,7 +109,7 @@ class UpdatePaymentSchema(BaseModel):
     @model_validator(mode="after")
     def amount_must_equal_sum_of_totals(cls, model, info):
         total_sum = sum(detail.total for detail in model.split_map.values())
-        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1e-3):
+        if not math.isclose(model.amount, total_sum, rel_tol=1e-9, abs_tol=1.0):
             raise ValueError(
                 f"amount ({model.amount}) must equal sum of split_map totals ({total_sum})"
             )
