@@ -12,7 +12,7 @@ import RedirectDialog from '@/features/BasicLayout/RedirectDialog';
 const slides = [
     {
       id: 1,
-      subtitle: '還款金額，一鍵搞定',
+      subtitle: '多人群組，還款不麻煩',
       title: '自動計算 · 最佳還款方案',
       description:
         '系統統整所有人收支，智能計算還款金額與最優路徑，減少還款次數，多種檢視模式，一目了然。',
