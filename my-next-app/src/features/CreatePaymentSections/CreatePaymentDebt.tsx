@@ -184,7 +184,7 @@ export default function CreatePaymentDebt({
                     }
                 </div>
                 <section  className={`w-full h-full pb-20 flex items-start justify-start gap-5 ${scrollClass}`}>
-                    <div className={`w-full grid grid-cols-3 gap-2 px-1 ${!isMobile && "max-w-xl"} backdrop-blur-2xl`}>
+                    <div className={`w-full grid grid-cols-3 gap-2 px-1 ${!isMobile && "max-w-xl backdrop-blur-2xl"}`}>
                         <div className={`pb-5 ${formSpan3CLass}`}>
                             <div className="w-full flex items-center justify-start gap-2">
                                 <span className="font-medium truncate">專案</span>
