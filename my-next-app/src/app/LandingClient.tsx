@@ -8,29 +8,30 @@ import ImageButton from '@/components/ui/ImageButton';
 import IconButton from '@/components/ui/IconButton';
 import RedirectDialog from '@/features/BasicLayout/RedirectDialog';
 
+
 const slides = [
     {
       id: 1,
-      subtitle: '我總共有多少錢？',
-      title: '一次同步所有資產\n即時掌握財務變動',
+      subtitle: '還款金額，一鍵搞定',
+      title: '自動計算 · 最佳還款方案',
       description:
-        '隨時同步 30+ 家銀行活定存、信用卡與海外投資、悠遊卡、電子發票等，不花時間就能掌握每個帳戶金額變動，最簡單的全資產管理方式，理財不再手忙腳亂！',
+        '系統統整所有人收支，智能計算還款金額與最優路徑，減少還款次數，多種檢視模式，一目了然。',
       media: "https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750233295/iPhone_14_Pro_Max_qznjuh.png",
     },
     {
       id: 2,
-      subtitle: '我上個月花了多少錢？',
-      title: '自動記錄收支\n消費狀況一目瞭然',
+      subtitle: '大採購怎麼分？',
+      title: '項目拆帳 · 精細化帳務管理',
       description:
-        '一鍵匯入銀行扣款、信用卡、悠遊卡的收支紀錄，消費當下就記帳！還能自動分類、分析趨勢，迅速找到開源節流的方法。想擺脫忘記記帳的困擾，就從麻布記帳開始。',
+        '單筆支出可依項目細分，精準拆帳與銷帳紀錄，不必再拿發票手動計算。',
       media: "https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750233295/iPhone_14_Pro_Max_qznjuh.png",
     },
     {
       id: 3,
-      subtitle: '我這個月卡費繳了沒？',
-      title: '帳單到期自動提醒\n3 步驟繳費超省事',
+      subtitle: '旅程花費，一目瞭然',
+      title: '私人帳目紀錄 · 開銷更清晰',
       description:
-        '開啟自動化繳費提醒，點選通知、確認金額、按下繳費，輕鬆管理卡費、水費、電信帳單。繳費日不用再設定行事曆，交給麻布記帳最省事。',
+        '可設定個人預算並記錄私人開銷，精準掌握旅途花費，不再遺漏任何細節，不只局限於團員間的共同開銷。',
       media: "https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750233295/iPhone_14_Pro_Max_qznjuh.png",
     },
 ];
@@ -56,7 +57,6 @@ export default function LandingClient() {
     const redirect = searchParams.get('redirect') || '';
     const decoded = decodeURIComponent(redirect);
     const target = decoded  ? `/loading?redirect=${encodeURIComponent(decoded)}`  : '/loading';
-    const joinTarget = decoded  ? `${typeof window !== 'undefined' ? window.location.origin : ''}${decoded}`  : '/'; //保持原網址讓瀏覽器打開用
     
     const handleLogin = async () => {
         if (inWebView) { 
@@ -79,7 +79,7 @@ export default function LandingClient() {
                     <RedirectDialog
                         open={isRedirectDialog}
                         onClose={() => setIsRedirectDialog(false)}
-                        url={joinTarget}
+                        url={window.location.href} //保持原網址讓瀏覽器打開用
                     />            
                 )}
             </>             
@@ -154,13 +154,13 @@ export default function LandingClient() {
                                     alt="Splitly"
                                     className="w-9 h-9 object-contain "
                                 />
-                            <h1 className="text-xl font-medium">Splitly</h1>
+                            <h1 className="text-2xl font-medium">Splitly</h1>
                         </div>
-                        <p className="text-base">您最佳的分帳工具</p>
+                        <p className="text-lg">您最佳的分帳工具</p>
                     </div>
                     <div className='shrink-0 flex flex-col justify-start items-end gap-2'>
-                        <p className="text-sp-blue-500 font-bold text-sm">聯絡我</p>
-                        <p className="text-base ">廖宜昀 LIAO, YI-YUN</p>
+                        <p className="text-sp-blue-500 font-bold text-base">聯絡我</p>
+                        <p className="text-lg ">廖宜昀 LIAO, YI-YUN</p>
                         <div className='flex gap-2'>
                             <Button
                                 size='sm'
