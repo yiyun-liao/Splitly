@@ -1,10 +1,11 @@
 "use client"; 
 import clsx from "clsx";
 import { useState, useEffect, useMemo, useRef} from "react";
+import type { IconProps } from '@phosphor-icons/react';
+
 import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
-import ImageButton from "@/components/ui/ImageButton";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
 import IconButton from "@/components/ui/IconButton";
@@ -23,7 +24,6 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { GetProjectData } from "@/types/project";
 import { formatToDatetimeLocal } from "@/utils/formatTime";
 import { validateInput, tokenTest } from "@/utils/validate";
-import { useCategoryOptions } from "@/contexts/CategoryContext";
 
 
 
@@ -59,9 +59,9 @@ export default function CreatePaymentSplit({
         
         const { grouped } = useCategoryDisplayOptions();
         const [selectedParentId, setSelectedParentId] = useState<number | null>(null)
-        const [selectedCategoryValue, setSelectedCategoryValue] = useState<string>();
-        const [selectedCategoryURLValue, setSelectedCategoryURLValue] = useState<string>();
-        // console.log(grouped, selectedParentId, selectedCategoryValue, selectedCategoryURLValue)
+        const [selectedCategoryValue, setSelectedCategoryValue] = useState<string | null>(null);
+        const [selectedCategoryIconValue, setSelectedCategoryIconValue] = useState<React.ComponentType<IconProps>>();
+        // console.log(grouped, selectedParentId, selectedCategoryValue, selectedCategoryIconValue)
         
         const [inputPaymentValue, setInputPaymentValue] = useState("吃飯");
         const [inputTimeValue, setInputTimeValue] = useState(getNowDatetimeLocal());
@@ -121,13 +121,12 @@ export default function CreatePaymentSplit({
 
         // cat 一開始如果還沒選 parent，就預設成 grouped[0].id
         useEffect(() => {
-            if (selectedParentId === null && selectedCategoryValue === null && grouped.length > 0) {
+            if (selectedParentId === null && selectedCategoryValue === null && grouped[0].children.length > 0) {
                 setSelectedParentId(grouped[0].id)
-            }
-            if(selectedCategoryValue === null && grouped[0].children.length > 0 ){
                 setSelectedCategoryValue(grouped[0].children[0].id.toString())
+                setSelectedCategoryIconValue(grouped[0].children[0].icon)
             }
-        }, [grouped, selectedParentId, selectedCategoryValue])
+        }, [grouped, selectedParentId, selectedCategoryValue, selectedCategoryIconValue])
 
         const selectedCategoryZh = useMemo(() => {
             if (selectedCategoryValue == null) return ''
@@ -135,7 +134,6 @@ export default function CreatePaymentSplit({
               const child = g.children.find(c => c.id === parseFloat(selectedCategoryValue))
               if (child) return child.name_zh
             }
-          
             return ''
         }, [selectedCategoryValue, grouped])
 
@@ -163,7 +161,7 @@ export default function CreatePaymentSplit({
                 if (parent) {
                     setSelectedParentId(parent.id);
                     const child = parent.children.find(c => c.id === catId)!;
-                    setSelectedCategoryURLValue(child.imgURL ?? "");
+                    setSelectedCategoryIconValue(child.icon!);
                 }
             }
           
@@ -390,7 +388,7 @@ export default function CreatePaymentSplit({
                             setSelectedParentId={setSelectedParentId}
                             selectedCategoryValue={selectedCategoryValue || ""}
                             setSelectedCategoryValue={setSelectedCategoryValue}
-                            setSelectedCategoryURLValue={setSelectedCategoryURLValue}
+                            setSelectedCategoryIconValue={setSelectedCategoryIconValue}
                         />
                     }
                     {isSplitPayerOpen &&
@@ -483,15 +481,16 @@ export default function CreatePaymentSplit({
                                 </div>
                                 <div className={formSpan1CLass}>
                                     <span className={labelClass}>類別</span>
-                                    <div  className="w-full shrink-0 flex gap-2 items-center justify-start" onClick={()=> setIsCategoryOpen(true)}>
+                                    <div  className="w-full shrink-0 flex gap-2 items-center justify-start cursor-pointer" onClick={()=> setIsCategoryOpen(true)}>
                                         <div className="shrink-0">
-                                            <ImageButton
-                                                image={selectedCategoryURLValue ?? ""}
-                                                size= 'md'
-                                                imageName= {selectedCategoryValue?? ""} 
+                                            <IconButton
+                                                icon={selectedCategoryIconValue}
+                                                size='md'
+                                                variant='text-button'
+                                                color='primary'
                                             />
                                         </div>
-                                        {!isMobile && (<p className="w-full text-sm truncate">{selectedCategoryZh}</p>)}
+                                        {!isMobile && (<p className="w-full text-base font-medium truncate">{selectedCategoryZh}</p>)}
                                     </div>
                                 </div>
                                 <div className={formSpan2CLass}>
@@ -590,13 +589,14 @@ export default function CreatePaymentSplit({
                                     <span className={labelClass}>類別</span>
                                     <div  className="w-full shrink-0 flex gap-2 items-center justify-start" onClick={()=> setIsCategoryOpen(true)}>
                                         <div className="shrink-0">
-                                            <ImageButton
-                                                image={selectedCategoryURLValue ?? ""}
-                                                size= 'md'
-                                                imageName= {selectedCategoryZh?? ""} 
+                                        <IconButton
+                                                icon={selectedCategoryIconValue}
+                                                size='md'
+                                                variant='text-button'
+                                                color='primary'
                                             />
                                         </div>
-                                        {!isMobile && (<p className="w-full text-sm truncate">{selectedCategoryZh}</p>)}
+                                        {!isMobile && (<p className="w-full text-base font-medium truncate">{selectedCategoryZh}</p>)}
                                     </div>
                                 </div>
                                 <div className={formSpan2CLass}>

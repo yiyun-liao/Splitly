@@ -26,7 +26,6 @@ type CategorySectionProps = {
     cat: {
         id: number;
         icon:React.ComponentType<IconProps> ;
-        // imgURL: string;
         name_en: string;
         name_zh: string;
         totalAmount: number;
