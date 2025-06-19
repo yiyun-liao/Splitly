@@ -57,7 +57,7 @@ export function getProjectCategoryStats(groupedData: GroupedByParent[]): ParentC
             totalAmount,
             percent,
             name_zh: group.parent.name_zh,
-            imgURL: group.parent.imgURL || "",
+            icon: group.parent.icon!,
             payments:validPayments
         };
     });
@@ -96,7 +96,7 @@ export function getUserCategoryStats(
         totalAmount,
         percent,
         name_zh: group.parent.name_zh,
-        imgURL: group.parent.imgURL || "",
+        icon: group.parent.icon!,
         payments:userPayments
       };
     });

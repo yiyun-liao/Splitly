@@ -1,9 +1,10 @@
 import Icon from "./Icon"
 import clsx from 'clsx';
+import type { IconProps } from "@phosphor-icons/react";
 
 
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    icon?: string;
+    icon?: string | React.ComponentType<IconProps>; ///可以是 string（Iconify），也可以直接傳入一個 Phosphor Icon Component
     size?: 'sm' | 'md';
     variant?: 'solid' | 'text-button' | 'outline';
     color: 'primary' | 'zinc';
@@ -92,12 +93,20 @@ export default function IconButton({
     
 
     //isLoading = true 時，不想讓文字和 icon 顯示出來，但還是要保留原本空間避免 layout shift
-    const Content = ({ isLoading, size }: { isLoading: boolean; size: 'sm' | 'md' }) => {
+    const Content = ({ isLoading, size, icon }: { isLoading: boolean; size: 'sm' | 'md' ;icon?: string | React.ComponentType<IconProps>; }) => {
         const iconSize = size === 'sm' ? 'md' : 'lg';
         const visibility = isLoading ? 'invisible' : 'visible';
-        return (
-            <Icon icon={icon} size={iconSize} className={` ${visibility}`} />
-        );
+        if (typeof icon === "string") {
+            return <Icon icon={icon} size={iconSize} className={visibility} />;
+        }
+        
+          // 如果是 Component，就直接當它是個 Phosphor Icon
+        const catIconSize = size === 'sm' ? '24' : '28';
+        if (icon) {
+            const PhIcon = icon;
+            return <PhIcon size={catIconSize} className={visibility}  weight="duotone"/>;
+        }
+        return null;
     };
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -107,7 +116,7 @@ export default function IconButton({
   
     return (
       <button className={baseClasses} disabled={disabled || isLoading} onClick={handleClick} type={type} {...props}>
-        <Content isLoading={isLoading} size={size}  />
+        <Content icon={icon} isLoading={isLoading} size={size}  />
         <Loading isLoading={isLoading} size={size} />
       </button>
     );

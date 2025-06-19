@@ -90,7 +90,7 @@ export function LoadingScreen({ text = "資料載入中..." }) {
                                     color='primary'
                                     type= 'button'
                                     onClick={() => []}  
-                                    />
+                                />
                             )}
                         )}
                     </div>

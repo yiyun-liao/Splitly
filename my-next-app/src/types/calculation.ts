@@ -1,6 +1,6 @@
 import { Category } from "@/types/category";
 import { GetPaymentData } from "@/types/payment";
-
+import type { IconProps } from "@phosphor-icons/react";
 
 export type GroupedByParent = {
     parent: Category;
@@ -12,7 +12,7 @@ export type ParentCategoryStat = {
     name_en: string;
     name_zh: string;
     id: number;
-    imgURL : string;
+    icon: React.ComponentType<IconProps> ;
     totalAmount: number;
     percent: number;
     payments: GetPaymentData[];
