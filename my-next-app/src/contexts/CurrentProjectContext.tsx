@@ -76,17 +76,17 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
         const isReload = firstLoadRef.current;
         firstLoadRef.current = false;
-        console.log('🗄️ cache?',"isCacheExpired", isCacheExpired, 'isReload?', isReload)
+        // console.log('🗄️ cache?',"isCacheExpired", isCacheExpired, 'isReload?', isReload)
 
         if (cachedUsers && cachedPayments && !isCacheExpired  && !isReload) {
             try {
-                console.log("✅ get data")
+                // console.log("✅ get data")
                 setCurrentProjectUsers(JSON.parse(cachedUsers));
                 setCurrentPaymentList(JSON.parse(cachedPayments));
                 setIsReady(true); // ✅ 快取成功也標記 ready
                 return;
             } catch (error) {
-                console.warn("❌ 快取解析失敗，清除...", error);
+                // console.warn("❌ 快取解析失敗，清除...", error);
                 localStorage.removeItem(userKey);
                 localStorage.removeItem(paymentKey);
                 localStorage.removeItem(metaKey);
@@ -96,7 +96,7 @@ export const CurrentProjectProvider = ({ children }: { children: React.ReactNode
 
         const fetchProjectData = async (retry = false) => {
             try {
-                console.log("🙃 fetch current data")
+                // console.log("🙃 fetch current data")
                 if (!pureProjectId) {
                     console.warn("🚫 無效的 projectId，跳過 fetch");
                     return;

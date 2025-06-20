@@ -61,7 +61,7 @@ export default function ProjectWiseSpilt({
             onClose();
         },
         onError: (err) => {
-            console.log("付款建立錯誤", err);
+            console.error("付款建立錯誤", err);
         },
     });
 

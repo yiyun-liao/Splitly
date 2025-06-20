@@ -101,7 +101,7 @@ export default function CreatePayment({
             onClose();
         },
         onError: (err) => {
-            console.log("紀錄建立錯誤", err);
+            console.error("紀錄建立錯誤", err);
         },
     });
     const { handleUpdatePayment} = useUpdatePayment({
@@ -110,7 +110,7 @@ export default function CreatePayment({
             onClose();
         },
         onError: (err) => {
-            console.log("付款更新紀錄", err);
+            console.error("付款更新錯誤", err);
         },
     });
     const { handleDeletePayment } = useDeletePayment({
@@ -119,7 +119,7 @@ export default function CreatePayment({
             onClose();
         },
         onError: (err) => {
-            console.log("紀錄刪除錯誤", err);
+            console.error("紀錄刪除錯誤", err);
         },
     });
       

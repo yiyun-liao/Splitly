@@ -12,16 +12,13 @@ export function LoadingReadyGuard({ children }: { children: React.ReactNode }) {
     const { isReady: projectReady, currentProjectData } = useCurrentProjectData();
     const pathname = usePathname();
     const isCreatePage = pathname?.endsWith("/create");
-    console.log(`loading... authReady: ${myDataReady},projectData: ${projectData}, userData: ${userData}, projectReady: ${projectReady}, currentProjectData: ${currentProjectData}`)
+    // console.log(`loading... authReady: ${myDataReady},projectData: ${projectData}, userData: ${userData}, projectReady: ${projectReady}, currentProjectData: ${currentProjectData}`)
 
     const isFullyReady = isCreatePage
     ? myDataReady && !!userData && !!projectData
     : myDataReady && projectReady && !!userData && !!currentProjectData && projectData.length > 0;
 
-    
-    if (isFullyReady === true){
-        console.log("Have a nice day 🏖️ !");
-    } 
+    // if (isFullyReady === true) console.log("Have a nice day 🏖️ !"); 
 
     if (!isFullyReady) return <LoadingScreen />;
 

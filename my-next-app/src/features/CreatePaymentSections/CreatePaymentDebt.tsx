@@ -100,7 +100,7 @@ export default function CreatePaymentDebt({
         //update
         useEffect(() => {
             if (!initialPayload) return;
-            console.log(initialPayload)
+            // console.log(initialPayload)
           
             setSelectedCurrencyValue(initialPayload.currency || "TWD");
             setInputTimeValue(formatToDatetimeLocal(initialPayload.time) || getNowDatetimeLocal());

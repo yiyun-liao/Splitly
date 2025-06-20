@@ -88,8 +88,6 @@ export default function JoinProjectPage() {
         }
     }, [addMemberBudget, currentUid,joinProject,projectId,userData]);
     
-    console.log(updateProjectPayload)
-    console.log(currentUid)
     const { handleUpdateProject} = useAddMemberProject({
         onSuccess: () => {
             // console.log("✅ 成功更新專案：", project);
@@ -208,7 +206,7 @@ export default function JoinProjectPage() {
                                     variant='solid'
                                     color='primary'
                                     onClick={async()=> {
-                                        console.log("update", updateProjectPayload);
+                                        // console.log("update", updateProjectPayload);
                                         if (!updateProjectPayload) return;
                                         await handleUpdateProject(updateProjectPayload);
                                     }}  

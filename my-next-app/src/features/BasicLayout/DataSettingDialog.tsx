@@ -63,7 +63,7 @@ export default function DataSettingDialog({
             onClose();
         },
         onError: (err) => {
-            console.log("紀錄建立錯誤", err);
+            console.error("紀錄建立錯誤", err);
         },
     });
 

@@ -22,7 +22,7 @@ export default function MemberNavMobile() {
     const [activePath, setActivePath] = useState(pathname); // 對應當前功能頁面渲染按鈕
     const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath") || projectData?.[0]?.id;
 
-    console.log("i would like to go ",lastPath)
+    // console.log("i would like to go ",lastPath)
 
     useEffect(() => {
         setActivePath(pathname);

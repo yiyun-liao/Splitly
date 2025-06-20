@@ -62,7 +62,7 @@ export default function ProjectSettleDetail({
           }).filter(group => group.payments.length > 0);
     },[showMyRecord,debtList,currentUserId])
 
-    console.log(debtList)
+    // console.log(debtList)
 
     // update ui
     const visibleSettlements = useMemo(() => {
@@ -86,7 +86,7 @@ export default function ProjectSettleDetail({
             onClose();
         },
         onError: (err) => {
-            console.log("付款建立錯誤", err);
+            console.error("付款建立錯誤", err);
         },
     });
 

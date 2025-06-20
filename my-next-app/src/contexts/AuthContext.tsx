@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
             setFirebaseUser(userAuth);
-            console.log(userAuth)
+            // console.log(userAuth)
             setIsReady(false); // 🔄 新使用者載入 → 重新準備
 
             if (!userAuth) {
@@ -113,7 +113,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const cachedProjects = localStorage.getItem(projectKey);
             const cachedMeta = localStorage.getItem(myMetaKey);
             const isCacheExpired = !cachedMeta || Date.now() - JSON.parse(cachedMeta).timestamp > CACHE_TTL;
-            console.log("👉🏻isCacheExpired", isCacheExpired ,"isPageReload" ,isPageReload)
+            // console.log("👉🏻isCacheExpired", isCacheExpired ,"isPageReload" ,isPageReload)
+
             if (cachedMyData && cachedProjects && !isCacheExpired && !isPageReload) {
                 try {
                     setUserData(JSON.parse(cachedMyData));
@@ -132,7 +133,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             const fetchAndSetUser = async (retry = false) => {
                 try {
-                    console.log("🙃 fetch my data")
+                    // console.log("🙃 fetch my data")
                     const token = await userAuth.getIdToken();
                     const rawUser = await fetchCurrentUser(token, uid); // ⛔ 可能在這邊 fail
                     const rawProjects = await fetchProjectsByUser(token, uid);
@@ -157,12 +158,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
                     setIsReady(true);
                 } catch (error) {
-                    console.error("🔴 Error fetching user data:", error);
+                    // console.error("🔴 Error fetching user data:", error);
                     if (!retry) {
                         console.log("⏳ Token might be too early, retrying in 2s...");
                         setTimeout(() => fetchAndSetUser(true), 2000); // retry once
                     } else {
-                        console.warn("🛑 Retry failed, fallback to null");
+                        console.warn("🛑 Retry failed, fallback to null", error);
                         toast.error('驗證過程發生錯誤，請重新登入或更新網頁')
                         setUserData(null);
                         setProjectData([]);
@@ -182,7 +183,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return !!firebaseUser && !!userData && !!projectData;
       }, [firebaseUser, userData, projectData]);
 
-    console.log(isReady, isLoadedReady, firebaseUser, userData)
+    // console.log(isReady, isLoadedReady, firebaseUser, userData)
     
     return (
         <AuthContext.Provider

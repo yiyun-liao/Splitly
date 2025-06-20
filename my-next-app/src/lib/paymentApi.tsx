@@ -20,7 +20,7 @@ export async function createPayment(payload: CreatePaymentPayload) {
         }
 
         const data = await res.json();
-        console.log("createPayment:", data);
+        // console.log("createPayment:", data);
         return data;
     } catch (err) {
         console.error("Error creating payment:", err);
@@ -40,7 +40,7 @@ export async function deletePayment(paymentId: string) {
         }
 
         const data = await res.json();
-        console.log("deletePayment:", data);
+        // console.log("deletePayment:", data);
         return data;
     } catch (err) {
         console.error("Error deleting payment:", err);
@@ -58,7 +58,7 @@ export async function fetchPaymentsByProject(projectId: string) {
         }
 
         const data = await res.json();
-        console.log("fetchPaymentsByProject:", data);
+        // console.log("fetchPaymentsByProject:", data);
         return data;
     } catch (err) {
         console.error("Error fetching payments:", err);
@@ -82,7 +82,7 @@ export async function updatePayment(paymentId: string, payload: UpdatePaymentDat
         }
 
         const data = await res.json();
-        console.log("updatePayment:", data);
+        // console.log("updatePayment:", data);
         return data;
     } catch (err) {
         console.error("Error updating payment:", err);

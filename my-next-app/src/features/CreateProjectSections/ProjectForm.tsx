@@ -164,7 +164,7 @@ export default function ProjectForm({
             },
         onError: (err) => {
             // alert("建立專案失敗，請稍後再試");
-            console.log("專案建立", err);
+            console.error("專案建立", err);
         },
     });
 
@@ -178,7 +178,7 @@ export default function ProjectForm({
             },
         onError: (err) => {
             // alert("更新專案失敗，請稍後再試");
-            console.log("專案更新", err);
+            console.error("專案更新", err);
         },
     });
 

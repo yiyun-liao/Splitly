@@ -42,14 +42,16 @@ return (
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
     <body>
-        <CategoryProvider>
-            <ViewportHeightSetter />
-                <LoadingProvider>
-                    <FetchLoadingMask>
-                        {children}
-                    </FetchLoadingMask>
-                </LoadingProvider>
-        </CategoryProvider>
+        <div style={{ height: "100vh" }}>
+            <CategoryProvider>
+                <ViewportHeightSetter />
+                    <LoadingProvider>
+                        <FetchLoadingMask>
+                            {children}
+                        </FetchLoadingMask>
+                    </LoadingProvider>
+            </CategoryProvider>
+        </div>
     </body>
     </html>
 );
