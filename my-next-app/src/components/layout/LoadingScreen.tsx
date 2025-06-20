@@ -1,8 +1,6 @@
 import { FlowerGif } from "../gif/flowerGif";
 import IconButton from "../ui/IconButton";
-import ImageButton from "../ui/ImageButton";
 import Button from "../ui/Button";
-import Avatar from "../ui/Avatar";
 import clsx from "clsx";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
@@ -44,11 +42,7 @@ export function LoadingScreen({ text = "資料載入中..." }) {
                             />
                         </div>
                         <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
-                            <ImageButton
-                                image="/unknown.jpg"
-                                size='sm'
-                                imageName= " "
-                            />
+                            <div className="h-9 w-9 bg-sp-blue-500 border-zinc-50/10 rounded-xl overflow-hidden" />  {/* ImageButton */}
                         </div>
                         <div className="shrink-0 flex items-center justify-start gap-2"> 
                             <button  
@@ -56,13 +50,7 @@ export function LoadingScreen({ text = "資料載入中..." }) {
                                     <div className="flex items-center justify-start -space-x-2">
                                         {Array.from({ length: 3 }, (_, index) => {
                                             return(
-                                                <Avatar
-                                                key={index}
-                                                size="md"
-                                                img="/unknown.jpg"
-                                                userName=" "
-                                                className="border-2 border-zinc-100"
-                                                />
+                                                <div key={index} className="h-8 w-8 rounded-2xl overflow-hidden bg-sp-blue-500 border-2 border-zinc-100"/> //avatar
                                             )}
                                         )}
                                     </div>
@@ -129,13 +117,7 @@ export function LoadingScreen({ text = "資料載入中..." }) {
                             <div className={`${navDivClass} ${scrollClass}`}>
                                 {Array.from({ length: 3 }, (_, index) => {
                                     return(
-                                        <ImageButton
-                                            key={index}
-                                            image="/unknown.jpg"
-                                            size='md'
-                                            imageName= " "
-                                            onClick={() => {}}
-                                        />
+                                        <div key={index} className="h-12 w-12 bg-sp-blue-500 border-zinc-50/10 rounded-xl overflow-hidden" />  // ImageButton 
                                     )}
                                 )}
                             </div>
@@ -144,11 +126,7 @@ export function LoadingScreen({ text = "資料載入中..." }) {
                     <div className="py-4 h-full w-full max-w-[2080px] box-border flex flex-col items-center justify-start gap-2">
                         <div className="flex items-center gap-2 w-full box-border justify-between px-6 py-2">
                             <div className="flex items-center justify-start gap-2 min-w-0 overflow-hidden flex-1">
-                                <ImageButton
-                                    image="/unknown.jpg"
-                                    size='md'
-                                    imageName= " "
-                                />
+                                <div className="h-12 w-12 bg-sp-blue-500 border-zinc-50/10 rounded-xl overflow-hidden" />  {/* ImageButton */}
                             </div>
                             <div className="shrink-0 flex items-center justify-start gap-2">
                                 <Button
@@ -166,13 +144,7 @@ export function LoadingScreen({ text = "資料載入中..." }) {
                                     <div className="flex items-center justify-start -space-x-2">
                                         {Array.from({ length: 3 }, (_, index) => {
                                             return(
-                                                <Avatar
-                                                key={index}
-                                                size="md"
-                                                img="/unknown.jpg"
-                                                userName=" "
-                                                className="border-2 border-zinc-100"
-                                                />
+                                                <div key={index} className="h-8 w-8 rounded-2xl overflow-hidden bg-sp-blue-500 border-2 border-zinc-100"/> //avatar
                                             )}
                                         )}
                                     </div>

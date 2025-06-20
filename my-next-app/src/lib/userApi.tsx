@@ -29,7 +29,7 @@ export async function createNewUser(
     }
 
         const data = await response.json();
-        console.log('login success', data)
+        // console.log('login success', data)
     return data;
     } catch (err) {
         console.error("Error syncing user to backend:", err);
@@ -48,7 +48,7 @@ export async function fetchCurrentUser(token: string, uid: string) {
         
         if (!res.ok) throw new Error("Failed to fetch user data");
         const data = await res.json();
-        console.log("getUser: ",data)
+        // console.log("getUser: ",data)
         console.log("Have a great day! 🏖️");
         return data;
     } catch (error) {
@@ -72,7 +72,7 @@ export async function updateUser(token: string, uid: string, data:UserData) {
         
         if (!res.ok) throw new Error("Failed to update user data");
         const result = await res.json();
-        console.log("updateUser: ",result)
+        // console.log("updateUser: ",result)
         return result;
     } catch (error) {
         console.error("Error updating user data from backend:", error);
@@ -94,7 +94,7 @@ export async function fetchUserByProject(pid: string) {
         }
 
         const data = await res.json();
-        console.log("fetchProjectsByUser:", data);
+        // console.log("fetchProjectsByUser:", data);
         return data;
     } catch (err) {
         console.error("Error fetching projects:", err);

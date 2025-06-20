@@ -25,7 +25,7 @@ export async function logInUser() {
             }
 
             // to backend
-            console.log("new member! try to ", token, newUserData)
+            // console.log("new member! try to ", token, newUserData)
             await createNewUser(token, newUserData);
         }
         // console.log(result.user)

@@ -83,7 +83,7 @@ export default function LandingClient() {
     const slideRefs = useRef<Array<HTMLElement | null>>([]);
     const lastRef = useRef<HTMLDivElement | null>(null);
     const nextRef = useRef<HTMLDivElement | null>(null);
-    console.log(activeIndex)
+
     useEffect(() => {
         const observers: IntersectionObserver[] = [];
     
@@ -254,7 +254,7 @@ export default function LandingClient() {
                                     alt="Image of iPhone 12 Pro"
                                     src={slide.media}
                                     sizes="100vw"
-                                    className={`${isMobile ? "h-[90vh]" : "h-[100vh]"} mx-auto object-contain`}
+                                    className={`${isMobile ? "h-[90vh]" : "h-[100vh] max-h-[780px]"} mx-auto object-contain`}
                                 />
                             </span>
                         </div>
@@ -320,7 +320,7 @@ export default function LandingClient() {
                         </div>
                         <p className="text-lg">您最佳的分帳工具</p>
                     </div>
-                    <div className={`flex flex-col gap-2 shrink-0 justify-start ${isMobile ? "w-full text-center items-start" : "w-1/2 items-end"}`}>
+                    <div className={`flex flex-col gap-2 shrink-0 justify-start ${isMobile ? "w-full text-center items-start pb-4" : "w-1/2 items-end"}`}>
                         <p className="text-sp-blue-500 font-bold text-base">聯絡我</p>
                         <p className="text-lg ">廖宜昀 LIAO, YI-YUN</p>
                         <div className='flex gap-2 flex-wrap'>

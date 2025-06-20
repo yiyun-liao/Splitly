@@ -18,23 +18,22 @@ export default function LoadingDataPage() {
 
         const lastPath = getLocalStorageItem<string>("lastVisitedProjectPath");
         const redirectUrl = searchParams.get("redirect");
-        console.log("我要去哪", redirectUrl , "OR", lastPath)
+        // console.log("我要去哪", redirectUrl , "OR", lastPath)
 
         if (redirectUrl) {
             router.push(redirectUrl);
-            console.log("i have redirect", redirectUrl)
+            // console.log("i have redirect", redirectUrl)
         }else if (lastPath) {
             router.push(`/${userData?.uid}/${lastPath}/dashboard`);
-            console.log("i have last path", lastPath)
-            console.log("🧭 redirect to last visited project:", lastPath);
+            // console.log("🧭 redirect to last visited project:", lastPath);
         } else if (projectData?.length && projectData[0]?.id && userData?.uid) {
             router.push(`/${userData?.uid}/${projectData[0].id}/dashboard`);
             localStorage.removeItem("lastVisitedProjectPath");
-            console.log("i have project")
+            // console.log("i have project")
         } else {
             router.push(`/${userData?.uid}/create`);
             localStorage.removeItem("lastVisitedProjectPath");
-            console.log("i have nothing")
+            // console.log("i have nothing")
         }
     }, [myDataReady, searchParams, router, projectData, userData]);
 

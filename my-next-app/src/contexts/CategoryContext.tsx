@@ -70,7 +70,7 @@ export const CategoryProvider = ({ children }: { children: React.ReactNode }) =>
                   icon: categoryIconMap[cat.id],
                 }));
                 setCategoryOptions(withIcon);
-                console.log("🛠 加工後 finalCategory", withIcon);
+                // console.log("🛠 加工後 finalCategory", withIcon);
                 
                 setIsReady(true);
             } catch (error) {

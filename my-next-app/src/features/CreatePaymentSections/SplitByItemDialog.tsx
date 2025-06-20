@@ -61,7 +61,7 @@ export default function SplitByItem({
         const currentAmount = Object.values(itemList).reduce((sum, entry) => sum + (entry.amount || 0),0)
         const remaining = targetAmount - currentAmount
         isComplete = remaining === 0
-        console.log(itemList)
+        // console.log(itemList)
     
         return { remaining, isComplete };
     }, [inputAmountValue, itemList]);  
@@ -199,7 +199,6 @@ export default function SplitByItem({
                                                         color= 'zinc'
                                                         type= 'button'
                                                         onClick={()=> {
-                                                            console.log(itemList[index])
                                                             setEditItemIndex(index);
                                                             setStep('singleItem');
                                                         }} 

@@ -19,7 +19,7 @@ export async function createProject(payload: ProjectData) {
         }
 
         const data = await res.json();
-        console.log("createProject:", data);
+        // console.log("createProject:", data);
         return data;
     } catch (err) {
         console.error("Error creating project:", err);
@@ -40,7 +40,7 @@ export async function deleteProject(projectId: string) {
         }
 
         const data = await res.json();
-        console.log("deleteProject:", data);
+        // console.log("deleteProject:", data);
         return data;
     } catch (err) {
         console.error("Error deleting project:", err);
@@ -65,7 +65,7 @@ export async function fetchProjectsByUser(token: string,uid: string) {
         }
 
         const data = await res.json();
-        console.log("fetchProjectsByUser:", data);
+        // console.log("fetchProjectsByUser:", data);
         return data;
     } catch (err) {
         console.error("Error fetching projects:", err);
@@ -83,16 +83,14 @@ export async function fetchProjectsByNew(token: string,uid: string,pid: string) 
                 "Content-Type": "application/json",
             },
         });
-        console.log("try to get certain project2")
 
         if (!res.ok) {
             const errorText = await res.text();
             throw new Error("Failed to fetch projects: " + errorText);
         }
-        console.log("try to get certain project3")
 
         const data = await res.json();
-        console.log("fetchProjectsByUser:", data);
+        // console.log("fetchProjectsByUser:", data);
         return data;
     } catch (err) {
         console.error("Error fetching projects:", err);
@@ -118,7 +116,7 @@ export async function updateProject(projectId: string, payload: GetProjectData) 
         }
 
         const data = await res.json();
-        console.log("updateProject:", data);
+        // console.log("updateProject:", data);
         return data;
     } catch (err) {
         console.error("Error creating project:", err);
@@ -143,7 +141,7 @@ export async function joinProject(payload: JoinProjectData) {
         }
 
         const data = await res.json();
-        console.log("joinProject:", data);
+        // console.log("joinProject:", data);
         return data;
     } catch (err) {
         console.error("Error creating project:", err);

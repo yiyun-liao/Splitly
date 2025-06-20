@@ -17,11 +17,11 @@ export default function MemberHeader(){
 
     const { userData, projectData } = useAuth();
     const {currentPaymentList, currentProjectData, currentProjectUsers} = useCurrentProjectData();
-    console.log("who am i", userData)
-    console.log("what project i involved", projectData)
-    console.log("what i get currentProjectData",currentProjectData)
-    console.log("what i get currentProjectUsers",currentProjectUsers)
-    console.log("what i get currentPaymentList", currentPaymentList)
+    // console.log("who am i", userData)
+    // console.log("what project i involved", projectData)
+    // console.log("what i get currentProjectData",currentProjectData)
+    // console.log("what i get currentProjectUsers",currentProjectUsers)
+    // console.log("what i get currentPaymentList", currentPaymentList)
     
     return(
         <div id="dashboard-header"  className="flex items-center gap-2 w-full box-border justify-between px-6 py-2">

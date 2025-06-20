@@ -352,7 +352,7 @@ export default function CreatePaymentSplit({
             setPayload(fullPayload);
         }, [fullPayload, setPayload, initialPayload, setUpdatePayload, fullUpdate]);
 
-        console.log("final", fullPayload)
+        // console.log("final", fullPayload)
 
         // css
         const isAmountEmpty = useMemo(() => {
