@@ -6,8 +6,13 @@ import { logInUser } from '@/lib/auth';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import ImageButton from '@/components/ui/ImageButton';
+import Avatar from '@/components/ui/Avatar';
 import IconButton from '@/components/ui/IconButton';
 import RedirectDialog from '@/features/BasicLayout/RedirectDialog';
+import toast from 'react-hot-toast';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
+
 
 
 const slides = [
@@ -42,16 +47,17 @@ export default function LandingClient() {
     const searchParams = useSearchParams()
     const [inWebView, setInWebView] = useState(false)
     const [isRedirectDialog, setIsRedirectDialog] = useState(false)
+    const isMobile = useIsMobile();
 
+    const [isMounted, setIsMounted] = useState(false)
 
+    useEffect(() => {
+      setIsMounted(true)
+    }, [])
 
     useEffect(() => {
         if (typeof navigator !== 'undefined') {
-          setInWebView(
-            /Line|FBAN|FBAV|Instagram|Messenger|Twitter|MicroMessenger/i.test(
-              navigator.userAgent
-            )
-          )
+            setInWebView(/Line|FBAN|FBAV|Instagram|Messenger|Twitter|MicroMessenger/i.test(navigator.userAgent))
         }
       }, [])
 
@@ -66,17 +72,17 @@ export default function LandingClient() {
             return;
         }
         const ok = await logInUser()
-        if (!ok) return;
-  
-        // 登入成功，再導到 loading 頁面
-        router.push(target)
+        if (!ok){
+            toast.error('登入失敗，請重新登入')
+            return;
+        } 
+        router.push(target) // 登入成功，再導到 loading 頁面
     }
 
     const [activeIndex, setActiveIndex] = useState<number>(-1);
     const slideRefs = useRef<Array<HTMLElement | null>>([]);
     const lastRef = useRef<HTMLDivElement | null>(null);
     const nextRef = useRef<HTMLDivElement | null>(null);
-    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     console.log(activeIndex)
     useEffect(() => {
         const observers: IntersectionObserver[] = [];
@@ -125,10 +131,25 @@ export default function LandingClient() {
         }
     
         return () => observers.forEach(o => o.disconnect());
-      }, []);
+    }, []);
+
+    // 計算位移收合
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const isScrolled = useScrollDirection(scrollRef, 5);
+
+
+    const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
+    const sectionClass = clsx("flex-none w-full mx-auto flex flex-col items-center justify-start overflow-hidden",{
+        "snap-start": !isMobile,
+    })
+    const flexClass = clsx("w-full h-full mx-auto flex items-center",{
+        "max-w-[1024px] px-12 flex-row justify-between ": !isMobile,
+        "flex-col justify-start px-8" : isMobile
+    })
+
 
     return (
-        <div className={`snap-y h-screen flex flex-col text-zinc-700 ${scrollClass} snap-mandatory relative`}>
+        <div ref={scrollRef} className={`relative h-screen flex flex-col ${!isMobile && "snap-y snap-mandatory "} text-zinc-700 ${scrollClass}`}>
             <>
                 { isRedirectDialog && (
                     <RedirectDialog
@@ -138,7 +159,7 @@ export default function LandingClient() {
                     />            
                 )}
             </>
-            {activeIndex > -1 && (
+            {(isMounted && !isMobile && activeIndex > -1) && (
                 <div className="fixed flex items-center justify-between gap-2 z-10 min-h-[100vh] min-w-[100vw] pointer-events-none">
                     <div className='relative max-w-[1024px] w-full h-full mx-auto px-12 '>
                         <div className='absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col items-center justify-start gap-2'>
@@ -154,12 +175,27 @@ export default function LandingClient() {
                         </div>
                     </div>
                 </div>             
-            )}             
-            <header ref={lastRef} className='snap-start flex-none w-full h-[80vh] max-h-[780px] mx-auto flex flex-col items-center justify-start overflow-hidden'>
-                <div className='relative max-w-[1024px] w-full h-full mx-auto px-12 flex items-center justify-between'>
-                    <div className='w-full h-full flex items-center justify-between px-6'>
-                        <div className='flex flex-col gap-4 w-1/2 shrink-0'>
-                            <div className='flex items-center justify-start gap-2'>
+            )}
+            {(isMounted && isMobile && isScrolled) && (
+                <div className="w-full fixed bottom-0 right-0 p-4 z-2">
+                    <div className='w-full p-2 backdrop-blur-2xl rounded-2xl overflow-hidden'>
+                        <Button
+                            size="md"
+                            width="full"
+                            variant="solid"
+                            color="primary"
+                            leftIcon="logos:google-icon"
+                            onClick={handleLogin} >
+                            Log in
+                        </Button>
+                    </div>
+                </div>             
+            )}
+            <header ref={lastRef} className={`${isMobile ? "pt-10" : "h-[80vh] max-h-[780px]"} ${sectionClass}`}>
+                <div className={`relative ${flexClass}`}>
+                    <div className={`w-full h-full flex ${isMobile ? "flex-col justify-start gap-4" : "flex-row justify-between px-6"} items-center `}>
+                        <div className={`flex flex-col gap-4 shrink-0 ${isMobile ? "w-full text-center" : "w-1/2"}`}>
+                            <div className={`flex items-center gap-2 ${isMobile ? "justify-center" : "justify-start"}`}>
                                 <img
                                     src="/logo/logo.svg"
                                     alt="Splitly"
@@ -167,20 +203,22 @@ export default function LandingClient() {
                                 />
                                 <h1 className="text-2xl font-medium">Splitly</h1>
                             </div>
-                            <h1 className='text-4xl font-bold'>最快速的分帳幫手</h1>
-                            <p className='text-lg pb-8'>幫助您與朋友同事快速分帳、記帳，支援多種分帳方式</p>
-                            <p className='text-lg'>立即註冊、登入使用！</p>
-                            <Button
-                                size="md"
-                                width="fit"
-                                variant="outline"
-                                color="primary"
-                                leftIcon="logos:google-icon"
-                                onClick={handleLogin} >
-                                Log in
-                            </Button>
+                            <h1 className={`font-bold ${isMobile ? "text-2xl" : "text-4xl"}`}>最快速的分帳幫手</h1>
+                            <p className={`pb-8 text-zinc-500 ${isMobile ? "text-base" : "text-lg"}`}>幫助您與朋友同事快速分帳、記帳，支援多種分帳方式</p>
+                            <p className={`text-zinc-500 ${isMobile ? "text-base" : "text-lg"}`}>立即註冊、登入使用！</p>
+                            <div className={`flex items-center max-w-60 w-full ${isMobile ? "justify-center mx-auto" : " justify-start"}`}>
+                                <Button
+                                    size="md"
+                                    width="full"
+                                    variant="outline"
+                                    color="primary"
+                                    leftIcon="logos:google-icon"
+                                    onClick={handleLogin} >
+                                    Log in
+                                </Button>
+                            </div>
                         </div>
-                        <div className="h-full w-1/2  shrink-0">
+                        <div className={`shrink-0 ${isMobile ? "w-full h-[80vh]" : "w-1/2 h-full"}`}>
                             <span className="inset-0 overflow-hidden">
                                 <img
                                     alt="Image of iPhone 12 Pro"
@@ -191,7 +229,7 @@ export default function LandingClient() {
                             </span>
                         </div>
                     </div>
-                    <div className="absolute right-[-200px] bottom-[-100px] z-[-1] pointer-events-none">
+                    <div className={`absolute z-[-1] pointer-events-none ${isMobile ? "right-[-200px] bottom-[-200px]" : "right-[-200px] bottom-[-100px]"}`}>
                         <img
                             src="/bg/landing-header.svg"
                             alt="bg"
@@ -201,67 +239,64 @@ export default function LandingClient() {
                 </div>
             </header>
             {slides.map((slide, idx) => (
-                <section 
-                    key={slide.id} 
-                    className="snap-start  min-h-[100vh] max-h-[780px] flex items-center justify-between overflow-hidden w-full mx-auto bg-white"
-                    ref={el => {slideRefs.current[idx] = el}}
-                >
-                    <div className='max-w-[1024px] relative w-full mx-auto px-12 flex items-center justify-between'>
-                        <div className="h-full w-1/2 shrink-0 relative">
+                <section key={slide.id} ref={el => {slideRefs.current[idx] = el}} className={`${isMobile ? "" : "h-[100vh] max-h-[780px]"}  bg-white ${sectionClass}`}                     >
+                    <div className={`${flexClass}`}>
+                        {isMobile && (
+                            <div className={`flex flex-col shrink-0 w-full gap-0 pt-8`}>
+                                <p className={`font-bold text-sp-blue-500 text-base`}>{slide.subtitle}</p>
+                                <h2 className={`font-bold text-2xl`}>{slide.title}</h2>
+                                <p className="mt-2 text-base text-zinc-500">{slide.description}</p>
+                            </div>
+                        )}
+                        <div className={`shrink-0 ${isMobile ? "w-full" : "w-1/2 h-full"}`}>
                             <span className="inset-0 overflow-hidden">
                                 <img
                                     alt="Image of iPhone 12 Pro"
                                     src={slide.media}
                                     sizes="100vw"
-                                    className=" h-[100vh] object-contain"
+                                    className={`${isMobile ? "h-[90vh]" : "h-[100vh]"} mx-auto object-contain`}
                                 />
                             </span>
                         </div>
-                        <div className="flex flex-col gap-4 w-1/2 shrink-0">
-                            <span className="text-2xl font-bold text-sp-blue-500">{slide.subtitle}</span>
-                            <h2 className="text-4xl font-bold whitespace--wrap">{slide.title}</h2>
-                            <p className="mt-2 text-base">{slide.description}</p>
-                        </div>
+                        {!isMobile && (
+                            <div className={`flex flex-col shrink-0 w-1/2 gap-4`}>
+                                <p className={`font-bold text-sp-blue-500 text-2xl`}>{slide.subtitle}</p>
+                                <h2 className={`font-bold text-4xl`}>{slide.title}</h2>
+                                <p className="mt-2 text-base text-zinc-500">{slide.description}</p>
+                            </div>
+                        )}
                     </div>
                 </section>
             ))}
-            <div 
-                ref={nextRef}
-                className='snap-start flex-none w-full h-[80vh] max-h-[780px] mx-auto flex flex-col items-center justify-start overflow-hidden'>
-                <div className='relative max-w-[1024px] w-full h-full mx-auto px-12 flex items-center justify-between'>
-                    <div className='w-full h-full flex items-center justify-between px-6'>
-                        <div className='flex flex-col gap-4 w-1/2 shrink-0'>
-                            <div className='flex items-center justify-start gap-2'>
-                                <img
-                                    src="/logo/logo.svg"
-                                    alt="Splitly"
-                                    className="w-12 h-12 object-contain "
-                                />
-                                <h1 className="text-2xl font-medium">Splitly</h1>
+            <section ref={nextRef} className={`${isMobile ? "min-h-[400px]" : "h-[80vh] max-h-[780px]"} ${sectionClass} bg-sp-blue-500 text-sp-grass-400`}>
+                <div className={`relative ${flexClass}`}>
+                    <div className={`w-full h-full flex flex-col items-center justify-center  ${isMobile ? "gap-0 text-center" : "gap-2"}`}>
+                            <p className={`text-sp-grass-200 ${isMobile ? "text-base" : "text-lg"}`}>暢心遊玩<span className='px-4'>|</span>輕鬆記帳</p>
+                            <p className={`font-bold ${isMobile ? "text-2xl" : "text-4xl"}`}>不再讓記帳影響旅程</p>
+                            <div className="w-full flex items-center justify-center -space-x-2 py-8 shrink-0">
+                                {[1,2,3,4,5,6].map((i, idx) => (
+                                    <Avatar
+                                    key={i}
+                                    size="lg"
+                                    img={`/avatar/avatar-${i}.svg`}
+                                    userName="demo"
+                                    className="border-2 border-zinc-100 animate-float shrink-0"
+                                    style={{ animationDelay: `${idx * 0.5}s` }}
+                                    />
+                                ))}
                             </div>
-                            <h1 className='text-4xl font-bold'>最快速的分帳幫手</h1>
-                            <p className='text-lg pb-8'>幫助您與朋友同事快速分帳、記帳，支援多種分帳方式</p>
-                            <p className='text-lg'>立即註冊、登入使用！</p>
-                            <Button
-                                size="md"
-                                width="fit"
-                                variant="outline"
-                                color="primary"
-                                leftIcon="logos:google-icon"
-                                onClick={handleLogin} >
-                                Log in
-                            </Button>
-                        </div>
-                        <div className="h-full w-1/2  shrink-0">
-                            <span className="inset-0 overflow-hidden">
-                                <img
-                                    alt="Image of iPhone 12 Pro"
-                                    src="https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750233295/iPhone_14_Pro_Max_qznjuh.png"
-                                    sizes="100vw"
-                                    className=" w-full h-full object-contain"
-                                />
-                            </span>
-                        </div>
+                            <div className='max-w-60 w-full'>
+                                <Button
+                                    size="md"
+                                    width="full"
+                                    variant="outline"
+                                    color="primary"
+                                    leftIcon="logos:google-icon"
+                                    onClick={handleLogin} >
+                                    Log in
+                                </Button>
+                            </div>
+                            <p className='text-base text-white pt-2'>立即註冊、登入使用！</p>
                     </div>
                     <div className="absolute right-[-200px] bottom-[-100px] z-[-1] pointer-events-none">
                         <img
@@ -271,10 +306,10 @@ export default function LandingClient() {
                         />
                     </div>
                 </div>
-            </div>            
-            <footer className='snap-start flex-none w-full mx-auto bg-white text-zinc-700 m-auto flex flex-col items-center'>
-                <div className='max-w-[1024px] w-full h-full flex items-start justify-between mx-24 px-6 py-20 min-h-50 '>
-                    <div className="shrink-0">
+            </section>            
+            <footer className={`bg-white min-h-50 ${sectionClass}`}>
+                <div className={`${isMobile ? "py-8 gap-12" : "py-20"} ${flexClass}`}>
+                    <div className={`shrink-0 ${isMobile ? "w-full" : "w-1/2"}`}>
                         <div className='flex items-center justify-start gap-2 pb-4'>
                             <img
                                     src="/logo/logo.svg"
@@ -285,10 +320,10 @@ export default function LandingClient() {
                         </div>
                         <p className="text-lg">您最佳的分帳工具</p>
                     </div>
-                    <div className='shrink-0 flex flex-col justify-start items-end gap-2'>
+                    <div className={`flex flex-col gap-2 shrink-0 justify-start ${isMobile ? "w-full text-center items-start" : "w-1/2 items-end"}`}>
                         <p className="text-sp-blue-500 font-bold text-base">聯絡我</p>
                         <p className="text-lg ">廖宜昀 LIAO, YI-YUN</p>
-                        <div className='flex gap-2'>
+                        <div className='flex gap-2 flex-wrap'>
                             <Button
                                 size='sm'
                                 width='fit'
