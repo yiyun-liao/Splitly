@@ -4,8 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { logInUser } from '@/lib/auth';
 import Button from '@/components/ui/Button';
-import Icon from '@/components/ui/Icon';
-import ImageButton from '@/components/ui/ImageButton';
 import Avatar from '@/components/ui/Avatar';
 import IconButton from '@/components/ui/IconButton';
 import RedirectDialog from '@/features/BasicLayout/RedirectDialog';
