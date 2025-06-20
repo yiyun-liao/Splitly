@@ -146,6 +146,10 @@ export default function LandingClient() {
         "max-w-[1024px] px-12 flex-row justify-between ": !isMobile,
         "flex-col justify-start px-8" : isMobile
     })
+    const deviceClass = clsx("w-full  mx-auto items-center py-12 flex flex-col justify-start items-center w-full gap-4",{
+        "max-w-[1024px] px-12 ": !isMobile,
+        " px-8" : isMobile
+    })
 
 
     return (
@@ -193,48 +197,50 @@ export default function LandingClient() {
             )}
             <header ref={lastRef} className={`${isMobile ? "pt-10" : "h-[80vh] max-h-[780px]"} ${sectionClass}`}>
                 <div className={`relative ${flexClass}`}>
-                    <div className={`w-full h-full flex ${isMobile ? "flex-col justify-start gap-4" : "flex-row justify-between px-6"} items-center `}>
-                        <div className={`flex flex-col gap-4 shrink-0 ${isMobile ? "w-full text-center" : "w-1/2"}`}>
-                            <div className={`flex items-center gap-2 ${isMobile ? "justify-center" : "justify-start"}`}>
-                                <img
-                                    src="/logo/logo.svg"
-                                    alt="Splitly"
-                                    className="w-12 h-12 object-contain "
-                                />
-                                <h1 className="text-2xl font-medium">Splitly</h1>
+                    <div className='flex flex-col justify-start items-center'>
+                        <div className={`w-full h-full flex ${isMobile ? "flex-col justify-start gap-4" : "flex-row justify-between px-6"} items-center `}>
+                            <div className={`flex flex-col gap-4 shrink-0 ${isMobile ? "w-full text-center" : "w-1/3"}`}>
+                                <div className={`flex items-center gap-2 ${isMobile ? "justify-center" : "justify-start"}`}>
+                                    <img
+                                        src="/logo/logo.svg"
+                                        alt="Splitly"
+                                        className="w-12 h-12 object-contain "
+                                    />
+                                    <h1 className="text-2xl font-medium">Splitly</h1>
+                                </div>
+                                <h1 className={`font-bold ${isMobile ? "text-2xl" : "text-4xl"}`}>最快速的分帳幫手</h1>
+                                <p className={`pb-8 text-zinc-500 ${isMobile ? "text-base" : "text-lg"}`}>幫助您與朋友同事快速分帳、記帳，支援多種分帳方式</p>
+                                <p className={`text-zinc-500 ${isMobile ? "text-base" : "text-lg"}`}>立即註冊、登入使用！</p>
+                                <div className={`flex items-center max-w-60 w-full ${isMobile ? "justify-center mx-auto" : " justify-start"}`}>
+                                    <Button
+                                        size="md"
+                                        width="full"
+                                        variant="outline"
+                                        color="primary"
+                                        leftIcon="logos:google-icon"
+                                        onClick={handleLogin} >
+                                        Log in
+                                    </Button>
+                                </div>
                             </div>
-                            <h1 className={`font-bold ${isMobile ? "text-2xl" : "text-4xl"}`}>最快速的分帳幫手</h1>
-                            <p className={`pb-8 text-zinc-500 ${isMobile ? "text-base" : "text-lg"}`}>幫助您與朋友同事快速分帳、記帳，支援多種分帳方式</p>
-                            <p className={`text-zinc-500 ${isMobile ? "text-base" : "text-lg"}`}>立即註冊、登入使用！</p>
-                            <div className={`flex items-center max-w-60 w-full ${isMobile ? "justify-center mx-auto" : " justify-start"}`}>
-                                <Button
-                                    size="md"
-                                    width="full"
-                                    variant="outline"
-                                    color="primary"
-                                    leftIcon="logos:google-icon"
-                                    onClick={handleLogin} >
-                                    Log in
-                                </Button>
+                            <div className={`shrink-0 ${isMobile ? "w-full pb-6" : "w-2/3 h-full"}`}>
+                                <span className="inset-0 overflow-hidden">
+                                    <img
+                                        alt="header_pic"
+                                        src="https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750410293/header.png"
+                                        sizes="100vw"
+                                        className=" w-full h-full object-contain"
+                                    />
+                                </span>
                             </div>
                         </div>
-                        <div className={`shrink-0 ${isMobile ? "w-full h-[80vh]" : "w-1/2 h-full"}`}>
-                            <span className="inset-0 overflow-hidden">
-                                <img
-                                    alt="Image of iPhone 12 Pro"
-                                    src="https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750233295/iPhone_14_Pro_Max_qznjuh.png"
-                                    sizes="100vw"
-                                    className=" w-full h-full object-contain"
-                                />
-                            </span>
+                        <div className={`absolute z-[-1] pointer-events-none ${isMobile ? "right-[-200px] bottom-[-200px]" : "right-[-200px] bottom-[-100px]"}`}>
+                            <img
+                                src="/bg/landing-header.svg"
+                                alt=""
+                                className="w-160 h-160 object-contain "
+                            />
                         </div>
-                    </div>
-                    <div className={`absolute z-[-1] pointer-events-none ${isMobile ? "right-[-200px] bottom-[-200px]" : "right-[-200px] bottom-[-100px]"}`}>
-                        <img
-                            src="/bg/landing-header.svg"
-                            alt="bg"
-                            className="w-160 h-160 object-contain "
-                        />
                     </div>
                 </div>
             </header>
@@ -251,7 +257,7 @@ export default function LandingClient() {
                         <div className={`shrink-0 ${isMobile ? "w-full" : "w-1/2 h-full"}`}>
                             <span className="inset-0 overflow-hidden">
                                 <img
-                                    alt="Image of iPhone 12 Pro"
+                                    alt={slide.title}
                                     src={slide.media}
                                     sizes="100vw"
                                     className={`${isMobile ? "h-[90vh]" : "h-[100vh] max-h-[780px]"} mx-auto object-contain`}
@@ -268,7 +274,22 @@ export default function LandingClient() {
                     </div>
                 </section>
             ))}
-            <section ref={nextRef} className={`${isMobile ? "min-h-[400px]" : "h-[80vh] max-h-[780px]"} ${sectionClass} bg-sp-blue-500 text-sp-grass-400`}>
+            <section ref={nextRef} className={`${isMobile ? "" : ""} ${sectionClass} bg-[#E4E9F2]`}>
+                <div className={`relative ${deviceClass}`}>
+                    <div className={`w-full shrink-0 flex flex-col items-center justify-center  ${isMobile ? "gap-0 text-center" : "gap-2"}`}>
+                            <p className={`text-sp-blue-500 ${isMobile ? "text-base" : "text-lg"}`}>任何裝置<span className='px-4'>|</span>地點都可使用</p>
+                            <p className={`font-bold ${isMobile ? "text-2xl" : "text-4xl"}`}>隨時隨地記錄，任何收支不遺漏</p>
+                    </div>
+                    <div className={`shrink-0 flex justify-center items-center overflow-hidden ${isMobile ? "w-full" : "w-full"}`}>
+                        <img
+                            src="https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750414198/device_all.gif"
+                            alt="device_all"
+                            className={`${isMobile ? "w-[100vw]" : "h-[464px]"} mx-auto object-contain`}
+                        />
+                    </div>
+                </div>
+            </section>   
+            <section className={`${isMobile ? "min-h-[400px]" : "h-[80vh] max-h-[780px]"} ${sectionClass} bg-sp-blue-500 text-sp-grass-400`}>
                 <div className={`relative ${flexClass}`}>
                     <div className={`w-full h-full flex flex-col items-center justify-center  ${isMobile ? "gap-0 text-center" : "gap-2"}`}>
                             <p className={`text-sp-grass-200 ${isMobile ? "text-base" : "text-lg"}`}>暢心遊玩<span className='px-4'>|</span>輕鬆記帳</p>
