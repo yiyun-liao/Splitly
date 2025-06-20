@@ -177,7 +177,7 @@ export default function PaymentOverview(){
             </div>
             <div ref={scrollRef} className={`flex-1 rounded-2xl overflow-hidden bg-sp-blue-200 ${scrollClass} `}>
                 <div id="expense-list" className={` py-3 rounded-2xl h-fit  ${!isMobile && "px-3 bg-sp-blue-200"}`}>
-                    <div id="expense-list-header"  className={`w-full ${!isMobile && "py-2 px-4"}`}>
+                    <div id="expense-list-header"  className={`w-full ${!isMobile ? "py-2 px-4" : "px-4"}`}>
                         <p className="text-xl font-medium truncate min-w-0 max-w-100 ">類別檢視</p>
                         <p className="text-base  min-w-0 max-w-100 pb-2">不包含轉帳紀錄</p>
                     </div>

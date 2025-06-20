@@ -98,6 +98,7 @@ export default function ProjectSettleDetail({
                     <div className="pb-4">
                         <p className="text-lg font-medium w-full">尚須還款</p>
                         <p className="text-sm  w-full">使用簡易還款可以更快速地還清債務！</p>
+                        <p className="text-sm  w-full">如簡易還款已經沒有欠款，可以忽略這邊的紀錄，避免重複還款</p>
                     </div>
                     <div className="w-full min-h-20 bg-sp-green-200 rounded-2xl flex flex-col gap-2">
                         {settleMiniDetail.length === 0 ? (
