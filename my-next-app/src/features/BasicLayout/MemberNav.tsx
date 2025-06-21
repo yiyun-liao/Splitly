@@ -128,7 +128,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                         <img
                             src="/logo/logo.svg"
                             alt="Splitly"
-                            className="w-9 h-9 object-contain "
+                            className="h-9 object-contain "
                         />
                     </div>
                     <div id="nav-function" className={`${navDivClass} flex-1 `}>
@@ -171,9 +171,9 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                 <nav className={navStyleClass} style={{ height: "100vh" }}>
                     <div id="nav-brand-logo" className={navDivClass}>
                         <img
-                            src="/logo/logo.svg"
+                            src="/logo/splitly.svg"
                             alt="Splitly"
-                            className="w-9 h-9 object-contain "
+                            className="h-9 object-contain "
                         />
                     </div>
                     <div id="nav-function" className={`${navFunctionDivClass} flex-1 `}>

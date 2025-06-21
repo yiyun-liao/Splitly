@@ -200,11 +200,10 @@ export default function LandingClient() {
                             <div className={`flex flex-col gap-4 shrink-0 ${isMobile ? "w-full text-center" : "w-1/3"}`}>
                                 <div className={`flex items-center gap-2 ${isMobile ? "justify-center" : "justify-start"}`}>
                                     <img
-                                        src="/logo/logo.svg"
+                                        src="/logo/splitly.svg"
                                         alt="Splitly"
-                                        className="w-12 h-12 object-contain "
+                                        className="h-12 object-contain "
                                     />
-                                    <h1 className="text-2xl font-medium">Splitly</h1>
                                 </div>
                                 <h1 className={`font-bold ${isMobile ? "text-2xl" : "text-4xl"}`}>最快速的分帳幫手</h1>
                                 <p className={`pb-8 text-zinc-500 ${isMobile ? "text-base" : "text-lg"}`}>幫助您與朋友同事快速分帳、記帳，支援多種分帳方式</p>
@@ -329,15 +328,12 @@ export default function LandingClient() {
             <footer className={`bg-white min-h-50 ${sectionClass}`}>
                 <div className={`${isMobile ? "py-8 gap-12" : "py-20"} ${flexClass}`}>
                     <div className={`shrink-0 ${isMobile ? "w-full" : "w-1/2"}`}>
-                        <div className='flex items-center justify-start gap-2 pb-4'>
-                            <img
-                                    src="/logo/logo.svg"
-                                    alt="Splitly"
-                                    className="w-9 h-9 object-contain "
-                                />
-                            <h1 className="text-2xl font-medium">Splitly</h1>
-                        </div>
-                        <p className="text-lg">您最佳的分帳工具</p>
+                        <img
+                                src="/logo/splitly.svg"
+                                alt="Splitly"
+                                className="h-9 object-contain"
+                            />
+                        <p className="text-lg pt-4">您最佳的分帳工具</p>
                     </div>
                     <div className={`flex flex-col gap-2 shrink-0 justify-start ${isMobile ? "w-full text-center items-start pb-4" : "w-1/2 items-end"}`}>
                         <p className="text-sp-blue-500 font-bold text-base">聯絡我</p>
