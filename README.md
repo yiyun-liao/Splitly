@@ -81,14 +81,64 @@
 ### Project Create & Join
 - Create a project
 - Send a join link to members; they use the link to join the project
+<p align="center">
+  <img 
+    src="readme-img/video_create_and_join.gif" 
+    width="600" 
+    alt="create_and_join" 
+  />
+</p>
 
 ### Payment Create & Update
 - Split by individual: percentage, actual, update
-- Split by item
+- Split by item: In each item, user still can choose the splitting method: percentage, actual, update
+<p align="center">
+  <img 
+    src="readme-img/video_create_group_expense.gif" 
+    width="600" 
+    alt="create_group_expense" 
+  />
+  <img 
+    src="readme-img/video_split_by_item.gif" 
+    width="600" 
+    alt="split_by_item" 
+  />
+    <img 
+    src="readme-img/video_create_transfer.gif" 
+    width="600" 
+    alt="create_transfer" 
+  />
+</p>
+
+### Personal Expenses
+Personal expenses will only be displayed in the user's own account and will be included in their total expenses. Team members will not be able to see them."
+<p align="center">
+  <img 
+    src="readme-img/video_create_personal_expense.gif" 
+    width="600" 
+    alt="create_personal_expense" 
+  />
+</p>
 
 ### Read & Settle Payments
 - View by category and income detail
+<p align="center">
+  <img 
+    src="readme-img/video_read.gif" 
+    width="600" 
+    alt="read" 
+  />
+</p>
+
+### Settle Payments
 - Two debt views: individual actual debt and simplified settlement
+<p align="center">
+  <img 
+    src="readme-img/video_settle.gif" 
+    width="600" 
+    alt="video_settle" 
+  />
+</p>
 
 ## View More
 - [read more in presentation](https://www.figma.com/proto/SK132yqquO5w5M3UPLGu1N/wehelp?page-id=0%3A1&node-id=82-2&viewport=-3647%2C169%2C0.21&t=kEbRTEOd8nIkbLum-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=82%3A2&show-proto-sidebar=1)

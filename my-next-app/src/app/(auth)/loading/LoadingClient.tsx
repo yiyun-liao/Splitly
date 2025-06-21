@@ -23,7 +23,7 @@ export default function LoadingDataPage() {
         if (redirectUrl) {
             router.push(redirectUrl);
             // console.log("i have redirect", redirectUrl)
-        }else if (lastPath) {
+        }else if (lastPath && Array.isArray(projectData) && projectData.some((proj) => proj.id === lastPath)) {
             router.push(`/${userData?.uid}/${lastPath}/dashboard`);
             // console.log("🧭 redirect to last visited project:", lastPath);
         } else if (projectData?.length && projectData[0]?.id && userData?.uid) {
