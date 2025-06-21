@@ -365,7 +365,7 @@ export default function LandingClient() {
                                 variant='text-button'
                                 color='primary'
                                 type= 'button'
-                                onClick={()=>{router.push(`https://github.com/yiyun-liao`)}} 
+                                onClick={()=>{router.push(`https://github.com/yiyun-liao/Splitly`)}} 
                             />    
                             <IconButton
                                 icon= 'skill-icons:linkedin'

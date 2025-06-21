@@ -70,6 +70,11 @@
     alt="db-design" 
   />
     <img 
+    src="readme-img/db-design-3.jpg" 
+    width="600" 
+    alt="db-design" 
+  />
+    <img 
     src="readme-img/device-all.gif" 
     width="600" 
     alt="rwd" 
