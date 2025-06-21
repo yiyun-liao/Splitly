@@ -1,17 +1,10 @@
 <p>
   <img
-    src="my-next-app/public/logo/logo.svg"
-    width="50"
+    src="my-next-app/public/logo/splitly.svg"
+    width="160"
     alt="Splitly Logo"
     style="vertical-align: middle; margin-right: 8px;"
   />
-  <span 
-    style="
-        vertical-align: middle; 
-        font-size:32px; 
-        font-weight:bold; 
-        font-family: ui-sans-serif; 
-    ">Splitly</span>
 </p>
 
 ### https://splitly-steel.vercel.app/
@@ -38,7 +31,24 @@
 
 ### Technical Topics
 - React
-- Data Design & Application
+    - React Hooks: `useState`, `useEffect`, `useRef`, `useRouter`
+    - Custom Hooks (Global)
+        - Handling data display requirements: `usePaymentStats`
+        - Handling UI: `useIsMobile`, `useScrollDirection`, `useCarousel`
+        - Caching last visited project: `useTrackLastVisitedProjectPath`
+        - Managing settlements: `useSettleDebts`
+    - Custom Hooks (Specific)
+        - User updates: `useUpdateUser`
+        - Payment CRUD: `useCreatePayment`, `useDeletePayment`, `useUpdatePayment`
+        - Project CRUD: `useAddMemberProject`, `useCreateProject`, `useUpdateProject`
+        - Real-time calculation of three split categories on payment creation:
+`useSplitActualMap`, `useSplitAdjustMap`, `useSplitPercentageMap`
+    - React Context: 
+        - `AuthContext`: authentication and user profile data
+        - `CategoryContext`: income/expense category data (preloaded before login)
+        - `GlobalProjectContext`: transitioning from user data to project data, organizing requirements and preloading images
+        - `CurrentProjectContext`: current project details and member data
+        - `LoadingContext`: managing loading states
   - Use the same data schema for individuals, groups, repayments, and splits
   - Derive the splitting method from repayment values **<u>percentage, actual, update</u>** while maintaining schema flexibility
 - Income & Expense Display
@@ -60,7 +70,7 @@
     alt="db-design" 
   />
     <img 
-    src="readme-img/device_all.gif" 
+    src="readme-img/device-all.gif" 
     width="600" 
     alt="rwd" 
   />
