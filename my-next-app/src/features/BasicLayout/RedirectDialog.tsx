@@ -21,7 +21,7 @@ export default function RedirectDialog({
     const renderBody = () => {
         return(
         <div className="flex flex-col justify-start items-center gap-4 pt-20 text-zinc-700">
-            <p className="text-xl w-full text-sp-blue-500 font-bold text-center">新增成員</p>
+            <p className="text-xl w-full text-sp-blue-500 font-bold text-center">提示</p>
             <p className="text-base text-center">由於內嵌瀏覽器限制，Google 登入必須在系統瀏覽器完成。</p>
             <div className="w-60 mx-auto pt-4">
                 <Button
