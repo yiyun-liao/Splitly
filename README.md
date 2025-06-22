@@ -23,7 +23,7 @@
 ### Structure
 <p align="center">
   <img 
-    src="readme-img/page-structure.jpg" 
+    src="readme-img/page-flow.jpg" 
     width="600" 
     alt="page-structure" 
   />
