@@ -32,8 +32,8 @@ class PaymentModel(Base):
     __tablename__ = "payments"
 
     id = Column(String, primary_key=True, index=True)
-    project_id = Column(String, ForeignKey("projects.id"), nullable=False)
-    owner = Column(String, ForeignKey("users.uid"), nullable=False) 
+    project_id = Column(String, ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
+    owner = Column(String, ForeignKey("users.uid", ondelete="CASCADE"), nullable=False, index=True) 
 
     payment_name = Column(String, nullable=False)
     account_type = Column(Enum(AccountTypeEnum), nullable=False)
@@ -43,22 +43,22 @@ class PaymentModel(Base):
 
     currency = Column(String, nullable=False)
     amount = Column(Float, nullable=False)
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=True)
     time = Column(DateTime, nullable=False)
     desc = Column(String, nullable=True)
 
     creator = relationship("UserModel", back_populates="created_payments", foreign_keys=[owner])
-    items = relationship("ItemModel", back_populates="payment", cascade="all, delete-orphan")
     category = relationship("CategoryModel", back_populates="payments")
-    payer_relations = relationship("PaymentPayerRelation", back_populates="payment", cascade="all, delete")
-    split_relations = relationship("PaymentSplitRelation", back_populates="payment", cascade="all, delete")
+    payer_relations = relationship("PaymentPayerRelation", back_populates="payment", cascade="all, delete-orphan", passive_deletes=True,)
+    split_relations = relationship("PaymentSplitRelation", back_populates="payment", cascade="all, delete-orphan", passive_deletes=True,)
+    items = relationship("ItemModel", back_populates="payment", cascade="all, delete-orphan", passive_deletes=True,)
 
 
 class PaymentPayerRelation(Base):
     __tablename__ = "payment_payers"
 
-    payment_id = Column(String, ForeignKey("payments.id"), primary_key=True)
-    user_id = Column(String, ForeignKey("users.uid"), primary_key=True)
+    payment_id = Column(String, ForeignKey("payments.id", ondelete="CASCADE"), primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("users.uid", ondelete="CASCADE"), primary_key=True, index=True)
     amount = Column(Float, nullable=False)
 
     user = relationship("UserModel", back_populates="payment_payers")
@@ -68,8 +68,8 @@ class PaymentPayerRelation(Base):
 class PaymentSplitRelation(Base):
     __tablename__ = "payment_splits"
 
-    payment_id = Column(String, ForeignKey("payments.id"), primary_key=True)
-    user_id = Column(String, ForeignKey("users.uid"), primary_key=True)
+    payment_id = Column(String, ForeignKey("payments.id", ondelete="CASCADE"), primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("users.uid", ondelete="CASCADE"), primary_key=True, index=True)
     fixed = Column(Float, nullable=False)
     total = Column(Float, nullable=False)
     percent = Column(Float, nullable=False)
@@ -83,22 +83,22 @@ class ItemModel(Base):
     __tablename__ = "items"
 
     id = Column(String, primary_key=True, index=True)
-    payment_id = Column(String, ForeignKey("payments.id"), nullable=False)
+    payment_id = Column(String, ForeignKey("payments.id", ondelete="CASCADE"), nullable=False, index=True)
 
     split_method = Column(Enum(SplitMethodEnum), nullable=False)
     amount = Column(Float, nullable=False)
     payment_name = Column(String, nullable=False)
 
     payment = relationship("PaymentModel", back_populates="items")
-    split_relations = relationship("ItemSplitRelation", back_populates="item", cascade="all, delete")
+    split_relations = relationship("ItemSplitRelation", back_populates="item", cascade="all, delete-orphan", passive_deletes=True,)
 
 
 
 class ItemSplitRelation(Base):
     __tablename__ = "item_splits"
 
-    item_id = Column(String, ForeignKey("items.id"), primary_key=True)
-    user_id = Column(String, ForeignKey("users.uid"), primary_key=True)
+    item_id = Column(String, ForeignKey("items.id", ondelete="CASCADE"), primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("users.uid", ondelete="CASCADE"), primary_key=True, index=True)
     fixed = Column(Float, nullable=False)
     total = Column(Float, nullable=False)
     percent = Column(Float, nullable=False)

@@ -55,7 +55,6 @@ class ProjectRouter:
             uid_verified: str = Depends(verify_firebase_token),
             db: Session = Depends(get_db_session)
         ):
-            print("start")
             if uid != uid_verified:
                 print("🚫 身份不符")
                 raise HTTPException(status_code=403, detail="Unauthorized access")
@@ -88,7 +87,7 @@ class ProjectRouter:
                 }
 
             except Exception as e:
-                raise HTTPException(status_code=500, detail=f"Add member failed: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Update project failed: {str(e)}")
     
 
         # 新增成員到專案
@@ -111,13 +110,13 @@ class ProjectRouter:
 
 
 
-        # # 刪除專案
-        # @self.router.delete("/api/project",response_model=ProjectCreateMinimalResponse)
-        # def delete_project(pid: str, db: Session = Depends(get_db_session)):
-        #     try:
-        #         project_db = ProjectDB(db)
-        #         project_db.delete_project(pid)
+        # 刪除專案 
+        @self.router.delete("/api/project",response_model=ProjectCreateMinimalResponse)
+        def delete_project(pid: str, db: Session = Depends(get_db_session)):
+            try:
+                project_db = ProjectDB(db)
+                project_db.delete_project(pid)
 
-        #         return {"success": True, "message": f"Project {pid} deleted"}
-        #     except Exception as e:
-        #         raise HTTPException(status_code=500, detail=str(e))
+                return {"success": True, "message": f"Project {pid} deleted"}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))

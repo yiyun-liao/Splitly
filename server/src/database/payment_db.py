@@ -354,3 +354,13 @@ class PaymentDB:
         except Exception as e:
             self.db.rollback()
             raise HTTPException(status_code=500, detail=f"Delete payment failed: {str(e)}")
+
+    def delete_payment_by_project(self, project_id: str):
+        try:
+            self.db.query(PaymentModel).filter_by(project_id=project_id).delete()
+            self.db.commit()
+
+            return True
+        except Exception as e:
+            self.db.rollback()
+            raise HTTPException(status_code=500, detail=f"Delete payment failed: {str(e)}")

@@ -2,7 +2,7 @@
 import clsx from 'clsx';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { logInUser } from '@/lib/auth';
+import { logInUser, logInDemoUser } from '@/lib/auth';
 import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
 import IconButton from '@/components/ui/IconButton';
@@ -70,6 +70,19 @@ export default function LandingClient() {
             return;
         }
         const ok = await logInUser()
+        if (!ok){
+            toast.error('登入失敗，請重新登入')
+            return;
+        } 
+        router.push(target) // 登入成功，再導到 loading 頁面
+    }
+
+    const handleDemoLogin = async () => {
+        if (inWebView) { 
+            setIsRedirectDialog(true);
+            return;
+        }
+        const ok = await logInDemoUser()
         if (!ok){
             toast.error('登入失敗，請重新登入')
             return;
@@ -208,7 +221,7 @@ export default function LandingClient() {
                                 <h1 className={`font-bold ${isMobile ? "text-2xl" : "text-4xl"}`}>最快速的分帳幫手</h1>
                                 <p className={`pb-8 text-zinc-500 ${isMobile ? "text-base" : "text-lg"}`}>幫助您與朋友同事快速分帳、記帳，支援多種分帳方式</p>
                                 <p className={`text-zinc-500 ${isMobile ? "text-base" : "text-lg"}`}>立即註冊、登入使用！</p>
-                                <div className={`flex items-center max-w-60 w-full ${isMobile ? "justify-center mx-auto" : " justify-start"}`}>
+                                <div className={`flex flex-col gap-2 items-center max-w-60 w-full ${isMobile ? "justify-center mx-auto" : " justify-start"}`}>
                                     <Button
                                         size="md"
                                         width="full"
@@ -217,6 +230,14 @@ export default function LandingClient() {
                                         leftIcon="logos:google-icon"
                                         onClick={handleLogin} >
                                         Log in
+                                    </Button>
+                                    <Button
+                                        size="md"
+                                        width="full"
+                                        variant="text-button"
+                                        color="primary"
+                                        onClick={handleDemoLogin} >
+                                        Experience as a guest
                                     </Button>
                                 </div>
                             </div>

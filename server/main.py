@@ -11,6 +11,7 @@ from src.routes.user_router import UserRouter
 from src.routes.category_router import CategoryRouter
 from src.routes.project_router import ProjectRouter
 from src.routes.payment_router import PaymentRouter
+from src.routes.demo_router import DemoRouter
 
 
 load_dotenv()
@@ -57,6 +58,8 @@ user_router_instance = UserRouter()
 category_router_instance = CategoryRouter()
 project_router_instance = ProjectRouter()
 payment_router_instance = PaymentRouter()
+demo_router_instance = DemoRouter()
+
 
 
 app.include_router(auth_router_instance.router)
@@ -64,7 +67,7 @@ app.include_router(user_router_instance.router)
 app.include_router(category_router_instance.router)
 app.include_router(project_router_instance.router)
 app.include_router(payment_router_instance.router)
-
+app.include_router(demo_router_instance.router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000)

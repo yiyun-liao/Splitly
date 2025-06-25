@@ -9,6 +9,7 @@ import IconButton from "@/components/ui/IconButton"
 import CreateProject from "../CreateProjectSections/CreateProject-main";
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useLogoutUser } from "./hooks/useLogoutUser";
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';
 import { clearUserCache } from "@/utils/cache";
 
@@ -18,7 +19,7 @@ interface MemberNavProps {
 }
 
 export default function MemberNav({setNavWidth}:MemberNavProps) {
-    const {logOutUser, projectData, userData} = useAuth();
+    const { projectData, userData} = useAuth();
 
     const router = useRouter();
     const pathname = usePathname();
@@ -38,15 +39,18 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
         else if (pathname.includes("/expense")) setActivePath("expense");
     }, [pathname]);
 
-    async function handleLogout() {
-        const success = await logOutUser();
-        if (success){
+    const { handleLogoutUser } = useLogoutUser({
+        onSuccess: () => {
+            // console.log("✅ 登出成功：", user);
             console.log('Bye Bye 👋🏻');
             toast.success('Bye Bye 👋🏻')
             clearUserCache();
-            router.replace('/');    
-        }
-    }
+            router.replace('/'); 
+        },
+        onError: () => {
+            toast.error("登出失敗，請稍後再試");
+        },
+    });
 
     const scrollClass = clsx("overflow-y-auto overflow-x-hidden scrollbar-gutter-stable scrollbar-thin scroll-smooth")
     const navStyleClass = clsx("box-border py-4 flex flex-col justify-start gap-2 bg-sp-white-40",
@@ -89,7 +93,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                     variant='text-button'
                     color='primary'
                     type= 'button'
-                    onClick={handleLogout}
+                    onClick={async()=>{await handleLogoutUser()}}
                     />           
                 )}  
                 <IconButton
