@@ -9,24 +9,28 @@ import IconButton from "@/components/ui/IconButton";
 import DataSettingDialog from "./DataSettingDialog";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useLogoutUser } from "./hooks/useLogoutUser";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { clearUserCache } from "@/utils/cache";
 
 export default function SettingContent(){
     const router = useRouter();
-    const { logOutUser, userData, projectData } = useAuth(); 
+    const {userData, projectData } = useAuth(); 
     const isMobile = useIsMobile();
     const [isSettingDialogOpen, setIsSettingDialogOpen] = useState(false)
     
-    async function handleLogout() {
-        const success = await logOutUser();
-        if (success){
+    const { handleLogoutUser } = useLogoutUser({
+        onSuccess: () => {
+            // console.log("✅ 登出成功：", user);
             console.log('Bye Bye 👋🏻');
             toast.success('Bye Bye 👋🏻')
             clearUserCache();
-            router.replace('/');    
-        }
-    }
+            router.replace('/'); 
+        },
+        onError: () => {
+            toast.error("登出失敗，請稍後再試");
+        },
+    });
     
     const labelClass = clsx("shrink-0 w-30 font-medium truncate")
     const infoClass = clsx("w-full text-wrap break-all")
@@ -118,7 +122,7 @@ export default function SettingContent(){
                     variant='outline'
                     color='primary'
                     leftIcon='solar:multiple-forward-left-bold'
-                    onClick={handleLogout}
+                    onClick={async()=>{await handleLogoutUser()}}
                     >
                         登出
                 </Button>

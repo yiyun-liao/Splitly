@@ -6,6 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { refreshDemoData } from "@/lib/demoApi";
 
 import { useLoading } from "@/contexts/LoadingContext";
+import toast from 'react-hot-toast';
+
 
 type UseLogoutUserOptions = {
     onSuccess?: (success:boolean) => void;
@@ -29,7 +31,13 @@ export function useLogoutUser(options?: UseLogoutUserOptions) {
             const uid : string = userData?.uid || "";
             const token = await userAuth.getIdToken();
             if (userData?.uid === 'wfs5LgjSHBVPvGRpGG1ak3py5R83'){
-                await refreshDemoData(token, uid);
+                // 直接 fire-and-forget，不用 await
+                refreshDemoData(token, uid)
+                .then(() => {
+                    toast.success('Refresh Success')
+                    console.log("Demo data refresh kicked off")
+                })
+                .catch(err => console.error("Demo refresh failed", err));
             }
 
             const successRegularLogout = await logOutUser();
