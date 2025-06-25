@@ -61,16 +61,3 @@ class PaymentRouter:
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Delete payment failed: {str(e)}")
         
-        #重建 demo project
-        @self.router.put("/api/payment/demo-project", response_model=PaymentCreateMinimalResponse)
-        def rebuild_payment(
-            paymentId: str, db: Session = Depends(get_db_session)):
-            try:
-                payment_db = PaymentDB(db)
-                delete_success = payment_db.delete_payment(paymentId)
-                if delete_success == True:
-                    for payment in payments:
-                        payment_db.create_payment(payment)
-                    return {"success": True, "payment_id": paymentId}
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=f"Delete payment failed: {str(e)}")

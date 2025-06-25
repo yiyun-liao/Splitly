@@ -1,1277 +1,1311 @@
-{
-    "payments": [
-        {
-            "id": "b4346aff-0cf7-449e-ad70-1aa9c1210ec3",
-            "payment_name": "debt",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "debt",
-            "split_way": null,
-            "split_method": null,
-            "currency": "TWD",
-            "amount": 400.0,
-            "category_id": 101,
-            "time": "2025-06-21T15:51:00",
-            "desc": "",
-            "payer_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": 400.0
-            },
-            "split_map": {
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 400.0,
-                    "total": 400.0,
-                    "percent": 0.0
-                }
-            },
-            "items": null
+{   
+    "userData":{
+        "uid": "wfs5LgjSHBVPvGRpGG1ak3py5R83",
+        "name": "Demo User",
+        "email": "testtest.splitly@example.com",
+        "uid_in_auth": "wfs5LgjSHBVPvGRpGG1ak3py5R83",
+        "avatar": 2
+    },
+    "project": {
+        "project_name": "Hualien",
+        "start_time": "2025-04-03",
+        "end_time": "2025-04-05",
+        "style": "travel",
+        "currency": "TWD",
+        "budget": 20000,
+        "owner": "knRY3EMJNUPwUz8fBOwHYNOczCc2",
+        "editor": [
+            "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1"
+        ],
+        "member": [
+            "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+            "65TO2OBJmqSE0sq9qo8cqpKCUJu1",
+            "wfs5LgjSHBVPvGRpGG1ak3py5R83"
+        ],
+        "member_budgets": {
+            "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 6000,
+            "knRY3EMJNUPwUz8fBOwHYNOczCc2": 1000,
+            "wfs5LgjSHBVPvGRpGG1ak3py5R83": null
         },
-        {
-            "id": "8d026f50-eda4-451c-871d-cd8a3d76209a",
-            "payment_name": "偷買",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "personal",
-            "record_mode": null,
-            "split_way": null,
-            "split_method": null,
-            "currency": "TWD",
-            "amount": 600.0,
-            "category_id": 58,
-            "time": "2025-06-21T15:48:00",
-            "desc": null,
-            "payer_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 600.0
-            },
-            "split_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 600.0,
-                    "total": 600.0,
-                    "percent": 0.0
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "d09d8e28-6882-446e-9fc5-c028a73f0cf8",
-            "payment_name": "吃飯",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "adjusted",
-            "currency": "TWD",
-            "amount": 400.0,
-            "category_id": 47,
-            "time": "2025-06-21T09:48:00",
-            "desc": null,
-            "payer_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 400.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 40.0,
-                    "total": 130.0,
-                    "percent": 0.25
+        "desc": null,
+        "img": 14,
+        "id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da"
+    },
+    "payment": {
+        "payments": [
+            {
+                "id": "b4346aff-0cf7-449e-ad70-1aa9c1210ec3",
+                "payment_name": "debt",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "debt",
+                "split_way": null,
+                "split_method": null,
+                "currency": "TWD",
+                "amount": 400.0,
+                "category_id": 101,
+                "time": "2025-06-21T15:51:00",
+                "desc": "",
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 400.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 90.0,
-                    "percent": 0.25
+                "split_map": {
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 400.0,
+                        "total": 400.0,
+                        "percent": 0.0
+                    }
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 90.0,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 90.0,
-                    "percent": 0.25
-                }
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
-            "payment_name": "Costco",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "item",
-            "split_method": null,
-            "currency": "TWD",
-            "amount": 2480.0,
-            "category_id": 51,
-            "time": "2025-06-19T20:35:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 1480.0,
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 1000.0
+            {
+                "id": "8d026f50-eda4-451c-871d-cd8a3d76209a",
+                "payment_name": "偷買",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "wfs5LgjSHBVPvGRpGG1ak3py5R83",
+                "account_type": "personal",
+                "record_mode": null,
+                "split_way": null,
+                "split_method": null,
+                "currency": "TWD",
+                "amount": 600.0,
+                "category_id": 58,
+                "time": "2025-06-21T15:48:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 600.0
+                },
+                "split_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 600.0,
+                        "total": 600.0,
+                        "percent": 0.0
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 603.0,
-                    "total": 603.0,
-                    "percent": 0.0
+            {
+                "id": "d09d8e28-6882-446e-9fc5-c028a73f0cf8",
+                "payment_name": "吃飯",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "adjusted",
+                "currency": "TWD",
+                "amount": 400.0,
+                "category_id": 47,
+                "time": "2025-06-21T09:48:00",
+                "desc": null,
+                "payer_map": {
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 400.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 891.0,
-                    "total": 891.0,
-                    "percent": 0.0
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 483.0,
-                    "total": 483.0,
-                    "percent": 0.0
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 503.0,
-                    "total": 503.0,
-                    "percent": 0.0
-                }
-            },
-            "items": [
-                {
-                    "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
-                    "amount": 1280.0,
-                    "payment_name": "酒水",
-                    "split_method": "adjusted",
-                    "split_map": {
-                        "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                            "fixed": 220.0,
-                            "total": 405.0,
-                            "percent": 0.25
-                        },
-                        "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                            "fixed": 320.0,
-                            "total": 505.0,
-                            "percent": 0.25
-                        },
-                        "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                            "fixed": 0.0,
-                            "total": 185.0,
-                            "percent": 0.25
-                        },
-                        "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                            "fixed": 0.0,
-                            "total": 185.0,
-                            "percent": 0.25
-                        }
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 40.0,
+                        "total": 130.0,
+                        "percent": 0.25
                     },
-                    "id": "f0bfb49e-afc2-437b-9835-fb0806901fb8"
-                },
-                {
-                    "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
-                    "amount": 472.0,
-                    "payment_name": "BBQ",
-                    "split_method": "percentage",
-                    "split_map": {
-                        "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                            "fixed": 0.0,
-                            "total": 118.0,
-                            "percent": 0.25
-                        },
-                        "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                            "fixed": 0.0,
-                            "total": 118.0,
-                            "percent": 0.25
-                        },
-                        "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                            "fixed": 0.0,
-                            "total": 118.0,
-                            "percent": 0.25
-                        },
-                        "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                            "fixed": 0.0,
-                            "total": 118.0,
-                            "percent": 0.25
-                        }
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 90.0,
+                        "percent": 0.25
                     },
-                    "id": "445cf252-96e4-4ec3-8478-c1077d86fa78"
-                },
-                {
-                    "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
-                    "amount": 120.0,
-                    "payment_name": "餅乾（個人）",
-                    "split_method": "actual",
-                    "split_map": {
-                        "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                            "fixed": 120.0,
-                            "total": 120.0,
-                            "percent": 0.0
-                        }
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 90.0,
+                        "percent": 0.25
                     },
-                    "id": "091a2ff7-9431-40da-af7f-fa07945b0e0e"
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 90.0,
+                        "percent": 0.25
+                    }
                 },
-                {
-                    "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
-                    "amount": 320.0,
-                    "payment_name": "餅乾",
-                    "split_method": "percentage",
-                    "split_map": {
-                        "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                            "fixed": 0.0,
-                            "total": 80.0,
-                            "percent": 0.25
-                        },
-                        "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                            "fixed": 0.0,
-                            "total": 80.0,
-                            "percent": 0.25
-                        },
-                        "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                            "fixed": 0.0,
-                            "total": 80.0,
-                            "percent": 0.25
-                        },
-                        "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                            "fixed": 0.0,
-                            "total": 80.0,
-                            "percent": 0.25
-                        }
+                "items": null
+            },
+            {
+                "id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
+                "payment_name": "Costco",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "item",
+                "split_method": null,
+                "currency": "TWD",
+                "amount": 2480.0,
+                "category_id": 51,
+                "time": "2025-06-19T20:35:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 1480.0,
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 1000.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 603.0,
+                        "total": 603.0,
+                        "percent": 0.0
                     },
-                    "id": "6cd458bb-0f63-4cc2-870e-187167a0d982"
-                },
-                {
-                    "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
-                    "amount": 288.0,
-                    "payment_name": "Pizza",
-                    "split_method": "actual",
-                    "split_map": {
-                        "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                            "fixed": 188.0,
-                            "total": 188.0,
-                            "percent": 0.0
-                        },
-                        "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                            "fixed": 100.0,
-                            "total": 100.0,
-                            "percent": 0.0
-                        }
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 891.0,
+                        "total": 891.0,
+                        "percent": 0.0
                     },
-                    "id": "457cb63a-fe16-4e5a-825d-4e0f04f72be3"
-                }
-            ]
-        },
-        {
-            "id": "08ab2b30-cd9f-4abe-b604-975ea3b94355",
-            "payment_name": "伴手禮",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "personal",
-            "record_mode": null,
-            "split_way": null,
-            "split_method": null,
-            "currency": "TWD",
-            "amount": 780.0,
-            "category_id": 62,
-            "time": "2025-04-05T19:28:00",
-            "desc": null,
-            "payer_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 780.0
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 483.0,
+                        "total": 483.0,
+                        "percent": 0.0
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 503.0,
+                        "total": 503.0,
+                        "percent": 0.0
+                    }
+                },
+                "items": [
+                    {
+                        "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
+                        "amount": 1280.0,
+                        "payment_name": "酒水",
+                        "split_method": "adjusted",
+                        "split_map": {
+                            "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                                "fixed": 220.0,
+                                "total": 405.0,
+                                "percent": 0.25
+                            },
+                            "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                                "fixed": 320.0,
+                                "total": 505.0,
+                                "percent": 0.25
+                            },
+                            "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                                "fixed": 0.0,
+                                "total": 185.0,
+                                "percent": 0.25
+                            },
+                            "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                                "fixed": 0.0,
+                                "total": 185.0,
+                                "percent": 0.25
+                            }
+                        },
+                        "id": "f0bfb49e-afc2-437b-9835-fb0806901fb8"
+                    },
+                    {
+                        "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
+                        "amount": 472.0,
+                        "payment_name": "BBQ",
+                        "split_method": "percentage",
+                        "split_map": {
+                            "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                                "fixed": 0.0,
+                                "total": 118.0,
+                                "percent": 0.25
+                            },
+                            "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                                "fixed": 0.0,
+                                "total": 118.0,
+                                "percent": 0.25
+                            },
+                            "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                                "fixed": 0.0,
+                                "total": 118.0,
+                                "percent": 0.25
+                            },
+                            "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                                "fixed": 0.0,
+                                "total": 118.0,
+                                "percent": 0.25
+                            }
+                        },
+                        "id": "445cf252-96e4-4ec3-8478-c1077d86fa78"
+                    },
+                    {
+                        "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
+                        "amount": 120.0,
+                        "payment_name": "餅乾（個人）",
+                        "split_method": "actual",
+                        "split_map": {
+                            "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                                "fixed": 120.0,
+                                "total": 120.0,
+                                "percent": 0.0
+                            }
+                        },
+                        "id": "091a2ff7-9431-40da-af7f-fa07945b0e0e"
+                    },
+                    {
+                        "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
+                        "amount": 320.0,
+                        "payment_name": "餅乾",
+                        "split_method": "percentage",
+                        "split_map": {
+                            "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                                "fixed": 0.0,
+                                "total": 80.0,
+                                "percent": 0.25
+                            },
+                            "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                                "fixed": 0.0,
+                                "total": 80.0,
+                                "percent": 0.25
+                            },
+                            "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                                "fixed": 0.0,
+                                "total": 80.0,
+                                "percent": 0.25
+                            },
+                            "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                                "fixed": 0.0,
+                                "total": 80.0,
+                                "percent": 0.25
+                            }
+                        },
+                        "id": "6cd458bb-0f63-4cc2-870e-187167a0d982"
+                    },
+                    {
+                        "payment_id": "3796ac56-7ca8-4612-98b9-35ba935d7a3a",
+                        "amount": 288.0,
+                        "payment_name": "Pizza",
+                        "split_method": "actual",
+                        "split_map": {
+                            "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                                "fixed": 188.0,
+                                "total": 188.0,
+                                "percent": 0.0
+                            },
+                            "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                                "fixed": 100.0,
+                                "total": 100.0,
+                                "percent": 0.0
+                            }
+                        },
+                        "id": "457cb63a-fe16-4e5a-825d-4e0f04f72be3"
+                    }
+                ]
             },
-            "split_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 780.0,
-                    "total": 780.0,
-                    "percent": 0.0
-                }
+            {
+                "id": "08ab2b30-cd9f-4abe-b604-975ea3b94355",
+                "payment_name": "伴手禮",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "wfs5LgjSHBVPvGRpGG1ak3py5R83",
+                "account_type": "personal",
+                "record_mode": null,
+                "split_way": null,
+                "split_method": null,
+                "currency": "TWD",
+                "amount": 780.0,
+                "category_id": 62,
+                "time": "2025-04-05T19:28:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 780.0
+                },
+                "split_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 780.0,
+                        "total": 780.0,
+                        "percent": 0.0
+                    }
+                },
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "2bddf1ce-ad71-4ea0-8d80-0cf2ac02cb9b",
-            "payment_name": "計程車",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "personal",
-            "record_mode": null,
-            "split_way": null,
-            "split_method": null,
-            "currency": "TWD",
-            "amount": 170.0,
-            "category_id": 71,
-            "time": "2025-04-05T19:27:00",
-            "desc": null,
-            "payer_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 170.0
+            {
+                "id": "2bddf1ce-ad71-4ea0-8d80-0cf2ac02cb9b",
+                "payment_name": "計程車",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "wfs5LgjSHBVPvGRpGG1ak3py5R83",
+                "account_type": "personal",
+                "record_mode": null,
+                "split_way": null,
+                "split_method": null,
+                "currency": "TWD",
+                "amount": 170.0,
+                "category_id": 71,
+                "time": "2025-04-05T19:27:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 170.0
+                },
+                "split_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 170.0,
+                        "total": 170.0,
+                        "percent": 0.0
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 170.0,
-                    "total": 170.0,
-                    "percent": 0.0
-                }
+            {
+                "id": "bbe31863-fac6-4790-89ee-2b56d222eefb",
+                "payment_name": "這一小鍋",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "wfs5LgjSHBVPvGRpGG1ak3py5R83",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 1610.0,
+                "category_id": 49,
+                "time": "2025-04-05T19:26:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 1610.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 402.5,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 402.5,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 402.5,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 402.5,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "bbe31863-fac6-4790-89ee-2b56d222eefb",
-            "payment_name": "這一小鍋",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "Dr3EGLPYP5MEEWly75kEjqSmnnM2",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 1610.0,
-            "category_id": 49,
-            "time": "2025-04-05T19:26:00",
-            "desc": null,
-            "payer_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": 1610.0
+            {
+                "id": "840d491e-c008-4033-bdc1-c5d3bad45805",
+                "payment_name": "寄放行李",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "adjusted",
+                "currency": "TWD",
+                "amount": 180.0,
+                "category_id": 78,
+                "time": "2025-04-05T19:24:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 180.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 60.0,
+                        "total": 60.0,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 60.0,
+                        "total": 60.0,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 60.0,
+                        "total": 60.0,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 402.5,
-                    "percent": 0.25
+            {
+                "id": "acbab4fc-a33e-492b-81b5-c38ee4fec046",
+                "payment_name": "早餐",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "wfs5LgjSHBVPvGRpGG1ak3py5R83",
+                "account_type": "personal",
+                "record_mode": null,
+                "split_way": null,
+                "split_method": null,
+                "currency": "TWD",
+                "amount": 88.0,
+                "category_id": 47,
+                "time": "2025-04-05T19:11:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 88.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 402.5,
-                    "percent": 0.25
+                "split_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 88.0,
+                        "total": 88.0,
+                        "percent": 0.0
+                    }
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 402.5,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 402.5,
-                    "percent": 0.25
-                }
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "840d491e-c008-4033-bdc1-c5d3bad45805",
-            "payment_name": "寄放行李",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "adjusted",
-            "currency": "TWD",
-            "amount": 180.0,
-            "category_id": 78,
-            "time": "2025-04-05T19:24:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 180.0
+            {
+                "id": "24e928ac-3683-4ccb-ade5-25d8a95480f6",
+                "payment_name": "皇家貴族雞排",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 265.0,
+                "category_id": 50,
+                "time": "2025-04-05T19:10:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 265.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 66.25,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 66.25,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 66.25,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 66.25,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 60.0,
-                    "total": 60.0,
-                    "percent": 0.25
+            {
+                "id": "be90cc40-936c-4950-969a-0fa37a6375a6",
+                "payment_name": "廟口紅茶",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 130.0,
+                "category_id": 52,
+                "time": "2025-04-05T19:08:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 130.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 60.0,
-                    "total": 60.0,
-                    "percent": 0.25
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 32.5,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 32.5,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 32.5,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 32.5,
+                        "percent": 0.25
+                    }
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 60.0,
-                    "total": 60.0,
-                    "percent": 0.25
-                }
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "acbab4fc-a33e-492b-81b5-c38ee4fec046",
-            "payment_name": "早餐",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "personal",
-            "record_mode": null,
-            "split_way": null,
-            "split_method": null,
-            "currency": "TWD",
-            "amount": 88.0,
-            "category_id": 47,
-            "time": "2025-04-05T19:11:00",
-            "desc": null,
-            "payer_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 88.0
+            {
+                "id": "00c0a6f5-7449-44a0-b496-ce2fa74979a1",
+                "payment_name": "公正包子",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 145.0,
+                "category_id": 47,
+                "time": "2025-04-04T19:10:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 145.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 36.25,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 36.25,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 36.25,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 36.25,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 88.0,
-                    "total": 88.0,
-                    "percent": 0.0
-                }
+            {
+                "id": "c0073152-0341-4a8e-a540-7ed8bd51bd11",
+                "payment_name": "飲料",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "actual",
+                "currency": "TWD",
+                "amount": 190.0,
+                "category_id": 52,
+                "time": "2025-04-04T19:09:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 190.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 40.0,
+                        "total": 40.0,
+                        "percent": 0.0
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 55.0,
+                        "total": 55.0,
+                        "percent": 0.0
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 30.0,
+                        "total": 30.0,
+                        "percent": 0.0
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 65.0,
+                        "total": 65.0,
+                        "percent": 0.0
+                    }
+                },
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "24e928ac-3683-4ccb-ade5-25d8a95480f6",
-            "payment_name": "皇家貴族雞排",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 265.0,
-            "category_id": 50,
-            "time": "2025-04-05T19:10:00",
-            "desc": null,
-            "payer_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": 265.0
+            {
+                "id": "ab3f994c-7c38-4253-8afb-6a43d3a54502",
+                "payment_name": "鵝肉",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 640.0,
+                "category_id": 49,
+                "time": "2025-04-04T19:09:00",
+                "desc": null,
+                "payer_map": {
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 640.0
+                },
+                "split_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 160.0,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 160.0,
+                        "percent": 0.25
+                    },
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 160.0,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 160.0,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 66.25,
-                    "percent": 0.25
+            {
+                "id": "734ef5f4-8d08-4319-96ec-99dd9c0b1f24",
+                "payment_name": "加油",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 30.0,
+                "category_id": 67,
+                "time": "2025-04-04T19:07:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 30.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 66.25,
-                    "percent": 0.25
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.5
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.5
+                    }
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 66.25,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 66.25,
-                    "percent": 0.25
-                }
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "be90cc40-936c-4950-969a-0fa37a6375a6",
-            "payment_name": "廟口紅茶",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 130.0,
-            "category_id": 52,
-            "time": "2025-04-05T19:08:00",
-            "desc": null,
-            "payer_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": 130.0
+            {
+                "id": "a9e36876-f0d9-4af5-a2f1-0d425f2e4d79",
+                "payment_name": "4/4 房費",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 2325.0,
+                "category_id": 66,
+                "time": "2025-04-04T19:01:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 2325.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 581.25,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 581.25,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 581.25,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 581.25,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 32.5,
-                    "percent": 0.25
+            {
+                "id": "062fd30e-14e9-40c1-92e0-30b50ea88861",
+                "payment_name": "Settle down",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "actual",
+                "currency": "TWD",
+                "amount": 520.0,
+                "category_id": 53,
+                "time": "2025-04-03T23:00:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 520.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 32.5,
-                    "percent": 0.25
+                "split_map": {
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 320.0,
+                        "total": 320.0,
+                        "percent": 0.0
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 200.0,
+                        "total": 200.0,
+                        "percent": 0.0
+                    }
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 32.5,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 32.5,
-                    "percent": 0.25
-                }
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "00c0a6f5-7449-44a0-b496-ce2fa74979a1",
-            "payment_name": "公正包子",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 145.0,
-            "category_id": 47,
-            "time": "2025-04-04T19:10:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 145.0
+            {
+                "id": "4e1987cf-0a83-4bf7-b87c-c4ca14393407",
+                "payment_name": "島東譯電所",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "actual",
+                "currency": "TWD",
+                "amount": 1080.0,
+                "category_id": 53,
+                "time": "2025-04-03T22:59:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 1080.0
+                },
+                "split_map": {
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 470.0,
+                        "total": 470.0,
+                        "percent": 0.0
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 350.0,
+                        "total": 350.0,
+                        "percent": 0.0
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 260.0,
+                        "total": 260.0,
+                        "percent": 0.0
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 36.25,
-                    "percent": 0.25
+            {
+                "id": "41dd9e4c-45f6-4f93-ac3b-4bbb69c59333",
+                "payment_name": "大福雞排",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 90.0,
+                "category_id": 49,
+                "time": "2025-04-03T18:59:00",
+                "desc": null,
+                "payer_map": {
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": 90.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 36.25,
-                    "percent": 0.25
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 22.5,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 22.5,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 22.5,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 22.5,
+                        "percent": 0.25
+                    }
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 36.25,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 36.25,
-                    "percent": 0.25
-                }
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "c0073152-0341-4a8e-a540-7ed8bd51bd11",
-            "payment_name": "飲料",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "actual",
-            "currency": "TWD",
-            "amount": 190.0,
-            "category_id": 52,
-            "time": "2025-04-04T19:09:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 190.0
+            {
+                "id": "70946ae4-651a-459d-8024-6b3d87f6d771",
+                "payment_name": "地瓜球",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 50.0,
+                "category_id": 49,
+                "time": "2025-04-03T18:58:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 50.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 12.5,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 12.5,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 12.5,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 12.5,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 40.0,
-                    "total": 40.0,
-                    "percent": 0.0
+            {
+                "id": "37664010-c0c7-4d8b-8f6f-e85f9b386477",
+                "payment_name": "檸檬汁",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 200.0,
+                "category_id": 52,
+                "time": "2025-04-03T18:57:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 200.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 55.0,
-                    "total": 55.0,
-                    "percent": 0.0
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 50.0,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 50.0,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 50.0,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 50.0,
+                        "percent": 0.25
+                    }
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 30.0,
-                    "total": 30.0,
-                    "percent": 0.0
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 65.0,
-                    "total": 65.0,
-                    "percent": 0.0
-                }
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "ab3f994c-7c38-4253-8afb-6a43d3a54502",
-            "payment_name": "鵝肉",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 640.0,
-            "category_id": 49,
-            "time": "2025-04-04T19:09:00",
-            "desc": null,
-            "payer_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 640.0
+            {
+                "id": "e6c4cf0f-69d6-4639-9fcc-b36d70839507",
+                "payment_name": "強蛋餅九層塔薯泥",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 60.0,
+                "category_id": 49,
+                "time": "2025-04-03T18:56:00",
+                "desc": null,
+                "payer_map": {
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": 60.0
+                },
+                "split_map": {
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.25
+                    },
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 160.0,
-                    "percent": 0.25
+            {
+                "id": "e5ed1bf2-61dd-45a5-8f6c-7802a7715b30",
+                "payment_name": "烤魚",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 500.0,
+                "category_id": 49,
+                "time": "2025-04-03T18:55:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 500.0
                 },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 160.0,
-                    "percent": 0.25
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 125.0,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 125.0,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 125.0,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 125.0,
+                        "percent": 0.25
+                    }
                 },
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 160.0,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 160.0,
-                    "percent": 0.25
-                }
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "734ef5f4-8d08-4319-96ec-99dd9c0b1f24",
-            "payment_name": "加油",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 30.0,
-            "category_id": 67,
-            "time": "2025-04-04T19:07:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 30.0
+            {
+                "id": "9dfa51d4-8f7f-4b1d-a489-ad7120b44a88",
+                "payment_name": "鳥蛋",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 60.0,
+                "category_id": 49,
+                "time": "2025-04-03T18:55:00",
+                "desc": null,
+                "payer_map": {
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 60.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 15.0,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.5
+            {
+                "id": "17816fbb-aee8-41b2-a358-adf6cac80c95",
+                "payment_name": "麵店",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 160.0,
+                "category_id": 48,
+                "time": "2025-04-03T18:54:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 160.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.5
-                }
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 40.0,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 40.0,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 40.0,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 40.0,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "a9e36876-f0d9-4af5-a2f1-0d425f2e4d79",
-            "payment_name": "4/4 房費",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 2325.0,
-            "category_id": 66,
-            "time": "2025-04-04T19:01:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 2325.0
+            {
+                "id": "eecedd09-2e8c-43e8-83a9-0c9374360a1a",
+                "payment_name": "機車油錢",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 95.0,
+                "category_id": 67,
+                "time": "2025-04-03T18:53:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 95.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 47.5,
+                        "percent": 0.5
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 47.5,
+                        "percent": 0.5
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 581.25,
-                    "percent": 0.25
+            {
+                "id": "f74ea191-c01e-4d9b-9cc7-3be6cb19cad6",
+                "payment_name": "4/3住宿",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 2835.0,
+                "category_id": 66,
+                "time": "2025-04-03T18:52:00",
+                "desc": null,
+                "payer_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": 2835.0
                 },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 581.25,
-                    "percent": 0.25
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 708.75,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 708.75,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 708.75,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 708.75,
+                        "percent": 0.25
+                    }
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 581.25,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 581.25,
-                    "percent": 0.25
-                }
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "062fd30e-14e9-40c1-92e0-30b50ea88861",
-            "payment_name": "Settle down",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "actual",
-            "currency": "TWD",
-            "amount": 520.0,
-            "category_id": 53,
-            "time": "2025-04-03T23:00:00",
-            "desc": null,
-            "payer_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": 520.0
+            {
+                "id": "061b19d2-37b7-49e4-89e9-6c935defe418",
+                "payment_name": "摩托車",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 2000.0,
+                "category_id": 69,
+                "time": "2025-04-03T18:48:00",
+                "desc": null,
+                "payer_map": {
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 2000.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 500.0,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 500.0,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 500.0,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 500.0,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 320.0,
-                    "total": 320.0,
-                    "percent": 0.0
+            {
+                "id": "6ccd007d-9dd3-475e-8b65-fb3b71da87a1",
+                "payment_name": "油錢",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 105.0,
+                "category_id": 67,
+                "time": "2025-04-03T18:48:00",
+                "desc": null,
+                "payer_map": {
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": 105.0
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 200.0,
-                    "total": 200.0,
-                    "percent": 0.0
-                }
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 26.25,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 26.25,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 26.25,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 26.25,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "items": null
-        },
-        {
-            "id": "4e1987cf-0a83-4bf7-b87c-c4ca14393407",
-            "payment_name": "島東譯電所",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "actual",
-            "currency": "TWD",
-            "amount": 1080.0,
-            "category_id": 53,
-            "time": "2025-04-03T22:59:00",
-            "desc": null,
-            "payer_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": 1080.0
+            {
+                "id": "f684ef29-8687-4c3a-81ad-805b1f071af9",
+                "payment_name": "train(hua->tpi)",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 1760.0,
+                "category_id": 70,
+                "time": "2025-03-06T18:47:00",
+                "desc": null,
+                "payer_map": {
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": 1760.0
+                },
+                "split_map": {
+                    "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
+                        "fixed": 0.0,
+                        "total": 440.0,
+                        "percent": 0.25
+                    },
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 440.0,
+                        "percent": 0.25
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 440.0,
+                        "percent": 0.25
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 440.0,
+                        "percent": 0.25
+                    }
+                },
+                "items": null
             },
-            "split_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 470.0,
-                    "total": 470.0,
-                    "percent": 0.0
+            {
+                "id": "59a3dce0-eef8-4762-844d-f02034afcfde",
+                "payment_name": "train(tpi->hua)",
+                "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
+                "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
+                "account_type": "group",
+                "record_mode": "split",
+                "split_way": "person",
+                "split_method": "percentage",
+                "currency": "TWD",
+                "amount": 1320.0,
+                "category_id": 70,
+                "time": "2025-03-05T18:39:00",
+                "desc": null,
+                "payer_map": {
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 1320.0
                 },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 350.0,
-                    "total": 350.0,
-                    "percent": 0.0
+                "split_map": {
+                    "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
+                        "fixed": 0.0,
+                        "total": 439.956,
+                        "percent": 0.3333
+                    },
+                    "wfs5LgjSHBVPvGRpGG1ak3py5R83": {
+                        "fixed": 0.0,
+                        "total": 439.956,
+                        "percent": 0.3333
+                    },
+                    "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
+                        "fixed": 0.0,
+                        "total": 439.956,
+                        "percent": 0.3333
+                    }
                 },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 260.0,
-                    "total": 260.0,
-                    "percent": 0.0
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "41dd9e4c-45f6-4f93-ac3b-4bbb69c59333",
-            "payment_name": "大福雞排",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 90.0,
-            "category_id": 49,
-            "time": "2025-04-03T18:59:00",
-            "desc": null,
-            "payer_map": {
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": 90.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 22.5,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 22.5,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 22.5,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 22.5,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "70946ae4-651a-459d-8024-6b3d87f6d771",
-            "payment_name": "地瓜球",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 50.0,
-            "category_id": 49,
-            "time": "2025-04-03T18:58:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 50.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 12.5,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 12.5,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 12.5,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 12.5,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "37664010-c0c7-4d8b-8f6f-e85f9b386477",
-            "payment_name": "檸檬汁",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 200.0,
-            "category_id": 52,
-            "time": "2025-04-03T18:57:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 200.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 50.0,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 50.0,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 50.0,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 50.0,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "e6c4cf0f-69d6-4639-9fcc-b36d70839507",
-            "payment_name": "強蛋餅九層塔薯泥",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 60.0,
-            "category_id": 49,
-            "time": "2025-04-03T18:56:00",
-            "desc": null,
-            "payer_map": {
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": 60.0
-            },
-            "split_map": {
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.25
-                },
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "e5ed1bf2-61dd-45a5-8f6c-7802a7715b30",
-            "payment_name": "烤魚",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 500.0,
-            "category_id": 49,
-            "time": "2025-04-03T18:55:00",
-            "desc": null,
-            "payer_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": 500.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 125.0,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 125.0,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 125.0,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 125.0,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "9dfa51d4-8f7f-4b1d-a489-ad7120b44a88",
-            "payment_name": "鳥蛋",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 60.0,
-            "category_id": 49,
-            "time": "2025-04-03T18:55:00",
-            "desc": null,
-            "payer_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 60.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 15.0,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "17816fbb-aee8-41b2-a358-adf6cac80c95",
-            "payment_name": "麵店",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 160.0,
-            "category_id": 48,
-            "time": "2025-04-03T18:54:00",
-            "desc": null,
-            "payer_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": 160.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 40.0,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 40.0,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 40.0,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 40.0,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "eecedd09-2e8c-43e8-83a9-0c9374360a1a",
-            "payment_name": "機車油錢",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 95.0,
-            "category_id": 67,
-            "time": "2025-04-03T18:53:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 95.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 47.5,
-                    "percent": 0.5
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 47.5,
-                    "percent": 0.5
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "f74ea191-c01e-4d9b-9cc7-3be6cb19cad6",
-            "payment_name": "4/3住宿",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 2835.0,
-            "category_id": 66,
-            "time": "2025-04-03T18:52:00",
-            "desc": null,
-            "payer_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": 2835.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 708.75,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 708.75,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 708.75,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 708.75,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "061b19d2-37b7-49e4-89e9-6c935defe418",
-            "payment_name": "摩托車",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 2000.0,
-            "category_id": 69,
-            "time": "2025-04-03T18:48:00",
-            "desc": null,
-            "payer_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 2000.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 500.0,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 500.0,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 500.0,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 500.0,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "6ccd007d-9dd3-475e-8b65-fb3b71da87a1",
-            "payment_name": "油錢",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 105.0,
-            "category_id": 67,
-            "time": "2025-04-03T18:48:00",
-            "desc": null,
-            "payer_map": {
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": 105.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 26.25,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 26.25,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 26.25,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 26.25,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "f684ef29-8687-4c3a-81ad-805b1f071af9",
-            "payment_name": "train(hua->tpi)",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 1760.0,
-            "category_id": 70,
-            "time": "2025-03-06T18:47:00",
-            "desc": null,
-            "payer_map": {
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": 1760.0
-            },
-            "split_map": {
-                "knRY3EMJNUPwUz8fBOwHYNOczCc2": {
-                    "fixed": 0.0,
-                    "total": 440.0,
-                    "percent": 0.25
-                },
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 440.0,
-                    "percent": 0.25
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 440.0,
-                    "percent": 0.25
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 440.0,
-                    "percent": 0.25
-                }
-            },
-            "items": null
-        },
-        {
-            "id": "59a3dce0-eef8-4762-844d-f02034afcfde",
-            "payment_name": "train(tpi->hua)",
-            "project_id": "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da",
-            "owner": "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1",
-            "account_type": "group",
-            "record_mode": "split",
-            "split_way": "person",
-            "split_method": "percentage",
-            "currency": "TWD",
-            "amount": 1320.0,
-            "category_id": 70,
-            "time": "2025-03-05T18:39:00",
-            "desc": null,
-            "payer_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": 1320.0
-            },
-            "split_map": {
-                "ZzTZkjDrRlbfef6s9xtvn2Ei7Bt1": {
-                    "fixed": 0.0,
-                    "total": 439.956,
-                    "percent": 0.3333
-                },
-                "Dr3EGLPYP5MEEWly75kEjqSmnnM2": {
-                    "fixed": 0.0,
-                    "total": 439.956,
-                    "percent": 0.3333
-                },
-                "65TO2OBJmqSE0sq9qo8cqpKCUJu1": {
-                    "fixed": 0.0,
-                    "total": 439.956,
-                    "percent": 0.3333
-                }
-            },
-            "items": null
-        }
-    ]
+                "items": null
+            }
+        ]
+    }
 }
