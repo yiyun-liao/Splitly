@@ -19,7 +19,7 @@ interface MemberNavProps {
 }
 
 export default function MemberNav({setNavWidth}:MemberNavProps) {
-    const {logOutUser, projectData, userData} = useAuth();
+    const { projectData, userData} = useAuth();
 
     const router = useRouter();
     const pathname = usePathname();
@@ -39,19 +39,6 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
         else if (pathname.includes("/expense")) setActivePath("expense");
     }, [pathname]);
 
-    // async function handleLogout() {
-    //     if (userId === 'wfs5LgjSHBVPvGRpGG1ak3py5R83'){
-    //         const successDemoLogout = await 
-    //     }else{
-    //         const successRegularLogout = await logOutUser();
-    //     }
-    //     if (success){
-    //         console.log('Bye Bye 👋🏻');
-    //         toast.success('Bye Bye 👋🏻')
-    //         clearUserCache();
-    //         router.replace('/');    
-    //     }
-    // }
     const { handleLogoutUser } = useLogoutUser({
         onSuccess: () => {
             // console.log("✅ 登出成功：", user);
@@ -60,8 +47,8 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
             clearUserCache();
             router.replace('/'); 
         },
-        onError: (err) => {
-            console.error("登出錯誤", err);
+        onError: () => {
+            toast.error("登出失敗，請稍後再試");
         },
     });
 

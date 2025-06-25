@@ -89,3 +89,4 @@ export async function updatePayment(paymentId: string, payload: UpdatePaymentDat
         throw err;
     }
 }
+

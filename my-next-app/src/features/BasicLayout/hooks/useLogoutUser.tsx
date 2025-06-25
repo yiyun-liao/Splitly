@@ -3,15 +3,9 @@ import { useRouter } from "next/navigation";
 
 import { auth } from "@/firebase";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
-
-import { UserData } from "@/types/user";
-import { updateUser } from "@/lib/userApi";
-import { buildAvatarUrl } from "@/utils/getAvatar";
-import { updateAllCachedProjectUsers } from "@/utils/cache";
+import { refreshDemoData } from "@/lib/demoApi";
 
 import { useLoading } from "@/contexts/LoadingContext";
-import toast from "react-hot-toast";
 
 type UseLogoutUserOptions = {
     onSuccess?: (success:boolean) => void;
@@ -20,9 +14,7 @@ type UseLogoutUserOptions = {
 
 export function useLogoutUser(options?: UseLogoutUserOptions) {
     const router = useRouter();
-    const {logOutUser, projectData, userData} = useAuth();
-    const { setUserData } = useAuth(); 
-    const { setCurrentProjectUsers } = useCurrentProjectData();
+    const {logOutUser, userData} = useAuth();
     const { setLoading } = useLoading();
 
     const handleLogoutUser = async () => {
@@ -33,9 +25,13 @@ export function useLogoutUser(options?: UseLogoutUserOptions) {
                 router.push(`/`);
                 throw new Error("尚未登入，無法更新資料");
             }
+            
+            const uid : string = userData?.uid || "";
+            const token = await userAuth.getIdToken();
             if (userData?.uid === 'wfs5LgjSHBVPvGRpGG1ak3py5R83'){
-                
+                await refreshDemoData(token, uid);
             }
+
             const successRegularLogout = await logOutUser();
             if (successRegularLogout){
                 options?.onSuccess?.(successRegularLogout);
@@ -43,7 +39,6 @@ export function useLogoutUser(options?: UseLogoutUserOptions) {
             }
 
         } catch (error) {
-            toast.error("登出失敗，請稍後再試");
             console.error("Log out failed:", error);
             options?.onError?.(error);
         } finally {

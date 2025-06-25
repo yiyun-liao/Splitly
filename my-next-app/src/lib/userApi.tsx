@@ -38,6 +38,7 @@ export async function createNewUser(
 
 export async function fetchCurrentUser(token: string, uid: string) {
     try {
+        console.log(token)
         const res = await fetch(`${BASE_URL}/api/auth/user?uid=${uid}`, {
             method: "GET",
             headers: { 
