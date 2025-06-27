@@ -13,7 +13,7 @@ export default function Head() {
         <meta property="og:url" content="https://splitly-steel.vercel.app/join" />
         <meta property="og:site_name" content="Splitly" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750256948/logo.png" />
+        <meta property="og:image" content="https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/logo/logo.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="Splitly Logo" />
@@ -22,7 +22,7 @@ export default function Head() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Splitly – 您最佳的分帳工具" />
         <meta name="twitter:description" content="Splitly 幫助您與朋友同事快速分帳、記帳，支援多種分帳方式。" />
-        <meta name="twitter:image" content="https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750256948/logo.png" />
+        <meta name="twitter:image" content="https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/logo/logo.png" />
       </>
     );
   }

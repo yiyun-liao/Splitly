@@ -38,7 +38,7 @@ export interface GetProjectData {
   member_budgets?: MemberBudgetMap;
   desc?: string;
   img:number; // 後端回傳的 project index
-  imgURL?: string; // 最後是 Cloudinary URL
+  imgURL?: string; // 最後是 s3 URL
 }
 
 export interface JoinProjectData {

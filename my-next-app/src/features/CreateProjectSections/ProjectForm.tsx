@@ -251,7 +251,7 @@ export default function ProjectForm({
                                 {isCoverPageSectionOpen && (
                                     <div className={`col-span-6 p-8 flex flex-wrap gap-2  min-h-40 overflow-hidden rounded-r-2xl rounded-b-2xl bg-sp-white-40`}>
                                         {Array.from({ length: 16 }, (_, index) => {
-                                            const imgUrl = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750164850/${index + 1}.jpg`;
+                                            const imgUrl = `https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/project/project-${index + 1}.jpg`;
                                             const isSelected = index === parseInt(chooseCoverValue) - 1;
                                             return (
                                                 <div key={index} 

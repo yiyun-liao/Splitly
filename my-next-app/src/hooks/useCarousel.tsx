@@ -54,16 +54,3 @@ export function useFadeCarousel<T>(
         index,
     };
 }
-
-// const CLOUDINARY_BASE = 'https://res.cloudinary.com/ddkkhfzuk/image/upload';
-
-// /**
-//  * Cloudinary 專用的輪播 hook
-//  * @param paths   v1750225207/flower/a-1.png 之類的相對路徑陣列
-//  * @param interval ms，切換間隔
-//  */
-
-// export function useCloudinaryCarousel(paths: string[], interval = 500) {
-//     const urls = paths.map(p => `${CLOUDINARY_BASE}/${p}`);
-//     return useCarousel(urls, interval);
-// }
