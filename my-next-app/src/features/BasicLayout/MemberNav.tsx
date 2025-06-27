@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 import ImageButton from "@/components/ui/ImageButton"
 import IconButton from "@/components/ui/IconButton"
+import Avatar from "@/components/ui/Avatar";
 import CreateProject from "../CreateProjectSections/CreateProject-main";
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -85,7 +86,7 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
 
     const navSetting = () => (
         <>
-            <div id="nav-setting" className={`${navStyle == 'expansion' ? "flex-row items-start justify-between": "flex-col items-center justify-start"} w-full flex gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
+            <div id="nav-setting" className={`${navStyle == 'expansion' ? "flex-row items-center justify-between": "flex-col items-center justify-start"} w-full flex gap-2 py-3 px-3 border-t-1 border-sp-blue-400`}>
                 {navStyle === 'expansion' &&(
                     <IconButton
                     icon='solar:logout-2-bold'
@@ -96,12 +97,10 @@ export default function MemberNav({setNavWidth}:MemberNavProps) {
                     onClick={async()=>{await handleLogoutUser()}}
                     />           
                 )}  
-                <IconButton
-                    icon='solar:user-bold'
-                    size='md'
-                    variant='text-button'
-                    color='primary'
-                    type= 'button'
+                <Avatar
+                    size="md"
+                    img={userData?.avatarURL}
+                    userName={userData?.name || ""}
                     onClick={() => router.push(`/${userId}/setting`)}
                 />
                 <IconButton

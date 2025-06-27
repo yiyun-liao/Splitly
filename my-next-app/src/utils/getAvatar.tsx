@@ -1,7 +1,7 @@
 // 隨機產生 1~16 的頭貼 index 
 
-const CLOUDINARY_BASE = "https://res.cloudinary.com/ddkkhfzuk/image/upload";
-const AVATAR_FOLDER = "v1750175833/avatar";
+// const CLOUDINARY_BASE = "https://res.cloudinary.com/ddkkhfzuk/image/upload";
+// const AVATAR_FOLDER = "v1750175833/avatar";
 
 // ---------- feature: get amount in folder to auto-random
 

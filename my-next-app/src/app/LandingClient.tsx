@@ -20,7 +20,7 @@ const slides = [
       title: '自動計算 · 最佳還款方案',
       description:
         '系統統整所有人收支，智能計算還款金額與最優路徑，減少還款次數，多種檢視模式，一目了然。',
-      media: "https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750344485/wise_settle.gif",
+      media: "https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/landingPage/video_wise_settle.gif",
     },
     {
       id: 2,
@@ -28,7 +28,7 @@ const slides = [
       title: '項目拆帳 · 精細化帳務管理',
       description:
         '單筆支出可依項目細分，精準拆帳與銷帳紀錄，不必再拿發票手動計算。',
-      media: "https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750344483/item_split.gif",
+      media: "https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/landingPage/video_item_split.gif",
     },
     {
       id: 3,
@@ -36,7 +36,7 @@ const slides = [
       title: '私人帳目紀錄 · 開銷更清晰',
       description:
         '可設定個人預算並記錄私人開銷，精準掌握旅途花費，不再遺漏任何細節，不只局限於團員間的共同開銷。',
-      media: "https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750344475/multiple_display.gif",
+      media: "https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/landingPage/video_multiple_display.gif",
     },
 ];
 
@@ -245,7 +245,7 @@ export default function LandingClient() {
                                 <span className="inset-0 overflow-hidden">
                                     <img
                                         alt="header_pic"
-                                        src="https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750410293/header.png"
+                                        src="https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/landingPage/header.png"
                                         sizes="100vw"
                                         className=" w-full h-full object-contain"
                                     />
@@ -300,7 +300,7 @@ export default function LandingClient() {
                     </div>
                     <div className={`shrink-0 flex justify-center items-center overflow-hidden ${isMobile ? "w-full" : "w-full"}`}>
                         <img
-                            src="https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750414198/device_all.gif"
+                            src="https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/landingPage/video_device_all.gif"
                             alt="device_all"
                             className={`${isMobile ? "w-[100vw]" : "h-[464px]"} mx-auto object-contain`}
                         />

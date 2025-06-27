@@ -1,8 +1,8 @@
 // 隨機產生 1~12 的專案照片 index 
 
-const CLOUDINARY_BASE = "https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750164850";
+const S3_BASE = "https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/project/project";
 
-// 組合 Cloudinary 頭貼網址
+// 組合 S3 頭貼網址
 export function buildProjectCoverUrl(index: number): string {
-  return `${CLOUDINARY_BASE}/${index}.jpg`;
+  return `${S3_BASE}-${index}.jpg`;
 }

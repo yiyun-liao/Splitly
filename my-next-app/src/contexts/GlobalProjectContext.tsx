@@ -20,16 +20,10 @@ type GlobalProjectProviderProps = {
 export const GlobalProjectProvider = ({ children }: GlobalProjectProviderProps) => {
     const { projectData, userData, isReady } = useAuth(); // 從 useAuth 取資料
     useEffect(() => {
-        // 預載 avatars
-        // Array.from({ length: 15 }, (_, index) => {
-        //     const img = new Image();
-        //     img.src = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750175833/avatar/${index + 1}.jpg`;
-        // });
-
         // 預載其他素材圖
         Array.from({ length: 16 }, (_, index) => {
             const img = new Image();
-            img.src = `https://res.cloudinary.com/ddkkhfzuk/image/upload/v1750164850/${index + 1}.jpg`;
+            img.src = `https://splitly-bucket.s3.ap-northeast-1.amazonaws.com/assets/project/project-${index + 1}.jpg`;
         });
     }, []);
 
