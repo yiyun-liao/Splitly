@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import ImageButton from "@/components/ui/ImageButton";
 import Avatar from "@/components/ui/Avatar";
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import ModalPortal from "@/components/ui/ModalPortal";
 
 import { UserData } from "@/types/user";

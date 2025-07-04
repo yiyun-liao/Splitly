@@ -3,9 +3,9 @@ import clsx from 'clsx';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { logInUser, logInDemoUser } from '@/lib/auth';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/Button/Button';
 import Avatar from '@/components/ui/Avatar';
-import IconButton from '@/components/ui/IconButton';
+import IconButton from '@/components/ui/IconButton/IconButton';
 import RedirectDialog from '@/features/BasicLayout/RedirectDialog';
 import toast from 'react-hot-toast';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -363,20 +363,14 @@ export default function LandingClient() {
                             <Button
                                 size='sm'
                                 width='fit'
-                                variant= 'text-button'
-                                color='primary'
-                                leftIcon='solar:folder-favourite-bookmark-bold'
-                                onClick={() => {}}
-                                >
-                                Portfolio   
-                            </Button> 
-                            <Button
-                                size='sm'
-                                width='fit'
                                 variant='text-button'
                                 color='primary'
                                 leftIcon='solar:card-2-bold'
-                                onClick={() => {}}
+                                onClick={() => {window.open(
+                                    `https://drive.google.com/file/d/1ssJ0INuKXJat3xoApge6id9wPQ81pDej/view?usp=sharing`,
+                                    '_blank',
+                                    'noopener,noreferrer'
+                                  )}}
                                 >
                                 Resume  
                             </Button>    
@@ -386,7 +380,11 @@ export default function LandingClient() {
                                 variant='text-button'
                                 color='primary'
                                 type= 'button'
-                                onClick={()=>{router.push(`https://github.com/yiyun-liao/Splitly`)}} 
+                                onClick={()=>{window.open(
+                                    `https://github.com/yiyun-liao/Splitly`,
+                                    '_blank',
+                                    'noopener,noreferrer'
+                                  )}} 
                             />    
                             <IconButton
                                 icon= 'skill-icons:linkedin'
@@ -394,7 +392,11 @@ export default function LandingClient() {
                                 variant='text-button'
                                 color='primary'
                                 type= 'button'
-                                onClick={()=>{router.push(`https://www.linkedin.com/feed/?trk=guest_homepage-basic_google-one-tap-submit`)}} 
+                                onClick={()=>{window.open(
+                                    'https://www.linkedin.com/in/yiyun-liao/',
+                                    '_blank',
+                                    'noopener,noreferrer'
+                                  )}} 
                             />              
                         </div>  
                     </div>

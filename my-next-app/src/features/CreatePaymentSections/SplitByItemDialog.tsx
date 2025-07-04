@@ -2,9 +2,9 @@ import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 
 import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Icon from "@/components/ui/Icon";
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import ModalPortal from "@/components/ui/ModalPortal";
 import { SplitWay, SplitMap, CreateItemPayload } from "@/types/payment";
 import { formatNumber, formatNumberForData } from "@/utils/parseNumber";

@@ -1,5 +1,5 @@
 // src/features/PaymentListSections/ReceiptCard.tsx
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import type { IconProps } from '@phosphor-icons/react';
 import clsx from "clsx";
 

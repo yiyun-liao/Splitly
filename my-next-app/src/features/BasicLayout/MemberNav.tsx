@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 import ImageButton from "@/components/ui/ImageButton"
-import IconButton from "@/components/ui/IconButton"
+import IconButton from "@/components/ui/IconButton/IconButton"
 import Avatar from "@/components/ui/Avatar";
 import CreateProject from "../CreateProjectSections/CreateProject-main";
 

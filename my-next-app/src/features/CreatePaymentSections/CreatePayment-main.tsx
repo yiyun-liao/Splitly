@@ -2,9 +2,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Sheet from "@/components/ui/Sheet";
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import CreatePaymentSplit from "./CreatePaymentSplit";
 import CreatePaymentDebt from "./CreatePaymentDebt";
 

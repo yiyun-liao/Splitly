@@ -3,9 +3,9 @@ import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import ImageButton from "@/components/ui/ImageButton";
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import DataSettingDialog from "./DataSettingDialog";
 
 import { useAuth } from "@/contexts/AuthContext";

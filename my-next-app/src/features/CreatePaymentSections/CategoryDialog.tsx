@@ -1,5 +1,5 @@
 import Dialog from "@/components/ui/Dialog";
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import ModalPortal from "@/components/ui/ModalPortal";
 
 import clsx from "clsx";

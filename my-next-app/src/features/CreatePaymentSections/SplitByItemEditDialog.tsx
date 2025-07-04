@@ -1,6 +1,6 @@
 // updated SplitByItemEditDialog.tsx
 
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import clsx from "clsx";

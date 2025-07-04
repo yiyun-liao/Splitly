@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState, useMemo } from "react";
 
 import Icon from "@/components/ui/Icon";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Avatar from "@/components/ui/Avatar";
 import ProjectSettleDetail from "./ProjectSettleDetailDialog";
 import ProjectWiseSpilt from "./ProjectWiseSpiltDialog";

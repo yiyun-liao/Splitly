@@ -2,7 +2,7 @@
 import clsx from "clsx";
 import { useState, useEffect, useMemo} from "react";
 import { useParams } from "next/navigation";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";

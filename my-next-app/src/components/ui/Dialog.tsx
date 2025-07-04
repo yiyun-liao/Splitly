@@ -1,4 +1,4 @@
-import IconButton from "./IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";;
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from "react";
 import { useIsMobile } from "@/hooks/useIsMobile";

@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import clsx from "clsx";
 
 import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Avatar from "@/components/ui/Avatar";
 import Icon from "@/components/ui/Icon";
 import ModalPortal from "@/components/ui/ModalPortal";

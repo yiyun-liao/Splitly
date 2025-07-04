@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import ModalPortal from "@/components/ui/ModalPortal";
 import ImageButton from "@/components/ui/ImageButton";
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { getLocalStorageItem } from '@/hooks/useTrackLastVisitedProjectPath';

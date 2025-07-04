@@ -4,11 +4,11 @@ import { useState, useEffect, useMemo, useRef} from "react";
 import type { IconProps } from '@phosphor-icons/react';
 
 import { useParams } from "next/navigation";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import Select from "@/components/ui/Select";
 import { useCategoryDisplayOptions } from "@/hooks/useCategory";
 import SplitPayer from "./SplitPayerDialog";

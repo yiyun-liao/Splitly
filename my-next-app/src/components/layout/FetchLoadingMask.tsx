@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react'
 import { useLoading } from '@/contexts/LoadingContext'
-import { ToastProvider } from '@/components/ui/Toast'
+import { ToastProvider } from '@/components/ui/Toast/Toast'
 
 export function FetchLoadingMask({ children }: { children: ReactNode }) {
   const { isLoading } = useLoading()

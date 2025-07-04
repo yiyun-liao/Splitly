@@ -3,7 +3,7 @@ import { SplitMap, SplitMethod,SplitWay } from "@/types/payment";
 import clsx from "clsx";
 
 import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import ModalPortal from "@/components/ui/ModalPortal";

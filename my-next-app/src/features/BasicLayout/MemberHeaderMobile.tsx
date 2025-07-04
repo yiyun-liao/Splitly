@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 import ImageButton from "@/components/ui/ImageButton"
 import Avatar from "@/components/ui/Avatar"
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import ProjectMemberList from "../ProjectOverviewSections/ProjectMemberListDialog";
 import ProjectListNavMobile from "./ProjectListNavMobile";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
