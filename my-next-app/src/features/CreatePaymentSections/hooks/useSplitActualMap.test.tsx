@@ -4,8 +4,8 @@ import { useSplitActualMap } from './useSplitActualMap'
 import type { UserData } from '@/types/user'
 
 const users: UserData[] = [
-    {uid: 'u1', name: 'Alice', email: 'test.test.com'},
-    {uid: 'u2', name: 'Bob', email: 'test.test.com'},
+    {uid: 'u1', name: 'Alice', email: 'test@test.com'},
+    {uid: 'u2', name: 'Bob', email: 'test@test.com'},
 ];
 
 describe('useSplitActualMap', () => {
@@ -117,7 +117,6 @@ describe('useSplitActualMap', () => {
         act(() => {
             result.current.handleChange('u1', '40')
         })
-        // 此時 usedAmount = 40，remaining = 100 - 40 = 60
         expect(result.current.computeFooterInfo.isComplete).toBe(false)
         expect(result.current.computeFooterInfo.infoText).toContain('目前剩餘 10.00 元') //manualReset: true，會先均分，所以 u2 已經是 50.00
 
