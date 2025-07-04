@@ -10,7 +10,7 @@ import { fetchUserByProject } from "@/lib/userApi";
 import { useAddMemberProject } from "@/features/CreateProjectSections/hooks/useAddMemberProject";
 
 import ImageButton from "@/components/ui/ImageButton";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 

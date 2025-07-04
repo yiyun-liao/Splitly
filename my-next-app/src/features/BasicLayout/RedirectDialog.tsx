@@ -1,5 +1,5 @@
 import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import ModalPortal from "@/components/ui/ModalPortal";
 import toast from "react-hot-toast";
 import { useState } from "react";

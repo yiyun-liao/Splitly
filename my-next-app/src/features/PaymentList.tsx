@@ -1,7 +1,7 @@
 import { useRef, useState, useMemo } from "react";
 import clsx from "clsx";
 
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import IconButton from "@/components/ui/IconButton";
 import ReceiptCard from "./PaymentListSections/ReceiptCard";
 import CreatePayment from "./CreatePaymentSections/CreatePayment-main";

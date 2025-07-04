@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef} from "react";
 import type { IconProps } from '@phosphor-icons/react';
 
 import { useParams } from "next/navigation";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Avatar from "@/components/ui/Avatar";
 import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/textArea";

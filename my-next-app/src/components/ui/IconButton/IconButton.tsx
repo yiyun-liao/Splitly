@@ -1,4 +1,4 @@
-import Icon from "./Icon"
+import Icon from "../Icon"
 import clsx from 'clsx';
 import type { IconProps } from "@phosphor-icons/react";
 

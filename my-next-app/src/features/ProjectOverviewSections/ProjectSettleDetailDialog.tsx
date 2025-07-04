@@ -2,7 +2,7 @@
 import Dialog from "@/components/ui/Dialog";
 import Avatar from "@/components/ui/Avatar";
 import ModalPortal from "@/components/ui/ModalPortal";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Icon from "@/components/ui/Icon";
 import IconButton from "@/components/ui/IconButton";
 import { useParams, useRouter } from 'next/navigation';

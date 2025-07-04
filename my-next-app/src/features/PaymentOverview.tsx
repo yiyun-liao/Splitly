@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentProjectData } from "@/contexts/CurrentProjectContext";
 import { useCategoryOptions } from "@/contexts/CategoryContext";
 
-import Button from "@/components/ui/Button"
+import Button from "@/components/ui/Button/Button"
 import IconButton from "@/components/ui/IconButton";
 import ReceiptCardByCat from "./PaymentListSections/ReceiptCardByCat";
 import CreatePayment from "./CreatePaymentSections/CreatePayment-main";

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 
 import Dialog from "@/components/ui/Dialog";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import Icon from "@/components/ui/Icon";
 import IconButton from "@/components/ui/IconButton";
 import ModalPortal from "@/components/ui/ModalPortal";
