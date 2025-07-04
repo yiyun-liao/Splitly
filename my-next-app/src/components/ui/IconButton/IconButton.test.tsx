@@ -1,7 +1,7 @@
 import React from "react";
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
-import IconButton from "./IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";;
 import type { IconProps } from '@phosphor-icons/react'
 
 

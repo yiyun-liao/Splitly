@@ -1,5 +1,5 @@
 import { FlowerGif } from "../gif/flowerGif";
-import IconButton from "../ui/IconButton";
+import IconButton from "../ui/IconButton/IconButton";
 import Button from "../ui/Button/Button";
 import clsx from "clsx";
 import { useIsMobile } from "@/hooks/useIsMobile";
