@@ -4,7 +4,7 @@ import Avatar from "@/components/ui/Avatar";
 import ModalPortal from "@/components/ui/ModalPortal";
 import Button from "@/components/ui/Button/Button";
 import Icon from "@/components/ui/Icon";
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import { useParams, useRouter } from 'next/navigation';
 import { useMemo,useState } from "react";
 import clsx from "clsx";

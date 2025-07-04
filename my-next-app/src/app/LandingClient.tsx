@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { logInUser, logInDemoUser } from '@/lib/auth';
 import Button from '@/components/ui/Button/Button';
 import Avatar from '@/components/ui/Avatar';
-import IconButton from '@/components/ui/IconButton';
+import IconButton from '@/components/ui/IconButton/IconButton';
 import RedirectDialog from '@/features/BasicLayout/RedirectDialog';
 import toast from 'react-hot-toast';
 import { useIsMobile } from '@/hooks/useIsMobile';

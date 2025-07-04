@@ -1,5 +1,5 @@
 // src/features/PaymentListSections/ReceiptCardByCat.tsx
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import type { IconProps } from '@phosphor-icons/react';
 import clsx from "clsx";
 import { GetPaymentData } from "@/types/payment";

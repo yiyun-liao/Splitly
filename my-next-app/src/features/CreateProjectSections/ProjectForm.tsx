@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import clsx from "clsx";
 import Button from "@/components/ui/Button/Button";
-import IconButton from "@/components/ui/IconButton";
+import IconButton from "@/components/ui/IconButton/IconButton";
 import Sheet from "@/components/ui/Sheet";
 import Select from "@/components/ui/Select";
 import Input from "@/components/ui/Input";
