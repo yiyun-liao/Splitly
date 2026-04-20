@@ -6,6 +6,7 @@ from sqlalchemy import or_
 from src.database.models.user import UserModel
 from src.database.models.project import ProjectModel, ProjectEditorRelation, ProjectMemberRelation
 from src.database.models.payment import PaymentModel, PaymentPayerRelation, PaymentSplitRelation, ItemModel, ItemSplitRelation
+from src.database.models.category import CategoryModel
 from src.database.models.base import Base
 from datetime import datetime, date
 
@@ -19,6 +20,53 @@ DATA_PATH = HERE / "demo_data.json"
 with DATA_PATH.open(encoding="utf-8") as f:
     demo_data = json.load(f)
 
+NESTED_CATEGORIES = {
+    "Food & Drink": {
+        "zh": "飲食",
+        "children": {
+            "Breakfast": "早餐", "Lunch": "午餐", "Dinner": "晚餐",
+            "Snacks": "點心", "Groceries": "雜貨食品", "Drinks": "飲料",
+            "Alcohol": "酒類", "Others": "其他"
+        }
+    },
+    "Shopping": {
+        "zh": "購物",
+        "children": {
+            "Clothing": "衣物", "Shoes": "鞋子", "Accessories": "配件",
+            "Bags": "包包", "Beauty": "美妝保養", "Luxury": "精品",
+            "Gifts": "禮物", "Electronics": "電子產品", "Others": "其他"
+        }
+    },
+    "Transport & Stay": {
+        "zh": "交通及住宿",
+        "children": {
+            "Hotel": "住宿", "Gas": "加油", "Parking": "停車",
+            "Rental": "租車", "Train": "火車", "Taxi": "計程車",
+            "Flight": "機票", "Boat": "船票", "Insurance": "保險",
+            "Others": "其他"
+        }
+    },
+    "Home": {
+        "zh": "家居",
+        "children": {
+            "Furniture": "家具", "Supplies": "日常用品", "Electricity": "電費",
+            "Water": "水費", "Gas": "瓦斯費", "Rent": "房租",
+            "Laundry": "洗衣費", "Repair": "修繕費", "Subscription": "訂閱",
+            "Internet": "網路費", "Phone": "電話費", "Cleaning": "清潔費用",
+            "Others": "其他"
+        }
+    },
+    "Entertainment": {
+        "zh": "娛樂",
+        "children": {
+            "Games": "遊戲", "Salon": "美容", "Theme Park": "遊樂園",
+            "Exhibition": "展覽", "Movie": "電影", "Music": "音樂",
+            "Sports": "運動", "Party": "派對", "Massage": "按摩",
+            "Others": "其他"
+        }
+    }
+}
+
 # 拆解
 demo_user_payload    = demo_data["userData"]
 demo_project_payload = demo_data["project"]
@@ -28,8 +76,22 @@ demo_payments        = demo_data["payment"]["payments"]
 class DemoDB:
     def __init__(self, db: Session):
         self.db = db
-    
+
+    def seed_categories_if_empty(self):
+        count = self.db.query(CategoryModel).count()
+        if count > 0:
+            return
+        for parent_en, meta in NESTED_CATEGORIES.items():
+            parent = CategoryModel(name_en=parent_en, name_zh=meta["zh"])
+            self.db.add(parent)
+            self.db.flush()
+            for child_en, child_zh in meta["children"].items():
+                self.db.add(CategoryModel(name_en=child_en, name_zh=child_zh, parent_id=parent.id))
+        self.db.flush()
+        print("🎉 Categories seeded")
+
     def refresh_demo_all(self, uid: str, pid:str):
+        self.seed_categories_if_empty()
         # ——— 刪除其他專案（除了 pid） ———
         other_projects = (
             self.db.query(ProjectModel)
