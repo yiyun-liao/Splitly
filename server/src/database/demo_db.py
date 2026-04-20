@@ -68,18 +68,35 @@ class DemoDB:
         if other_projects:
             print(f"🎉 Deleted {len(other_projects)} non-demo projects for user {uid}")
 
-        # ——— update user ——— 
+        # ——— upsert all referenced users ———
+        all_member_uids = set(demo_project_payload["member"])
+        all_member_uids.add(demo_project_payload["owner"])
+        all_member_uids.add(uid)
+        for member_uid in all_member_uids:
+            existing = self.db.query(UserModel).get(member_uid)
+            if not existing:
+                self.db.add(UserModel(
+                    uid=member_uid,
+                    name=f"Member {member_uid[:6]}",
+                    email=f"{member_uid[:8]}@demo.splitly",
+                    uid_in_auth=member_uid,
+                    avatar=1,
+                ))
+        self.db.flush()
+
+        # ——— update/create demo user ———
         user = self.db.query(UserModel).get(uid)
-        if not user:
-            raise HTTPException(404, "User not found")
         user.name   = demo_user_payload["name"]
         user.avatar = demo_user_payload["avatar"]
-        print(f"🎉 User {pid} refresh") 
+        print(f"🎉 User {pid} refresh")
 
-        # ——— update project ——— 
+        # ——— update/create project ———
         project = self.db.query(ProjectModel).get(pid)
         if not project:
-            raise HTTPException(404, "Project not found")
+            project = ProjectModel(id=pid, owner=demo_project_payload["owner"],
+                                   project_name="", style="travel", currency="TWD", img=1)
+            self.db.add(project)
+            self.db.flush()
         
         # 更新基本欄位
         for field in ("project_name","start_time","end_time","style",
