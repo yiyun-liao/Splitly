@@ -52,6 +52,8 @@ print("✅ 啟用 CORS origins：", origins)
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL not found in .env")
+if DATABASE_URL.startswith("postgres://"):
+    os.environ["DATABASE_URL"] = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 auth_router_instance = AuthRouter()
 user_router_instance = UserRouter()

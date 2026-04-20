@@ -10,6 +10,9 @@ from src.database.models.base import Base
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+# Render 的 PostgreSQL URL 用 postgres://，SQLAlchemy 需要 postgresql://
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 ECHO_SQL = os.getenv("ENV", "dev") == "dev"
 
 engine = create_engine(
