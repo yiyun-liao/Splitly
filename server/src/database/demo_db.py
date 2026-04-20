@@ -2,7 +2,7 @@
 from fastapi import HTTPException
 from uuid import uuid4
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import or_
+from sqlalchemy import or_, text
 from src.database.models.user import UserModel
 from src.database.models.project import ProjectModel, ProjectEditorRelation, ProjectMemberRelation
 from src.database.models.payment import PaymentModel, PaymentPayerRelation, PaymentSplitRelation, ItemModel, ItemSplitRelation
@@ -20,52 +20,70 @@ DATA_PATH = HERE / "demo_data.json"
 with DATA_PATH.open(encoding="utf-8") as f:
     demo_data = json.load(f)
 
-NESTED_CATEGORIES = {
-    "Food & Drink": {
-        "zh": "飲食",
-        "children": {
-            "Breakfast": "早餐", "Lunch": "午餐", "Dinner": "晚餐",
-            "Snacks": "點心", "Groceries": "雜貨食品", "Drinks": "飲料",
-            "Alcohol": "酒類", "Others": "其他"
-        }
-    },
-    "Shopping": {
-        "zh": "購物",
-        "children": {
-            "Clothing": "衣物", "Shoes": "鞋子", "Accessories": "配件",
-            "Bags": "包包", "Beauty": "美妝保養", "Luxury": "精品",
-            "Gifts": "禮物", "Electronics": "電子產品", "Others": "其他"
-        }
-    },
-    "Transport & Stay": {
-        "zh": "交通及住宿",
-        "children": {
-            "Hotel": "住宿", "Gas": "加油", "Parking": "停車",
-            "Rental": "租車", "Train": "火車", "Taxi": "計程車",
-            "Flight": "機票", "Boat": "船票", "Insurance": "保險",
-            "Others": "其他"
-        }
-    },
-    "Home": {
-        "zh": "家居",
-        "children": {
-            "Furniture": "家具", "Supplies": "日常用品", "Electricity": "電費",
-            "Water": "水費", "Gas": "瓦斯費", "Rent": "房租",
-            "Laundry": "洗衣費", "Repair": "修繕費", "Subscription": "訂閱",
-            "Internet": "網路費", "Phone": "電話費", "Cleaning": "清潔費用",
-            "Others": "其他"
-        }
-    },
-    "Entertainment": {
-        "zh": "娛樂",
-        "children": {
-            "Games": "遊戲", "Salon": "美容", "Theme Park": "遊樂園",
-            "Exhibition": "展覽", "Movie": "電影", "Music": "音樂",
-            "Sports": "運動", "Party": "派對", "Massage": "按摩",
-            "Others": "其他"
-        }
-    }
-}
+CATEGORIES_WITH_IDS = [
+    # Food & Drink (parent_id=46, children 47-54)
+    (46, "Food & Drink", "飲食", None),
+    (47, "Breakfast", "早餐", 46),
+    (48, "Lunch", "午餐", 46),
+    (49, "Dinner", "晚餐", 46),
+    (50, "Snacks", "點心", 46),
+    (51, "Groceries", "雜貨食品", 46),
+    (52, "Drinks", "飲料", 46),
+    (53, "Alcohol", "酒類", 46),
+    (54, "Others", "其他", 46),
+    # Shopping (parent_id=55, children 56-64)
+    (55, "Shopping", "購物", None),
+    (56, "Clothing", "衣物", 55),
+    (57, "Shoes", "鞋子", 55),
+    (58, "Accessories", "配件", 55),
+    (59, "Bags", "包包", 55),
+    (60, "Beauty", "美妝保養", 55),
+    (61, "Luxury", "精品", 55),
+    (62, "Gifts", "禮物", 55),
+    (63, "Electronics", "電子產品", 55),
+    (64, "Others", "其他", 55),
+    # Transport & Stay (parent_id=65, children 66-75)
+    (65, "Transport & Stay", "交通及住宿", None),
+    (66, "Hotel", "住宿", 65),
+    (67, "Gas", "加油", 65),
+    (68, "Parking", "停車", 65),
+    (69, "Rental", "租車", 65),
+    (70, "Train", "火車", 65),
+    (71, "Taxi", "計程車", 65),
+    (72, "Flight", "機票", 65),
+    (73, "Boat", "船票", 65),
+    (74, "Insurance", "保險", 65),
+    (75, "Others", "其他", 65),
+    # Home (parent_id=76, children 77-89)
+    (76, "Home", "家居", None),
+    (77, "Furniture", "家具", 76),
+    (78, "Supplies", "日常用品", 76),
+    (79, "Electricity", "電費", 76),
+    (80, "Water", "水費", 76),
+    (81, "Gas", "瓦斯費", 76),
+    (82, "Rent", "房租", 76),
+    (83, "Laundry", "洗衣費", 76),
+    (84, "Repair", "修繕費", 76),
+    (85, "Subscription", "訂閱", 76),
+    (86, "Internet", "網路費", 76),
+    (87, "Phone", "電話費", 76),
+    (88, "Cleaning", "清潔費用", 76),
+    (89, "Others", "其他", 76),
+    # Entertainment (parent_id=90, children 91-100)
+    (90, "Entertainment", "娛樂", None),
+    (91, "Games", "遊戲", 90),
+    (92, "Salon", "美容", 90),
+    (93, "Theme Park", "遊樂園", 90),
+    (94, "Exhibition", "展覽", 90),
+    (95, "Movie", "電影", 90),
+    (96, "Music", "音樂", 90),
+    (97, "Sports", "運動", 90),
+    (98, "Party", "派對", 90),
+    (99, "Massage", "按摩", 90),
+    (100, "Others", "其他", 90),
+    # Special category for debt/transfer
+    (101, "Debt", "債務", None),
+]
 
 # 拆解
 demo_user_payload    = demo_data["userData"]
@@ -81,14 +99,15 @@ class DemoDB:
         count = self.db.query(CategoryModel).count()
         if count > 0:
             return
-        for parent_en, meta in NESTED_CATEGORIES.items():
-            parent = CategoryModel(name_en=parent_en, name_zh=meta["zh"])
-            self.db.add(parent)
-            self.db.flush()
-            for child_en, child_zh in meta["children"].items():
-                self.db.add(CategoryModel(name_en=child_en, name_zh=child_zh, parent_id=parent.id))
+        for cat_id, name_en, name_zh, parent_id in CATEGORIES_WITH_IDS:
+            self.db.add(CategoryModel(id=cat_id, name_en=name_en, name_zh=name_zh, parent_id=parent_id))
         self.db.flush()
-        print("🎉 Categories seeded")
+        # Update PostgreSQL sequence to avoid ID conflicts for future inserts
+        self.db.execute(
+            text("SELECT setval('categories_id_seq', (SELECT MAX(id) FROM categories))")
+        )
+        self.db.flush()
+        print("🎉 Categories seeded with explicit IDs")
 
     def refresh_demo_all(self, uid: str, pid:str):
         self.seed_categories_if_empty()
