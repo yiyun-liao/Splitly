@@ -7,12 +7,13 @@ from src.dependencies.firebase import verify_firebase_token
 from src.dependencies.database import get_db_session
 from src.database.demo_db import DemoDB
 
-
+from dotenv import load_dotenv
+load_dotenv()
+SEED_SECRET  = os.getenv("SEED_SECRET")
 
 
 DEMO_UID = "wfs5LgjSHBVPvGRpGG1ak3py5R83"
 DEMO_PROJECT_ID = "b9f94b9a-3a6f-4de0-bba0-96ca6d8ad9da"
-SEED_SECRET = os.getenv("SEED_SECRET", "splitly-demo-seed-2025")
 
 
 class DemoRouter:
