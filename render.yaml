@@ -13,5 +13,7 @@ services:
         sync: false
       - key: FIREBASE_CREDENTIALS_JSON
         sync: false
+      - key: SEED_SECRET
+        sync: false
       - key: PYTHON_VERSION
         value: "3.11"
