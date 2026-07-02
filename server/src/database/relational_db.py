@@ -10,18 +10,18 @@ from src.database.models.base import Base
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-# Render 的 PostgreSQL URL 用 postgres://，SQLAlchemy 需要 postgresql://
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 ECHO_SQL = os.getenv("ENV", "dev") == "dev"
 
 engine = create_engine(
     DATABASE_URL,
-    pool_size=10,        # 原本是 5，增加連線數
-    max_overflow=20,     # 容許額外等待的請求數
-    pool_timeout=30,     # 等待連線最大秒數
+    pool_size=5,
+    max_overflow=10,
+    pool_timeout=30,
+    pool_pre_ping=True,
     echo=ECHO_SQL,
-    future=True    
+    future=True
 )
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
