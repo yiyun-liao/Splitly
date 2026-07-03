@@ -4,39 +4,48 @@
 
 - Frontend: Vercel (https://vercel.com/bians-projects-ca3ac511/splitly)
 - Backend: Render (https://dashboard.render.com/)
-- Database: Render Free PostgreSQL
+- Database: Supabase PostgreSQL (https://supabase.com/dashboard)
 - Auth: Firebase
 
 ## Before a Demo / Interview
 
-Server sleeps after 15 min idle. Wake it up 5 min before:
+Render free tier server sleeps after 15 min idle. Wake it up 5 min before:
 
 ```
 Open: https://splitly-api-eskz.onrender.com/
 See: {"message": "Hello from Splitly backend"} → Ready
 ```
 
-## If DB Expires (every 90 days)
+Supabase free tier pauses after 7 days of inactivity, but auto-resumes on the next request (may take a few seconds on first hit).
 
-Render free PostgreSQL expires after 90 days. To recover:
+## Database (Supabase)
 
-1. Render Dashboard → New → PostgreSQL → Free plan
-2. Update the `DATABASE_URL` env var in splitly-api service (point to new DB)
-3. Redeploy (alembic will create tables automatically)
-4. Seed demo data:
+Connection string format (use **Transaction Pooler**, port 6543):
+
+```
+postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
+```
+
+Find it in: Supabase Dashboard → Project Settings → Database → Connection string → URI (Transaction Pooler)
+
+### If DB needs to be recreated
+
+1. Create a new Supabase project (or reset the existing one)
+2. Copy the Transaction Pooler connection string
+3. Update `DATABASE_URL` in Render Dashboard → Environment
+4. Redeploy (Alembic will run migrations automatically)
+5. Seed demo data:
 
 ```bash
 curl -X POST "https://splitly-api-eskz.onrender.com/api/demo/seed?secret=YOUR_SEED_SECRET"
 ```
 
-(SEED_SECRET is stored in Render Environment Variables)
-
 ## Environment Variables (Render)
 
-| Key | Description |
-|-----|-------------|
-| ENV | `production` |
-| DATABASE_URL | Auto-linked from Render PostgreSQL |
-| FIREBASE_CREDENTIALS_JSON | Firebase admin SDK JSON content |
-| SEED_SECRET | Secret for /api/demo/seed endpoint |
-| PYTHON_VERSION | `3.11` |
+| Key | Source | Description |
+|-----|--------|-------------|
+| ENV | `production` | Set directly in render.yaml |
+| DATABASE_URL | Supabase | Transaction Pooler connection string (port 6543) |
+| FIREBASE_CREDENTIALS_JSON | Firebase | Admin SDK JSON content |
+| SEED_SECRET | Manual | Secret for `/api/demo/seed` endpoint |
+| PYTHON_VERSION | `3.11` | Set directly in render.yaml |
